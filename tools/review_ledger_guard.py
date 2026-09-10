@@ -34,7 +34,9 @@ EVENTS = {
     "status",
     "closed",
     "legacy-registered",
+    "owner-override",
 }
+OVERRIDE_REVIEW_ID = "*"
 REQUIRED = {
     name: "immutable"
     for name in [
@@ -168,9 +170,16 @@ def validate(current: dict[str, bytes], before: dict[str, bytes]) -> dict:
     events = records(current["LEDGER.jsonl"])
     old_events = records(before.get("LEDGER.jsonl", b""))
     added_events = events[len(old_events) :]
-    registered = {e["review_id"] for e in events}
+    registered = {e["review_id"] for e in events if e["review_id"] != OVERRIDE_REVIEW_ID}
     folders = {key.split("/", 1)[0] for key in current if "/" in key}
     require(registered == folders, "ledger registration/folder set mismatch")
+    for event in events:
+        if event.get("event") == "owner-override":
+            require(
+                str(event.get("actor", "")).startswith("owner:"),
+                "owner-override event must carry an owner actor",
+            )
+            require(event.get("review_id") == OVERRIDE_REVIEW_ID, "owner-override must use the wildcard review id")
     global_ids = set()
     legacy_ids = []
     for event in events:
@@ -179,7 +188,8 @@ def validate(current: dict[str, bytes], before: dict[str, bytes]) -> dict:
             event.get("actor", "").split(":", 1)[0] in ROLES, "unknown event actor role"
         )
         require(
-            re.fullmatch(r"[a-z0-9][a-z0-9-]*", event["review_id"]) is not None,
+            event["review_id"] == OVERRIDE_REVIEW_ID and event.get("event") == "owner-override"
+            or re.fullmatch(r"[a-z0-9][a-z0-9-]*", event["review_id"]) is not None,
             "invalid review id",
         )
     for review in sorted(folders):
