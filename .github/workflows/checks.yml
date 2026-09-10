@@ -1,0 +1,39 @@
+name: register-checks
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  review-ledger:
+    name: review ledger integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Structural ledger check
+        run: python3 tools/check_review_ledger.py
+      - name: Guard self-consistency
+        run: python3 tools/review_ledger_guard.py check
+      - name: Guard against base branch (pull requests)
+        if: github.event_name == 'pull_request'
+        run: |
+          set -e
+          git worktree add /tmp/base origin/${{ github.base_ref }}
+          rm -rf /tmp/base/reports/reviews
+          cp -R reports/reviews /tmp/base/reports/reviews
+          cp tools/review_ledger_guard.py tools/check_review_ledger.py /tmp/base/tools/
+          python3 /tmp/base/tools/review_ledger_guard.py check --root /tmp/base
+      - name: Register tests
+        run: python3 -m pytest -q tests
+      - name: Outstanding blockers (informational)
+        run: python3 tools/review_ledger_guard.py blockers
