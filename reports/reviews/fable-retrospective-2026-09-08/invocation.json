@@ -1,0 +1,10 @@
+{
+ "requested_model": "claude-fable-5-1",
+ "observed_model": "claude-fable-5-1 (self-reported by the running session; CLI metadata not captured because the review runs interactively via /adrl-critical-review rather than a --print dispatch)",
+ "claude_code_version": "2.1.263",
+ "session_url": "https://claude.ai/code/session_011qFLwZ3EjPPrB3QqneJa63",
+ "tool_configuration": "interactive session; repositories read-only by policy; writes confined to the review directory; subagents (general-purpose) with the same policy; bounded offline checks permitted only in disposable copies under the review directory; WebFetch permitted only for the research-grounding inspector",
+ "permission_denials": [],
+ "coverage_note": "Snapshot excludes secret-category files (hashed, not copied) and backup snapshot directories under ~/projects/.adrl-execution-state (35 backup manifests listed by the inventory, not copied).",
+ "identity_note": "Model self-description is not identity evidence; this record is provenance, not attestation of serving infrastructure."
+}

@@ -45,3 +45,8 @@ implementation wave complete. Recheck after any source/evidence/review change. P
 historical grades and unrelated changes; this local gate does not replace runtime tests,
 human graduation, or remote CI/branch protection. Scope exclusions and unresolved historic
 register defects must be explicit. Routine documentation updates need no extra permission.
+
+Review outputs live in `reports/reviews/` as an append-only ledger (schema `review-ledger-v1`, see
+`reports/reviews/README.md`). Run `python3 tools/check_review_ledger.py` before any commit that
+touches that directory. Reviewer findings and severities are never edited; responses, rechecks and
+owner rulings are appended.

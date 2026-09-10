@@ -1,0 +1,696 @@
+root,path,scope,freeze_status,review_status,reason
+skill-claude,SKILL.md,personal-skill,matched,supporting-read,skill copies diffed for consistency
+skill-claude,references/handoff.md,personal-skill,matched,supporting-read,skill copies diffed for consistency
+skill-codex,SKILL.md,personal-skill,matched,supporting-read,skill copies diffed for consistency
+skill-codex,agents/openai.yaml,personal-skill,matched,supporting-read,skill copies diffed for consistency
+skill-codex,references/handoff.md,personal-skill,matched,supporting-read,skill copies diffed for consistency
+adrl-progress-brief,SKILL.md,personal-skill,matched,supporting-read,skill copies diffed for consistency
+adrl-progress-brief,agents/openai.yaml,personal-skill,matched,supporting-read,skill copies diffed for consistency
+runtime,.gitignore,runtime,matched,not-reviewed,not opened by any inspector
+runtime,AGENTS.md,runtime,matched,not-reviewed,not opened by any inspector
+runtime,CLAUDE.md,runtime,matched,not-reviewed,not opened by any inspector
+runtime,README.md,runtime,matched,not-reviewed,not opened by any inspector
+runtime,api/adrl-api-v1-preview.json,runtime,matched,deep-reviewed,opened by an inspector
+runtime,artifacts/lab/routing-suite-v1.json,runtime,matched,deep-reviewed,opened by an inspector
+runtime,config/detectors.yaml,runtime,matched,not-reviewed,not opened by any inspector
+runtime,config/endpoint-inventory-v1.json,runtime,matched,deep-reviewed,opened by an inspector
+runtime,config/endpoint-inventory-v1.sig,runtime,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+runtime,config/keys/dev/README.md,runtime,matched,not-reviewed,not opened by any inspector
+runtime,config/keys/dev/checkpoint-signing.pub,runtime,matched,not-reviewed,not opened by any inspector
+runtime,config/keys/dev/manifest-signing.pub,runtime,matched,not-reviewed,not opened by any inspector
+runtime,config/learning-contract-v1.json,runtime,matched,deep-reviewed,opened by an inspector
+runtime,config/policy.yaml,runtime,matched,deep-reviewed,opened by an inspector
+runtime,config/prices.yaml,runtime,matched,not-reviewed,not opened by any inspector
+runtime,config/provider-pairs.yaml,runtime,matched,deep-reviewed,opened by an inspector
+runtime,config/repo-classification-v1.json,runtime,matched,not-reviewed,not opened by any inspector
+runtime,config/repo-classification-v1.sig,runtime,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+runtime,config/rungs.yaml,runtime,matched,deep-reviewed,opened by an inspector
+runtime,config/tripwires.yaml,runtime,matched,not-reviewed,not opened by any inspector
+runtime,config/trusted-tool-servers.yaml,runtime,matched,not-reviewed,not opened by any inspector
+runtime,config/utility-fingerprints.yaml,runtime,matched,not-reviewed,not opened by any inspector
+runtime,docs/adr-module-map.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/attempt-coordination.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/attempt-lifecycle.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/data-inventory.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/egress-anchoring.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/engineering-checks.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/isolated-execution.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/key-revocation.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/known-gaps.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/operator-captures.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/process-ownership.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/product-services.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/protocol-boundary.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/responses-admission.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/routing-features.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/routing-lab.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/stopped-resource-ownership.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,docs/verifier-experiments.md,runtime,matched,deep-reviewed,opened by an inspector
+runtime,pyproject.toml,runtime,matched,not-reviewed,not opened by any inspector
+runtime,src/adrl/__init__.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/api/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/api/auth.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/api/client.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/api/contracts.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/api/http.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/api/schema.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/api/service.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/api/store.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/app.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/cascade/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/cascade/boundary.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/cascade/controller.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/cascade/handoff.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/cascade/sticky.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/cascade/tripwires.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/cli/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/cli/improvement.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/cli/ledger_commands.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/cli/main.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/cli/product.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/config/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/config/checks.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/config/loaders.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/config/models.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/config/settings.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/attempt_coordinator.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/container_control.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/enums.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/errors.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/execution_control.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/ids.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/isolated_execution.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/launch_markers.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/ports.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/process_anchor.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/process_owner.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/resource_owner.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/core/types.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/gates/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/block.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/cli.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/content.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/coverage.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/deployments.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/gates/detectors.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/egress.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/feasibility.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/measure.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/pin.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/gates/pipeline.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/gates/repo_class.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/sandbox.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/secrets.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/suppression.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/gates/workload.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/learning/__init__.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/learning/abstention.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/learning/artifacts.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/learning/dataset.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/learning/estimator.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/learning/explore.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/learning/improvement.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/learning/pairs.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/learning/readiness.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/learning/tiers.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/__init__.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/anchoring.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/attempts.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/capture.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/counterfactual.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/crypto.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/egress.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/embeddings.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/erasure.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/events.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/facade.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/improvement.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/keystore.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/labels.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0001_initial.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0002_evidence.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0003_product.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0004_integration_mode.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0005_session_verification.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0006_improvement.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0007_captures.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0008_attempts.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0009_attempt_capacity.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0010_execution_fences.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0011_resource_ownership.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/0012_launch_history.sql,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/migrations/__init__.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/outcomes.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/projections.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/readiness.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/replay.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/retention.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/session_verification.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/shadow_retrieval.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/state.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/store.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/upcast.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/ledger/verification.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/proxy/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/proxy/asgi.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/proxy/errors.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/proxy/fallback.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/proxy/observe_only.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/proxy/pipeline.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/proxy/stages.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/proxy/upstream.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/routing/__init__.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/routing/advisor.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/routing/cascade_feasibility.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/routing/cost.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/routing/features.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/routing/policy.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/routing/registry.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/routing/router.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/routing/rule_health.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/routing/side_effects.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/telemetry/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/telemetry/logging.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/telemetry/metrics.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/telemetry/semconv.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/wire/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/wire/adapters.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/wire/classify.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/wire/identity.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/wire/observe.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,src/adrl/wire/parse.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/wire/profiles/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/wire/profiles/base.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/wire/profiles/messages.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/wire/profiles/messages_responses.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,src/adrl/wire/rewrite.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tests/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/adversarial/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/adversarial/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/adversarial/test_saf_suite.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/adversarial/test_tru_suite.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/conftest.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tests/fixtures/launch_owner.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/profiles/identity-v1.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/seccomp-v27.3.1.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/compaction.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/continuation.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/count_tokens.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/escalation_parallel_tools.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/fork_subagent.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/metadata_only_user_turn.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/nested_subagent.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/parallel_tools_full.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/parallel_tools_partial.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/pre_warm.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/title.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/topic_detect.json,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/fixtures/wire/user_turn.json,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tests/integration/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/cascade/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/cascade/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/cascade/test_controller.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/cascade/test_review_defects.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/e2e/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/e2e/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/e2e/test_composed_system.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/e2e/test_pin_failure.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/e2e/test_product_services.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/e2e/test_review_defects.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/e2e/test_tru.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/e2e/test_trust_wiring.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/gates/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/gates/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/gates/test_pin_durability.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/ledger/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/proxy/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/proxy/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/proxy/test_fault_matrix.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/proxy/test_pinned.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/proxy/test_profiles.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/proxy/test_removal.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/proxy/test_routing_paths.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/test_cli.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/test_cli_verify_snapshot.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/test_launch_engine.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/integration/test_resource_engine.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tests/unit/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/cascade/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/cascade/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/cascade/test_boundary_tripwires.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/cascade/test_handoff_sticky.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_block.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_content.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_coverage.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_egress_writer.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_feasibility.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_observe_mode.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_pin.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_pin_write_failure.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_pipeline.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_repo_class.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_sandbox.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tests/unit/gates/test_secrets.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/gates/test_workload.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/learning/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/learning/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/learning/test_abstention.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/learning/test_artifacts.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/learning/test_dataset.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/learning/test_estimator.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/learning/test_explore.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/learning/test_improvement.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/learning/test_pairs.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/learning/test_readiness.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/learning/test_tiers.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/ledger/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/ledger/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/ledger/test_anchoring.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/ledger/test_data_inventory.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/ledger/test_events_and_labels.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/ledger/test_outcomes.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/ledger/test_privacy_artefacts.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/ledger/test_state_counterfactual_shadow.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/ledger/test_verification.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/proxy/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/proxy/test_fallback.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/routing/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/routing/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/routing/helpers.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tests/unit/routing/test_cost_policy.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/routing/test_gateway_config.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/routing/test_mixed_intent.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tests/unit/routing/test_registry_features.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/routing/test_router.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/routing/test_side_effects.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_api_contract.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_attempt_capacity.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_attempt_coordinator.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_attempts.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_capture.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_config.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_core.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_create_receipt.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_data_inventory_migration.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_egress.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_engineering_tools.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tests/unit/test_isolated_execution.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_key_revocation.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_ledger_cancellation.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_ledger_store.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_process_owner.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_product_client.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_product_migration.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_resource_owner.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/test_routing_lab.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tests/unit/tru/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/tru/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/tru/test_deployments.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/wire/__init__.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/wire/conftest.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/wire/test_classify.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/wire/test_identity.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/wire/test_observe.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/wire/test_parse.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/wire/test_profiles.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tests/unit/wire/test_rewrite.py,runtime,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+runtime,tools/adr_module_map.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tools/check_all.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tools/check_config.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tools/check_data_inventory.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tools/check_learning_contract.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tools/check_ledger_discipline.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tools/export_api_contract.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tools/gen_dev_keys.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tools/gen_litellm_config.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,tools/run_routing_lab.py,runtime,matched,deep-reviewed,opened by an inspector
+runtime,uv.lock,runtime,matched,not-reviewed,not opened by any inspector
+register,AGENTS.md,register-root,matched,not-reviewed,not opened by any inspector
+register,BIBLIOGRAPHY.md,register-root,matched,not-reviewed,not opened by any inspector
+register,CHANGELOG.md,register-root,matched,not-reviewed,not opened by any inspector
+register,INDEX.md,register-root,matched,not-reviewed,not opened by any inspector
+register,README.md,register-root,matched,not-reviewed,not opened by any inspector
+register,REVIEW-LOG.md,register-root,matched,not-reviewed,not opened by any inspector
+register,adr/CAS/ADRL-CAS-001.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/CAS/ADRL-CAS-002.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/CAS/ADRL-CAS-003.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/CAS/ADRL-CAS-004.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/CAS/ADRL-CAS-005.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/CAS/ADRL-CAS-006.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/CAS/ADRL-CAS-007.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/CAS/ADRL-CAS-008.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/CAS/ADRL-CAS-009.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/CAS/README.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/EVL/ADRL-EVL-001.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/EVL/ADRL-EVL-002.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/EVL/ADRL-EVL-003.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/EVL/ADRL-EVL-004.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/EVL/ADRL-EVL-005.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/EVL/ADRL-EVL-006.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/EVL/ADRL-EVL-007.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/EVL/ADRL-EVL-008.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/EVL/ADRL-EVL-009.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/EVL/README.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/FND/ADRL-FND-001.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/FND/ADRL-FND-002.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/FND/ADRL-FND-003.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/FND/ADRL-FND-004.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/FND/ADRL-FND-005.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/FND/README.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/LRN/ADRL-LRN-001.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/LRN/ADRL-LRN-002.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/LRN/ADRL-LRN-003.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/LRN/ADRL-LRN-004.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/LRN/ADRL-LRN-005.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/LRN/ADRL-LRN-006.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/LRN/ADRL-LRN-007.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/LRN/ADRL-LRN-008.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/LRN/README.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/MEM/ADRL-MEM-001.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/MEM/ADRL-MEM-002.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/MEM/ADRL-MEM-003.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/MEM/ADRL-MEM-004.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/MEM/ADRL-MEM-005.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/MEM/ADRL-MEM-006.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/MEM/ADRL-MEM-007.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/MEM/ADRL-MEM-008.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/MEM/ADRL-MEM-009.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/MEM/ADRL-MEM-010.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/MEM/README.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/OPS/ADRL-OPS-001.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/OPS/ADRL-OPS-002.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/OPS/ADRL-OPS-003.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/OPS/ADRL-OPS-004.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/OPS/ADRL-OPS-005.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/OPS/ADRL-OPS-006.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/OPS/ADRL-OPS-007.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/OPS/ADRL-OPS-008.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/OPS/README.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/RTG/ADRL-RTG-001.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/RTG/ADRL-RTG-002.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/RTG/ADRL-RTG-003.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/RTG/ADRL-RTG-004.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/RTG/ADRL-RTG-005.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/RTG/ADRL-RTG-006.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/RTG/ADRL-RTG-007.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/RTG/ADRL-RTG-008.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/RTG/ADRL-RTG-009.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/RTG/README.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SAF/ADRL-SAF-001.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SAF/ADRL-SAF-002.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SAF/ADRL-SAF-003.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SAF/ADRL-SAF-004.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SAF/ADRL-SAF-005.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SAF/ADRL-SAF-006.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SAF/ADRL-SAF-007.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/SAF/ADRL-SAF-008.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SAF/ADRL-SAF-009.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SAF/README.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SEM/ADRL-SEM-001.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SEM/ADRL-SEM-002.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SEM/ADRL-SEM-003.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/SEM/ADRL-SEM-004.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SEM/ADRL-SEM-005.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SEM/ADRL-SEM-006.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/SEM/ADRL-SEM-007.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/SEM/README.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/TRU/ADRL-TRU-001.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/TRU/ADRL-TRU-002.md,register-adr,matched,deep-reviewed,opened by an inspector
+register,adr/TRU/ADRL-TRU-003.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,adr/TRU/README.md,register-adr,matched,supporting-read,in a package or bucket an inspector traversed; not individually cited
+register,design/adrl-context-graph-memory-proposal-2026-09-08.md,register-design,matched,deep-reviewed,opened by an inspector
+register,design/adrl-experiment-lab-plan-2026-09-08.md,register-design,matched,deep-reviewed,opened by an inspector
+register,design/adrl-lab-planning-and-assessment-2026-09-08.md,register-design,matched,deep-reviewed,opened by an inspector
+register,design/adrl-multi-harness-product-contract-2026-09-07.md,register-design,matched,deep-reviewed,opened by an inspector
+register,design/implementation-stack.md,register-design,matched,not-reviewed,not opened by any inspector
+register,output/adrl-executive-2026-09-08/ADRL-Executive-Brief.pdf,register-output,matched,deep-reviewed,opened by an inspector
+register,output/adrl-executive-2026-09-08/ADRL-Executive-Progress-v2.pptx,register-output,matched,deep-reviewed,opened by an inspector
+register,output/pdf/adrl-independent-research-review-2026-09-07.pdf,register-output,matched,not-reviewed,not opened by any inspector
+register,profiles/anthropic-messages-v1.yaml,register-profiles,matched,deep-reviewed,opened by an inspector
+register,reports/ADRL-NOW.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-adaptive-improvement-proposal-2026-09-07.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/adrl-adaptive-routing-rsi-blueprint-2026-09-08.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-claude-subscription-pilot-2026-09-07.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-course-correction-plan-2026-09-07.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-executive-review-2026-09-08.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-experiment-template.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-implementation-journey.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-implementation-roadmap-2026-09-07.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-improvement-experiment-2026-09-07.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-independent-research-review-2026-09-07.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-independent-review-prompt-2026-09-08.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-lab-first-run-2026-09-08.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-live-observation-pilot-2026-09-07.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-product-foundation-implementation-2026-09-07.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-product-report-2026-09-03.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-product-roadmap-2026-09-08.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-product-services-implementation-2026-09-07.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-register-sync-2026-09-07.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-research-critique-2026-09-03.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-routing-correction-2026-09-08.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-routing-in-action-2026-09-08.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-session-verification-2026-09-07.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-startup-investment-brief-2026-09-08.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-w3-1-operator-captures-2026-09-08.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/adrl-w3-2a-attempt-journal-2026-09-08.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/adrl-w3-2b1-process-ownership-2026-09-08.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/adrl-w3-2b2a-terminal-capacity-2026-09-08.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/adrl-w3-2b2b1-key-revocation-2026-09-08.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/adrl-w3-2b2b2-process-coordination-2026-09-08.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/adrl-w3-2b2c-writer-boundary-2026-09-08.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/adrl-w3-2b2d1-stopped-resource-ownership-2026-09-08.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/adrl-w3-2b2d2-launch-contract-2026-09-08.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/adrl-w3-execution-identity-2026-09-08.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/adrl-w3-isolated-launch-2026-09-08.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-w3-transport-receipts-2026-09-08.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/adrl-wave-execution-template.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/lab/planning-starter-v1/assessment.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/lab/planning-starter-v1/contract.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/lab/planning-starter-v1/hld/brief.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/lab/planning-starter-v1/lld/brief.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/lab/planning-starter-v1/manifest.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/lab/planning-starter-v1/prd/brief.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/lab/planning-starter-v1/tasks.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/lab/planning-starter-v1/validation.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adaptive-routing-blueprint-2026-09-08/hf-llmrouter.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adaptive-routing-blueprint-2026-09-08/sources.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adaptive-routing-blueprint-2026-09-08/taxonomy-map.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adaptive-routing-blueprint-2026-09-08/taxonomy-map.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adaptive-routing-blueprint-2026-09-08/validation.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adrl-artifact-source-check-2026-09-07.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adrl-claude-subscription-pilot-2026-09-07.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-claude-subscription-pilot-validation-2026-09-07.json,register-reports,matched,supporting-read,evidence json referenced by an inspector's count reconciliation
+register,reports/research/adrl-course-correction-baseline-2026-09-07.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-execution-state.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adrl-improvement-experiment-2026-09-07.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-improvement-experiment-2026-09-07.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-improvement-history-2026-09-07.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-improvement-inputs-2026-09-07.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-improvement-register-validation-2026-09-07.json,register-reports,matched,supporting-read,evidence json referenced by an inspector's count reconciliation
+register,reports/research/adrl-independent-review-manifest-2026-09-07.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adrl-live-observation-pilot-2026-09-07.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-live-observation-register-validation-2026-09-07.json,register-reports,matched,supporting-read,evidence json referenced by an inspector's count reconciliation
+register,reports/research/adrl-maturity-baseline-2026-09-07.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adrl-observation-mode-2026-09-07.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-product-foundation-2026-09-07.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-product-foundation-2026-09-07.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-product-services-2026-09-07.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-product-services-2026-09-07.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-product-services-register-validation-2026-09-07.json,register-reports,matched,supporting-read,evidence json referenced by an inspector's count reconciliation
+register,reports/research/adrl-register-sync-validation-2026-09-07.json,register-reports,matched,supporting-read,evidence json referenced by an inspector's count reconciliation
+register,reports/research/adrl-roadmap-plan-2026-09-07.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adrl-roadmap-validation-2026-09-07.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adrl-session-verification-2026-09-07.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-session-verification-2026-09-07.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-session-verification-register-validation-2026-09-07.json,register-reports,matched,supporting-read,evidence json referenced by an inspector's count reconciliation
+register,reports/research/adrl-session-verifier-plan-2026-09-07.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-session-verifier-runner-2026-09-07.py,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adrl-w0-baseline-2026-09-07.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-w0-baseline-2026-09-07.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-w3-1-operator-captures-2026-09-08.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-w3-1-operator-captures-2026-09-08.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-w3-2a-attempt-journal-2026-09-08.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-w3-2a-attempt-journal-2026-09-08.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-w3-2b1-process-ownership-2026-09-08.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-w3-2b1-process-ownership-2026-09-08.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-w3-2b2a-terminal-capacity-2026-09-08.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-w3-2b2a-terminal-capacity-2026-09-08.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-w3-2b2b1-key-revocation-2026-09-08.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-w3-2b2b1-key-revocation-2026-09-08.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-w3-2b2b2-process-coordination-2026-09-08.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-w3-2b2b2-process-coordination-2026-09-08.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-w3-2b2c-writer-boundary-2026-09-08.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-w3-2b2d1-stopped-resource-ownership-2026-09-08.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-w3-2b2d1-stopped-resource-ownership-2026-09-08.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-w3-2b2d2-launch-contract-2026-09-08.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-w3-execution-identity-2026-09-08.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/adrl-w3-isolated-launch-2026-09-08.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adrl-w3-isolated-launch-2026-09-08.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/adrl-w3-transport-receipts-2026-09-08.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/adrl-w3-transport-receipts-2026-09-08.patch,register-reports,matched,generated/duplicate,"patch, signature or bytecode; underlying source or json inspected where cited"
+register,reports/research/critique-evl-field-2026-09-03.md,register-reports,matched,historical-context,"3 September or earlier material, used as context for what was challenged"
+register,reports/research/critique-fnd-sem-tru-2026-09-03.md,register-reports,matched,historical-context,"3 September or earlier material, used as context for what was challenged"
+register,reports/research/critique-mem-lrn-2026-09-03.md,register-reports,matched,historical-context,"3 September or earlier material, used as context for what was challenged"
+register,reports/research/critique-rtg-cas-2026-09-03.md,register-reports,matched,historical-context,"3 September or earlier material, used as context for what was challenged"
+register,reports/research/critique-saf-ops-2026-09-03.md,register-reports,matched,historical-context,"3 September or earlier material, used as context for what was challenged"
+register,reports/research/dataset-validator-pilot-fix-2026-09-07.patch,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/dataset-validator-pilot-verifier-2026-09-07.py,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/execution-identity-2026-09-08/execution_identity.py,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/execution-identity-2026-09-08/run_probe.py,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/execution-identity-2026-09-08/test_execution_identity.py,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/execution-identity-2026-09-08/test_probe_reporting.py,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/experiment-lab-planning-2026-09-08/validation.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/harness-survey-2026-09-03.md,register-reports,matched,historical-context,"3 September or earlier material, used as context for what was challenged"
+register,reports/research/independent-review-handoff-2026-09-08/README.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/independent-review-handoff-2026-09-08/skill-dispositions.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/independent-review-handoff-2026-09-08/skill-recheck.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/independent-review-handoff-2026-09-08/skill-recheck.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/independent-review-handoff-2026-09-08/skill-smoke-metadata.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/independent-review-handoff-2026-09-08/skill-smoke-review.json,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/independent-review-handoff-2026-09-08/skill-smoke-review.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/launch-recovery-2026-09-08/run_probe.py,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/product-roadmap-2026-09-08/sources.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/product-roadmap-2026-09-08/validate.py,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/product-roadmap-2026-09-08/validation-attempt-1.json,register-reports,matched,supporting-read,evidence json referenced by an inspector's count reconciliation
+register,reports/research/product-roadmap-2026-09-08/validation.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/reproduce-verifier-experiment.py,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/routing-correction-2026-09-08/adrl-experiment-lab-plan-2026-09-08-before.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/adrl-product-roadmap-2026-09-08-before.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/after-final.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/after-final.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/after.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/after.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/before.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/before.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/candidate-1/docs/adr-module-map.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/candidate-1/docs/routing-features.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/candidate-1/src/adrl/app.py,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/candidate-1/src/adrl/routing/features.py,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/candidate-1/tests/unit/routing/test_mixed_intent.py,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-1/adr_map.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-1/api_contract.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-1/config.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-1/format.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-1/inventory.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-1/learning.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-1/ledger.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-1/lint.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-1/manifest.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-1/tests.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-1/types.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final/adr_map.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final/api_contract.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final/config.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final/format.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final/inventory.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final/learning.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final/ledger.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final/lint.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final/manifest.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final/tests.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks-final/types.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/checks.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/contract.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/focused-final.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/focused.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/fresh-cases.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/implementation.patch,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-after.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-after/environment.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-after/events.jsonl,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-after/manifest.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-after/report.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-after/results.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-final.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-final/environment.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-final/events.jsonl,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-final/manifest.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-final/report.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/lab-final/results.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/matrix_driver.py,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/route-changes-final.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/route-changes-final.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/route-changes.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/route-changes.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/validate.py,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-correction-2026-09-08/validation.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-demonstration-2026-09-08/preview.html,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-demonstration-2026-09-08/results.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-demonstration-2026-09-08/run.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-demonstration-2026-09-08/run_demo.py,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-demonstration-2026-09-08/runtime-baseline.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-demonstration-2026-09-08/stress-cases.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-demonstration-2026-09-08/targeted-tests.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-demonstration-2026-09-08/validation.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/check-logs/adr_map.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/check-logs/api_contract.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/check-logs/config.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/check-logs/format.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/check-logs/inventory.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/check-logs/learning.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/check-logs/ledger.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/check-logs/lint.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/check-logs/tests.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/check-logs/types.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/engineering-checks.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/focused-1.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/focused-2.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-1.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-1/QUALIFICATION.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-1/environment.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-1/events.jsonl,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-1/manifest.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-1/report.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-1/results.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-2.log,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-2/environment.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-2/events.jsonl,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-2/manifest.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-2/report.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/run-2/results.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/validate.py,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/routing-lab-2026-09-08/validation.json,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/research/writer-boundary-2026-09-08/README.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/writer-boundary-2026-09-08/probe.go,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/research/writer-boundary-2026-09-08/run_probe.py,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/lab-a-routing-experiment.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/lab-planning-deliverables.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/routing-decision-quality.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/waves/w0-baseline.md,register-reports,matched,deep-reviewed,opened by an inspector
+register,reports/waves/w3-2-attempt-lifecycle.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-2b-process-ownership.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-2b2a-terminal-capacity.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-2b2b1-key-revocation.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-2b2b2-process-coordination.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-2b2c-writer-boundary.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-2b2d-resource-ownership.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-2b2d1-stopped-resource-ownership.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-2b2d2-identity-compatibility.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-2b2d2-launch-admission.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-2b2d2-launch-experiment.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-active-copy-custody.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-create-receipt-transport-v2.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-execution-identity-v1.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-identity-launch-experiment-v2.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-isolated-execution-contract-v1.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-isolated-launch-runtime.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-launch-create-receipt-diagnosis.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-launch-event-contract-v1.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-launch-runtime-engine-acceptance.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-task-capture.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w3-transport-v2-engine-acceptance.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,reports/waves/w8a-state-transport-spike.md,register-reports,matched,not-reviewed,not opened by any inspector
+register,source/01-overview-tenets-taxonomy.md,register-source,matched,deep-reviewed,opened by an inspector
+register,source/02-register-FND-SEM-SAF.md,register-source,matched,historical-context,"3 September or earlier material, used as context for what was challenged"
+register,source/03-register-RTG-CAS.md,register-source,matched,historical-context,"3 September or earlier material, used as context for what was challenged"
+register,source/04-register-MEM-LRN.md,register-source,matched,historical-context,"3 September or earlier material, used as context for what was challenged"
+register,source/09-open-questions.md,register-source,matched,historical-context,"3 September or earlier material, used as context for what was challenged"
+register,source/REVIEW-INSTRUCTIONS.md,register-source,matched,historical-context,"3 September or earlier material, used as context for what was challenged"
+register,reports/research/independent-review-handoff-2026-09-08/manifest.json,not-inventoried,extra,supporting-read,evidence json referenced by an inspector's count reconciliation
+runtime,config/keys/dev/checkpoint-signing.key,not-inventoried,extra,not-reviewed,not opened by any inspector
+runtime,config/keys/dev/manifest-signing.key,not-inventoried,extra,not-reviewed,not opened by any inspector
+runtime,.python-version,not-inventoried,extra,not-reviewed,not opened by any inspector

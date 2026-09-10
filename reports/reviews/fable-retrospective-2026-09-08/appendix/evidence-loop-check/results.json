@@ -1,0 +1,98 @@
+{
+  "adrl_import": "/Users/arunmenon/projects/adrl-review-fable-2026-09-08/disposable-evidence/runtime/src/adrl/__init__.py",
+  "part_a_http": [
+    200,
+    200
+  ],
+  "part_a_event_types_written_by_live_pipeline": {
+    "closed_turn": 1,
+    "pending": 2,
+    "request": 2,
+    "served": 2
+  },
+  "part_a_decisions": 2,
+  "part_a_routes_in_state_closed_turn_seen_by_closer": 0,
+  "part_a_outcome_state_per_route_as_seen_by_labels": {
+    "01a080c9-6d7f-7149-aa33-169a6c04df7b": null,
+    "01a080c9-6d85-7b6f-a6da-017b1c45aa21": null
+  },
+  "part_a_derived_labels": {
+    "01a080c9-6d7f-7149-aa33-169a6c04df7b": "excluded",
+    "01a080c9-6d85-7b6f-a6da-017b1c45aa21": "excluded"
+  },
+  "part_a_closer_scan_closed_routes_30_days_later": 0,
+  "part_a_learning_readiness": {
+    "version": "readiness-count-v1",
+    "closed_final_count": 0,
+    "censored_count": 0,
+    "capability_evidence_count": 0,
+    "verified_success_count": 0,
+    "task_capability_failure_count": 0,
+    "excluded_by_type": {},
+    "excluded_fraction": 0.0,
+    "distinct_bands": 0,
+    "distinct_repo_classes": 0,
+    "memory_degraded_count": 0,
+    "window_blocked": false,
+    "blockers": []
+  },
+  "part_a_learning_reader_examples": [
+    {
+      "outcome_state": "pending",
+      "source": "organic",
+      "harness_reported_success": null,
+      "verification": null,
+      "features_version": "features-v2"
+    },
+    {
+      "outcome_state": "pending",
+      "source": "organic",
+      "harness_reported_success": null,
+      "verification": null,
+      "features_version": "features-v2"
+    }
+  ],
+  "part_b1_label_before_correction": "success",
+  "part_b1_label_after_human_revert": "success",
+  "part_b1_late_evidence_events": 1,
+  "part_b1_label_correction_events": 0,
+  "part_b2_ledger_label_failure_type": "infrastructure",
+  "part_b2_learning_reader_failure_type": "infrastructure",
+  "part_b2_correction_events_present": 1,
+  "part_b2b_ledger_label_after_revert": {
+    "result": "failure",
+    "failure_type": "task_capability",
+    "basis": "tripwire"
+  },
+  "part_b2b_correction_events_present": 1,
+  "part_b2b_learning_reader_label": {
+    "label": 1,
+    "failure_type": null,
+    "tier": "T3"
+  },
+  "part_b3_ledger_label_of_r3": "failure",
+  "part_b3_neighbour_records_seen_from_r4": [
+    {
+      "route": "r3-verified-failure-neighbour",
+      "success_as_seen_by_neighbour_source": true
+    },
+    {
+      "route": "r2b-proxy-success-then-revert",
+      "success_as_seen_by_neighbour_source": true
+    },
+    {
+      "route": "r2-failure-then-corrected",
+      "success_as_seen_by_neighbour_source": true
+    },
+    {
+      "route": "r1-pass-then-corrected",
+      "success_as_seen_by_neighbour_source": true
+    }
+  ],
+  "part_b4_tier_without_precision_record": "T2",
+  "part_b4_tier_with_precision_record": "T1",
+  "part_b4_verifier_precision_producers_in_src": "none (grep)",
+  "part_b5_features_v2_into_v1_contract": "LeakageError: r1-pass-then-corrected: snapshot version features-v2 does not match contract features-v1",
+  "part_b5_live_FEATURES_VERSION": "features-v2",
+  "part_b5_contract_feature_schema_version": "features-v1"
+}

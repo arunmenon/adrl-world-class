@@ -1,0 +1,14 @@
+{
+  "created_at": "2026-09-08T18:22:36.207285+00:00",
+  "scope": "initial source-backed triage only",
+  "runtime_changed": false,
+  "tests_run": false,
+  "reviewer_status_changed": false,
+  "files": {
+    "findings.md": "2e0955f88f7d8ad63abab9a82bca56e19e67e1eb4a12bd92c26ad41f8c6d3b85",
+    "review.md": "9ad3beb0660fda4514af1c99091bff7a50f273dc6b18533a783761541b3223fd",
+    "handoff.md": "63e6df7c19eb50604e014b3f9276d086958c0fcf9a435f9b9db0e090faebe182",
+    "status.json": "096bc7476c77bca705098d189693658087a5f46fe0cde759b79b296fdf248894",
+    "dispositions.md": "ae696b8af754384303b710330a8cb97e676249dcf921fb436c463089b865ceb4"
+  }
+}

@@ -1,0 +1,541 @@
+{
+ "schema": "review-ledger-v1",
+ "review_id": "fable-retrospective-2026-09-08",
+ "findings": [
+  {
+   "id": "RV-01",
+   "global_id": "fable-retrospective-2026-09-08:RV-01",
+   "severity": "critical",
+   "kind": "observed defect",
+   "blocking": true,
+   "confidence": "high",
+   "owning_adrs": [
+    "MEM-001",
+    "MEM-002",
+    "MEM-004",
+    "LRN-001"
+   ],
+   "title": "Live outcome events are invisible to every consumer that turns a decision into a label.",
+   "appendix_refs": "EL D1, M1."
+  },
+  {
+   "id": "RV-02",
+   "global_id": "fable-retrospective-2026-09-08:RV-02",
+   "severity": "high",
+   "kind": "observed defect",
+   "blocking": true,
+   "confidence": "high",
+   "owning_adrs": [
+    "RTG-002",
+    "RTG-003",
+    "RTG-006"
+   ],
+   "title": "The estimator, thresholds and cost model never influence the initial route; cheap cloud is never chosen on merit.",
+   "appendix_refs": "RT F1, U2, U3, M3."
+  },
+  {
+   "id": "RV-03",
+   "global_id": "fable-retrospective-2026-09-08:RV-03",
+   "severity": "high",
+   "kind": "observed defect",
+   "blocking": true,
+   "confidence": "high",
+   "owning_adrs": [
+    "TRU-001",
+    "OPS-005",
+    "EVL-005"
+   ],
+   "title": "Lab routing evidence and the 911-test result depend on the author's absolute checkout path.",
+   "appendix_refs": "RT F2, W3 F7, CH."
+  },
+  {
+   "id": "RV-04",
+   "global_id": "fable-retrospective-2026-09-08:RV-04",
+   "severity": "high",
+   "kind": "unsupported claim",
+   "blocking": true,
+   "confidence": "high",
+   "owning_adrs": [
+    "FND-005",
+    "OPS-005",
+    "RTG-001"
+   ],
+   "title": "The lab reaches live dispatch by loading the bundle in shadow mode, and the reports do not say so.",
+   "appendix_refs": "RT F3, U1."
+  },
+  {
+   "id": "RV-05",
+   "global_id": "fable-retrospective-2026-09-08:RV-05",
+   "severity": "high",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "RTG-003",
+    "CAS-001"
+   ],
+   "title": "Rule health and trip-wire coverage read a third event shape that no runtime producer writes.",
+   "appendix_refs": "EL D2."
+  },
+  {
+   "id": "RV-06",
+   "global_id": "fable-retrospective-2026-09-08:RV-06",
+   "severity": "high",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "MEM-002",
+    "LRN-001"
+   ],
+   "title": "Late human corrections update the ledger label but never reach learning examples.",
+   "appendix_refs": "EL D3; D4 records the verifier-immune variant."
+  },
+  {
+   "id": "RV-07",
+   "global_id": "fable-retrospective-2026-09-08:RV-07",
+   "severity": "high",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "LRN-001",
+    "MEM-003",
+    "EVL-004"
+   ],
+   "title": "T1 evidence is unreachable because nothing produces a verifier-precision record.",
+   "appendix_refs": "EL D6, M2."
+  },
+  {
+   "id": "RV-08",
+   "global_id": "fable-retrospective-2026-09-08:RV-08",
+   "severity": "high",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "LRN-004",
+    "LRN-005",
+    "LRN-008"
+   ],
+   "title": "Every organic decision since W7.0a is untrainable and unexplorable.",
+   "appendix_refs": "EL D7; RT F7 records that the v1 contract's feature list already did not match what `compute_features` emits."
+  },
+  {
+   "id": "RV-09",
+   "global_id": "fable-retrospective-2026-09-08:RV-09",
+   "severity": "high",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "LRN-004",
+    "MEM-007"
+   ],
+   "title": "The neighbour success feature reports success for verifier-failed routes.",
+   "appendix_refs": "EL D5."
+  },
+  {
+   "id": "RV-10",
+   "global_id": "fable-retrospective-2026-09-08:RV-10",
+   "severity": "high",
+   "kind": "strategic disagreement for the stated next action",
+   "blocking": true,
+   "confidence": "high",
+   "owning_adrs": [
+    "SAF-007",
+    "OPS-001",
+    "FND-005"
+   ],
+   "title": "The isolated backend cannot host a real harness, so the roadmap's next W3 step does not lead to a real-task demonstration.",
+   "appendix_refs": "W3 F1 and section 6; RC."
+  },
+  {
+   "id": "RV-11",
+   "global_id": "fable-retrospective-2026-09-08:RV-11",
+   "severity": "high",
+   "kind": "unsupported claim",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "SAF-007",
+    "MEM-003"
+   ],
+   "title": "No code extracts output from a stopped container, so \"the retained layer\" is not task-output evidence.",
+   "appendix_refs": "W3 F4."
+  },
+  {
+   "id": "RV-12",
+   "global_id": "fable-retrospective-2026-09-08:RV-12",
+   "severity": "high",
+   "kind": "unsupported claim",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "EVL-007 and each affected decision"
+   ],
+   "title": "Thirteen to sixteen historical D3 and D4 grades are displayed as current although EVL-007 says a new implementation inherits nothing above D2.",
+   "appendix_refs": "AA F6, LC F2."
+  },
+  {
+   "id": "RV-13",
+   "global_id": "fable-retrospective-2026-09-08:RV-13",
+   "severity": "high",
+   "kind": "observed process defect for every \"validated\" label",
+   "blocking": true,
+   "confidence": "high",
+   "owning_adrs": [
+    "EVL-007",
+    "OPS-008"
+   ],
+   "title": "No independent reviewer has been named in twenty-one journey entries although the W0 exit required it.",
+   "appendix_refs": "LC F11, RG guardrail table."
+  },
+  {
+   "id": "RV-14",
+   "global_id": "fable-retrospective-2026-09-08:RV-14",
+   "severity": "high",
+   "kind": "unsupported claim",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "MEM-008",
+    "MEM-005",
+    "MEM-007"
+   ],
+   "title": "MEM-008 \"runs against real traffic, 34 of 300 evaluated decisions\" describes the old codebase; adrl-core never instantiates the retriever.",
+   "appendix_refs": "EL U1, D8."
+  },
+  {
+   "id": "RV-15",
+   "global_id": "fable-retrospective-2026-09-08:RV-15",
+   "severity": "high",
+   "kind": "unsupported claim",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "LRN-007",
+    "EVL-005"
+   ],
+   "title": "The improvement experiment's headline overstates a tautological result.",
+   "appendix_refs": "EL U2."
+  },
+  {
+   "id": "RV-16",
+   "global_id": "fable-retrospective-2026-09-08:RV-16",
+   "severity": "high",
+   "kind": "unsupported claim",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "RTG-003",
+    "LRN-004",
+    "EVL-002"
+   ],
+   "title": "The routing-correction record omits that candidate 2 was fitted to the two literals that failed candidate 1, that the fresh 12 matched the author's expectations 12 of 12, and that two changes shipped under one defect story; the regression tests mirror the evaluation cases.",
+   "appendix_refs": "EL U3, D10; RT S1."
+  },
+  {
+   "id": "RV-17",
+   "global_id": "fable-retrospective-2026-09-08:RV-17",
+   "severity": "medium",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "LRN-004",
+    "RTG-003"
+   ],
+   "title": "features-v2 introduced over-routing classes the record does not name, with no over-route budget.",
+   "appendix_refs": "RT F4, M6, S1; S2 notes destructive-intent vocabulary routes \"fix the typo in payments.py\" to frontier."
+  },
+  {
+   "id": "RV-18",
+   "global_id": "fable-retrospective-2026-09-08:RV-18",
+   "severity": "medium",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "RTG-003",
+    "SEM-005"
+   ],
+   "title": "No outcome-driven adaptation is wired into the running service.",
+   "appendix_refs": "RT F5, LC F5."
+  },
+  {
+   "id": "RV-19",
+   "global_id": "fable-retrospective-2026-09-08:RV-19",
+   "severity": "medium",
+   "kind": "evidence integrity",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "EVL-006",
+    "OPS-004"
+   ],
+   "title": "Five frozen wave packets were amended after their hashes were recorded.",
+   "appendix_refs": "W3 F2."
+  },
+  {
+   "id": "RV-20",
+   "global_id": "fable-retrospective-2026-09-08:RV-20",
+   "severity": "medium",
+   "kind": "evidence integrity",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "OPS-001",
+    "SAF-007",
+    "EVL-006"
+   ],
+   "title": "Engine evidence lives only in the private state directory and the eight engine tests have been skipped in every run since the 316-input build; the executive review's \"895 tests, no skipped tests\" is stale.",
+   "appendix_refs": "W3 F3, AA F7, EL U4."
+  },
+  {
+   "id": "RV-21",
+   "global_id": "fable-retrospective-2026-09-08:RV-21",
+   "severity": "medium",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "OPS-001"
+   ],
+   "title": "Permanent execution fences make every supervised workspace single-use.",
+   "appendix_refs": "W3 F6."
+  },
+  {
+   "id": "RV-22",
+   "global_id": "fable-retrospective-2026-09-08:RV-22",
+   "severity": "medium",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "MEM-010",
+    "SAF-002"
+   ],
+   "title": "Materialised plaintext copies have no durable custody record.",
+   "appendix_refs": "W3 F8."
+  },
+  {
+   "id": "RV-23",
+   "global_id": "fable-retrospective-2026-09-08:RV-23",
+   "severity": "medium",
+   "kind": "register defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "register rules in `R/AGENTS"
+   ],
+   "title": "INDEX rows are stale for 21 decisions although each 8 September changelog entry claims synchronisation; bucket overview tables are frozen at 2 September and lack SEM-007 and CAS-009; file fields and INDEX disagree for FND-001, FND-005, SEM-002, TRU-001; five planning notes lack changelog rows.",
+   "appendix_refs": "AA F1, F3, F4, F5."
+  },
+  {
+   "id": "RV-24",
+   "global_id": "fable-retrospective-2026-09-08:RV-24",
+   "severity": "medium",
+   "kind": "register defect, concealed progress",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [],
+   "title": "Eleven Maturity fields describe defects that `C/docs/known-gaps.md` records as closed on 3 September.",
+   "appendix_refs": "AA F2."
+  },
+  {
+   "id": "RV-25",
+   "global_id": "fable-retrospective-2026-09-08:RV-25",
+   "severity": "medium",
+   "kind": "leadership accuracy",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [],
+   "title": "Leadership artefacts are frozen at journey entry 014 while the program is at 021; the lab shows a synthetic endpoint with provider-receipt vocabulary; \"no immediate input blocks the next offline work\" omits four unmade leadership decisions; the deck's \"learning\" slide describes manual code edits.",
+   "appendix_refs": "LC F1, F3, F4, F5."
+  },
+  {
+   "id": "RV-26",
+   "global_id": "fable-retrospective-2026-09-08:RV-26",
+   "severity": "medium",
+   "kind": "unsupported claim",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "OPS-006",
+    "TRU-002"
+   ],
+   "title": "The served-identity debate concerns a header the runtime does not read.",
+   "appendix_refs": "RG F1."
+  },
+  {
+   "id": "RV-27",
+   "global_id": "fable-retrospective-2026-09-08:RV-27",
+   "severity": "medium",
+   "kind": "missing coverage",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "CAS-004",
+    "RTG-008"
+   ],
+   "title": "Thinking-block binding is per model version and per exact prefix, with 400 by default for accounts created on or after 31 August 2026; CAS-004 keys by family and nothing in the snapshot exercises the binding.",
+   "appendix_refs": "RG F2."
+  },
+  {
+   "id": "RV-28",
+   "global_id": "fable-retrospective-2026-09-08:RV-28",
+   "severity": "medium",
+   "kind": "missing coverage",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "SEM-004",
+    "RTG-009"
+   ],
+   "title": "Server-side compaction arrives inside the response and its tokens sit outside top-level usage; nothing sums `usage.iterations`, so cost accounting undercounts.",
+   "appendix_refs": "RG F3."
+  },
+  {
+   "id": "RV-29",
+   "global_id": "fable-retrospective-2026-09-08:RV-29",
+   "severity": "medium",
+   "kind": "process defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "OPS-008",
+    "EVL-009"
+   ],
+   "title": "W3.2b2d2 closed as validated despite recorded stop-rule deviations and a self-granted exception with no owner disposition.",
+   "appendix_refs": "RG F6, W3 F5."
+  },
+  {
+   "id": "RV-30",
+   "global_id": "fable-retrospective-2026-09-08:RV-30",
+   "severity": "medium",
+   "kind": "strategic disagreement",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "FND-005",
+    "OPS-001"
+   ],
+   "title": "Roughly half of the two-day engineering built a container execution backend that no product stage requires and that the W3 contract itself called optional.",
+   "appendix_refs": "RC; CH."
+  },
+  {
+   "id": "RV-31",
+   "global_id": "fable-retrospective-2026-09-08:RV-31",
+   "severity": "medium",
+   "kind": "observed gap",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [],
+   "title": "Shadow retrieval, embedding writer, instruction hasher, projection index and human-correction detector are never composed outside tests, so MEM-005 suppression, MEM-007 staleness and MEM-008 measurement have never met traffic in this runtime.",
+   "appendix_refs": "EL D8."
+  },
+  {
+   "id": "RV-32",
+   "global_id": "fable-retrospective-2026-09-08:RV-32",
+   "severity": "medium",
+   "kind": "evidence integrity",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [
+    "EVL-006",
+    "OPS-004"
+   ],
+   "title": "Validation records are overwritable and machine-bound.",
+   "appendix_refs": "RG F7, EL U5."
+  },
+  {
+   "id": "RV-33",
+   "global_id": "fable-retrospective-2026-09-08:RV-33",
+   "severity": "low",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [],
+   "title": "",
+   "appendix_refs": "RT F6, F7."
+  },
+  {
+   "id": "RV-34",
+   "global_id": "fable-retrospective-2026-09-08:RV-34",
+   "severity": "low",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [],
+   "title": "",
+   "appendix_refs": "AA F8."
+  },
+  {
+   "id": "RV-35",
+   "global_id": "fable-retrospective-2026-09-08:RV-35",
+   "severity": "low",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [],
+   "title": "",
+   "appendix_refs": "RG F4."
+  },
+  {
+   "id": "RV-36",
+   "global_id": "fable-retrospective-2026-09-08:RV-36",
+   "severity": "low",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [],
+   "title": "",
+   "appendix_refs": "EL D9."
+  },
+  {
+   "id": "RV-37",
+   "global_id": "fable-retrospective-2026-09-08:RV-37",
+   "severity": "low",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [],
+   "title": "",
+   "appendix_refs": "LC F7, F10."
+  },
+  {
+   "id": "RV-38",
+   "global_id": "fable-retrospective-2026-09-08:RV-38",
+   "severity": "low",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [],
+   "title": "",
+   "appendix_refs": "RG F8, F9, F10; CH."
+  },
+  {
+   "id": "RV-39",
+   "global_id": "fable-retrospective-2026-09-08:RV-39",
+   "severity": "low",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [],
+   "title": "",
+   "appendix_refs": "EL U6."
+  },
+  {
+   "id": "RV-40",
+   "global_id": "fable-retrospective-2026-09-08:RV-40",
+   "severity": "low",
+   "kind": "observed defect",
+   "blocking": false,
+   "confidence": "high",
+   "owning_adrs": [],
+   "title": "",
+   "appendix_refs": "LC F6, RC."
+  }
+ ]
+}
