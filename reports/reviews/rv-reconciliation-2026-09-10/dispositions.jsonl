@@ -1,0 +1,2 @@
+{"ts": "2026-09-10T05:12:20.574793+00:00", "actor": "implementer:codex", "finding_id": "RC-01", "disposition": "accepted", "evidence": "reconciliation/evidence-limits.md", "note": "Scope qualification and retained diff supplied; no fresh reviewer clearance claimed."}
+{"ts": "2026-09-10T05:12:20.574793+00:00", "actor": "implementer:codex", "finding_id": "RC-02", "disposition": "accepted", "evidence": "reconciliation/evidence-limits.md", "note": "Scope qualification and retained diff supplied; no fresh reviewer clearance claimed."}

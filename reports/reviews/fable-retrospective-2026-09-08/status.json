@@ -1,29 +1,30 @@
 {
- "checkpoint": "retrospective-2026-09-07-08",
- "state": "changes-requested",
- "started_at": "2026-09-08T10:56:20.724099+00:00",
- "input_inventory_sha256": "2a0ab3f9c3c3f684fb089f155bb5b493e50439cc62b84ebf3f53c5ca31f746da",
- "inputs_json_sha256": "b481a36dfe63296394cf1e23c0a87047e22f7479dbee09d9d619cb82e8b1b386",
- "reviewer": {
-  "requested_model": "claude-fable-5-1",
-  "invocation": "interactive Claude Code session via /adrl-critical-review",
-  "tools": "Read-only on repositories; writes only under review directory; subagents same policy"
- },
- "findings_outstanding": 40,
- "next_step": "Product owner reads review.md; Codex responds per finding in dispositions.md; Fable rechecks material fixes against a new frozen snapshot; at most two correction rounds; unresolved blocking findings escalate to the owner. No maturity promotion, automation restart or spend is authorised by this review.",
- "completed_at": "2026-09-08T11:43:37.277928+00:00",
- "findings_by_severity": {
-  "critical": 1,
-  "high": 15,
-  "medium": 16,
-  "low": 8
- },
- "blocking_findings": [
-  "RV-01",
-  "RV-02",
-  "RV-03",
-  "RV-04",
-  "RV-10",
-  "RV-13"
- ]
+  "checkpoint": "retrospective-2026-09-07-08",
+  "state": "changes-requested",
+  "started_at": "2026-09-08T10:56:20.724099+00:00",
+  "input_inventory_sha256": "2a0ab3f9c3c3f684fb089f155bb5b493e50439cc62b84ebf3f53c5ca31f746da",
+  "inputs_json_sha256": "b481a36dfe63296394cf1e23c0a87047e22f7479dbee09d9d619cb82e8b1b386",
+  "reviewer": {
+    "requested_model": "claude-fable-5-1",
+    "invocation": "interactive Claude Code session via /adrl-critical-review",
+    "tools": "Read-only on repositories; writes only under review directory; subagents same policy"
+  },
+  "findings_outstanding": 39,
+  "next_step": "Product owner reads review.md; Codex responds per finding in dispositions.md; Fable rechecks material fixes against a new frozen snapshot; at most two correction rounds; unresolved blocking findings escalate to the owner. No maturity promotion, automation restart or spend is authorised by this review.",
+  "completed_at": "2026-09-08T11:43:37.277928+00:00",
+  "findings_by_severity": {
+    "critical": 1,
+    "high": 15,
+    "medium": 16,
+    "low": 8
+  },
+  "blocking_findings": [
+    "RV-02",
+    "RV-03",
+    "RV-04",
+    "RV-10",
+    "RV-13"
+  ],
+  "reconciled_at": "2026-09-10T05:12:20.574793+00:00",
+  "reconciliation_scope": "RV-01 through RV-06 only; see reconciliation/rv-01-through-06-2026-09-10.md"
 }

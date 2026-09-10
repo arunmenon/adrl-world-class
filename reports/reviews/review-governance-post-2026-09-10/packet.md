@@ -1,0 +1,9 @@
+# Review governance post-wave checkpoint
+
+2026-09-10. Independently review the shared skill, staged guard, instructions and taxonomy mappings. No runtime behavior or live execution. Actual pre-review findings below; verify each independently satisfied criterion and return IDs explicitly in verified_pre_findings. Hook conflicts are safely refused, not chained; installation is local register only, no remote policy or runtime-commit protection. This deliberately narrower alternative to RG-P07 is disclosed.
+
+Return JSON with review_id review-governance-post-2026-09-10, verdict, summary, verified_pre_findings (RG-P01 etc), findings array. Findings use id RG-01 etc, global_id review-governance-post-2026-09-10:<id>, severity, kind, blocking, confidence, owning_adrs, title, evidence, acceptance_criteria, appendix_refs. Include remaining blockers, do not invent findings to fill the list. Max 600 words. No tools, edits, delegation or model experiments. Scope acceptance is not graduation or remote enforcement.
+
+Behavioral skill exercise: an implementer says a blocking finding is verified-fixed, citing a later report; another is deferred-with-reason by an implementer. Based on the skill/tool, assess whether those records alone permit a completion claim. Examine actual evidence, not just prose promises. No need to clear unrelated historical RV findings; the reported six remain structured unresolved with six legacy unknown.
+
+No snapshots will be added inside reports/reviews. Current frozen copies and all hashes are retained externally at this checkpoint path. At publication, actual reviewer JSON/prose, findings, initial immutable disposition table, append-only responses, status, classified manifest and ledger events will follow the schema. Outputs are still external while in progress.

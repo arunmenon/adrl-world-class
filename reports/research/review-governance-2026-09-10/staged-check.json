@@ -1,0 +1,12 @@
+{
+  "reviews": 10,
+  "events": 29,
+  "legacy_unknown": [
+    "claude-adapter-2026-09-09",
+    "claude-code-compatibility-2026-09-09",
+    "claude-code-roi-matrix-2026-09-09",
+    "milestone-tightening-2026-09-09",
+    "outcome-contract-2026-09-09",
+    "taxonomy-sync-gate-2026-09-09"
+  ]
+}

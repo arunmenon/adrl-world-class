@@ -879,3 +879,11 @@ Confirmed native Max login and reproduced existing rewrite/admission blockers wi
 Implemented constructor-only initial-choice Claude selection in the real pipeline, finite direct transport and synthetic integration tests. Normal launch remains unchanged; SHADOW/OFF and existing LIVE admission cannot activate this candidate. Fable found an egress receipt copying intended identity, which was reproduced, corrected and independently rechecked. A final documentation recheck accepted the register corrections. 949 tests passed, 8 engine tests skipped, all six required checks passed; 27 candidate tests and 19 taxonomy-checker tests. Taxonomy closure passed on 428 source inputs with seven owning ADRs synchronized. Owner-authorized missing overview entries were restored without changing canonical grades.
 
 P1 remains open. One of the six engineering slices is consumed; zero actual ADRL model-task attempts. Live profile/custody/access, real Claude compatibility and ROI are not proven. No automatic learning, paid API use, activation or scheduler restart. [Completion and receipt](reviews/claude-adapter-2026-09-09/completion.md).
+
+## Governance update, 10 September 2026
+
+Shared review-ledger skill installed for Codex and Claude; local register staged-commit guard installed. 32 register tests pass and Fable accepted the scoped correction recheck, with one non-blocking instruction cleanup retained. Owning FND-005/EVL-009 fields are unchanged. Six retrospective blockers and six legacy unknown reviews are still recorded. This changes governance, consumes no model-task attempts, and supplies no routing or savings evidence. [Evidence](review-governance-2026-09-10.md).
+
+## RV reconciliation, 10 September 2026
+
+Fresh Fable review confirms RV-01 fixed within its synthetic closer/readiness-function scope; RV-02 through RV-06 remain unresolved. Six dispositions appended without rewriting original findings. Five retrospective blockers remain (RV-02/03/04/10/13); six legacy reviews remain unknown. Current focused outcome-contract regression: 11 passed. No new routing, savings or maturity claim. [Reconciliation](rv-reconciliation-2026-09-10.md).

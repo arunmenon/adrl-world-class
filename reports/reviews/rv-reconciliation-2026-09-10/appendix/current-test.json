@@ -1,0 +1,15 @@
+{
+  "actor": "coordinator:codex",
+  "argv": [
+    "../adrl-core/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/integration/e2e/test_outcome_contract.py"
+  ],
+  "cwd": "/Users/arunmenon/projects/adrl-core",
+  "exit_code": 0,
+  "result": "11 passed in 0.61s",
+  "capture": "Codex exec session 52358; coordinator transcript, not raw pytest log",
+  "test_sha256": "b19cd9e234079e3076b966113b89dbb41f074922342ed0d0e639155baa48cc1b"
+}

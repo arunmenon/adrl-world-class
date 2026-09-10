@@ -50,3 +50,19 @@ Review outputs live in `reports/reviews/` as an append-only ledger (schema `revi
 `reports/reviews/README.md`). Run `python3 tools/check_review_ledger.py` before any commit that
 touches that directory. Reviewer findings and severities are never edited; responses, rechecks and
 owner rulings are appended.
+
+## Review-ledger governance
+
+Use `adrl-review-ledger` at
+`/Users/arunmenon/projects/adrl-world-class/skills/adrl-review-ledger/SKILL.md` before
+publishing review records, reconciling findings or making a completion claim. The skill is
+installed for both Codex and Claude. Query applicable blockers; legacy coverage is unknown,
+and an implementer's deferral is not reviewer verification or an owner ruling.
+
+Preserve original findings and registered legacy folders. Append actor-labelled dispositions,
+new recheck artifacts and matching ledger events. Before a register commit run
+`python3 tools/review_ledger_guard.py check --staged` from the register. A local register hook
+runs this check; new clones need `python3 tools/review_ledger_guard.py install-hook`.
+For runtime work, review the sibling register's current blockers and complete taxonomy sync;
+the register hook does not validate runtime commits or grant completion authority. Never
+bypass or weaken the guard merely to make a commit succeed. Remote enforcement is not configured.

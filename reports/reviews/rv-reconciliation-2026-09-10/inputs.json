@@ -1,0 +1,94 @@
+{
+  "/Users/arunmenon/projects/adrl-world-class/reports/reviews/outcome-contract-2026-09-09/recheck.md": {
+    "sha256": "a963388b61db291b9a1757157f2249736a516ba96b282100ca644affdb9c4c93",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/0/recheck.md"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/reports/reviews/outcome-contract-2026-09-09/post-review.md": {
+    "sha256": "e278a908cc285e89d857b326d44e9c8cf7c58283a452333085f4ce9f388a0c2d",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/1/post-review.md"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/reports/reviews/outcome-contract-2026-09-09/report.md": {
+    "sha256": "67dd27813da6f52dd2663f7cf34896d3ca4c45bb9ab46e5e2fe908635a94e4b5",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/2/report.md"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/reports/reviews/outcome-contract-2026-09-09/completion-validation.json": {
+    "sha256": "fa7d6c549f0211232a7b36704c5e15c0043c764f964caf269b3024cb2c6d3311",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/3/completion-validation.json"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/reports/reviews/outcome-contract-2026-09-09/checks-2/manifest.json": {
+    "sha256": "1aa05cdc42a990c395e2ef00bed2bdb89229b1eb6f755c5a0f9ad323814f6007",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/4/manifest.json"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/reports/reviews/outcome-contract-2026-09-09/checks-2/tests.log": {
+    "sha256": "7ecb9d737c68a427a93691fbabb909d645175c86c95de79adea69ab9e1aa778a",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/5/tests.log"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/reports/reviews/outcome-contract-2026-09-09/recheck-manifest.json": {
+    "sha256": "2d6a5f7ee07eb021fe27d5e9d6cd1bbd0004f6002d6a9a0b4fd378ea76da682c",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/6/recheck-manifest.json"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/reports/reviews/outcome-contract-2026-09-09/reviewer-metadata.json": {
+    "sha256": "29ecb7e5b76df01358b3fecfbbba08be74a5efb912515e18ca78fd8a8c898f71",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/7/reviewer-metadata.json"
+  },
+  "/Users/arunmenon/projects/adrl-core/src/adrl/cascade/controller.py": {
+    "sha256": "fedef16cf2a4ce239f8c7c07eb27331b6bdeb5656735b84ab925f707adbe0a1d",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/8/controller.py"
+  },
+  "/Users/arunmenon/projects/adrl-core/src/adrl/proxy/pipeline.py": {
+    "sha256": "300069be159da6ec62b42cac934f4ab834b87cbb34d78cdfd0f01d287f20b3af",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/9/pipeline.py"
+  },
+  "/Users/arunmenon/projects/adrl-core/src/adrl/ledger/outcomes.py": {
+    "sha256": "87ed8af4d5d244af77eadb36d8edc44fb3e62f86c1dbb02f921bcde772cba409",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/10/outcomes.py"
+  },
+  "/Users/arunmenon/projects/adrl-core/src/adrl/ledger/readiness.py": {
+    "sha256": "43677204359845245b952c5a26c567db7b61994ea95fbcedf2b187bff56bd204",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/11/readiness.py"
+  },
+  "/Users/arunmenon/projects/adrl-core/src/adrl/routing/router.py": {
+    "sha256": "36666f3e9a6944a9974d35b906e0bf231014f96798ba65dbb8670dfa19f24045",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/12/router.py"
+  },
+  "/Users/arunmenon/projects/adrl-core/src/adrl/routing/rule_health.py": {
+    "sha256": "c9843b350c36731bf5778b900b107d231181be794a88ec9b12cb91a49d2daa8b",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/13/rule_health.py"
+  },
+  "/Users/arunmenon/projects/adrl-core/src/adrl/cascade/tripwires.py": {
+    "sha256": "c91eb8b1feeaf8e62f0ae5866d76205f3e3fe8a627d29885b893d70d1829c728",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/14/tripwires.py"
+  },
+  "/Users/arunmenon/projects/adrl-core/src/adrl/learning/tiers.py": {
+    "sha256": "6d0a17d8a57179e13544a75bde5144ae93343e21c966b71eebdaf0fdbbb1fca8",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/15/tiers.py"
+  },
+  "/Users/arunmenon/projects/adrl-core/tools/run_routing_lab.py": {
+    "sha256": "6dace633d24fa4d185c418c9a070c14dbce53361057d9a78a00dc93c33946ff7",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/16/run_routing_lab.py"
+  },
+  "/Users/arunmenon/projects/adrl-core/config/repo-classification-v1.json": {
+    "sha256": "47d7790c3eb71be692b74332a2e01de3b19011b10609722fdaf413279cf97b42",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/17/repo-classification-v1.json"
+  },
+  "/Users/arunmenon/projects/adrl-core/tests/integration/e2e/test_outcome_contract.py": {
+    "sha256": "b19cd9e234079e3076b966113b89dbb41f074922342ed0d0e639155baa48cc1b",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/18/test_outcome_contract.py"
+  },
+  "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/comparison.json": {
+    "sha256": "d0af8e57b8652f3c639569cc92f0cf6348cdc36919012afc897d1269fca2137e",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/19/comparison.json"
+  },
+  "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/current-test.json": {
+    "sha256": "0b0e4b614665de47b03bd65449602cd548b140cf890fe5561372104f8b9f5997",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/20/current-test.json"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/reports/reviews/fable-retrospective-2026-09-08/findings.json": {
+    "sha256": "23864f953675a2268ede6620038513ad57decab242b0cb76b36b289595b8d613",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/21/findings.json"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/reports/reviews/fable-retrospective-2026-09-08/findings.md": {
+    "sha256": "2e0955f88f7d8ad63abab9a82bca56e19e67e1eb4a12bd92c26ad41f8c6d3b85",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/rv-reconciliation-20260910/source/22/findings.md"
+  }
+}

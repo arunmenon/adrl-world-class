@@ -147,6 +147,7 @@ None — decision stands as written.
 
 | Date | Change | Text before change |
 |---|---|---|
+| 2026-09-10 | <!-- taxonomy-sync:review-governance:ADRL-FND-005 --> [Shared skill and staged-history guard](../../reports/review-governance-2026-09-10.md); local scope only | Prior decision text, dated evidence and maturity preserved |
 | 2026-09-09 | <!-- taxonomy-sync:claude-adapter:ADRL-FND-005 --> [Offline Claude candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); Finite direct-client controls bound Messages and count_tokens attempts separately, request bytes, output allowance, concurrency and elapsed time. Failures consume forwarded attempts; rejected inputs are not forwarded. Counters are process-local: restart-safe custody, native harness confinement, signed workspace/profile and account overflow disposition remain launch prerequisites. Existing LIVE admission remains enforced. | Previous decision wording and dated evidence preserved; no grade change |
 | 2026-09-09 | <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-FND-005 --> [Local sync-gate evidence](../../reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); no grade change | Prior decision wording and dated evidence preserved |
 | 2026-09-07 | Recorded W0 baseline, repeatable checks and explicit remaining gates | Prior decision wording and evidence preserved; no architecture or maturity change |
@@ -160,3 +161,8 @@ None — decision stands as written.
 | 2026-08-27 | Accepted (Confluence register) | — |
 | 2026-09-02 | Approved unchanged | "Scope expands only through measured phase gates; component presence is not readiness." |
 
+
+
+## Review-ledger governance, 2026-09-10
+
+<!-- taxonomy-sync:review-governance:ADRL-FND-005 --> Required shared review-ledger skill and local staged-history guard; immutable originals, append-only actor dispositions, scoped reviewer/owner clearance evidence and explicit unknown legacy coverage. Local commit guard is bypassable and not remote protection, authenticated authority or graduation. [Implementation and limits](../../reports/review-governance-2026-09-10.md). No formal field change.

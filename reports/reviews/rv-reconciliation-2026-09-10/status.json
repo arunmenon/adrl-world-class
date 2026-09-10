@@ -1,0 +1,10 @@
+{
+  "state": "reviewed-with-open-items",
+  "scope": "RV-01 through RV-06 reconciliation only",
+  "findings_outstanding": [
+    "rv-reconciliation-2026-09-10:RC-01",
+    "rv-reconciliation-2026-09-10:RC-02"
+  ],
+  "blocking_findings": [],
+  "recorded_at": "2026-09-10T05:12:20.574793+00:00"
+}

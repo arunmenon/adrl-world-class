@@ -87,8 +87,14 @@ A list of named conditions that a score cannot touch is the simplest possible gu
 
 | Date | Change | Text before change |
 |---|---|---|
+| 2026-09-10 | <!-- taxonomy-sync:review-governance:ADRL-EVL-009 --> [Shared skill and staged-history guard](../../reports/review-governance-2026-09-10.md); local scope only | Prior decision text, dated evidence and maturity preserved |
 | 2026-09-09 | <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-EVL-009 --> [Local sync-gate evidence](../../reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); no grade change | Prior decision wording and dated evidence preserved |
 | 2026-09-07 | Recorded W0 baseline, repeatable checks and explicit remaining gates | Prior decision wording and evidence preserved; no architecture or maturity change |
 | 2026-09-07 | Recorded applied offline verifier experiment and its limits | Prior decision and evidence preserved; no versioned verifier comparison had been recorded |
 | 2026-09-03 | Proposed (first capture of the EVL bucket) |; |
 
+
+
+## Review-ledger governance, 2026-09-10
+
+<!-- taxonomy-sync:review-governance:ADRL-EVL-009 --> Required shared review-ledger skill and local staged-history guard; immutable originals, append-only actor dispositions, scoped reviewer/owner clearance evidence and explicit unknown legacy coverage. Local commit guard is bypassable and not remote protection, authenticated authority or graduation. [Implementation and limits](../../reports/review-governance-2026-09-10.md). No formal field change.

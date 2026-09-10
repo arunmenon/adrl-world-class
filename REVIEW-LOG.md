@@ -178,3 +178,11 @@ Actual Fable 5.1 source-embedded review returned no-go for current live forced-s
 ## 2026-09-09: Claude initial-choice candidate
 
 Fable independently reviewed the offline implementation, verified the reproduced egress-identity correction and stop wording, then accepted final documentation corrections. Original outputs and coordinator dispositions retained. Local taxonomy receipt passed; seven owners synchronized, formal grades unchanged. Real native operation and ROI remain unqualified. [Completion](reports/reviews/claude-adapter-2026-09-09/completion.md), [final acceptance](reports/reviews/claude-adapter-2026-09-09/final-review.md).
+
+## Governance update, 10 September 2026
+
+Shared review-ledger skill installed for Codex and Claude; local register staged-commit guard installed. 32 register tests pass and Fable accepted the scoped correction recheck, with one non-blocking instruction cleanup retained. Owning FND-005/EVL-009 fields are unchanged. Six retrospective blockers and six legacy unknown reviews are still recorded. This changes governance, consumes no model-task attempts, and supplies no routing or savings evidence. [Evidence](reports/review-governance-2026-09-10.md).
+
+## RV reconciliation, 10 September 2026
+
+Fresh Fable review confirms RV-01 fixed within its synthetic closer/readiness-function scope; RV-02 through RV-06 remain unresolved. Six dispositions appended without rewriting original findings. Five retrospective blockers remain (RV-02/03/04/10/13); six legacy reviews remain unknown. Current focused outcome-contract regression: 11 passed. No new routing, savings or maturity claim. [Reconciliation](reports/rv-reconciliation-2026-09-10.md).

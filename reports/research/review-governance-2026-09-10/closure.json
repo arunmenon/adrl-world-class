@@ -1,0 +1,158 @@
+{
+  "wave": "review-governance",
+  "date": "2026-09-10",
+  "changes": {
+    "R:tests/test_review_ledger_guard.py": {
+      "before": null,
+      "after": "0fe0768d692ed2edf935bc559dce0604ba50b285063d9a8c77d08bdc616d2aed"
+    },
+    "R:tools/review_ledger_guard.py": {
+      "before": null,
+      "after": "1cbb70888f8fc9773b8c1f0e74959c4f1fc77baabf8df426b17d84113af39a31"
+    },
+    "R:INDEX.md": {
+      "before": "5d802ca3d8daf7c55f2e818176892fd2c5c128a809996ac6d53ac2a027a0ca54",
+      "after": "10b5f6064a120153e55f9294d16cd6cea189a23710e010a1f08bbbd0078d0444"
+    },
+    "R:adr/EVL/ADRL-EVL-009.md": {
+      "before": "e4ae2bc4352e1569800d1ff148f44e0768e7ec8adc2678d59bf4e7076029b56f",
+      "after": "687c7ab106445ef140075f328aae02dc7ab59c2a3a69d4e86254dd3b3be6aef0"
+    },
+    "R:skills/adrl-critical-review/SKILL.md": {
+      "before": null,
+      "after": "467520e86db60d93c7f6098d1ce328c23db21bf744dab2bad7b20b361931fb0d"
+    },
+    "R:adr/EVL/README.md": {
+      "before": "3e6e9daaa017eaa7abd786392eaed2a51fcc962af284ebe96ee2877e3ba23b5d",
+      "after": "31e9c78b711c0ba4479c8bfb551ac219fe5a5356305b5d23d5bdeb11a3f06bd9"
+    },
+    "R:skills/adrl-critical-review/references/handoff.md": {
+      "before": null,
+      "after": "38bd1b5dbe4e6931cbb5ec45494c12cc3fcd6ff1735444d269e845ea72e96726"
+    },
+    "R:skills/adrl-review-ledger/agents/openai.yaml": {
+      "before": null,
+      "after": "a96bd85888bc76c5f291c351b7955ff70655e79a4a59541a27c8cc3255ecfd73"
+    },
+    "R:AGENTS.md": {
+      "before": "31e24300ea1d00c23c832db303e60cce8afb121dce12dd4c645ed6c9aa3e6597",
+      "after": "73b243a6033b6b7360470887175a6199c7d8018e81b96562702394c3a98018f7"
+    },
+    "R:adr/FND/README.md": {
+      "before": "5a120c8209a52e3883f4224a48410241241ab288c5ff5a029946f708dad6ba8a",
+      "after": "f5e0d1339004f3e9b74ff17521189c9a40180f009d073940ea753a687ba6352a"
+    },
+    "R:skills/adrl-review-ledger/SKILL.md": {
+      "before": null,
+      "after": "6ba9787aa7ac6e33b00912bc46d03722623fafe29205b07aa027bd3c3d4a832b"
+    },
+    "C:AGENTS.md": {
+      "before": "592f3905d3f9c2c197399e229355872f0b09d21bc9596a2024351a9af8899b52",
+      "after": "5e182174b281e0be16dc23354ad2ceece44e63f8e2b02599af8a4a9430ee1e65"
+    },
+    "C:CLAUDE.md": {
+      "before": "b5fd37e36c52874192a3e87966822cd0d7ea0ef789a3e47e9fc9f9bc3120a490",
+      "after": "13fcfc1e216a1ccd467f11030db96ee3a70c56e3f5cc971cccc7bb0d1827d0ee"
+    },
+    "R:CHANGELOG.md": {
+      "before": "6330e5e7c87fd08bff31830b42cd2baf4798a8c4a1ae19cc421b6ca79a9e555f",
+      "after": "0f9d0ecb12d1ce532fd18cab04bfc44f9b3686cb8d22f5e372f53796194bdf14"
+    },
+    "R:adr/FND/ADRL-FND-005.md": {
+      "before": "44ce2bf6fdb852c815a0f6921a47e6cc66d7254d620b39adfdb06f926e86fa3f",
+      "after": "f1af8c677c8442cc981840418ba4268a7c15cf00a22b246189032919ce005db5"
+    }
+  },
+  "file_owners": {
+    "R:skills/adrl-critical-review/references/handoff.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:tests/test_review_ledger_guard.py": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:tools/review_ledger_guard.py": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:skills/adrl-review-ledger/SKILL.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:skills/adrl-review-ledger/agents/openai.yaml": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "C:CLAUDE.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:skills/adrl-critical-review/SKILL.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:AGENTS.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "C:AGENTS.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ]
+  },
+  "owners": [
+    {
+      "id": "ADRL-FND-005",
+      "kind": "workflow",
+      "summary": "Shared append-only review-ledger skill and staged Git guard",
+      "limitations": "Local bypassable control; actor labels not authenticated; no runtime or maturity promotion",
+      "fields": {
+        "Status": "Accepted \u00b7 unchanged",
+        "Maturity": "D3 Shadow, review recommends D3 Shadow with a note: the D-scale measures runtime behaviour and fits a governance commitment poorly; the honest reading is \"the readiness tooling runs against shadow data and its verdicts have so far been respected\"",
+        "Review verdict": "APPROVE"
+      },
+      "evidence": [
+        {
+          "path": "reports/review-governance-2026-09-10.md",
+          "sha256": "91da0325f897b0f43ec87c318bca832d2b7a0bd15f8d8e92b415e393a0acb92e"
+        }
+      ]
+    },
+    {
+      "id": "ADRL-EVL-009",
+      "kind": "workflow",
+      "summary": "Shared append-only review-ledger skill and staged Git guard",
+      "limitations": "Local bypassable control; actor labels not authenticated; no runtime or maturity promotion",
+      "fields": {
+        "Status": "Proposed 2026-09-03 (first capture; referenced by the overview, MEM-006, MEM-010, LRN-006 since 2026-08-27)",
+        "Maturity": "D1 Code; adrl-core `learning/readiness.py` and `ledger/readiness.py` list blockers by name and never fold them into a score; the blocker list itself is not yet pre-registered",
+        "Review verdict": "PROPOSED (new)"
+      },
+      "evidence": [
+        {
+          "path": "reports/review-governance-2026-09-10.md",
+          "sha256": "91da0325f897b0f43ec87c318bca832d2b7a0bd15f8d8e92b415e393a0acb92e"
+        }
+      ]
+    }
+  ],
+  "review": {
+    "record": {
+      "path": "reports/reviews/review-governance-recheck-2026-09-10/review.md",
+      "sha256": "6ec883c720fce4e049023519aba9754bf6ef4401f8d6d54a355c8427df42e987"
+    },
+    "inputs": {
+      "path": "reports/research/review-governance-2026-09-10/final-source-hashes.json",
+      "sha256": "2ec8dd126d15aa14a6d48fe5134079442f292cc8b426cfd9ac1dc4a918a11548"
+    },
+    "status": "accepted",
+    "reviewer": "claude-fable-5-1",
+    "covered_adrs": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "blocking_findings": []
+  },
+  "extra_scope": "Register CLAUDE.md, ledger README, installed skills and local hook in frozen recheck inputs. Reports/ledger publication checked separately. RG-04 nonblocking open."
+}

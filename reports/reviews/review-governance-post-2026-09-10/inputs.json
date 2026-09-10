@@ -1,0 +1,28 @@
+{
+  "files": {
+    "C:AGENTS.md": "5e182174b281e0be16dc23354ad2ceece44e63f8e2b02599af8a4a9430ee1e65",
+    "R:AGENTS.md": "73b243a6033b6b7360470887175a6199c7d8018e81b96562702394c3a98018f7",
+    "R:CHANGELOG.md": "0f9d0ecb12d1ce532fd18cab04bfc44f9b3686cb8d22f5e372f53796194bdf14",
+    "R:INDEX.md": "10b5f6064a120153e55f9294d16cd6cea189a23710e010a1f08bbbd0078d0444",
+    "R:adr/EVL/ADRL-EVL-009.md": "687c7ab106445ef140075f328aae02dc7ab59c2a3a69d4e86254dd3b3be6aef0",
+    "R:adr/EVL/README.md": "31e9c78b711c0ba4479c8bfb551ac219fe5a5356305b5d23d5bdeb11a3f06bd9",
+    "R:adr/FND/ADRL-FND-005.md": "f1af8c677c8442cc981840418ba4268a7c15cf00a22b246189032919ce005db5",
+    "R:adr/FND/README.md": "f5e0d1339004f3e9b74ff17521189c9a40180f009d073940ea753a687ba6352a",
+    "R:skills/adrl-critical-review/SKILL.md": "467520e86db60d93c7f6098d1ce328c23db21bf744dab2bad7b20b361931fb0d",
+    "R:skills/adrl-critical-review/references/handoff.md": "38bd1b5dbe4e6931cbb5ec45494c12cc3fcd6ff1735444d269e845ea72e96726",
+    "R:skills/adrl-review-ledger/SKILL.md": "a299809013fd160a25e98b7804606a153b9e9feb40a84a9e844d2f07c104f062",
+    "R:skills/adrl-review-ledger/agents/openai.yaml": "a96bd85888bc76c5f291c351b7955ff70655e79a4a59541a27c8cc3255ecfd73",
+    "R:tests/test_review_ledger_guard.py": "0fe457a5d175a1b73634ab004f0c9a7068d379cbdad973a0f1cad5f6c9a69574",
+    "R:tools/review_ledger_guard.py": "4b31fc56faa03ad2051966e733e2e0798bc5789685e2715d4ead89c810e6439c",
+    "R:reports/reviews/README.md": "f493bdfca8dcf7308b010bef8579c25f082b4d50745b3cd3aaf529cab745feca",
+    "R:tools/check_review_ledger.py": "df0ee19ef07fd6088b53f46b6a5716f2d637e87f7fd8ff9ccdf01fb4ffffd10f"
+  },
+  "all_declared_source_hashes": "../post-taxonomy-inputs.json",
+  "frozen_source_location": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/post/source",
+  "scope": "changed source/skills/instructions, owning ADR mappings, review schema and existing checker",
+  "exclusions": "historical review payloads, credentials, unrelated runtime; installed mirrors separately checked",
+  "source_commits": {
+    "C": "785e78e621a899b414905f987c62cd9ff79660b5",
+    "R": "bbd3ac34b65d78351b91251c0cee869bc8515f40"
+  }
+}

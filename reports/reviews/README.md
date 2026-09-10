@@ -36,4 +36,39 @@ Global finding IDs are `<folder>:<local id>`, for example `fable-retrospective-2
 - A review is never edited to make it agree with a later fix; the fix and the recheck are new lines and new files.
 - Reviewer unavailability is recorded as `unavailable`, never as passed.
 - `reviewed` never means formal maturity graduation; maturity moves only through the register's own rules.
-- Snapshots of reviewed sources are not stored here; `inputs.json` carries their hashes, which is enough to verify any later claim about what was reviewed.
+- Snapshots of reviewed sources are not stored here; `inputs.json` carries hashes plus retrieval references to commits/blobs or externally retained snapshots. Hashes verify matching bytes but cannot reconstruct missing source or prove the code changed.
+
+## Agent workflow and local enforcement
+
+Use the shared [adrl-review-ledger skill](../../skills/adrl-review-ledger/SKILL.md).
+`python3 tools/review_ledger_guard.py check` adds committed-HEAD comparison to the existing
+consistency checker. `check --staged` checks the actual index that would be committed.
+Run `install-hook` once per clone; existing hooks or hooksPath configurations are preserved
+and require explicit integration rather than being overwritten. The hook is local and
+bypassable, not server branch protection or actor authentication.
+
+History comparison preserves exact committed bytes. JSONL additions start after an LF newline
+boundary, with timezone-aware monotonic timestamps. CRLF conversion, removal/reordering and
+Unicode line-separator reinterpretation do not excuse changing committed bytes. Legacy sealed
+prefix metadata keeps its original normalization for compatibility; committed-byte comparison
+is the additional history guarantee. First-commit provenance still depends on the retained
+reviewer record and independently frozen inputs.
+
+Published checkpoints contain all fixed files above. Prepare externally while incomplete;
+publish a new checkpoint together with its ledger registration. Every file is classified by
+its manifest (except the manifest itself). A manifest extension archives its exact previous
+bytes and appends a reconciliation event. Status and disposition changes require matching new
+ledger events. Reviewer rechecks use immutable/add-only artifacts and `recheck` events.
+
+Disposition vocabulary: `unresolved`, `accepted`, `fixed-awaiting-recheck`, `verified-fixed`,
+`deferred-with-reason`, `disputed-with-evidence`. Roles are `coordinator`, `implementer`,
+`reviewer`, `owner`, followed by `:<identity>`. Last appended record per finding wins.
+Unknown values remain unresolved in the query. `blockers` clears `verified-fixed` only for a
+reviewer-labelled record with a sealed evidence reference and matching reviewer `recheck`
+event. Owner deferrals need sealed evidence plus an owner `disposition` event and exact `scope`;
+`blockers --scope <scope>` reports such waivers separately. This validates recorded provenance,
+not whether the actor is genuine or the evidence justifies its conclusion. Historical legacy
+reviews remain unknown to automated finding queries. Unresolved findings can be committed;
+integrity acceptance does not approve completion or promotion.
+
+Reviewer recheck events must list the exact global finding IDs in `finding_ids`; a recheck of one finding cannot clear another. Newly appended disposition rows must use the documented roles and states. Unknown historical states remain unresolved.

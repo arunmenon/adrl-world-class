@@ -1,0 +1,19 @@
+{
+  "historical_check_status": "passed",
+  "historical_changed_inputs": [],
+  "checks_passed": true,
+  "current_differences": {
+    "AGENTS.md": {
+      "reviewed": "b5fd37e36c52874192a3e87966822cd0d7ea0ef789a3e47e9fc9f9bc3120a490",
+      "current": "5e182174b281e0be16dc23354ad2ceece44e63f8e2b02599af8a4a9430ee1e65"
+    },
+    "CLAUDE.md": {
+      "reviewed": "b5fd37e36c52874192a3e87966822cd0d7ea0ef789a3e47e9fc9f9bc3120a490",
+      "current": "13fcfc1e216a1ccd467f11030db96ee3a70c56e3f5cc971cccc7bb0d1827d0ee"
+    },
+    "src/adrl/proxy/pipeline.py": {
+      "reviewed": "68a170c352ad7793113626002be84608f9c656740280156405682040407b152f",
+      "current": "300069be159da6ec62b42cac934f4ab834b87cbb34d78cdfd0f01d287f20b3af"
+    }
+  }
+}

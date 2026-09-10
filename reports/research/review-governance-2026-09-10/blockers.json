@@ -1,0 +1,153 @@
+{
+  "blocking_findings": [
+    {
+      "id": "RV-01",
+      "global_id": "fable-retrospective-2026-09-08:RV-01",
+      "severity": "critical",
+      "kind": "observed defect",
+      "blocking": true,
+      "confidence": "high",
+      "owning_adrs": [
+        "MEM-001",
+        "MEM-002",
+        "MEM-004",
+        "LRN-001"
+      ],
+      "title": "Live outcome events are invisible to every consumer that turns a decision into a label.",
+      "appendix_refs": "EL D1, M1.",
+      "latest_disposition": {
+        "ts": "2026-09-08T11:43:37.277928+00:00",
+        "actor": "reviewer:claude-fable-5-1",
+        "finding_id": "RV-01",
+        "disposition": "unresolved",
+        "evidence": "",
+        "note": "initial state at review close"
+      }
+    },
+    {
+      "id": "RV-02",
+      "global_id": "fable-retrospective-2026-09-08:RV-02",
+      "severity": "high",
+      "kind": "observed defect",
+      "blocking": true,
+      "confidence": "high",
+      "owning_adrs": [
+        "RTG-002",
+        "RTG-003",
+        "RTG-006"
+      ],
+      "title": "The estimator, thresholds and cost model never influence the initial route; cheap cloud is never chosen on merit.",
+      "appendix_refs": "RT F1, U2, U3, M3.",
+      "latest_disposition": {
+        "ts": "2026-09-08T11:43:37.277928+00:00",
+        "actor": "reviewer:claude-fable-5-1",
+        "finding_id": "RV-02",
+        "disposition": "unresolved",
+        "evidence": "",
+        "note": "initial state at review close"
+      }
+    },
+    {
+      "id": "RV-03",
+      "global_id": "fable-retrospective-2026-09-08:RV-03",
+      "severity": "high",
+      "kind": "observed defect",
+      "blocking": true,
+      "confidence": "high",
+      "owning_adrs": [
+        "TRU-001",
+        "OPS-005",
+        "EVL-005"
+      ],
+      "title": "Lab routing evidence and the 911-test result depend on the author's absolute checkout path.",
+      "appendix_refs": "RT F2, W3 F7, CH.",
+      "latest_disposition": {
+        "ts": "2026-09-08T11:43:37.277928+00:00",
+        "actor": "reviewer:claude-fable-5-1",
+        "finding_id": "RV-03",
+        "disposition": "unresolved",
+        "evidence": "",
+        "note": "initial state at review close"
+      }
+    },
+    {
+      "id": "RV-04",
+      "global_id": "fable-retrospective-2026-09-08:RV-04",
+      "severity": "high",
+      "kind": "unsupported claim",
+      "blocking": true,
+      "confidence": "high",
+      "owning_adrs": [
+        "FND-005",
+        "OPS-005",
+        "RTG-001"
+      ],
+      "title": "The lab reaches live dispatch by loading the bundle in shadow mode, and the reports do not say so.",
+      "appendix_refs": "RT F3, U1.",
+      "latest_disposition": {
+        "ts": "2026-09-08T11:43:37.277928+00:00",
+        "actor": "reviewer:claude-fable-5-1",
+        "finding_id": "RV-04",
+        "disposition": "unresolved",
+        "evidence": "",
+        "note": "initial state at review close"
+      }
+    },
+    {
+      "id": "RV-10",
+      "global_id": "fable-retrospective-2026-09-08:RV-10",
+      "severity": "high",
+      "kind": "strategic disagreement for the stated next action",
+      "blocking": true,
+      "confidence": "high",
+      "owning_adrs": [
+        "SAF-007",
+        "OPS-001",
+        "FND-005"
+      ],
+      "title": "The isolated backend cannot host a real harness, so the roadmap's next W3 step does not lead to a real-task demonstration.",
+      "appendix_refs": "W3 F1 and section 6; RC.",
+      "latest_disposition": {
+        "ts": "2026-09-08T11:43:37.277928+00:00",
+        "actor": "reviewer:claude-fable-5-1",
+        "finding_id": "RV-10",
+        "disposition": "unresolved",
+        "evidence": "",
+        "note": "initial state at review close"
+      }
+    },
+    {
+      "id": "RV-13",
+      "global_id": "fable-retrospective-2026-09-08:RV-13",
+      "severity": "high",
+      "kind": "observed process defect for every \"validated\" label",
+      "blocking": true,
+      "confidence": "high",
+      "owning_adrs": [
+        "EVL-007",
+        "OPS-008"
+      ],
+      "title": "No independent reviewer has been named in twenty-one journey entries although the W0 exit required it.",
+      "appendix_refs": "LC F11, RG guardrail table.",
+      "latest_disposition": {
+        "ts": "2026-09-08T11:43:37.277928+00:00",
+        "actor": "reviewer:claude-fable-5-1",
+        "finding_id": "RV-13",
+        "disposition": "unresolved",
+        "evidence": "",
+        "note": "initial state at review close"
+      }
+    }
+  ],
+  "waived_for_scope": [],
+  "legacy_unknown": [
+    "claude-adapter-2026-09-09",
+    "claude-code-compatibility-2026-09-09",
+    "claude-code-roi-matrix-2026-09-09",
+    "milestone-tightening-2026-09-09",
+    "outcome-contract-2026-09-09",
+    "taxonomy-sync-gate-2026-09-09"
+  ],
+  "actor_authentication": false,
+  "scope": null
+}

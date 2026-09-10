@@ -1,0 +1,39 @@
+{
+  "schema": "review-ledger-v1",
+  "review_id": "rv-reconciliation-2026-09-10",
+  "findings": [
+    {
+      "id": "RC-01",
+      "global_id": "rv-reconciliation-2026-09-10:RC-01",
+      "severity": "medium",
+      "kind": "evidence integrity",
+      "blocking": false,
+      "confidence": "high",
+      "owning_adrs": [
+        "EVL-006",
+        "OPS-004",
+        "MEM-001"
+      ],
+      "title": "The RV-01 green full-check evidence binds to a pipeline.py hash the current tree no longer carries; only an 11-test transcript covers the drift.",
+      "evidence": "comparison.json: pipeline.py reviewed 68a170c3 versus current 300069be; AGENTS.md and CLAUDE.md also differ. current-test.json capture is 'coordinator transcript, not raw pytest log', focused file only.",
+      "acceptance_criteria": "Rerun the full engineering checks on the current source with a retained manifest, or record the pipeline.py diff and reason next to the RV-01 disposition.",
+      "appendix_refs": "comparison.json, current-test.json, checks-2/manifest.json."
+    },
+    {
+      "id": "RC-02",
+      "global_id": "rv-reconciliation-2026-09-10:RC-02",
+      "severity": "low",
+      "kind": "unsupported claim",
+      "blocking": false,
+      "confidence": "high",
+      "owning_adrs": [
+        "MEM-004",
+        "OPS-005"
+      ],
+      "title": "RV-01 acceptance names the adrl ledger readiness CLI; the evidence exercises learning_readiness() directly.",
+      "evidence": "test_outcome_contract.py calls learning_readiness(live.store); no CLI invocation or log in the review directory.",
+      "acceptance_criteria": "One recorded CLI run against a composed-pipeline ledger showing closed_final_count > 0, or amend the disposition to state the function-level scope.",
+      "appendix_refs": "findings.md RV-01 acceptance; report.md."
+    }
+  ]
+}

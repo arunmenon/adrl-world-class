@@ -1,0 +1,60 @@
+{
+  "schema": "review-ledger-v1",
+  "review_id": "review-governance-pre-2026-09-10",
+  "sealed_at": "2026-09-10T04:54:59.452112+00:00",
+  "files": {
+    "appendix/raw.json": {
+      "class": "immutable",
+      "sha256": "3061dadc9fb5a04f484ff81b966fa18fd2da33112bf92b7909f5bd87d1bccc4a"
+    },
+    "appendix/stderr.txt": {
+      "class": "immutable",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "dispositions.jsonl": {
+      "class": "append-only",
+      "lines": 14,
+      "prefix_sha256": "c95a6110a1bca28b3ccc343182ff920ca36fa1bbd47fc46162453ac4428e0c81"
+    },
+    "dispositions.md": {
+      "class": "immutable",
+      "sha256": "ef9723d58b7a759a39758caa57f48eb1076d395e51febf96b12634166625a7c3"
+    },
+    "findings.json": {
+      "class": "immutable",
+      "sha256": "42be3cd9ef57cf6c9094bf7ccb05261fedc04b93a699d872921eae603bf393b6"
+    },
+    "findings.md": {
+      "class": "immutable",
+      "sha256": "159b2ccd735717af4850b47245dacbe45ab48bb08466485bbe6ecbbea236f960"
+    },
+    "inputs.json": {
+      "class": "immutable",
+      "sha256": "838cf798e98812b2af3db3963c776080fe4087379ada9e9f1b676e0539c93b8d"
+    },
+    "invocation.json": {
+      "class": "immutable",
+      "sha256": "93dbb19a4d93f259c73ba1fc3a2071ae9d977e15771ebe0a8ea09958e1a4ea23"
+    },
+    "packet.md": {
+      "class": "immutable",
+      "sha256": "78d21077ab1ea6749fb5a3c92dd5a6e235653987edc93ae1e100a3ad347c98ec"
+    },
+    "reconciliation/post-review.md": {
+      "class": "add-only",
+      "sha256": "2b96c0016d95afeef3dbdf04187047ab2d4cb23d8719bb380fd2313897f90edc"
+    },
+    "reconciliation/recheck-review.md": {
+      "class": "add-only",
+      "sha256": "6ec883c720fce4e049023519aba9754bf6ef4401f8d6d54a355c8427df42e987"
+    },
+    "review.md": {
+      "class": "immutable",
+      "sha256": "703ec2a785dfd12ece80c327a42209f7e86bc28fc38ca848448ab4a1824f030b"
+    },
+    "status.json": {
+      "class": "replaceable",
+      "sha256": "e824eca105530576d5b41b8c67178b5f9c914602d9a202999360c2958c210e6b"
+    }
+  }
+}

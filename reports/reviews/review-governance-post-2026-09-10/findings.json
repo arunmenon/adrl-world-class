@@ -1,0 +1,51 @@
+{
+  "schema": "review-ledger-v1",
+  "review_id": "review-governance-post-2026-09-10",
+  "findings": [
+    {
+      "id": "RG-01",
+      "global_id": "review-governance-post-2026-09-10:RG-01",
+      "severity": "low",
+      "kind": "gap",
+      "blocking": false,
+      "confidence": 0.8,
+      "owning_adrs": [
+        "EVL-009"
+      ],
+      "title": "Recheck evidence is not bound to the finding it clears",
+      "evidence": "blockers() validates that the cited artifact is sealed and has a matching reviewer recheck event, but never checks that the artifact or event names finding_id. One recheck artifact can clear every blocking finding in the folder. README discloses that evidence justification is unchecked.",
+      "acceptance_criteria": "Recheck events carry finding ids; verified-fixed clears only when the cited event lists that finding_id. Test with one artifact cited by two findings.",
+      "appendix_refs": []
+    },
+    {
+      "id": "RG-02",
+      "global_id": "review-governance-post-2026-09-10:RG-02",
+      "severity": "low",
+      "kind": "coverage",
+      "blocking": false,
+      "confidence": 0.7,
+      "owning_adrs": [
+        "FND-005"
+      ],
+      "title": "Installed skill copy identity not evidenced",
+      "evidence": "The packet supplies only the register SKILL.md. The report claims installed Codex and Claude copies are reviewed extra scope, but no hashes for those copies were provided, so byte-identity is unverified.",
+      "acceptance_criteria": "inputs.json lists both installed copies with sha256 equal to the register copy.",
+      "appendix_refs": []
+    },
+    {
+      "id": "RG-03",
+      "global_id": "review-governance-post-2026-09-10:RG-03",
+      "severity": "low",
+      "kind": "defect",
+      "blocking": false,
+      "confidence": 0.9,
+      "owning_adrs": [
+        "EVL-009"
+      ],
+      "title": "Disposition vocabulary declared but not enforced at write time",
+      "evidence": "DISPOSITIONS is defined but unused; validate() checks ROLES only for ledger events. A misspelled disposition or actor in dispositions.jsonl commits successfully and remains permanently unresolved rather than being rejected before it enters append-only history.",
+      "acceptance_criteria": "validate() rejects unknown disposition values or roles in newly appended rows only, preserving committed history. Test for a typo row.",
+      "appendix_refs": []
+    }
+  ]
+}

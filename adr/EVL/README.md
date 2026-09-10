@@ -53,7 +53,7 @@ Not captured in the 2026-08-27 source pack; known until 2026-09-03 only by cross
 | ADRL-EVL-006 | Offline evaluation report | PROPOSED (new) |; → D0 | Six required items, hashed into the manifest; consolidates LRN-003/005/007 obligations |
 | ADRL-EVL-007 | Human graduation and the D2 to D5 ladder | PROPOSED (new) |; → D1 | The ladder every review downgrade assumed; new implementations inherit no maturity above D2 |
 | ADRL-EVL-008 | Scorecard format | PROPOSED (new) |; → D0 | Exclusions before metrics; the review's denominator rule as a template |
-| ADRL-EVL-009 | Blockers are never averaged away | PROPOSED (new) |; → D1 | Eight pre-registered blockers, versioned; a score cannot absorb one  2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-EVL-009 --> [Scoped sync gate](../../reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); maturity unchanged |
+| ADRL-EVL-009 | Blockers are never averaged away | PROPOSED (new) |; → D1 | Eight pre-registered blockers, versioned; a score cannot absorb one  2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-EVL-009 --> [Scoped sync gate](../../reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); maturity unchanged  2026-09-10 <!-- taxonomy-sync:review-governance:ADRL-EVL-009 --> [Review-ledger governance](../../reports/review-governance-2026-09-10.md); no grade change |
 
 Tally: 9 PROPOSED.
 

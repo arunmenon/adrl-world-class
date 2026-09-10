@@ -1,0 +1,78 @@
+{
+  "/Users/arunmenon/projects/adrl-world-class/tools/review_ledger_guard.py": {
+    "sha256": "1cbb70888f8fc9773b8c1f0e74959c4f1fc77baabf8df426b17d84113af39a31",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/0/review_ledger_guard.py"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/tests/test_review_ledger_guard.py": {
+    "sha256": "0fe0768d692ed2edf935bc559dce0604ba50b285063d9a8c77d08bdc616d2aed",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/1/test_review_ledger_guard.py"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/skills/adrl-review-ledger/SKILL.md": {
+    "sha256": "6ba9787aa7ac6e33b00912bc46d03722623fafe29205b07aa027bd3c3d4a832b",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/2/SKILL.md"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/reports/reviews/README.md": {
+    "sha256": "c07ecebfafab64aa2a98f66380065c8e16b3766f5d972c1532df12477de0bbed",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/3/README.md"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/AGENTS.md": {
+    "sha256": "73b243a6033b6b7360470887175a6199c7d8018e81b96562702394c3a98018f7",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/4/AGENTS.md"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/CLAUDE.md": {
+    "sha256": "cd95b79c551375a248f5b855cb9aecab3437867eda1536c6ae10a6f134226f6f",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/5/CLAUDE.md"
+  },
+  "/Users/arunmenon/projects/adrl-core/AGENTS.md": {
+    "sha256": "5e182174b281e0be16dc23354ad2ceece44e63f8e2b02599af8a4a9430ee1e65",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/6/AGENTS.md"
+  },
+  "/Users/arunmenon/projects/adrl-core/CLAUDE.md": {
+    "sha256": "13fcfc1e216a1ccd467f11030db96ee3a70c56e3f5cc971cccc7bb0d1827d0ee",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/7/CLAUDE.md"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/reports/review-governance-2026-09-10.md": {
+    "sha256": "b9a572becda3a94c2b545bd0097ddac6ddb298e7576d8c0c027229cd4ca8255d",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/8/review-governance-2026-09-10.md"
+  },
+  "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/all-tests.log": {
+    "sha256": "972ba641a9b22a63e6bb1509c36341fbf0db7c326130cc10a26ea2edc17fe0fc",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/9/all-tests.log"
+  },
+  "/Users/arunmenon/.codex/skills/adrl-review-ledger/SKILL.md": {
+    "sha256": "6ba9787aa7ac6e33b00912bc46d03722623fafe29205b07aa027bd3c3d4a832b",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/10/SKILL.md"
+  },
+  "/Users/arunmenon/.codex/skills/adrl-review-ledger/agents/openai.yaml": {
+    "sha256": "a96bd85888bc76c5f291c351b7955ff70655e79a4a59541a27c8cc3255ecfd73",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/11/openai.yaml"
+  },
+  "/Users/arunmenon/.codex/skills/adrl-critical-review/SKILL.md": {
+    "sha256": "467520e86db60d93c7f6098d1ce328c23db21bf744dab2bad7b20b361931fb0d",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/12/SKILL.md"
+  },
+  "/Users/arunmenon/.codex/skills/adrl-critical-review/references/handoff.md": {
+    "sha256": "38bd1b5dbe4e6931cbb5ec45494c12cc3fcd6ff1735444d269e845ea72e96726",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/13/handoff.md"
+  },
+  "/Users/arunmenon/.claude/skills/adrl-review-ledger/SKILL.md": {
+    "sha256": "6ba9787aa7ac6e33b00912bc46d03722623fafe29205b07aa027bd3c3d4a832b",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/14/SKILL.md"
+  },
+  "/Users/arunmenon/.claude/skills/adrl-review-ledger/agents/openai.yaml": {
+    "sha256": "a96bd85888bc76c5f291c351b7955ff70655e79a4a59541a27c8cc3255ecfd73",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/15/openai.yaml"
+  },
+  "/Users/arunmenon/.claude/skills/adrl-critical-review/SKILL.md": {
+    "sha256": "467520e86db60d93c7f6098d1ce328c23db21bf744dab2bad7b20b361931fb0d",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/16/SKILL.md"
+  },
+  "/Users/arunmenon/.claude/skills/adrl-critical-review/references/handoff.md": {
+    "sha256": "38bd1b5dbe4e6931cbb5ec45494c12cc3fcd6ff1735444d269e845ea72e96726",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/17/handoff.md"
+  },
+  "/Users/arunmenon/projects/adrl-world-class/.git/hooks/pre-commit": {
+    "sha256": "a05ffe033461ba46d7787b02232b03cdc9a06c6667e82ca46429064c4f4bbb9c",
+    "snapshot": "/Users/arunmenon/projects/.adrl-execution-state/review-governance-20260910/recheck/source/18/pre-commit"
+  }
+}

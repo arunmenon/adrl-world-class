@@ -1,0 +1,10 @@
+{
+  "files": {
+    "tools/check_review_ledger.py": "df0ee19ef07fd6088b53f46b6a5716f2d637e87f7fd8ff9ccdf01fb4ffffd10f",
+    "reports/reviews/README.md": "e6e4b32dcccdb2434eeb9087de2d2e28a5e76043a810412439a6c3aafba161d4",
+    "AGENTS.md": "31e24300ea1d00c23c832db303e60cce8afb121dce12dd4c645ed6c9aa3e6597"
+  },
+  "scope": "declared checker/schema/instructions, proposed skill/guard",
+  "exclusions": "review payloads, keys, unrelated code",
+  "source_commit": "bbd3ac34b65d78351b91251c0cee869bc8515f40"
+}

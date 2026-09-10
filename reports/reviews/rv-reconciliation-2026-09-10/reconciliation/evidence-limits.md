@@ -1,0 +1,7 @@
+# Evidence limits and implementer response
+
+RC-01: the retained diff adds the constructor-only ClaudeExperimentClient branch, its admission checks, forced-model preparation and receipt handling. It does not edit _finalize or the canonical cascade event append lines. The original full suite is historical evidence; current evidence is the 11-case focused outcome-contract run. This is an implementer explanation with retained diff, not a fresh full-suite claim or independent verification of this response.
+
+RC-02: RV-01 is closed only for the function-level synthetic composed path stated in the reviewer disposition. The adrl ledger readiness CLI was not tested here. No real harness, autonomous learning, cold-start forwarding or whole-ADR maturity claim follows.
+
+The three user suggestions are accepted for the next scoped skill refinement, not silently treated as already implemented: add a distinct owning-ADR relevance filter (keep --scope exact-waiver semantics); document normalization in an add-only reconciliation note plus event with old/new identifiers; require a sealed copy of specific prior authorization with path/hash and field or section. Candidate source is reports/research/adrl-execution-state.json authorization, or an explicitly owner-approved packet section. General execution permission and stop conditions alone are not authority to waive an unrelated finding. No owner waiver was used in this reconciliation.

@@ -1,0 +1,9 @@
+{
+  "state": "reviewed-with-open-items",
+  "scope": "Local review-ledger governance only; historical reviews not cleared",
+  "findings_outstanding": [
+    "review-governance-recheck-2026-09-10:RG-04"
+  ],
+  "blocking_findings": [],
+  "recorded_at": "2026-09-10T04:54:59.452112+00:00"
+}

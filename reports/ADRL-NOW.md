@@ -17,3 +17,11 @@ Governance update, 9 September: taxonomy synchronization is now a required local
 Earlier compatibility preparation (superseded by the implementation update below): packet and Fable pre-review are complete; live launch is not ready. Next scope is the Claude model-only adapter and bounded experiment profile, with direct endpoint attribution and offline limit checks. Initial selection precedes separately reported mid-session compatibility. No real-task savings evidence yet. [Findings and next step](reviews/claude-code-compatibility-2026-09-09/report.md).
 
 Current implementation update: the first Claude adapter slice is closed offline. One of six engineering slices is consumed. Next is legitimate isolated live profile/custody/access qualification; the candidate is not exposed by normal startup and real savings remain unproved. [Completion](reviews/claude-adapter-2026-09-09/completion.md).
+
+## Governance update, 10 September 2026
+
+Shared review-ledger skill installed for Codex and Claude; local register staged-commit guard installed. 32 register tests pass and Fable accepted the scoped correction recheck, with one non-blocking instruction cleanup retained. Owning FND-005/EVL-009 fields are unchanged. Six retrospective blockers and six legacy unknown reviews are still recorded. This changes governance, consumes no model-task attempts, and supplies no routing or savings evidence. [Evidence](review-governance-2026-09-10.md).
+
+## RV reconciliation, 10 September 2026
+
+Fresh Fable review confirms RV-01 fixed within its synthetic closer/readiness-function scope; RV-02 through RV-06 remain unresolved. Six dispositions appended without rewriting original findings. Five retrospective blockers remain (RV-02/03/04/10/13); six legacy reviews remain unknown. Current focused outcome-contract regression: 11 passed. No new routing, savings or maturity claim. [Reconciliation](rv-reconciliation-2026-09-10.md).
