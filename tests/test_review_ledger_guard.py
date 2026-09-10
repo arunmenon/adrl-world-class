@@ -324,3 +324,40 @@ class GuardTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class OwnerOverrideTests(unittest.TestCase):
+    """An owner-override event uses the wildcard review id and needs an owner actor."""
+
+    def _override(self, files, actor):
+        row = {
+            "ts": TS,
+            "review_id": g.OVERRIDE_REVIEW_ID,
+            "event": "owner-override",
+            "actor": actor,
+            "ref": "SCRUB.json",
+            "sha256": g.digest(b"{}"),
+            "note": "fixture override",
+        }
+        files["LEDGER.jsonl"] += encoded(row)
+
+    def test_owner_override_with_owner_actor_is_accepted(self):
+        files = fixture()
+        before = {k: v for k, v in files.items()}
+        self._override(files, "owner:test")
+        g.validate(files, before)
+
+    def test_owner_override_by_implementer_is_rejected(self):
+        files = fixture()
+        before = {k: v for k, v in files.items()}
+        self._override(files, "implementer:test")
+        with self.assertRaises(Exception):
+            g.validate(files, before)
+
+    def test_wildcard_id_on_ordinary_event_is_rejected(self):
+        files = fixture()
+        before = {k: v for k, v in files.items()}
+        row = {"ts": TS, "review_id": g.OVERRIDE_REVIEW_ID, "event": "status", "actor": "owner:test", "ref": "status.json", "sha256": g.digest(b"x"), "note": "bad"}
+        files["LEDGER.jsonl"] += encoded(row)
+        with self.assertRaises(Exception):
+            g.validate(files, before)
