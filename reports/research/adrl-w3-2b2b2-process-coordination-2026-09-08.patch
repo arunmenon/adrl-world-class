@@ -1,0 +1,1128 @@
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,9 @@
+ # adrl-core
++
++W3.2b2b2 current context: [attempt stop coordination](docs/attempt-coordination.md) commits a
++workspace block before a synthetic supervised launch and observes erasure, expiry and journal
++closure to request cleanup. Terminal events and restart cannot release that block. The group-only
++backend still cannot qualify safe reuse, exact-close capture or real task execution.
+ 
+ W3.2b2b1 fixes [key-revocation failure ordering](docs/key-revocation.md): a persistent marker
+ precedes key mutation and prevents restored-key reads or same-session recreation after a
+--- a/docs/adr-module-map.md
++++ b/docs/adr-module-map.md
+@@ -29,6 +29,7 @@
+ | `adrl/config/loaders.py` | ADRL-FND-002, ADRL-SAF-008 | Config file loaders and the signed-manifest check. Primary: ADRL-FND-002. |
+ | `adrl/config/models.py` | ADRL-CAS-001, ADRL-CAS-004, ADRL-FND-002, ADRL-LRN-004, ADRL-LRN-005, ADRL-MEM-002, ADRL-MEM-010, ADRL-RTG-001, ADRL-RTG-002, ADRL-RTG-003, ADRL-RTG-004, ADRL-RTG-005, ADRL-RTG-009, ADRL-SAF-008, ADRL-SEM-004 | Pydantic models for every versioned config file. Primary: ADRL-FND-002. |
+ | `adrl/config/settings.py` | ADRL-OPS-001 | Process settings from environment. Primary: ADRL-OPS-001 (referenced by gloss). |
++| `adrl/core/attempt_coordinator.py` | ADRL-MEM-001, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-005, ADRL-MEM-010, ADRL-OPS-001, ADRL-SAF-007, ADRL-TRU-001 | Stop coordination with permanent workspace fences. Primary: ADRL-OPS-001. |
+ | `adrl/core/enums.py` | ADRL-CAS-002, ADRL-MEM-001, ADRL-MEM-004 | Versioned enums and state sets shared across buckets. Primary: ADRL-CAS-002. |
+ | `adrl/core/errors.py` | ADRL-CAS-007, ADRL-SAF-004, ADRL-SAF-005 | Error hierarchy and the published error-code table. Primary: ADRL-CAS-007. |
+ | `adrl/core/ids.py` | ADRL-MEM-001, ADRL-SEM-002 | Identity minting and hashing. Primary: ADRL-MEM-001. Secondary: ADRL-SEM-002. |
+@@ -147,17 +148,17 @@
+ | ADRL-LRN-006 | `adrl/learning/abstention.py`, `adrl/learning/readiness.py` |
+ | ADRL-LRN-007 | `adrl/app.py`, `adrl/cli/improvement.py`, `adrl/learning/artifacts.py`, `adrl/learning/improvement.py` |
+ | ADRL-LRN-008 | `adrl/learning/explore.py`, `adrl/learning/tiers.py`, `adrl/routing/advisor.py`, `adrl/routing/router.py` |
+-| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/core/process_owner.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
++| ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/process_owner.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-004 | `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/learning/artifacts.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/ports.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/ports.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-006 | `adrl/core/ports.py`, `adrl/learning/abstention.py`, `adrl/ledger/facade.py`, `adrl/ledger/readiness.py`, `adrl/ledger/state.py`, `adrl/ledger/store.py`, `adrl/proxy/observe_only.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-MEM-007 | `adrl/learning/dataset.py`, `adrl/ledger/erasure.py`, `adrl/ledger/projections.py`, `adrl/ledger/replay.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/store.py` |
+ | ADRL-MEM-008 | `adrl/ledger/shadow_retrieval.py` |
+ | ADRL-MEM-009 | `adrl/learning/pairs.py`, `adrl/ledger/counterfactual.py`, `adrl/ledger/events.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/ports.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+-| ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/keystore.py`, `adrl/telemetry/logging.py` |
++| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/ports.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/keystore.py`, `adrl/telemetry/logging.py` |
+ | ADRL-OPS-002 | `adrl/ledger/anchoring.py` |
+ | ADRL-OPS-003 | `adrl/config/checks.py` |
+ | ADRL-OPS-004 | `adrl/ledger/erasure.py` |
+@@ -179,7 +180,7 @@
+ | ADRL-SAF-004 | `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-005 | `adrl/config/checks.py`, `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py`, `adrl/telemetry/metrics.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-006 | `adrl/core/ports.py`, `adrl/gates/content.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py` |
+-| ADRL-SAF-007 | `adrl/core/ports.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/gates/cli.py`, `adrl/gates/sandbox.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-SAF-007 | `adrl/core/attempt_coordinator.py`, `adrl/core/ports.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/gates/cli.py`, `adrl/gates/sandbox.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-SAF-008 | `adrl/config/loaders.py`, `adrl/config/models.py`, `adrl/gates/content.py`, `adrl/gates/deployments.py`, `adrl/gates/pipeline.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py` |
+ | ADRL-SAF-009 | `adrl/cli/main.py`, `adrl/gates/cli.py`, `adrl/gates/deployments.py`, `adrl/gates/egress.py`, `adrl/gates/pipeline.py`, `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-SEM-001 | `adrl/core/types.py`, `adrl/gates/feasibility.py`, `adrl/telemetry/metrics.py`, `adrl/wire/classify.py`, `adrl/wire/parse.py` |
+@@ -189,7 +190,7 @@
+ | ADRL-SEM-005 | `adrl/cascade/sticky.py` |
+ | ADRL-SEM-006 | `adrl/cascade/controller.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/proxy/observe_only.py`, `adrl/proxy/pipeline.py`, `adrl/wire/identity.py` |
+ | ADRL-SEM-007 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/schema.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/proxy/errors.py`, `adrl/wire/adapters.py`, `adrl/wire/profiles/base.py`, `adrl/wire/profiles/messages.py`, `adrl/wire/profiles/messages_responses.py` |
+-| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py` |
++| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py` |
+ | ADRL-TRU-002 | `adrl/core/types.py`, `adrl/gates/deployments.py`, `adrl/proxy/pipeline.py`, `adrl/wire/observe.py` |
+ | ADRL-TRU-003 | `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py` |
+ 
+--- /dev/null
++++ b/docs/attempt-coordination.md
+@@ -0,0 +1,101 @@
++# Attempt stop coordination
++
++W3.2b2b2, 8 September 2026. Internal local API for disposable synthetic fixtures only.
++Owning ADRs: OPS-001, MEM-001/002/003/005/010, SAF-007 and TRU-001.
++
++`AttemptCoordinator(AttemptJournal(data), CoordinationPolicy(...)).run(principal, attempt_id,
++spec)` connects an existing v2 attempt to the owned process-group runner. It first commits a
++permanent workspace fence in schema 10. Only then can it try one launch. A second coordinator
++or a new journal attempt cannot use the fenced canonical workspace, even after cancellation,
++an incomplete journal entry, erasure, lost acknowledgement or restart. A matching journal-start
++retry still retrieves its original record; it does not authorize another launch.
++
++```text
++Readable v2 start + terminal grant + bound workspace
++                       |
++              Commit workspace fence
++                       |
++              Try one owned launch
++                       |
++   Monitor revocation, expiry and journal state
++                       |
++        Exit / timeout / loss of authority / cancel
++                       |
++         Drain owned process-group cleanup
++                       |
++   Try incomplete record, or preserve existing terminal
++                       |
++             Workspace remains blocked
++```
++
++This backend has no release operation. That includes failures before any workload launch once
++the fence has committed. A process group cannot contain detached or unrelated writers, so no
++group result, caller assertion, terminal event or revocation marker proves safe workspace reuse.
++Use a different disposable fixture directory for the next admitted run. Do not delete fences,
++rotate host keys or recreate databases to bypass this boundary for real work. There is no CLI,
++HTTP endpoint, successful task close, captured output association or learning authority.
++
++## Admission and identity
++
++The original attempt must be readable, unexpired, still `started`, version 2, and have an intact
++terminal grant. Process cwd must resolve to the authenticated workspace and its journal identity.
++These checks and the fence insert serialize in one ledger transaction. Cancellation before
++admission is rejected. A lost acknowledgement can leave a committed fence without a process;
++it never permits automatic replay. Actual executable validation remains in ProcessOwner, after
++fence admission; a bad executable pin therefore leaves a block but no new process report.
++
++Fence metadata is limited to keyed workspace/session/attempt/start-event identifiers, host HMAC
++key ID, timestamp and the validated policy JSON. Policy defaults: 0.05-second observation interval
++(0.01 to 1), at most 128 permanent workspace fences per ledger (configurable downward), and the
++existing versioned ProcessPolicy limits. No raw path, command, environment, output, task label,
++PID or plaintext file bytes are persisted. The policy is at most 1,024 encoded characters.
++Fences using a different host HMAC key ID block all new journal/execution admission, preventing
++key rotation from silently bypassing existing workspace identities.
++
++This is bounded local operational metadata under the existing inventory/retention contract;
++keyed hashes are not a claim of anonymity or regulatory qualification. Old schema-9 histories
++migrate unchanged and acquire no invented execution fence. Mixed old/new running binaries are
++not qualified. The database and host keys remain trusted; malicious mutation, truncation or
++whole-state rollback is outside this evidence. Canonical path identity does not contain rename,
++replacement, mount alias or writes through other paths. It is not an OS filesystem lock.
++
++## Stop, erasure and partial failure
++
++A monitor thread checks revocation before expiry and readable journal state. Another service's
++erasure, direct keystore shredding, missing keys, damaged history or an observation error causes
++a stop request to the actual in-memory owner. `request_close`, `cancel` and `mark_incomplete`
++also request stopping. Checks observe state eventually: a revocation can race a launch, and
++disk, database or OS scheduling can delay observation. No atomic erasure/launch exclusion or
++hard real-time deadline is claimed. Erasure receipt semantics remain unchanged; the service
++does not wait for this observer or certify process/active-plaintext cleanup.
++
++The existing nonblocking keystore lock can report busy before an erasure publishes its marker;
++that erasure has failed and must not be reported complete. Conversely, a monitor encountering
++an exclusive key operation can request stop with `authority_unavailable` before it observes
++confirmed revocation. The report preserves that uncertainty. No automatic erasure retry is added.
++
++The protected executor worker covers admission, process cleanup and terminal writing. Repeated
++coroutine cancellation sets its stop event and drains the worker before propagating. The process
++owner retains any unresolved owned handle and refuses reuse after its existing cleanup failures;
++no persisted PID grants signal authority. Actual owner death relies on the runner's existing
++control-pipe/watchdog mechanics for its group. Restart recovers the fence, not a process outcome.
++
++After cleanup, the coordinator tries `incomplete/quiescence_unavailable` using the journal's
++original terminal capacity. An existing terminal is preserved. If erasure, expiry, disk failure
++or corruption prevents writing/readback, `terminal_record=unavailable` means completion was not
++confirmed, including possible lost acknowledgements. No fresh event-ID retry occurs. An honest
++terminal can consume its reserved quota while the separate workspace fence remains blocked.
++An unreadable pending journal retains its grant. Neither result reverses key revocation.
++
++`CoordinationReport` and its optional process observation remain in memory and on return. They
++always say `workspace_state=blocked`, `exact_close_eligible=false` and
++`eligible_for_learning=false`. Reports do not retain raw exceptions. A rejected new launch never
++borrows the prior launch's report. No durable process completion receipt is added in this slice.
++
++## Qualification still needed
++
++Real supervised work still needs a complete writer boundary, a defensible release/recovery
++contract, active plaintext lease erasure and process-death copy cleanup. Exact-close capture
++association follows those gates. These tests use real local fixture processes, not model services
++or actual user task payloads; they do not graduate W3 or certify sandboxing, privacy deletion,
++production readiness, another harness or better routing.
+--- a/docs/data-inventory.md
++++ b/docs/data-inventory.md
+@@ -410,3 +410,19 @@
+ initialization cleans host-secret pending writes. These key files are not classified as
+ anonymized metadata or as encrypted task payload. No physical-block, snapshot, backup or
+ cached-key erasure guarantee follows from unlinking them. See [key revocation](key-revocation.md).
++
++## W3.2b2b2 permanent execution-fence metadata
++
++These rows block workspace reuse even after session key revocation. No release or deletion path
++is implemented. Policy JSON contains only versions, numeric bounds and the nested ProcessPolicy;
++no process request or report is stored here. See [coordination limits](attempt-coordination.md).
++
++| Field | Class | Note |
++|---|---|---|
++| `product_execution_fences.workspace_key` | `keyed_hash` | Host-key HMAC of canonical workspace, no raw path |
++| `product_execution_fences.session_hmac` | `keyed_hash` | Existing bound session pseudonym |
++| `product_execution_fences.attempt_key` | `keyed_hash` | Session-key HMAC of attempt ID |
++| `product_execution_fences.start_event_key` | `keyed_hash` | Session-key HMAC of original start event ID |
++| `product_execution_fences.host_key_id` | `skeleton` | Detects host HMAC key rotation; refuses new admission |
++| `product_execution_fences.policy_json` | `skeleton` | Validated bounded versioned coordination and process policy |
++| `product_execution_fences.ts` | `skeleton` | Admission timestamp, not process start or completion time |
+--- a/docs/known-gaps.md
++++ b/docs/known-gaps.md
+@@ -1,4 +1,12 @@
+ # Known gaps (reconciled 2026-09-08)
++
++W3.2b2b2 current context: [attempt stop coordination](attempt-coordination.md) now connects
++the journal and process owner for disposable synthetic fixtures. A permanent prelaunch fence
++blocks reuse through cancellation, erasure, terminal-write failure and restart. A dedicated
++monitor requests stopping on lost authority. This is eventual observation, not atomic launch
++exclusion or an erasure-completion guarantee. Complete writer containment, safe release, active
++plaintext leases, crash-copy cleanup and exact-close capture binding remain open. Earlier
++entries below preserve their dated scope; coordination is now partly implemented.
+ 
+ W3.2b2b1 current context: [persistent key revocation](key-revocation.md) closes the tested
+ key-removal-before-audit resurrection path. Marker publication precedes mutation; restored
+--- /dev/null
++++ b/src/adrl/core/attempt_coordinator.py
+@@ -0,0 +1,258 @@
++"""Stop coordination with permanent workspace fences. Primary: ADRL-OPS-001.
++
++Secondary: ADRL-MEM-001/002/003/005/010, ADRL-SAF-007, ADRL-TRU-001.
++Internal synthetic-fixture execution only. No release, successful close, capture binding,
++PID recovery or learning authority. Group cleanup does not prove all writers stopped.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import contextvars
++import sqlite3
++import threading
++import time
++from datetime import UTC, datetime
++from typing import Literal
++from uuid import UUID, uuid4
++
++from pydantic import BaseModel, ConfigDict, Field
++
++from adrl.api.auth import Principal
++from adrl.core.process_owner import ProcessOwner, ProcessPolicy, ProcessReport, ProcessSpec
++from adrl.ledger import crypto
++from adrl.ledger.attempts import (
++    TERMINAL,
++    AttemptError,
++    AttemptJournal,
++    AttemptPolicy,
++    AttemptTransition,
++    check_execution_fence,
++)
++
++StopCause = Literal[
++    "none", "requested", "revoked", "expired", "journal_closed", "authority_unavailable"
++]
++
++
++class CoordinationPolicy(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
++    schema_version: Literal["group-attempt-coordination-v1"] = "group-attempt-coordination-v1"
++    poll_seconds: float = Field(default=0.05, ge=0.01, le=1)
++    max_workspace_fences: int = Field(default=128, ge=1, le=128)
++    process: ProcessPolicy = Field(default_factory=ProcessPolicy)
++
++
++class CoordinationReport(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    schema_version: Literal["group-attempt-coordination-report-v1"] = (
++        "group-attempt-coordination-report-v1"
++    )
++    attempt_id: UUID
++    stop_cause: StopCause
++    process: ProcessReport | None
++    process_error: bool
++    terminal_record: Literal["recorded", "already_terminal", "unavailable"]
++    workspace_state: Literal["blocked"] = "blocked"
++    exact_close_eligible: Literal[False] = False
++    eligible_for_learning: Literal[False] = False
++    policy: CoordinationPolicy
++
++
++class AttemptCoordinator:
++    """One active in-memory run; committed fences survive any result and restart.
++
++    The entire worker, including admission and terminal writing, drains on cancellation.
++    A separate monitor thread observes revocation even while the caller event loop is busy.
++    There is no atomic launch/erasure transaction and no hard scheduling or I/O deadline.
++    """
++
++    def __init__(self, journal: AttemptJournal, policy: CoordinationPolicy | None = None) -> None:
++        self.journal = journal
++        self.policy = policy or CoordinationPolicy()
++        self._active = threading.Lock()
++        self._owner = ProcessOwner(journal.data.keys.hmac_key(), self.policy.process)
++        self.last_report: CoordinationReport | None = None
++
++    async def run(
++        self,
++        principal: Principal,
++        attempt_id: UUID,
++        spec: ProcessSpec,
++        *,
++        stop: threading.Event | None = None,
++    ) -> CoordinationReport:
++        copied = ProcessSpec.model_validate(spec.model_dump())
++        if not self._active.acquire(blocking=False):
++            raise AttemptError("coordinator_already_active")
++        stopping = stop if stop is not None else threading.Event()
++        context = contextvars.copy_context()
++        self.last_report = None
++        worker = asyncio.get_running_loop().run_in_executor(
++            None, context.run, self._run, principal, attempt_id, copied, stopping
++        )
++        try:
++            try:
++                return await asyncio.shield(worker)
++            except asyncio.CancelledError:
++                stopping.set()
++                while not worker.done():
++                    try:
++                        await asyncio.shield(worker)
++                    except asyncio.CancelledError:
++                        stopping.set()
++                    except Exception:
++                        break
++                if not worker.cancelled():
++                    worker.exception()
++                raise
++        finally:
++            self._active.release()
++
++    def _admit(
++        self, principal: Principal, attempt_id: UUID, spec: ProcessSpec, stop: threading.Event
++    ) -> None:
++        key = self.journal.captures._key(principal)
++        _, workspace = self.journal._workspace(principal, spec.cwd, strict=True)
++        data = self.journal.data
++        attempt_key = crypto.keyed_hash(key, "attempt:" + str(attempt_id))
++        host_key_id = data.keys.hmac_key_id()
++
++        def write(conn: sqlite3.Connection) -> None:
++            if stop.is_set():
++                raise AttemptError("execution_admission_stopped")
++            if self.journal.captures._key(principal) != key:
++                raise AttemptError("execution_key_unavailable")
++            check_execution_fence(conn, workspace, host_key_id)
++            rows = [
++                dict(row)
++                for row in conn.execute(
++                    "SELECT * FROM product_attempt_events WHERE session_hmac=? AND attempt_key=? "
++                    "ORDER BY attempt_seq",
++                    (principal.session_hmac, attempt_key),
++                )
++            ]
++            history = self.journal._history(principal, key, rows)
++            grant = conn.execute(
++                "SELECT * FROM product_attempt_capacity WHERE session_hmac=? AND attempt_key=?",
++                (principal.session_hmac, attempt_key),
++            ).fetchone()
++            self.journal._check_grant(history, rows[0], dict(grant) if grant else None)
++            if not isinstance(history[0].policy, AttemptPolicy):
++                raise AttemptError("execution_requires_v2_attempt")
++            if history[-1].phase != "started":
++                raise AttemptError("execution_attempt_not_started")
++            if history[0].workspace_ref != "hmac:" + workspace:
++                raise AttemptError("execution_workspace_mismatch")
++            if conn.execute("SELECT COUNT(*) FROM product_execution_fences").fetchone()[0] >= (
++                self.policy.max_workspace_fences
++            ):
++                raise AttemptError("execution_fence_limit")
++            conn.execute(
++                "INSERT INTO product_execution_fences "
++                "(workspace_key,session_hmac,attempt_key,start_event_key,"
++                "host_key_id,policy_json,ts) "
++                "VALUES (?,?,?,?,?,?,?)",
++                (
++                    workspace,
++                    principal.session_hmac,
++                    attempt_key,
++                    rows[0]["event_key"],
++                    host_key_id,
++                    self.policy.model_dump_json(),
++                    datetime.now(UTC).isoformat(),
++                ),
++            )
++
++        # A timeout/lost acknowledgement never permits launch or replay. The writer may still
++        # commit the fence; treat that workspace as uncertain, not safe to retry automatically.
++        data.ledger.submit(write).result(timeout=10)
++
++    def _authority(self, principal: Principal, attempt_id: UUID) -> StopCause:
++        try:
++            if self.journal.data.keys.is_revoked(principal.session_hmac):
++                return "revoked"
++            if principal.assertion.expires_at <= time.time():
++                return "expired"
++            if self.journal.read(principal, attempt_id)[-1].phase != "started":
++                return "journal_closed"
++        except Exception:
++            # No raw exception, path or program output is copied into the report.
++            return "authority_unavailable"
++        return "none"
++
++    def _terminal(
++        self, principal: Principal, attempt_id: UUID
++    ) -> Literal["recorded", "already_terminal", "unavailable"]:
++        try:
++            if self.journal.read(principal, attempt_id)[-1].phase in TERMINAL:
++                return "already_terminal"
++            asyncio.run(
++                self.journal.transition(
++                    principal,
++                    AttemptTransition(
++                        kind="mark_incomplete",
++                        event_id=uuid4(),
++                        attempt_id=attempt_id,
++                        reason="quiescence_unavailable",
++                    ),
++                )
++            )
++            return "recorded"
++        except Exception:
++            # Commit may have succeeded before acknowledgement/readback failed. Do not invent
++            # a completion receipt or retry with a new event identity.
++            return "unavailable"
++
++    def _run(
++        self, principal: Principal, attempt_id: UUID, spec: ProcessSpec, stop: threading.Event
++    ) -> CoordinationReport:
++        self._admit(principal, attempt_id, spec, stop)
++        finished = threading.Event()
++        cause: list[StopCause] = ["requested" if stop.is_set() else "none"]
++
++        def monitor() -> None:
++            while not finished.is_set():
++                observed = self._authority(principal, attempt_id)
++                if observed != "none":
++                    cause[0] = observed
++                    stop.set()
++                    return
++                if stop.is_set():
++                    cause[0] = "requested"
++                    return
++                finished.wait(self.policy.poll_seconds)
++
++        owner = self._owner
++        # A failed new launch must not borrow a previous run's cleanup observation.
++        owner.last_report = None
++        watcher = threading.Thread(target=monitor, name="adrl-attempt-authority", daemon=True)
++        process: ProcessReport | None = None
++        failed = False
++        try:
++            observed = self._authority(principal, attempt_id)
++            if observed != "none":
++                cause[0] = observed
++                stop.set()
++            watcher.start()
++            process = asyncio.run(owner.run(spec, stop=stop))
++        except Exception:
++            failed = True
++            stop.set()
++            process = owner.last_report
++        finally:
++            finished.set()
++            if watcher.ident is not None:
++                watcher.join()
++        if cause[0] == "none" and stop.is_set():
++            cause[0] = "requested"
++        report = CoordinationReport(
++            attempt_id=attempt_id,
++            stop_cause=cause[0],
++            process=process,
++            process_error=failed,
++            terminal_record=self._terminal(principal, attempt_id),
++            policy=self.policy,
++        )
++        self.last_report = report
++        return report
+--- a/src/adrl/ledger/attempts.py
++++ b/src/adrl/ledger/attempts.py
+@@ -33,6 +33,18 @@
+     "mark_incomplete": "incomplete",
+ }
+ TERMINAL = frozenset({"cancelled", "incomplete"})
++
++
++def check_execution_fence(conn: sqlite3.Connection, workspace: str, host_key_id: str) -> None:
++    """A journal terminal event cannot release a supervised workspace block."""
++    if conn.execute(
++        "SELECT 1 FROM product_execution_fences WHERE host_key_id!=? LIMIT 1", (host_key_id,)
++    ).fetchone():
++        raise AttemptError("execution_fence_key_changed")
++    if conn.execute(
++        "SELECT 1 FROM product_execution_fences WHERE workspace_key=?", (workspace,)
++    ).fetchone():
++        raise AttemptError("workspace_execution_blocked")
+ 
+ 
+ class AttemptError(ValueError):
+@@ -465,6 +477,7 @@
+                 if isinstance(command, StartAttempt):
+                     if rows:
+                         return "attempt_already_started", None
++                    check_execution_fence(conn, workspace, self.data.keys.hmac_key_id())
+                     if conn.execute(
+                         "SELECT 1 FROM product_captures WHERE session_hmac=? "
+                         "AND (attempt_key=? OR capture_key=?)",
+--- /dev/null
++++ b/src/adrl/ledger/migrations/0010_execution_fences.sql
+@@ -0,0 +1,13 @@
++-- Persistent workspace blocks. Primary: ADRL-OPS-001. Secondary: ADRL-MEM-001/002/005/010.
++CREATE TABLE product_execution_fences (
++    workspace_key TEXT PRIMARY KEY NOT NULL,
++    session_hmac TEXT NOT NULL,
++    attempt_key TEXT NOT NULL,
++    start_event_key TEXT NOT NULL,
++    host_key_id TEXT NOT NULL,
++    policy_json TEXT NOT NULL CHECK (length(policy_json) BETWEEN 1 AND 1024),
++    ts TEXT NOT NULL,
++    UNIQUE (session_hmac, attempt_key),
++    FOREIGN KEY (session_hmac, start_event_key)
++        REFERENCES product_attempt_events(session_hmac, event_key)
++);
+--- a/tests/unit/test_attempt_capacity.py
++++ b/tests/unit/test_attempt_capacity.py
+@@ -325,7 +325,7 @@
+     try:
+         data = ProductStore(store, FileKeyStore(capture.keys.root, store=store))
+         journal = AttemptJournal(data, policy)
+-        assert store.schema_user_version() == 9
++        assert store.schema_user_version() == 10
+         row = store.read("SELECT nonce,ciphertext,capacity_version FROM product_attempt_events")[0]
+         assert (row["nonce"], row["ciphertext"]) == before and row["capacity_version"] == 0
+         assert journal.read(capture.principal, request.attempt_id) == (event,)
+--- /dev/null
++++ b/tests/unit/test_attempt_coordinator.py
+@@ -0,0 +1,572 @@
++"""Real coordination and partial-failure cases. Primary: ADRL-OPS-001, ADRL-MEM-010."""
++
++from __future__ import annotations
++
++import asyncio
++import json
++import sqlite3
++import subprocess
++import sys
++import threading
++import time
++from dataclasses import asdict, replace
++from typing import Any
++from uuid import uuid4
++
++import pytest
++from pydantic import ValidationError
++
++from adrl.api.store import ProductStore
++from adrl.core.attempt_coordinator import (
++    AttemptCoordinator,
++    CoordinationPolicy,
++    CoordinationReport,
++)
++from adrl.core.errors import LedgerAppendFailure
++from adrl.core.ids import SessionId
++from adrl.core.process_owner import ProcessPolicy
++from adrl.ledger.attempts import AttemptError, AttemptJournal, LegacyAttemptPolicy
++from adrl.ledger.capture import CaptureError
++from adrl.ledger.erasure import ErasureService
++from adrl.ledger.keystore import FileKeyStore, KeyStoreBusyError
++from adrl.ledger.migrations import load_migrations
++from adrl.ledger.store import LedgerStore
++
++from .test_attempt_capacity import legacy_database
++from .test_attempts import start, transition
++from .test_capture import Fixture, bind
++from .test_capture import capture as capture
++from .test_process_owner import exists, spec
++
++WAITING = "from pathlib import Path; import time; Path('ready').touch(); time.sleep(3)"
++DENIAL = (AttemptError, CaptureError, LedgerAppendFailure)
++
++
++def coordinator(capture: Fixture, **changes: Any) -> AttemptCoordinator:
++    return AttemptCoordinator(
++        AttemptJournal(capture.data),
++        CoordinationPolicy.model_validate(
++            {
++                "poll_seconds": 0.01,
++                "process": ProcessPolicy(runtime_seconds=2, launch_seconds=2, reap_seconds=2),
++            }
++            | changes
++        ),
++    )
++
++
++def fences(capture: Fixture) -> list[dict[str, Any]]:
++    return [dict(row) for row in capture.store.read("SELECT * FROM product_execution_fences")]
++
++
++def blocked(report: CoordinationReport) -> None:
++    assert report.workspace_state == "blocked"
++    assert not report.exact_close_eligible and not report.eligible_for_learning
++    if report.process:
++        assert not report.process.exact_close_eligible and not report.process.eligible_for_learning
++
++
++@pytest.mark.parametrize("code", [0, 7])
++async def test_exit_terminal_record_and_restart_never_release(capture: Fixture, code: int) -> None:
++    run, request = coordinator(capture), start()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    report = await run.run(
++        capture.principal, request.attempt_id, spec(capture.workspace, f"raise SystemExit({code})")
++    )
++    blocked(report)
++    assert report.process and report.process.direct_child_returncode == code
++    assert report.terminal_record == "recorded" and not report.process_error
++    assert run.journal.read(capture.principal, request.attempt_id)[-1].phase == "incomplete"
++    original = fences(capture)
++    capture.store.close()
++    capture.store.open()
++    other = await bind(capture.data, capture.workspace, str(uuid4()))
++    with pytest.raises(DENIAL, match="workspace_execution_blocked"):
++        await AttemptJournal(capture.data).start(other, capture.workspace, start())
++    with pytest.raises(DENIAL, match="workspace_execution_blocked"):
++        await coordinator(capture).run(
++            capture.principal, request.attempt_id, spec(capture.workspace, "pass")
++        )
++    assert fences(capture) == original and not capture.store.read("SELECT * FROM product_captures")
++
++
++@pytest.mark.parametrize("trigger", ["direct", "service", "failed_audit", "expired", "key_missing"])
++async def test_revocation_expiry_and_missing_authority_stop_owned_process(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch, trigger: str
++) -> None:
++    run, request = coordinator(capture), start()
++    principal = capture.principal
++    if trigger == "expired":
++        principal = replace(
++            principal, assertion=replace(principal.assertion, expires_at=time.time() + 0.6)
++        )
++    await run.journal.start(principal, capture.workspace, request)
++    task = asyncio.create_task(
++        run.run(principal, request.attempt_id, spec(capture.workspace, WAITING))
++    )
++    await exists(capture.workspace / "ready")
++    if trigger in {"direct", "failed_audit"}:
++        if trigger == "failed_audit":
++
++            def fail(*args: Any, **kwargs: Any) -> None:
++                raise OSError("audit unavailable")
++
++            monkeypatch.setattr(capture.keys, "_audit", fail)
++        try:
++            for attempt in range(3):
++                try:
++                    await asyncio.to_thread(
++                        capture.keys.shred_session_key, principal.session_hmac, "fixture"
++                    )
++                    break
++                except KeyStoreBusyError:
++                    if attempt == 2:
++                        raise
++                    await asyncio.sleep(0.02)
++        except OSError:
++            assert trigger == "failed_audit"
++    elif trigger == "service":
++        for attempt in range(3):
++            try:
++                await ErasureService(capture.store, capture.keys).erase_session(
++                    SessionId(principal.session_hmac), "fixture"
++                )
++                break
++            except KeyStoreBusyError:
++                if attempt == 2:
++                    raise
++                await asyncio.sleep(0.02)
++    elif trigger == "key_missing":
++        (capture.keys.root / "sessions" / (principal.session_hmac + ".key")).unlink()
++    report = await asyncio.wait_for(task, 4)
++    blocked(report)
++    assert report.process and report.process.outcome == "stopped" and report.process.anchor_reaped
++    assert report.terminal_record == "unavailable" and len(fences(capture)) == 1
++    expected = (
++        "expired"
++        if trigger == "expired"
++        else ("authority_unavailable" if trigger == "key_missing" else "revoked")
++    )
++    # A monitor can encounter the shredder's exclusive key lock before it observes the
++    # published marker. That earlier authority loss is an honest, conservative stop cause.
++    assert report.stop_cause in {expected, "authority_unavailable"}
++    if trigger in {"direct", "service", "failed_audit"}:
++        assert capture.keys.is_revoked(principal.session_hmac)
++
++
++@pytest.mark.parametrize("kind", ["request_close", "cancel", "mark_incomplete"])
++async def test_journal_transition_stops_but_cannot_release(capture: Fixture, kind: str) -> None:
++    run, request = coordinator(capture), start()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    other = await bind(capture.data, capture.workspace, str(uuid4()))
++    task = asyncio.create_task(
++        run.run(capture.principal, request.attempt_id, spec(capture.workspace, WAITING))
++    )
++    await exists(capture.workspace / "ready")
++    await run.journal.transition(capture.principal, transition(request, kind))
++    with pytest.raises(DENIAL, match="workspace_execution_blocked"):
++        await run.journal.start(other, capture.workspace, start())
++    report = await task
++    blocked(report)
++    assert report.stop_cause == "journal_closed"
++    assert report.process and report.process.outcome == "stopped"
++    assert report.terminal_record == ("recorded" if kind == "request_close" else "already_terminal")
++
++
++@pytest.mark.parametrize("mode", ["cancel", "repeated", "explicit"])
++async def test_cancellation_drains_process_and_retains_fence(capture: Fixture, mode: str) -> None:
++    run, request, stop = coordinator(capture), start(), threading.Event()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    task = asyncio.create_task(
++        run.run(capture.principal, request.attempt_id, spec(capture.workspace, WAITING), stop=stop)
++    )
++    await exists(capture.workspace / "ready")
++    if mode == "explicit":
++        stop.set()
++        await task
++    else:
++        task.cancel()
++        if mode == "repeated":
++            for _ in range(4):
++                await asyncio.sleep(0)
++                task.cancel()
++        with pytest.raises(asyncio.CancelledError):
++            await task
++    report = run.last_report
++    assert report is not None and report.process and report.process.anchor_reaped
++    assert report.stop_cause == "requested" and report.terminal_record == "recorded"
++    blocked(report)
++    assert len(fences(capture)) == 1
++
++
++async def test_timeout_and_bad_pin_keep_block(capture: Fixture) -> None:
++    run, request = coordinator(capture, process=ProcessPolicy(runtime_seconds=0.1)), start()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    report = await run.run(capture.principal, request.attempt_id, spec(capture.workspace, WAITING))
++    assert report.process and report.process.outcome == "timed_out"
++    blocked(report)
++    other = await bind(capture.data, capture.scratch, str(uuid4()))
++    second = start()
++    await run.journal.start(other, capture.scratch, second)
++    bad = await run.run(
++        other, second.attempt_id, spec(capture.scratch, "pass", executable_sha256="0" * 64)
++    )
++    assert bad.process_error and bad.process is None and bad.terminal_record == "recorded"
++    blocked(bad)
++    assert len(fences(capture)) == 2
++
++
++@pytest.mark.parametrize("fault", ["fence_insert", "terminal_insert", "corrupt_journal"])
++async def test_database_faults_do_not_forge_completion(capture: Fixture, fault: str) -> None:
++    run, request = coordinator(capture), start()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    if fault == "fence_insert":
++        await capture.store.write_through(
++            lambda conn: conn.execute(
++                "CREATE TRIGGER fail_fence BEFORE INSERT ON product_execution_fences "
++                "BEGIN SELECT RAISE(ABORT,'fixture fence failure'); END;"
++            )
++        )
++        with pytest.raises(LedgerAppendFailure, match="fixture fence failure"):
++            await run.run(capture.principal, request.attempt_id, spec(capture.workspace, WAITING))
++        assert not fences(capture) and not (capture.workspace / "ready").exists()
++        return
++    task = asyncio.create_task(
++        run.run(capture.principal, request.attempt_id, spec(capture.workspace, WAITING))
++    )
++    await exists(capture.workspace / "ready")
++    if fault == "terminal_insert":
++        await capture.store.write_through(
++            lambda conn: conn.execute(
++                "CREATE TRIGGER fail_terminal BEFORE INSERT ON product_attempt_events "
++                "BEGIN SELECT RAISE(ABORT,'fixture terminal failure'); END;"
++            )
++        )
++    else:
++        await capture.store.write_through(
++            lambda conn: conn.execute("UPDATE product_attempt_events SET ciphertext=x'00'")
++        )
++    report = await task
++    blocked(report)
++    assert report.terminal_record == "unavailable" and len(fences(capture)) == 1
++    if fault == "corrupt_journal":
++        assert report.stop_cause == "authority_unavailable"
++        assert report.process and report.process.outcome == "stopped"
++
++
++@pytest.mark.parametrize(
++    "fault", ["wrong_workspace", "other_session", "closed", "grant", "expired"]
++)
++async def test_invalid_admission_never_launches(capture: Fixture, fault: str) -> None:
++    run, request = coordinator(capture), start()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    principal, root = capture.principal, capture.workspace
++    if fault == "wrong_workspace":
++        root = capture.scratch
++    elif fault == "other_session":
++        principal = await bind(capture.data, root, str(uuid4()))
++    elif fault == "closed":
++        await run.journal.transition(principal, transition(request, "cancel"))
++    elif fault == "grant":
++        await capture.store.write_through(
++            lambda conn: conn.execute("UPDATE product_attempt_capacity SET reserved_bytes=2048")
++        )
++    else:
++        principal = replace(principal, assertion=replace(principal.assertion, expires_at=0))
++    with pytest.raises(DENIAL):
++        await run.run(principal, request.attempt_id, spec(root, WAITING))
++    assert not fences(capture) and not (root / "ready").exists()
++
++
++async def test_simultaneous_coordinators_and_instance_reentry(capture: Fixture) -> None:
++    run, request = coordinator(capture), start()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    command = spec(capture.workspace, WAITING)
++    first = asyncio.create_task(run.run(capture.principal, request.attempt_id, command))
++    await exists(capture.workspace / "ready")
++    with pytest.raises(AttemptError, match="coordinator_already_active"):
++        await run.run(capture.principal, request.attempt_id, command)
++    with pytest.raises(DENIAL, match="workspace_execution_blocked"):
++        await coordinator(capture).run(capture.principal, request.attempt_id, command)
++    first.cancel()
++    with pytest.raises(asyncio.CancelledError):
++        await first
++    assert len(fences(capture)) == 1
++
++
++async def test_lost_admission_ack_never_replays(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    run, request = coordinator(capture), start()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    original = run._admit
++
++    def lose(*args: Any, **kwargs: Any) -> None:
++        original(*args, **kwargs)
++        raise TimeoutError("lost acknowledgement")
++
++    monkeypatch.setattr(run, "_admit", lose)
++    with pytest.raises(TimeoutError):
++        await run.run(capture.principal, request.attempt_id, spec(capture.workspace, WAITING))
++    assert len(fences(capture)) == 1 and not (capture.workspace / "ready").exists()
++    with pytest.raises(DENIAL, match="workspace_execution_blocked"):
++        await coordinator(capture).run(
++            capture.principal, request.attempt_id, spec(capture.workspace, WAITING)
++        )
++
++
++async def test_fence_metadata_limits_and_key_rotation(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    run, request = coordinator(capture, max_workspace_fences=1), start()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    await run.run(capture.principal, request.attempt_id, spec(capture.workspace, "pass"))
++    row = fences(capture)[0]
++    for private in [str(capture.workspace), str(request.attempt_id), "code.txt", "task-one"]:
++        assert private not in json.dumps(row)
++    assert CoordinationPolicy.model_validate_json(row["policy_json"]) == run.policy
++    other, second = await bind(capture.data, capture.scratch, str(uuid4())), start()
++    await run.journal.start(other, capture.scratch, second)
++    with pytest.raises(DENIAL, match="execution_fence_limit"):
++        await run.run(other, second.attempt_id, spec(capture.scratch, "pass"))
++    monkeypatch.setattr(capture.keys, "hmac_key_id", lambda: "different-host-key")
++    with pytest.raises(DENIAL, match="execution_fence_key_changed"):
++        await coordinator(capture).run(other, second.attempt_id, spec(capture.scratch, "pass"))
++    await run.journal.transition(other, transition(second, "cancel"))
++    with pytest.raises(DENIAL, match="execution_fence_key_changed"):
++        await run.journal.start(other, capture.scratch, start())
++
++
++async def test_legacy_attempt_is_readable_but_not_executable(capture: Fixture) -> None:
++    policy = LegacyAttemptPolicy()
++    path, request, event = await asyncio.to_thread(legacy_database, capture, policy)
++    store = LedgerStore(path)
++    store.open()
++    try:
++        journal = AttemptJournal(
++            ProductStore(store, FileKeyStore(capture.keys.root, store=store)), policy
++        )
++        assert journal.read(capture.principal, request.attempt_id) == (event,)
++        with pytest.raises(DENIAL, match="execution_requires_v2_attempt"):
++            await AttemptCoordinator(journal).run(
++                capture.principal, request.attempt_id, spec(capture.workspace, WAITING)
++            )
++        assert not store.read("SELECT * FROM product_execution_fences")
++    finally:
++        store.close()
++
++
++async def test_schema_nine_migration_preserves_ciphertext_and_grant(capture: Fixture) -> None:
++    run, request = coordinator(capture), start()
++    expected = await run.journal.start(capture.principal, capture.workspace, request)
++    path = capture.scratch / "v9.db"
++    tables = ["product_sessions", "product_attempt_events", "product_attempt_capacity"]
++    with sqlite3.connect(path) as conn:
++        for migration in load_migrations():
++            if migration.version <= 9:
++                conn.executescript(migration.sql)
++        for table in tables:
++            for row in capture.store.read(f"SELECT * FROM {table}"):
++                fields = dict(row)
++                conn.execute(
++                    f"INSERT INTO {table} ({','.join(fields)}) "
++                    f"VALUES ({','.join('?' for _ in fields)})",
++                    tuple(fields.values()),
++                )
++        conn.execute("PRAGMA user_version=9")
++    store = LedgerStore(path)
++    store.open()
++    try:
++        assert store.schema_user_version() == 10
++        for table in tables:
++            assert [dict(row) for row in store.read(f"SELECT * FROM {table}")] == [
++                dict(row) for row in capture.store.read(f"SELECT * FROM {table}")
++            ]
++        data = ProductStore(store, FileKeyStore(capture.keys.root, store=store))
++        assert AttemptJournal(data).read(capture.principal, request.attempt_id) == (expected,)
++        assert not store.read("SELECT * FROM product_execution_fences")
++    finally:
++        store.close()
++
++
++@pytest.mark.parametrize(
++    "changes", [{"poll_seconds": 0}, {"poll_seconds": 2}, {"max_workspace_fences": 129}]
++)
++def test_policy_bounds(changes: dict[str, Any]) -> None:
++    with pytest.raises(ValidationError):
++        CoordinationPolicy.model_validate(changes)
++
++
++async def test_preexisting_stop_has_no_admission(capture: Fixture) -> None:
++    run, request, stop = coordinator(capture), start(), threading.Event()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    stop.set()
++    with pytest.raises(DENIAL, match="execution_admission_stopped"):
++        await run.run(
++            capture.principal, request.attempt_id, spec(capture.workspace, WAITING), stop=stop
++        )
++    assert not fences(capture)
++
++
++async def test_cancellation_after_commit_prevents_launch(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    run, request = coordinator(capture), start()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    admitted, proceed = threading.Event(), threading.Event()
++    original = run._admit
++
++    def pause(*args: Any, **kwargs: Any) -> None:
++        original(*args, **kwargs)
++        admitted.set()
++        assert proceed.wait(3)
++
++    monkeypatch.setattr(run, "_admit", pause)
++    task = asyncio.create_task(
++        run.run(capture.principal, request.attempt_id, spec(capture.workspace, WAITING))
++    )
++    try:
++        assert await asyncio.to_thread(admitted.wait, 3)
++        task.cancel()
++        await asyncio.sleep(0)
++        assert not task.done()
++    finally:
++        proceed.set()
++    with pytest.raises(asyncio.CancelledError):
++        await task
++    assert run.last_report and run.last_report.process
++    assert run.last_report.process.group_signal == "not_launched"
++    assert len(fences(capture)) == 1 and not (capture.workspace / "ready").exists()
++
++
++async def test_racing_admissions_commit_only_one_fence(capture: Fixture) -> None:
++    run, request = coordinator(capture), start()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    results = await asyncio.gather(
++        *(
++            coordinator(capture).run(
++                capture.principal, request.attempt_id, spec(capture.workspace, "pass")
++            )
++            for _ in range(2)
++        ),
++        return_exceptions=True,
++    )
++    assert sum(isinstance(result, CoordinationReport) for result in results) == 1
++    assert sum(isinstance(result, LedgerAppendFailure) for result in results) == 1
++    assert len(fences(capture)) == 1
++
++
++async def test_cleanup_progresses_while_callers_erasure_audit_is_blocked(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    run, request, terminal_done = coordinator(capture), start(), threading.Event()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    terminal = run._terminal
++    authority = run._authority
++    pause, parked, observe = threading.Event(), threading.Event(), threading.Event()
++
++    def observation(*args: Any, **kwargs: Any) -> Any:
++        if pause.is_set():
++            parked.set()
++            assert observe.wait(3)
++        return authority(*args, **kwargs)
++
++    def record(*args: Any, **kwargs: Any) -> Any:
++        result = terminal(*args, **kwargs)
++        terminal_done.set()
++        return result
++
++    def audit(*args: Any, **kwargs: Any) -> None:
++        observe.set()
++        assert terminal_done.wait(2), "cleanup depended on blocked caller event loop"
++
++    monkeypatch.setattr(run, "_terminal", record)
++    monkeypatch.setattr(run, "_authority", observation)
++    monkeypatch.setattr(capture.keys, "_audit", audit)
++    task = asyncio.create_task(
++        run.run(capture.principal, request.attempt_id, spec(capture.workspace, WAITING))
++    )
++    await exists(capture.workspace / "ready")
++    # Park the observer without a key lock, then let it observe once the shredder has
++    # entered its lock-free audit wait. This isolates the failure ordering under test.
++    pause.set()
++    try:
++        assert await asyncio.to_thread(parked.wait, 2)
++        capture.keys.shred_session_key(capture.principal.session_hmac, "fixture")
++    finally:
++        observe.set()
++    report = await task
++    assert report.stop_cause in {"revoked", "authority_unavailable"}
++    assert report.terminal_record == "unavailable" and capture.keys.is_revoked(
++        capture.principal.session_hmac
++    )
++    assert report.process and report.process.anchor_reaped
++
++
++async def test_owner_death_keeps_durable_block_and_no_pid_recovery(capture: Fixture) -> None:
++    run, request = coordinator(capture), start()
++    await run.journal.start(capture.principal, capture.workspace, request)
++    child = """
++import asyncio, json, sys
++from uuid import UUID
++from pathlib import Path
++from adrl.api.auth import Principal
++from adrl.api.store import ProductStore
++from adrl.gates.workload import RepoInventory, WorkloadAssertion
++from adrl.ledger.store import LedgerStore
++from adrl.ledger.keystore import FileKeyStore
++from adrl.ledger.attempts import AttemptJournal
++from adrl.core.attempt_coordinator import AttemptCoordinator
++from adrl.core.process_owner import ProcessSpec
++v=json.loads(sys.stdin.readline())
++p=v['principal']; a=p.pop('assertion'); inv=a.pop('inventory')
++principal=Principal(**p, assertion=WorkloadAssertion(**a, inventory=RepoInventory(**inv)))
++store=LedgerStore(Path(v['database'])); store.open()
++data=ProductStore(store, FileKeyStore(Path(v['keys']), store=store))
++asyncio.run(AttemptCoordinator(AttemptJournal(data)).run(
++ principal, UUID(v['attempt']), ProcessSpec.model_validate_json(v['spec'])))
++store.close()
++"""
++    command = spec(
++        capture.workspace,
++        "from pathlib import Path; import time; Path('ready').touch(); "
++        "time.sleep(.7); Path('late').touch()",
++    )
++    proc = await asyncio.to_thread(
++        subprocess.Popen,
++        [sys.executable, "-c", child],
++        stdin=subprocess.PIPE,
++        stdout=subprocess.DEVNULL,
++        stderr=subprocess.DEVNULL,
++    )
++    assert proc.stdin is not None
++    try:
++        proc.stdin.write(
++            (
++                json.dumps(
++                    {
++                        "principal": asdict(capture.principal),
++                        "database": str(capture.keys.root.parent / "ledger.db"),
++                        "keys": str(capture.keys.root),
++                        "attempt": str(request.attempt_id),
++                        "spec": command.model_dump_json(),
++                    }
++                )
++                + "\n"
++            ).encode()
++        )
++        proc.stdin.close()
++        await exists(capture.workspace / "ready")
++        proc.kill()
++        await asyncio.to_thread(proc.wait, 3)
++        await asyncio.sleep(0.9)
++        assert not (capture.workspace / "late").exists()
++        assert len(fences(capture)) == 1
++        await run.journal.transition(capture.principal, transition(request, "cancel"))
++        other = await bind(capture.data, capture.workspace, str(uuid4()))
++        with pytest.raises(DENIAL, match="workspace_execution_blocked"):
++            await run.journal.start(other, capture.workspace, start())
++    finally:
++        if proc.poll() is None:
++            proc.kill()
++            await asyncio.to_thread(proc.wait, 3)
+--- a/tests/unit/test_attempts.py
++++ b/tests/unit/test_attempts.py
+@@ -406,7 +406,7 @@
+     store.open()
+     try:
+         archive = CaptureArchive(ProductStore(store, FileKeyStore(capture.keys.root, store=store)))
+-        assert store.schema_user_version() == 9
++        assert store.schema_user_version() == 10
+         assert archive.read(capture.principal, request.capture_id) == snapshot
+         assert not store.read("SELECT * FROM product_attempt_events")
+     finally:
+--- a/tests/unit/test_product_migration.py
++++ b/tests/unit/test_product_migration.py
+@@ -48,7 +48,7 @@
+         assert row["session_hmac"] == "session"
+         assert row["config_digest"] == "digest"
+         assert row["ts"] == "ts"
+-        assert store.schema_user_version() == 9
++        assert store.schema_user_version() == 10
+         assert not store.read("SELECT * FROM product_verifications")
+         assert not store.read("SELECT * FROM product_captures")
+     finally:
+@@ -94,7 +94,7 @@
+     try:
+         data = ProductStore(store, FileKeyStore(keys.root, store=store))
+         row = dict(store.read("SELECT * FROM product_verifications")[0])
+-        assert store.schema_user_version() == 9
++        assert store.schema_user_version() == 10
+         assert row["ciphertext"] == ciphertext and row["ts"] == "old-time"
+         assert data.verification(row) == receipt
+         assert not store.read("SELECT * FROM product_captures")

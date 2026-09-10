@@ -1,0 +1,393 @@
+{
+  "review_date": "2026-09-07",
+  "scope": "Dedicated taxonomy overview and TRU rationale; published critique correspondence check; 77 decision statements; 14 ranked findings; selected clauses and implementation; primary research source assessment; no experimental replication or exhaustive 315-source audit",
+  "files": [
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/reports/adrl-product-report-2026-09-03.md",
+      "sha256": "d02b7d6264919ec55abe5a545846c880b9144db30645fb103b943d161f267065"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/reports/adrl-research-critique-2026-09-03.md",
+      "sha256": "8202621c591c6c32c249e33a2d165930e5ee0bb49f084d2072f992558557ae62"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/INDEX.md",
+      "sha256": "73fe320500a9800cbd66e361486ac7b271dcbf981ceb3f74634d98cbaab0c862"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/source/01-overview-tenets-taxonomy.md",
+      "sha256": "0c2e8510257b834800d4cefec311161b08d61bffcb506b669e4889632d4d4b1a"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/source/09-open-questions.md",
+      "sha256": "670f483ad875630980fe8f9d832f8afe4230fdb6fbfd02d024db4c5e5a64dd93"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/source/04-register-MEM-LRN.md",
+      "sha256": "cc14a2f39a26f7019adae96a1f49db4778ebfe7b8c58587944b1b82d1246d236"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/TRU/README.md",
+      "sha256": "e8a8141c3000aa8d9b0523c2abbd869675dd91d5ae7d1d3069712de4ba1fea04"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/reports/research/adrl-artifact-source-check-2026-09-07.json",
+      "sha256": "ea98fa526ae3913073dd67fbac82cb308244212bdb0c6ef3b9b866c1e46c2caa"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/CAS/ADRL-CAS-001.md",
+      "sha256": "c17625b84611045109be0ea19fa2ff6d4847ecc77cc844298438eeeb535ac88a"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/CAS/ADRL-CAS-002.md",
+      "sha256": "4f749ddcc3c87bf1ca870ad83f064e3f18635957a462d72fd8b71cc5e7644359"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/CAS/ADRL-CAS-003.md",
+      "sha256": "04c85734af8784afa76159084d70fd10317044cc49ad7d289d5f469135c60920"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/CAS/ADRL-CAS-004.md",
+      "sha256": "67e48f9f36d35e1511ebdc8e7a56faee20cbbe9b51d9fb799b5d75f787746370"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/CAS/ADRL-CAS-005.md",
+      "sha256": "14663869bd349c67bc8562c70bed5315a3b170cf19b629e650eb41e7e7321dbe"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/CAS/ADRL-CAS-006.md",
+      "sha256": "022e62bbc6e71a533309736d5ad721f5f49fc6128efa7242a6886d2553a46e81"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/CAS/ADRL-CAS-007.md",
+      "sha256": "afbb5a4714331a17ff75588ffdb86a27830fcd509aa2b2b925c8058ae1759587"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/CAS/ADRL-CAS-008.md",
+      "sha256": "f2b7dc02cc7888579b2d82606a3f791c862146057226f382f9a189408ebe17f5"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/CAS/ADRL-CAS-009.md",
+      "sha256": "4ddcbc35f12b1435acc5c6e47eaed90df6b5381e62576048219d87fb1fb725f1"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/EVL/ADRL-EVL-001.md",
+      "sha256": "995f61e40bee03ab53519fd8a3782970f5e01517c9cd87d33e2b01207d4c4e43"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/EVL/ADRL-EVL-002.md",
+      "sha256": "3c725aab19d06181873ce83f97ccfb70317a4bdf1692b8fa6c0641afed0ef93e"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/EVL/ADRL-EVL-003.md",
+      "sha256": "04ebbd254736b19a46611dcb478e250ec54d512c3f1ec99aab63e8fcbe9cb395"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/EVL/ADRL-EVL-004.md",
+      "sha256": "7bc9e3577e319573fc8c9604be065cf736d6ee5ffd31a0c478ec10943bb5751e"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/EVL/ADRL-EVL-005.md",
+      "sha256": "d30719b2207c01618f06ba1869e0acab343490bd11bb8a122596f49b8695e00c"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/EVL/ADRL-EVL-006.md",
+      "sha256": "196ba24beece2b8f0f2983d5d69c94936c58af43f948419be78b38229fc77f0a"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/EVL/ADRL-EVL-007.md",
+      "sha256": "01ee642d1e3cc7ee5783ebcaa2ff1adb026c062cb2be80d847d9ea657ba792b6"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/EVL/ADRL-EVL-008.md",
+      "sha256": "bfc425b21abf4c0f7b8f545b7dcf447e443e59b27b890d70dfd846a63df1c376"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/EVL/ADRL-EVL-009.md",
+      "sha256": "7d7056507d68291dcb0fee72462ceea5aff49eb4f84fe6ec3b3f89dfc6afb227"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/FND/ADRL-FND-001.md",
+      "sha256": "7de9a2253bd23d2cc723ce914e3155bac9cc0ad0a7061af82e9205d858a7d731"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/FND/ADRL-FND-002.md",
+      "sha256": "4328f478243ac0d0872827c33f81392d830ef14e52a14ceee855f0b84ade1450"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/FND/ADRL-FND-003.md",
+      "sha256": "9a8a440628eefe27b07c6e5b95bdfb35bdb681f16b2f9947558f19feea77438b"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/FND/ADRL-FND-004.md",
+      "sha256": "35e19d600610997cf6d89b506b734641876312d82154105ad8ac90a563f4ac5d"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/FND/ADRL-FND-005.md",
+      "sha256": "2237a0b129efbfa107875244f60d395e15b24cd69a81055f4240579abd0c33bc"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/LRN/ADRL-LRN-001.md",
+      "sha256": "369ba9833f262a182c02fba3ce2902ce1ab4d8474c600b5af1028e2b61de98e6"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/LRN/ADRL-LRN-002.md",
+      "sha256": "3dc75f2e78d82b1d5527a097c834812fc2a981f7ab18c105e5bfebf68bead20d"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/LRN/ADRL-LRN-003.md",
+      "sha256": "649f2ebd45be3199cd0f8849bf2d86a81191960e2a0fa951484e9263043b0d47"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/LRN/ADRL-LRN-004.md",
+      "sha256": "ee112427826ded8b4fd29faa4aa0328e26139b49c8e1cdd6b245f4af2437663f"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/LRN/ADRL-LRN-005.md",
+      "sha256": "e6924889d654bf81d30d26f8cfc6f2dcba49d9506af8956296a90b379a748cb6"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/LRN/ADRL-LRN-006.md",
+      "sha256": "3dff1399a85959d79f220828a571e3f38564c7792b5842b115dfc6107d9930fe"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/LRN/ADRL-LRN-007.md",
+      "sha256": "6d8c2acdf7712af41bbc00f02a87997e68e0796a65c60b61c1dea0f61d868906"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/LRN/ADRL-LRN-008.md",
+      "sha256": "5022aec4314fe913c90b488935fd8eb2b9e9a83cf8ff06c1fd70da3646d83c1f"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/MEM/ADRL-MEM-001.md",
+      "sha256": "300667bc66a84aa5030fc1c8df74e98d5fdcf048d244a7566d51fc2bed2e256b"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/MEM/ADRL-MEM-002.md",
+      "sha256": "cbbf16653fa28dd2bf0fd0b19fce085df400f7a9f644b3c3ce4898fe1fa72c44"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/MEM/ADRL-MEM-003.md",
+      "sha256": "92c06d4047de9cd2f7a179a80ec29fa18f61f46f6a0414720d25c785ba01f00d"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/MEM/ADRL-MEM-004.md",
+      "sha256": "e5445117e646e70be03030ed38a83e60e96e18af39de9c8b53d36c4b87551f9f"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/MEM/ADRL-MEM-005.md",
+      "sha256": "040000f3e43e792d7fdde4101b0a49f65e44142e807a98352df498b28bc9a9b0"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/MEM/ADRL-MEM-006.md",
+      "sha256": "99a2578e51733d7e2388758da719c63e843fcb104c18d9e90797939ccff613e0"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/MEM/ADRL-MEM-007.md",
+      "sha256": "6ed5bfd559b84242ef0043bd95e856d3aa304e8f5cc3f4aa8cdff74bcb380079"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/MEM/ADRL-MEM-008.md",
+      "sha256": "32418942ab3f53fbf134ede2730b0f83aed6659be287e87a4c62b4a3261f2cd4"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/MEM/ADRL-MEM-009.md",
+      "sha256": "f4b5aa8c6c0105eae41e40f4043077260c7316ae99451116e8e672fba3d77baa"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/MEM/ADRL-MEM-010.md",
+      "sha256": "f2a683091e475c7ebcbe31138f3c3164bf31d5e4475c49f2600e33908ace8653"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/OPS/ADRL-OPS-001.md",
+      "sha256": "d801889f989115cbf6e3a025ad0d137edd2e05f97c6d423caa88a14342fadebf"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/OPS/ADRL-OPS-002.md",
+      "sha256": "cd3032321e250ae535d7aec58250bb6e2ab15b9382d371cf6971da8cdf473edc"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/OPS/ADRL-OPS-003.md",
+      "sha256": "6d607bae084835011cded5002b4ee3dee03c2bf911310d10a6d8a03ddac83120"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/OPS/ADRL-OPS-004.md",
+      "sha256": "15254c4669f5e7126de52247516d4e684b5ceed036108391c7f70485922639a4"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/OPS/ADRL-OPS-005.md",
+      "sha256": "988463cd198ddeeb443133df1e50fae604f23dc2f9e03414c54ef93f899b7f64"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/OPS/ADRL-OPS-006.md",
+      "sha256": "52d80794ef166c673c465ce08c6c9fea2171f17636cb516d94cd70adbcf76ba0"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/OPS/ADRL-OPS-007.md",
+      "sha256": "d929a6605e714bf27ed2dbfe92c836d4ce6bd0f535cf4a679c69d66558b3f643"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/OPS/ADRL-OPS-008.md",
+      "sha256": "ce03bcee50f6e70d99a87af2b876146f31c3024b2fcf78354c141194b6b510d9"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/RTG/ADRL-RTG-001.md",
+      "sha256": "72bc11406c9275c8aedf35a3ab41d1a54fe21bb207d667eb284495399da68d85"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/RTG/ADRL-RTG-002.md",
+      "sha256": "a4603c1e0b33f177a92a5ceaf6d58220dddb3031b1d405164819757d86240c05"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/RTG/ADRL-RTG-003.md",
+      "sha256": "3bbbb0e5e472282d3b9acf451612600e7eb7840bf1856a3b8b90b786ab0ab005"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/RTG/ADRL-RTG-004.md",
+      "sha256": "a6946a715ffa5a9fff8a04503e30795e19205c2a351cd43ec2eaee44272fe2ed"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/RTG/ADRL-RTG-005.md",
+      "sha256": "b4cf4b7bfe2a1ec36fbfa5f61a5816076dcd915b342d34e1954fd007398d5282"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/RTG/ADRL-RTG-006.md",
+      "sha256": "7be71bc17c4cd49e58dca54257d46d31d097ac24d040953f25795ee894355244"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/RTG/ADRL-RTG-007.md",
+      "sha256": "b49e789149f5f9beefbe60839bd6a6d12c12588d98cd27775d3bccf58b5ede70"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/RTG/ADRL-RTG-008.md",
+      "sha256": "859c6e5f2db086d8a38f72db8b3ff8a5df7ad270217bd7f56245399b60d2fcbc"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/RTG/ADRL-RTG-009.md",
+      "sha256": "6a3a8ec6dd998acc25c5fce2013dc2242a0bdfff682d4bbcbd51474f16b03251"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SAF/ADRL-SAF-001.md",
+      "sha256": "11b5f6eda1709f9716610d7481a701ad0c80bb000ba27af34cad2d961e6c0f4a"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SAF/ADRL-SAF-002.md",
+      "sha256": "47e922be2ff1ababccb4e51e7f220ee65e995f9d225a64d5229d53786640dbfd"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SAF/ADRL-SAF-003.md",
+      "sha256": "6b80b05f1eb4ef2abae0a1fe75c7a1d5d72eb66a06ddb300054a197f0139dc9c"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SAF/ADRL-SAF-004.md",
+      "sha256": "af97e86c911eead28bfb529612aa65ec2f46412a0f5f1ba4ee640da2db56b4bd"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SAF/ADRL-SAF-005.md",
+      "sha256": "26e65e4093867416372d212eb71b2c1a6860fbc1f480e93547a15aa3d0ca760b"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SAF/ADRL-SAF-006.md",
+      "sha256": "e6b9201184b56d4bad20cc885f793a90fb2badadd18adcad8b7ac9381b4572fc"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SAF/ADRL-SAF-007.md",
+      "sha256": "b86c5e66f6e0c4c3bd1d0e17267f9fa459195e335a7ee1e1c40ac41dd71e2f84"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SAF/ADRL-SAF-008.md",
+      "sha256": "687a248f3dfa590d751f9f78df3caf3682671c412cd355f386c69dc47074dd21"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SAF/ADRL-SAF-009.md",
+      "sha256": "d88f291bb0c3c9c2177e1c94a781b3ec5129a56596b70c83825473901eebf882"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SEM/ADRL-SEM-001.md",
+      "sha256": "527bdbb2a6acb5a20e39dcaf5789e9c84f8c81073798be7345a688c27e5a3d38"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SEM/ADRL-SEM-002.md",
+      "sha256": "83d5f7c0474fb697b500c30bb1f1fee657a49a863e30f78ed33aa750db7fe9ff"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SEM/ADRL-SEM-003.md",
+      "sha256": "20d6de1d7aff5b7b2ac9b7344492a6c0ff69c31cd57fd1a92aab1847d06fcdef"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SEM/ADRL-SEM-004.md",
+      "sha256": "f1f1af99485a064b80a43579341bf54c7d46b56a1af29d544242be52061051b1"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SEM/ADRL-SEM-005.md",
+      "sha256": "67e97b6a143ef0b143dc4d0462337080607997ed31aa44fda63378ea4b63967d"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SEM/ADRL-SEM-006.md",
+      "sha256": "98c2ff23f3049b95f5a26f2d557ddadfc86f5f6db1a6fe930b8ee48db09429a2"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/SEM/ADRL-SEM-007.md",
+      "sha256": "810ffb5660cd4d439d874eb3cbc7e7171417e16f7c7add4ac13f2fe07abced48"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/TRU/ADRL-TRU-001.md",
+      "sha256": "4897b612b44ccb6da2731d1315fb2c7734db40c53dda2a0cbd3825fbe02ab37c"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/TRU/ADRL-TRU-002.md",
+      "sha256": "009d5b1c4d5880d0e74fb6c19b5d5bc8886f47ae447442353afead32fadf4edd"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/adr/TRU/ADRL-TRU-003.md",
+      "sha256": "b4159d83c2a9c38633ef0558cd64ffab3c28a1a81d588912cdaa77b8c10e7278"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/src/adrl/learning/artifacts.py",
+      "sha256": "b619ab050dfea6317521551de7ed56b188e28a10da9dab488f9b9950145d4be0"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/src/adrl/proxy/pipeline.py",
+      "sha256": "9a87d0556b600f3d249ea21351800a40fa6ea93c21889313f256cbb3ee2be270"
+    }
+  ],
+  "references": {
+    "S1": "https://arxiv.org/html/2406.18665v4",
+    "S2": "https://arxiv.org/abs/2410.10347",
+    "S3": "https://arxiv.org/html/2606.07587v1",
+    "S4": "https://arxiv.org/html/2607.00053v1",
+    "S5": "https://arxiv.org/html/2608.24358v1",
+    "S6": "https://arxiv.org/html/2608.08239v1",
+    "S7": "https://arxiv.org/html/2606.22902v3",
+    "S8": "https://arxiv.org/html/2510.07429v1",
+    "S9": "https://arxiv.org/html/2608.08265v1",
+    "S10": "https://arxiv.org/abs/2605.30315",
+    "S11": "https://arxiv.org/abs/2503.01747v3",
+    "S12": "https://arxiv.org/html/2603.24755v1",
+    "S13": "https://arxiv.org/html/2503.18813v1",
+    "S14": "https://arxiv.org/html/2505.23643v1",
+    "S15": "https://arxiv.org/html/2607.24625v2",
+    "S16": "https://arxiv.org/html/2504.18784v1",
+    "S17": "https://arxiv.org/pdf/2608.04523",
+    "S18": "https://arxiv.org/html/2606.18497v1",
+    "S19": "https://arxiv.org/abs/2602.01757",
+    "D1": "https://platform.claude.com/docs/en/build-with-claude/compaction",
+    "D2": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+    "D3": "https://code.claude.com/docs/en/llm-gateway-protocol",
+    "D4": "https://github.com/BerriAI/litellm/pull/7263",
+    "D5": "https://docs.litellm.ai/docs/providers/ollama",
+    "D6": "https://www.edpb.europa.eu/system/files/2026-07/edpb_guidelines_202502_blockchain_v2_en.pdf",
+    "D7": "https://code.claude.com/docs/en/sandbox-environments",
+    "D8": "https://learn.chatgpt.com/docs/config-file/config-reference"
+  },
+  "outputs": [
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/reports/adrl-independent-research-review-2026-09-07.md",
+      "sha256": "30096a9cf05ac1468838111d5469bedd1592fbe238d55e717a2b34f0203baa30"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-world-class/output/pdf/adrl-independent-research-review-2026-09-07.pdf",
+      "sha256": "d470d7930dfd6a8b6514619d10434f71920ff7f2c2d7a58de3a73d213fb48796"
+    }
+  ]
+}

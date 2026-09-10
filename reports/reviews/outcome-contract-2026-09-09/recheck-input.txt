@@ -1,0 +1,976 @@
+Fable independent recheck of RV-01 only, first correction round. Reassess previous conditional blocker and evidence gaps from original critique below. Return scoped verdict and remaining material blockers under 700 words. No tools. Final full checks-2 are concurrently running; do not claim to have executed tests. Focused 11 cases pass. Original 918 full tests passed before 4 added cases; code unchanged since that run. No maturity or complete-learning-loop claim.
+
+FILE post-review.md
+**Verdict: RV-01 is materially repaired, with one conditional blocker and four evidence gaps to close before the review round is marked resolved.** The cascade now emits canonical `outcome` rows, the proxy forwards them verbatim, and the composed test reaches the Closer and readiness without inventing success. The test counts and the before-regression log are author-supplied and I did not run them. The critique below is from reading the diff and supplied source.
+
+## Blockers
+
+- **Conditional: None identity is coerced to the string "None".** In the new `_outcome` helper in `src/adrl/cascade/controller.py`, session and lineage are passed as `str(ctx.session_hmac)` and `str(ctx.lineage_hmac)`. If either field on RequestContext can be None, the payload carries a truthy "None". The Closer's `_session_of` in `src/adrl/ledger/outcomes.py` only falls back to the decisions row when the value is None, so the fallback is defeated, the idle trigger keys off a phantom session, and the human correction detector joins on a literal "None". The composed test asserts equality with the decision row, so the fixture path is fine. Verify the type. If it is optional, guard with `None if x is None else str(x)` and add a test with a None session. If non-optional, record that and this drops to a note.
+
+- **Route attribution on continuations is asserted but not demonstrated.** The continuation test in `tests/integration/e2e/test_outcome_contract.py` asserts the closed_turn lands on the first decision's route. It never asserts that the continuation's own decision row has a different route id. If continuations inherit the route, the old re-keying would also have placed the row correctly, and the test proves producer, sequence and schema only. Add an explicit assertion that the second decision's route id differs from the sticky route, or construct the divergence directly. Until then the dispositions line "retain cascade route" is over-claimed.
+
+## Verification gaps that do not block
+
+- **The forwarded fallback test is a hybrid state, not the fallback.** The test removes the controller ledger after the first turn, so the producer counter was seeded while the ledger existed. A controller composed without a ledger from the start would seed from 1 with no visibility into stored rows. The plan-phase pending row is lost on that path, which is the accepted limitation. Because all states now share the `outcome` event type, sequence reuse after a restart with a missing or failed ledger read collides on the idempotency key and is silently dropped by the pipeline append. Under the old dialect, pending and closed_turn did not collide. The doc note "Observe-phase forwarding is tested" should say it is tested with a pre-seeded counter.
+
+- **The broad exception handler in the proxy finalize makes the new TypeError guard inert.** Any error on the new forwarding lines, including an AttributeError if the pipeline ledger is None or a NameError from a missing import, is logged as finalize_failed and swallowed. The forwarded test passing is the only evidence the names resolve. Consider asserting no finalize_failed log in the forwarded test.
+
+- **The idle-trigger assertion depends on CloseRule defaults and timestamp strictness.** The Closer counts user turns with `ts>` the closed_turn timestamp. Route A's closed_turn is written during the second turn's plan, before that turn's decision row. Whether the second decision counts depends on clock resolution and the default subsequent_turns value. The test asserts the trigger name "idle" without pinning the rule. Pass an explicit CloseRule with subsequent_turns above one to remove the timing dependence.
+
+- **The `_append_event` helper was bypassed, not replaced.** I do not have its source. Confirm it performed no side effect beyond persistence, such as write-ahead ordering or metrics, that the cascade rows now skip.
+
+## Missing acceptance tests
+
+1. **Legacy exclusion from readiness.** The contract doc states old state-valued rows never enter readiness, even as censored. No test seeds a route with only legacy rows and asserts it is absent from readiness routes and from routes_in_state. The restart test adds a canonical pending, so that route does enter.
+2. **Subsequent-turns and episode-boundary triggers.** The session and lineage HMACs were added so these triggers work. Only idle is exercised. Add a composed test with N user turns after closed_turn asserting the subsequent_turns trigger, and one with an episode boundary event.
+3. **Route divergence on continuation** as described above, on both direct and forwarded paths.
+4. **None session or lineage** as described above, if the type permits it.
+5. **Dropped forwarded event.** Force the pipeline append to return False and assert the dropped counter and warning, so a duplicate-key collision is observable rather than silent.
+6. **Before-regression log content.** I cannot see the log. Confirm it fails on the assertion for a persisted `outcome` row with closed_turn state, not on a fixture or import error, or it does not evidence the hypothesis.
+
+## Things that check out
+
+- **Cause retention.** The terminal closed_turn carries a top-level failure_type, the next-turn closed_turn carries none, and label derivation scans all outcome payloads. The parametrised 503 and 400 tests assert this end to end.
+- **Completed 400 is decisive.** If the empty-candidate default were task_capability, the label assertion would fail. The disposition on resolve_primary is corroborated by the test, not just by inspection.
+- **Idempotent closure.** Second scan returns empty because the latest outcome row is closed_final, and the closed_final producer sequence is derived from the rule id. One label row is asserted.
+- **Unknown success stays unknown.** harness_reported_success is None on both transitions, and readiness reports one closed_final with zero capability evidence and the no-capability-evidence blocker.
+- **Sequence seeding across the dialect change.** The legacy seeding test covers 77 to 78 and the seed counts by producer regardless of event type, so post-restart collisions on mixed-dialect routes are avoided when the ledger read succeeds.
+- **Fixture assertion changes** in the controller integration test change only the event-type selection and keep partial-stream and infrastructure evidence checks.
+
+## Scoped verdict
+
+RV-01 can be recorded as repaired once the None coercion is verified or guarded and the continuation route-divergence assertion is added. The legacy-exclusion and subsequent-turns tests should land in the same correction round because they back claims already written into the contract doc. Nothing here promotes maturity or qualifies LRN-001. Readiness after this slice honestly reports a closed count with a blocked window, and that is the correct end state for this scope. Other retrospective findings remain open and are not addressed by this review.
+FILE dispositions.md
+# Pre-wave critique dispositions
+
+Fable 5.1 pre-review: first tool-based attempt timed out (not accepted as review); a source-embedded retry returned proceed with changes. Original outputs retained.
+
+- Proxy forwarding identity: accepted; now append LedgerEvent verbatim, with failure logging. Direct/forwarded continuation tests retain cascade route/producer/sequence/schema.
+- Plan-phase no-ledger fallback: accepted limitation. Production composition has a controller ledger; no-ledger plan persistence remains unsupported and is not claimed.
+- 4xx capability leak: inspected `resolve_primary`: empty candidates already return unverifiable. No resolver change needed. Added completed-400 direct test plus HTTP 400 and 503 tests; all exclude capability evidence.
+- Failure metadata: canonical constructor receives prior top-level failure_type and diagnostic secondary_type via extra, without duplicate cause candidates.
+- Context identity: session and lineage HMACs supplied by RequestContext.
+- Unknown success: None, no positive claim; readiness zero capability evidence.
+- Restart/legacy: new canonical sequence follows old cascade sequence; legacy event bytes unchanged.
+
+Test adjustment: first candidate expected HTTP 400 to be unverifiable. Actual wire observer marks the HTTP error incomplete, which existing policy maps to infrastructure. Preserved failed log and original test; separate completed-400 regression now exercises the precise reviewer hypothesis. This was a test-expectation correction, not a production policy change.
+
+No retrospective severity removed. RV-01 awaits post-review. Other findings stay open. No formal maturity promotion or autonomous learning claim.
+
+## Post-review corrections, round 1
+
+Identity fields are non-optional SessionId/LineageId NewType(str) in core/types.py and core/ids.py; no optional coercion change is needed. Added an explicitly divergent current decision route at finalization for both direct and forwarded continuation cases. Added legacy-only exclusion, subsequent-turn and explicit episode-event triggers, and dropped-forwarded-event observability. The episode event is test-supplied through the ledger API, not a newly wired harness signal. Pinned idle rule inputs. Documented pre-seeded forwarding scope. Original _append_event performs proxy sequencing, insertion and dropped-event diagnostics only; no write-ahead behavior is lost.
+
+The first regression failed at the empty routes_in_state assertion (before-regression.log), not import/setup. Fable did not receive the log in its first post pass; include it in the recheck. All prior logs and source snapshots remain unchanged.
+
+FILE before-regression.log
+F
+=================================== FAILURES ===================================
+_________ test_composed_outcomes_close_once_without_inventing_success __________
+
+live = E2E(settings=Settings(listen_host='127.0.0.1', listen_port=8788, gateway_base_url='http://fake-gateway', gateway_timeo...type":"text","text":"Fix another typo in README.md"}]}]}'}]), gateway_client=<httpx.AsyncClient object at 0x109adf230>)
+
+    async def test_composed_outcomes_close_once_without_inventing_success(live: E2E) -> None:
+        await live.send("user_turn", body=user_turn_body("Fix the typo in README.md"))
+        first = RouteId(live.decisions()[0]["route_id"])
+        await live.send("user_turn", body=user_turn_body("Fix another typo in README.md"))
+        second = RouteId(live.decisions()[1]["route_id"])
+>       assert [e.route_id for e in routes_in_state(live.store, OutcomeState.CLOSED_TURN)] == [first]
+E       AssertionError: assert [] == ['01a08251-be...7f61bf8350b7']
+E         
+E         Right contains one more item: '01a08251-beac-7759-88fb-7f61bf8350b7'
+E         Use -v to get more diff
+
+../adrl-core/tests/integration/e2e/test_outcome_contract.py:26: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+2026-09-09 00:09:50 [warning  ] egress_checkpoints_unsigned    detail='no checkpoint_signing_key_path; tamper evidence stops at the hash chain'
+2026-09-09 00:09:50 [info     ] sticky_state_loaded            lineages=0
+2026-09-09 00:09:50 [info     ] adrl_components_built          installed={'ledger.keystore': True, 'ledger.erasure': True, 'ledger.state': True, 'gates': True, 'routing': True, 'cascade': True} modes={'gates': 'enforce', 'routing': 'live', 'fallback': 'live'}
+----------------------------- Captured stdout call -----------------------------
+2026-09-09 00:09:50 [info     ] lineage_classified             allowed=['cheap_cloud', 'frontier', 'local'] class_id=open lineage=7b3a79b393cb3516fe12397723510fe930cb21e0de81425184eb469034e3c235 request_class=user_turn source=assertion verified=True
+2026-09-09 00:09:50 [info     ] gate_outcome                   block=None latency_ms=28.78 lineage=7b3a79b393cb3516fe12397723510fe930cb21e0de81425184eb469034e3c235 permitted=['local', 'cheap_cloud', 'frontier'] pinned=False request_class=user_turn unscanned=False
+2026-09-09 00:09:50 [info     ] gate_outcome                   block=None latency_ms=3.14 lineage=7b3a79b393cb3516fe12397723510fe930cb21e0de81425184eb469034e3c235 permitted=['local', 'cheap_cloud', 'frontier'] pinned=False request_class=user_turn unscanned=False
+=========================== short test summary info ============================
+FAILED ../adrl-core/tests/integration/e2e/test_outcome_contract.py::test_composed_outcomes_close_once_without_inventing_success
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 0.61s
+
+FILE focused-3.log
+...........                                                              [100%]
+11 passed in 0.61s
+
+FILE tests/integration/e2e/test_outcome_contract.py
+"""ADRL-MEM-002: persisted cascade outcomes reach the canonical lifecycle consumers.
+
+Synthetic ASGI transport only. The shared E2E fixture loads SHADOW configuration into
+LIVE components; these tests do not qualify live configuration admission or real traffic.
+"""
+
+from dataclasses import replace
+from datetime import UTC, datetime, timedelta
+
+import pytest
+
+from adrl.cascade.controller import CascadeController
+from adrl.cascade.sticky import MemoryStateProvider
+from adrl.config.models import CloseRule
+from adrl.core.enums import FailureType, OutcomeState
+from adrl.core.ids import RouteId
+from adrl.core.types import LedgerEvent
+from adrl.ledger.events import OUTCOME_EVENT, read_stored_events
+from adrl.ledger.outcomes import Closer, read_projection, routes_in_state
+from adrl.ledger.readiness import learning_readiness
+from adrl.ledger.store import LedgerStore
+from adrl.proxy.pipeline import _Turn
+from adrl.telemetry.metrics import EVENT_DROPPED_TOTAL
+from adrl.wire.observe import ResponseObservation
+from tests.unit.routing.helpers import make_ctx, make_gate, make_obs, user_body
+
+from .conftest import E2E, user_turn_body
+
+
+async def test_composed_outcomes_close_once_without_inventing_success(live: E2E) -> None:
+    await live.send("user_turn", body=user_turn_body("Fix the typo in README.md"))
+    first = RouteId(live.decisions()[0]["route_id"])
+    await live.send("user_turn", body=user_turn_body("Fix another typo in README.md"))
+    second = RouteId(live.decisions()[1]["route_id"])
+    assert [e.route_id for e in routes_in_state(live.store, OutcomeState.CLOSED_TURN)] == [first]
+    events = read_stored_events(live.store, first, OUTCOME_EVENT)
+    assert [e.payload["state"] for e in events] == ["pending", "closed_turn"]
+    assert all(
+        e.event.producer == "cascade" and e.event.schema_version == "events-v1" for e in events
+    )
+    assert [e.event.producer_seq for e in events] == [1, 2]
+    assert all(e.payload.get("harness_reported_success") is None for e in events)
+    assert events[-1].payload["session_hmac"] == live.decisions()[0]["session_hmac"]
+    assert read_projection(live.store, second).state is OutcomeState.PENDING
+    closer = Closer(live.store, CloseRule(subsequent_turns=100, idle_minutes=30))
+    future = datetime.now(UTC) + timedelta(days=1)
+    assert await closer.scan(now=future) == [(first, "idle")]
+    assert await closer.scan(now=future) == []
+    projected = read_projection(live.store, first)
+    assert projected.state is OutcomeState.CLOSED_FINAL
+    assert projected.label.failure_type is FailureType.UNVERIFIABLE
+    assert projected.label.result == "excluded"
+    assert len(live.store.read_events(first, "label")) == 1
+    readiness = learning_readiness(live.store)
+    assert readiness.closed_final_count == 1
+    assert readiness.censored_count == 1
+    assert readiness.capability_evidence_count == readiness.verified_success_count == 0
+    assert readiness.window_blocked and "no_capability_evidence" in readiness.blockers
+
+
+@pytest.mark.parametrize(
+    "status,cause", [(503, FailureType.INFRASTRUCTURE), (400, FailureType.INFRASTRUCTURE)]
+)
+async def test_terminal_cause_survives_next_turn_and_close(
+    live: E2E, status: int, cause: FailureType
+) -> None:
+    live.gateway_state.status_code = status
+    response = await live.send("user_turn")
+    assert response.status_code == status
+    first = RouteId(live.decisions()[0]["route_id"])
+    assert read_projection(live.store, first).state is OutcomeState.CLOSED_TURN
+    live.gateway_state.status_code = 200
+    await live.send("user_turn", body=user_turn_body("Fix the typo in README.md"))
+    closed = [
+        e
+        for e in read_stored_events(live.store, first, OUTCOME_EVENT)
+        if e.payload["state"] == "closed_turn"
+    ]
+    assert len(closed) == 2
+    assert closed[0].payload["failure_type"] == cause.value
+    assert closed[-1].payload["reason"] == "next_user_turn"
+    await Closer(live.store, CloseRule(subsequent_turns=100, idle_minutes=30)).scan(
+        now=datetime.now(UTC) + timedelta(days=1)
+    )
+    label = read_projection(live.store, first).label
+    assert label.result == "excluded" and label.failure_type is cause
+    assert learning_readiness(live.store).capability_evidence_count == 0
+
+
+async def test_completed_400_stays_unverifiable(live: E2E) -> None:
+    controller = CascadeController(
+        live.components.bundle, MemoryStateProvider(), ledger=live.components.facade
+    )
+    ctx = make_ctx(user_body())
+    decision = await live.components.router.decide(ctx, make_gate(), None)
+    plan = await controller.plan(ctx, decision, make_gate(), None)
+    await controller.observe(ctx, plan, make_obs(status=400, completed=True))
+    projected = read_projection(live.store, decision.route_id)
+    assert projected.state is OutcomeState.CLOSED_TURN
+    assert projected.label.failure_type is FailureType.UNVERIFIABLE
+    assert not projected.label.is_capability_evidence
+
+
+@pytest.mark.parametrize("forwarded", [False, True])
+async def test_continuation_terminal_event_preserves_identity(
+    live: E2E, monkeypatch: pytest.MonkeyPatch, forwarded: bool
+) -> None:
+    await live.send("user_turn")
+    route = RouteId(live.decisions()[0]["route_id"])
+    finalize = live.components.pipeline._finalize
+    different_route = RouteId("different-current-decision")
+    assert different_route != route
+
+    async def divergent_finalization(turn: _Turn, obs: ResponseObservation) -> None:
+        assert turn.plan.route_id == route
+        # Force divergence at the stage boundary: ordinary continuations inherit identity.
+        altered = replace(turn, decision=replace(turn.decision, route_id=different_route))
+        assert altered.decision.route_id != altered.plan.route_id
+        await finalize(altered, obs)
+
+    monkeypatch.setattr(live.components.pipeline, "_finalize", divergent_finalization)
+    if forwarded:
+        # Only observe-phase fallback is supported; plan-phase persistence requires a ledger.
+        monkeypatch.setattr(live.components.cascade, "_ledger", None)
+    live.gateway_state.status_code = 503
+    await live.send("continuation")
+    closed = routes_in_state(live.store, OutcomeState.CLOSED_TURN)
+    assert len(closed) == 1 and closed[0].route_id == route
+    assert closed[0].event.producer == "cascade"
+    assert closed[0].event.producer_seq == 2
+    assert closed[0].event.schema_version == "events-v1"
+    assert closed[0].payload["failure_type"] == "infrastructure"
+
+
+async def test_restart_sequence_includes_legacy_events(live: E2E) -> None:
+    ctx = make_ctx(user_body())
+    decision = await live.components.router.decide(ctx, make_gate(), None)
+    legacy = LedgerEvent(decision.route_id, "pending", "cascade", 77, {"legacy": True})
+    await live.components.facade.append_event(legacy)
+    controller = CascadeController(
+        live.components.bundle, MemoryStateProvider(), ledger=live.components.facade
+    )
+    await controller.plan(ctx, decision, make_gate(), None)
+    events = read_stored_events(live.store, decision.route_id)
+    assert events[0].event == legacy
+    assert events[-1].event_type == OUTCOME_EVENT
+    assert events[-1].event.producer_seq == 78
+    assert events[-1].payload["state"] == "pending"
+
+
+async def test_legacy_only_route_is_absent_from_readiness(live: E2E) -> None:
+    route = RouteId("legacy-only")
+    await live.components.facade.append_event(
+        LedgerEvent(route, "closed_turn", "cascade", 1, {"reason": "historical"})
+    )
+    assert routes_in_state(live.store, OutcomeState.CLOSED_TURN) == []
+    report = learning_readiness(live.store)
+    assert report.closed_final_count == report.censored_count == 0
+    assert read_projection(live.store, route).state is None
+
+
+@pytest.mark.parametrize("trigger", ["subsequent_turns", "episode_boundary"])
+async def test_context_identity_enables_closing_triggers(live: E2E, trigger: str) -> None:
+    await live.send("user_turn")
+    first = RouteId(live.decisions()[0]["route_id"])
+    await live.send("user_turn", body=user_turn_body("Fix another typo"))
+    if trigger == "subsequent_turns":
+        await live.send("user_turn", body=user_turn_body("Fix a third typo"))
+    else:
+        await live.store.write_through(
+            LedgerStore.insert_lineage_event(
+                live.decisions()[0]["lineage_hmac"], "episode_boundary", {"signal": "clear"}
+            )
+        )
+    rule = CloseRule(
+        subsequent_turns=1 if trigger == "subsequent_turns" else 100, idle_minutes=10000
+    )
+    closed = await Closer(live.store, rule).scan()
+    assert (first, trigger) in closed
+
+
+async def test_dropped_forwarded_event_is_observable(
+    live: E2E, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    await live.send("user_turn")
+    monkeypatch.setattr(live.components.cascade, "_ledger", None)
+    append = live.components.facade.append_event
+
+    async def reject_outcome(event: LedgerEvent) -> bool:
+        if event.event_type == OUTCOME_EVENT and event.producer == "cascade":
+            return False
+        return await append(event)
+
+    monkeypatch.setattr(live.components.facade, "append_event", reject_outcome)
+    metric = EVENT_DROPPED_TOTAL.labels(producer="cascade")
+    before = metric._value.get()
+    live.gateway_state.status_code = 503
+    await live.send("continuation")
+    assert metric._value.get() == before + 1
+    output = capsys.readouterr().out
+    assert "event_dropped" in output and "finalize_failed" not in output
+
+FILE docs/outcome-contract.md
+# Cascade outcome contract
+
+9 September 2026. Owning ADRs: MEM-001/002/004, CAS-003/007 and FND-003.
+
+The cascade now uses the existing `outcome_event` constructor: event type `outcome`,
+state in `payload.state`, schema `events-v1`, failure taxonomy version retained.
+Pending and closed-turn transitions carry session/lineage HMACs, existing diagnostic
+facts and unknown harness success. Terminal failure cause survives subsequent turns.
+The proxy forwards returned LedgerEvent objects without replacing their route,
+producer, sequence or schema. Normal composition supplies the controller's ledger;
+without that ledger, plan-phase events are not persisted. Observe-phase forwarding
+is tested with a pre-seeded counter, not a replacement for required plan-phase ledger
+wiring or a qualification of cold-start forwarding without ledger sequence visibility.
+
+The integration test connects the composed proxy/cascade/store to explicitly invoked
+Closer and readiness projection. It proves a closed count, not verified success or
+learning eligibility. No background closer is installed by this repair. Shared E2E
+fixtures use synthetic ASGI responses and SHADOW-loaded bundles with LIVE pipeline
+settings. This is not production admission, real-harness or lab portability evidence.
+
+Historical state-valued event types are left untouched. They do not enter canonical
+readiness counts, even as censored rows; recovery needs a separately reviewed replay.
+No schema migration, historical relabeling or maturity promotion is performed.
+
+Other review findings remain: rule-health event shape/refresh, correction consumption,
+verifier calibration, learning features-v2 admission, estimator selection, lab portability
+and live-config admission. Thus RV-01 repair does not establish a complete learning loop.
+
+FILE src/adrl/core/types.py
+"""Value objects shared across packages. Primary: ADRL-SEM-001.
+Also implements: ADRL-TRU-002 (register additions of 2026-09-03).
+
+Secondary: ADRL-SAF-001, ADRL-RTG-002, ADRL-CAS-004, ADRL-CAS-006, ADRL-RTG-009.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass, field
+from typing import Any
+
+from adrl.core.enums import (
+    DetectorTier,
+    InteractionMode,
+    RequestClass,
+    Rung,
+    ServedSource,
+    SideEffectClass,
+    UtilityKind,
+    VerificationResult,
+)
+from adrl.core.errors import PermittedSetWidened
+from adrl.core.ids import LineageId, RouteId, SessionId
+
+HANDOFF_NOTE_SCHEMA_VERSION = "handoff-note-v1"
+HANDOFF_NOTE_DELIMITER = "<<<ADRL-HANDOFF-NOTE-V1>>>"
+
+
+@dataclass(frozen=True, slots=True)
+class RequestContext:
+    """Everything the pipeline knows about one inbound request after classification."""
+
+    body: bytes
+    json: Mapping[str, Any]
+    headers: Mapping[str, str]
+    path: str
+    request_class: RequestClass
+    content_bearing: bool
+    interaction_mode: InteractionMode
+    session_hmac: SessionId
+    lineage_hmac: LineageId
+    requested_model: str
+    is_stream: bool
+    max_tokens: int | None
+    agent_id: str | None = None
+    parent_agent_id: str | None = None
+    utility_kind: UtilityKind | None = None
+    session_key_source: str = "header"
+    fingerprint_id: str | None = None
+    protocol_profile_id: str | None = None
+    protocol_profile_version: str | None = None
+    harness_adapter_id: str | None = None
+    harness_adapter_version: str | None = None
+
+    @property
+    def is_subagent(self) -> bool:
+        return self.agent_id is not None
+
+
+@dataclass(frozen=True, slots=True)
+class PermittedSet:
+    """A set of permitted rungs that can only shrink (ADRL-SAF-001)."""
+
+    rungs: frozenset[Rung]
+
+    @classmethod
+    def all(cls) -> PermittedSet:
+        return cls(frozenset(Rung))
+
+    @classmethod
+    def only(cls, *rungs: Rung) -> PermittedSet:
+        return cls(frozenset(rungs))
+
+    @classmethod
+    def local_only(cls) -> PermittedSet:
+        return cls(frozenset({Rung.LOCAL}))
+
+    def tighten(self, allowed: Iterable[Rung]) -> PermittedSet:
+        """Return the intersection; raise if the caller tried to add a rung."""
+        proposed = frozenset(allowed)
+        widened = proposed - self.rungs
+        if widened:
+            raise PermittedSetWidened(
+                "permitted set may only tighten; attempted to add "
+                + ",".join(sorted(r.value for r in widened))
+            )
+        return PermittedSet(self.rungs & proposed)
+
+    def remove(self, *rungs: Rung) -> PermittedSet:
+        return PermittedSet(self.rungs - frozenset(rungs))
+
+    @property
+    def is_empty(self) -> bool:
+        return not self.rungs
+
+    @property
+    def highest(self) -> Rung | None:
+        return max(self.rungs) if self.rungs else None
+
+    @property
+    def lowest(self) -> Rung | None:
+        return min(self.rungs) if self.rungs else None
+
+    def __contains__(self, rung: object) -> bool:
+        return rung in self.rungs
+
+    def __iter__(self) -> Any:
+        return iter(sorted(self.rungs))
+
+    def as_list(self) -> list[str]:
+        return [r.value for r in sorted(self.rungs)]
+
+
+@dataclass(frozen=True, slots=True)
+class DeploymentInfo:
+    """One attested gateway deployment (ADRL-SAF-008 residency, ADRL-FND-002 rung-closed)."""
+
+    deployment_id: str
+    rung: Rung
+    model_group: str
+    provider: str
+    trust_zone: str
+    geo: str
+    api_base_host: str | None = None
+    data_use_profile: str | None = None
+    model: str | None = None
+
+    @property
+    def is_local_host(self) -> bool:
+        return self.trust_zone == LOCAL_HOST_ZONE
+
+
+LOCAL_HOST_ZONE = "local_host"
+
+
+@dataclass(frozen=True, slots=True)
+class DeploymentSet:
+    """Permitted deployments, the object ADRL actually constrains; it can only shrink.
+
+    A rung label is a projection of this set (``rungs()``); the pin, the repository ceiling
+    and residency all act here, on attested deployments, never on labels (ADRL-SAF-001,
+    ADRL-SAF-008).
+    """
+
+    ids: frozenset[str]
+    catalog: Mapping[str, DeploymentInfo]
+
+    @classmethod
+    def all_of(cls, catalog: Mapping[str, DeploymentInfo]) -> DeploymentSet:
+        return cls(frozenset(catalog), dict(catalog))
+
+    def _keep(self, keep: Iterable[str]) -> DeploymentSet:
+        return DeploymentSet(self.ids & frozenset(keep), self.catalog)
+
+    def tighten(self, allowed: Iterable[str]) -> DeploymentSet:
+        proposed = frozenset(allowed)
+        widened = proposed - self.ids
+        if widened:
+            raise PermittedSetWidened(
+                "deployment set may only tighten; attempted to add " + ",".join(sorted(widened))
+            )
+        return self._keep(proposed)
+
+    def only_rungs(self, rungs: Iterable[Rung]) -> DeploymentSet:
+        wanted = frozenset(rungs)
+        return self._keep(i for i in self.ids if self.catalog[i].rung in wanted)
+
+    def only_trust_zone(self, *zones: str) -> DeploymentSet:
+        return self._keep(i for i in self.ids if self.catalog[i].trust_zone in zones)
+
+    def only_geo(self, geo: str, *, keep_local_host: bool = True) -> DeploymentSet:
+        """Residency: keep deployments in ``geo``; the local host never leaves the machine."""
+        return self._keep(
+            i
+            for i in self.ids
+            if self.catalog[i].geo == geo or (keep_local_host and self.catalog[i].is_local_host)
+        )
+
+    def local_host_only(self) -> DeploymentSet:
+        return self.only_trust_zone(LOCAL_HOST_ZONE)
+
+    def rungs(self) -> frozenset[Rung]:
+        return frozenset(self.catalog[i].rung for i in self.ids)
+
+    def to_permitted(self) -> PermittedSet:
+        return PermittedSet(self.rungs())
+
+    def for_rung(self, rung: Rung) -> tuple[DeploymentInfo, ...]:
+        return tuple(
+            sorted(
+                (self.catalog[i] for i in self.ids if self.catalog[i].rung is rung),
+                key=lambda d: d.deployment_id,
+            )
+        )
+
+    def get(self, deployment_id: str) -> DeploymentInfo | None:
+        return self.catalog.get(deployment_id) if deployment_id in self.ids else None
+
+    @property
+    def is_empty(self) -> bool:
+        return not self.ids
+
+    def __contains__(self, deployment_id: object) -> bool:
+        return deployment_id in self.ids
+
+    def as_list(self) -> list[str]:
+        return sorted(self.ids)
+
+
+@dataclass(frozen=True, slots=True)
+class Finding:
+    """One detector finding (ADRL-SAF-003). Content-free: only a span hash is kept."""
+
+    detector_id: str
+    tier: DetectorTier
+    span_hash: str
+    finding_id: str
+    content_type: str
+    corroboration: str | None = None
+    shadow: bool = False
+
+    @property
+    def pins(self) -> bool:
+        return not self.shadow
+
+
+@dataclass(frozen=True, slots=True)
+class GateVerdict:
+    """Output of one gate stage (ADRL-SAF-001)."""
+
+    gate: str
+    permitted_after: PermittedSet
+    findings: tuple[Finding, ...] = ()
+    unscanned: bool = False
+    reason: str | None = None
+    pinned: bool = False
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "gate": self.gate,
+            "permitted_after": self.permitted_after.as_list(),
+            "findings": [f.finding_id for f in self.findings],
+            "unscanned": self.unscanned,
+            "reason": self.reason,
+            "pinned": self.pinned,
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class Decision:
+    """One routing decision row (ADRL-RTG-002, ADRL-LRN-004, ADRL-LRN-008)."""
+
+    route_id: RouteId
+    rung: Rung
+    permitted: PermittedSet
+    estimator: str
+    estimator_version: str
+    policy_version: str
+    objective_version: str
+    cascade_feasible: bool
+    cascade_reason: str | None
+    features: Mapping[str, Any]
+    features_version: str
+    propensity: float = 1.0
+    explore_version: str | None = None
+    no_rung_met_threshold: bool = False
+    classifier_provenance: Mapping[str, Any] | None = None
+
+    def as_row(self) -> dict[str, Any]:
+        return {
+            "route_id": self.route_id,
+            "decided_rung": self.rung.value,
+            "permitted_set": self.permitted.as_list(),
+            "estimator": self.estimator,
+            "estimator_version": self.estimator_version,
+            "policy_version": self.policy_version,
+            "objective_version": self.objective_version,
+            "cascade_feasible": self.cascade_feasible,
+            "cascade_reason": self.cascade_reason,
+            "features": dict(self.features),
+            "features_version": self.features_version,
+            "propensity": self.propensity,
+            "explore_version": self.explore_version,
+            "no_rung_met_threshold": self.no_rung_met_threshold,
+            "classifier_provenance": (
+                dict(self.classifier_provenance) if self.classifier_provenance else None
+            ),
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class ServedIdentity:
+    """Served rung, model and provider with provenance (ADRL-CAS-006, ADRL-RTG-008)."""
+
+    rung: Rung
+    model: str | None
+    provider: str | None
+    source: ServedSource
+    deployment_id: str | None = None
+    api_base_host: str | None = None
+    trust_zone: str | None = None
+    geo: str | None = None
+
+    @classmethod
+    def assumed(
+        cls, rung: Rung, requested_model: str, deployment: DeploymentInfo | None = None
+    ) -> ServedIdentity:
+        return cls(
+            rung=rung,
+            model=requested_model,
+            provider=deployment.provider if deployment else None,
+            source=ServedSource.ASSUMED_INTENDED,
+            deployment_id=deployment.deployment_id if deployment else None,
+            api_base_host=deployment.api_base_host if deployment else None,
+            trust_zone=deployment.trust_zone if deployment else None,
+            geo=deployment.geo if deployment else None,
+        )
+
+    @property
+    def receipt_confirmed(self) -> bool:
+        """True only when the gateway itself reported the deployment it served."""
+        return self.source is ServedSource.GATEWAY_REPORTED and self.deployment_id is not None
+
+
+@dataclass(frozen=True, slots=True)
+class Usage:
+    """Token usage including cache fields (ADRL-RTG-009)."""
+
+    input_tokens: int = 0
+    output_tokens: int = 0
+    cache_read_input_tokens: int = 0
+    cache_creation_input_tokens: int = 0
+
+    @classmethod
+    def from_anthropic(cls, usage: Mapping[str, Any] | None) -> Usage:
+        if not usage:
+            return cls()
+        return cls(
+            input_tokens=int(usage.get("input_tokens") or 0),
+            output_tokens=int(usage.get("output_tokens") or 0),
+            cache_read_input_tokens=int(usage.get("cache_read_input_tokens") or 0),
+            cache_creation_input_tokens=int(usage.get("cache_creation_input_tokens") or 0),
+        )
+
+    def merged(self, other: Usage) -> Usage:
+        """Combine message_start usage with message_delta usage (later values win when set)."""
+        return Usage(
+            input_tokens=other.input_tokens or self.input_tokens,
+            output_tokens=other.output_tokens or self.output_tokens,
+            cache_read_input_tokens=other.cache_read_input_tokens or self.cache_read_input_tokens,
+            cache_creation_input_tokens=(
+                other.cache_creation_input_tokens or self.cache_creation_input_tokens
+            ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class SideEffectRecord:
+    """One executed side-effecting tool call since turn start (ADRL-CAS-003)."""
+
+    tool: str
+    target: str
+    status: str
+    side_effect_class: SideEffectClass
+
+
+@dataclass(frozen=True, slots=True)
+class HandoffNote:
+    """Mechanical handoff note, schema v1 (ADRL-CAS-004).
+
+    Generated from ledger fields only. No free text and no model-generated field.
+    """
+
+    cause: str
+    from_rung: Rung
+    to_rung: Rung
+    executed_side_effects: tuple[SideEffectRecord, ...] = ()
+    verifier_result: VerificationResult | None = None
+    schema_version: str = HANDOFF_NOTE_SCHEMA_VERSION
+
+    def render(self) -> str:
+        lines = [
+            HANDOFF_NOTE_DELIMITER,
+            f"schema: {self.schema_version}",
+            f"cause: {self.cause}",
+            f"from_rung: {self.from_rung.value}",
+            f"to_rung: {self.to_rung.value}",
+            f"executed_side_effects: {len(self.executed_side_effects)}",
+        ]
+        for record in self.executed_side_effects:
+            lines.append(
+                f"- tool={record.tool} target={record.target} status={record.status} "
+                f"class={record.side_effect_class.value}"
+            )
+        if self.verifier_result is not None:
+            lines.append(f"verifier_result: {self.verifier_result.value}")
+        lines.append(HANDOFF_NOTE_DELIMITER)
+        return "\n".join(lines)
+
+    def as_content_block(self) -> dict[str, str]:
+        return {"type": "text", "text": self.render()}
+
+
+@dataclass(frozen=True, slots=True)
+class LedgerEvent:
+    """One append-only event (ADRL-MEM-001)."""
+
+    route_id: RouteId
+    event_type: str
+    producer: str
+    producer_seq: int
+    payload: Mapping[str, Any] = field(default_factory=dict)
+    schema_version: str = "events-v1"
+
+
+def left_machine(trust_zone: str | None, destination_rung: str | None) -> bool | None:
+    """Truth for the egress audit (ADRL-TRU-002): the recorded trust zone, never the label.
+
+    Returns None when neither a trust zone nor a rung was recorded (legacy rows).
+    """
+    if trust_zone is not None:
+        return trust_zone != LOCAL_HOST_ZONE
+    if destination_rung is not None:
+        return destination_rung != "local"
+    return None
+
+FILE src/adrl/core/ids.py
+"""Identity minting and hashing. Primary: ADRL-MEM-001. Secondary: ADRL-SEM-002.
+
+route_id is time-ordered so ledger sequences and route ids sort together. Session and lineage
+identities are HMACs under a per-deployment key; raw harness values never reach a ledger.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import hmac
+import os
+import time
+from typing import NewType
+
+RouteId = NewType("RouteId", str)
+SessionId = NewType("SessionId", str)
+LineageId = NewType("LineageId", str)
+
+HMAC_KEY_ID_PREFIX = "hmac-"
+
+
+def mint_route_id(now_ms: int | None = None) -> RouteId:
+    """Mint a UUIDv7-shaped, time-ordered route id.
+
+    Layout: 48-bit unix milliseconds, 4-bit version (7), 12 random bits, 2-bit variant,
+    62 random bits, rendered as the canonical 36-character UUID string.
+    """
+    ms = int(time.time() * 1000) if now_ms is None else now_ms
+    rand = os.urandom(10)
+    rand_a = int.from_bytes(rand[:2], "big") & 0x0FFF
+    rand_b = int.from_bytes(rand[2:], "big") & 0x3FFFFFFFFFFFFFFF
+    value = (ms << 80) | (0x7 << 76) | (rand_a << 64) | (0b10 << 62) | rand_b
+    hex_str = f"{value:032x}"
+    return RouteId(
+        f"{hex_str[:8]}-{hex_str[8:12]}-{hex_str[12:16]}-{hex_str[16:20]}-{hex_str[20:]}"
+    )
+
+
+def route_id_timestamp_ms(route_id: RouteId) -> int:
+    """Recover the millisecond timestamp embedded in a route id."""
+    return int(route_id.replace("-", "")[:12], 16)
+
+
+def hmac_identity(raw: str, key: bytes) -> str:
+    """HMAC-SHA256 of a raw identity under a per-deployment key, hex encoded."""
+    return hmac.new(key, raw.encode("utf-8"), hashlib.sha256).hexdigest()
+
+
+def hmac_key_id(key: bytes) -> str:
+    """Stable, non-secret identifier for an HMAC key so rotations can be recorded."""
+    return HMAC_KEY_ID_PREFIX + hashlib.sha256(key).hexdigest()[:12]
+
+
+def session_identity(raw_session_key: str, key: bytes) -> SessionId:
+    return SessionId(hmac_identity("session:" + raw_session_key, key))
+
+
+def lineage_identity(session: SessionId, agent_chain: tuple[str, ...], key: bytes) -> LineageId:
+    """Lineage = session plus ordered agent chain; the parent lineage has an empty chain."""
+    if not agent_chain:
+        return LineageId(session)
+    return LineageId(hmac_identity("lineage:" + session + ":" + "/".join(agent_chain), key))
+
+PROXY FINALIZE
+    async def _finalize(self, turn: _Turn, obs: ResponseObservation) -> None:
+        ctx = turn.ctx
+        REQUESTS_TOTAL.labels(
+            request_class=ctx.request_class.value, rung=obs.served.rung.value
+        ).inc()
+        lock = self._locks.get(ctx.lineage_hmac)
+        try:
+            async with lock:
+                events = await self._cascade.observe(ctx, turn.plan, obs)
+                if self._state is not None and events.sticky is not None:
+                    await self._state.set_sticky(events.sticky)
+                payload: dict[str, Any] = {
+                    "status": obs.status,
+                    "served_rung": obs.served.rung.value,
+                    "served_model": obs.served.model,
+                    "served_provider": obs.served.provider,
+                    "served_source": obs.served.source.value,
+                    "served_deployment_id": obs.served.deployment_id,
+                    "served_trust_zone": obs.served.trust_zone,
+                    "served_geo": obs.served.geo,
+                    "receipt_confirmed": obs.served.receipt_confirmed,
+                    "intended_rung": turn.target_rung.value,
+                    "intended_deployment_id": (
+                        turn.deployment.deployment_id if turn.deployment else None
+                    ),
+                    "stop_reason": obs.stop_reason,
+                    "streamed_tool_content": obs.streamed_tool_content,
+                    "completed": obs.completed,
+                    "malformed_tool_json": obs.malformed_tool_json,
+                    "tool_uses": [dataclasses.asdict(t) for t in obs.tool_uses],
+                    "bytes_relayed": obs.bytes_relayed,
+                    "fired_wires": list(events.fired_wires),
+                }
+                if obs.usage is not None:
+                    payload["usage"] = {
+                        "input_tokens": obs.usage.input_tokens,
+                        "output_tokens": obs.usage.output_tokens,
+                        "cache_read_input_tokens": obs.usage.cache_read_input_tokens,
+                        "cache_creation_input_tokens": obs.usage.cache_creation_input_tokens,
+                    }
+                if obs.error is not None:
+                    payload["error"] = _content_free_error(
+                        obs.error, obs.status, self._identity.hmac_key
+                    )
+                event_type = "upstream_error" if obs.status >= 400 else "served"
+                await self._append_event(ctx, turn.decision.route_id, event_type, payload)
+                await self._record_receipt(turn, obs)
+                for outcome_event in events.outcome_events:
+                    # Preserve the cascade's route and idempotency identity on continuations.
+                    if not isinstance(outcome_event, LedgerEvent):
+                        raise TypeError("cascade must return LedgerEvent instances")
+                    if not await self._ledger.append_event(outcome_event):
+                        EVENT_DROPPED_TOTAL.labels(producer=outcome_event.producer).inc()
+                        log.warning(
+                            "event_dropped",
+                            route_id=outcome_event.route_id,
+                            event_type=outcome_event.event_type,
+                            producer=outcome_event.producer,
+                            producer_seq=outcome_event.producer_seq,
+                        )
+        except Exception as exc:
+            log.error("finalize_failed", error=str(exc), route_id=turn.decision.route_id)
+
+
+ORIGINAL HELPER (unchanged)
+    async def _append_event(
+        self, ctx: RequestContext, route_id: str, event_type: str, payload: Mapping[str, Any]
+    ) -> None:
+        producer_seq = await self._seq.next(self._ledger, route_id)
+        stored = await self._ledger.append_event(
+            LedgerEvent(
+                route_id=RouteId(route_id),
+                event_type=event_type,
+                producer=PRODUCER,
+                producer_seq=producer_seq,
+                payload=payload,
+            )
+        )
+        if not stored:
+            EVENT_DROPPED_TOTAL.labels(producer=PRODUCER).inc()
+            log.warning(
+                "event_dropped",
+                route_id=route_id,
+                event_type=event_type,
+                producer_seq=producer_seq,
+                degraded=self._ledger.degraded,
+            )
+
+
+CASCADE HELPERS
+    async def _seed_seq(self, route_id: RouteId) -> None:
+        """Continue the producer sequence from the ledger so a restart never reuses a key."""
+        if route_id in self._seq or not route_id:
+            return
+        start = 1
+        if self._ledger is not None:
+            try:
+                stored = await self._ledger.read_events(route_id)
+            except Exception as exc:
+                log.warning("seq_seed_failed", error=type(exc).__name__)
+                stored = []
+            highest = max((e.producer_seq for e in stored if e.producer == PRODUCER), default=0)
+            start = highest + 1
+        self._seq[route_id] = itertools.count(start)
+
+    def _event(self, route_id: RouteId, event_type: str, payload: Mapping[str, Any]) -> LedgerEvent:
+        counter = self._seq.setdefault(route_id, itertools.count(1))
+        return LedgerEvent(
+            route_id=route_id,
+            event_type=event_type,
+            producer=PRODUCER,
+            producer_seq=next(counter),
+            payload=dict(payload),
+        )
+
+    def _outcome(
+        self,
+        ctx: RequestContext,
+        route_id: RouteId,
+        state: OutcomeState,
+        payload: Mapping[str, Any],
+    ) -> LedgerEvent:
+        counter = self._seq.setdefault(route_id, itertools.count(1))
+        return outcome_event(
+            route_id,
+            state,
+            PRODUCER,
+            next(counter),
+            OutcomeFields(
+                session_hmac=str(ctx.session_hmac),
+                lineage_hmac=str(ctx.lineage_hmac),
+                served_rung=payload.get("rung"),
+                extra=payload,
+            ),
+        )
+
+    async def _emit(self, events: list[LedgerEvent]) -> None:
+        if self._ledger is None:
+            return
+        for event in events:
+            stored = await self._ledger.append_event(event)
+            if not stored:
+                EVENT_DROPPED_TOTAL.labels(producer=PRODUCER).inc()
+                log.warning(
+                    "event_dropped",
+                    route_id=str(event.route_id),
+                    event_type=event.event_type,
+                    producer_seq=event.producer_seq,
+                )
+

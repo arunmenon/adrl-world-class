@@ -1,0 +1,369 @@
+--- before/docs/adr-module-map.md
++++ after/docs/adr-module-map.md
+@@ -17,7 +17,7 @@
+ | `adrl/api/store.py` | ADRL-MEM-001, ADRL-MEM-010 | Durable product intake. Primary: ADRL-MEM-001. Secondary: ADRL-MEM-010. |
+ | `adrl/app.py` | ADRL-FND-001, ADRL-FND-002, ADRL-LRN-007 | Composition root. Primary: ADRL-FND-002. |
+ | `adrl/cascade/boundary.py` | ADRL-CAS-003 | Action boundary on the wire. Primary: ADRL-CAS-003. |
+-| `adrl/cascade/controller.py` | ADRL-CAS-001, ADRL-CAS-003, ADRL-CAS-004, ADRL-CAS-005, ADRL-CAS-006, ADRL-CAS-007, ADRL-CAS-008, ADRL-SEM-006 | Cascade controller: plan dispatch, observe responses, escalate at boundaries. |
++| `adrl/cascade/controller.py` | ADRL-CAS-001, ADRL-CAS-003, ADRL-CAS-004, ADRL-CAS-005, ADRL-CAS-006, ADRL-CAS-007, ADRL-CAS-008, ADRL-MEM-001, ADRL-MEM-002, ADRL-MEM-004, ADRL-SEM-006 | ADRL-CAS-003: plan dispatch, observe responses, escalate at boundaries. |
+ | `adrl/cascade/handoff.py` | ADRL-CAS-003, ADRL-CAS-004 | Cross-model handoff transform. Primary: ADRL-CAS-004. Secondary: ADRL-CAS-003. |
+ | `adrl/cascade/sticky.py` | ADRL-CAS-005, ADRL-CAS-006, ADRL-OPS-006, ADRL-SEM-005 | Sticky state within an episode. Primary: ADRL-CAS-005. Secondary: ADRL-CAS-006, ADRL-SEM-005. |
+ | `adrl/cascade/tripwires.py` | ADRL-CAS-001, ADRL-CAS-002 | Deterministic post-call trip-wires. Primary: ADRL-CAS-001. Secondary: ADRL-CAS-002. |
+@@ -95,7 +95,7 @@
+ | `adrl/proxy/errors.py` | ADRL-CAS-007, ADRL-SEM-007 | Compatibility exports for Messages responses. Primary: ADRL-CAS-007. Secondary: ADRL-SEM-007. |
+ | `adrl/proxy/fallback.py` | ADRL-FND-004, ADRL-OPS-008, ADRL-SAF-001, ADRL-SAF-009 | Fail to last-known-safe. Primary: ADRL-FND-004. Secondary: ADRL-SAF-001, ADRL-SAF-009. |
+ | `adrl/proxy/observe_only.py` | ADRL-FND-001, ADRL-MEM-006, ADRL-SEM-006 | Observe-only stage implementations. Primary: ADRL-FND-001. Secondary: ADRL-SEM-006, ADRL-MEM-006. |
+-| `adrl/proxy/pipeline.py` | ADRL-CAS-006, ADRL-FND-001, ADRL-FND-003, ADRL-FND-004, ADRL-SAF-001, ADRL-SAF-009, ADRL-SEM-003, ADRL-SEM-004, ADRL-SEM-006, ADRL-TRU-002 | The per-request pipeline. Primary: ADRL-FND-003. |
++| `adrl/proxy/pipeline.py` | ADRL-CAS-006, ADRL-FND-001, ADRL-FND-003, ADRL-FND-004, ADRL-MEM-001, ADRL-MEM-002, ADRL-SAF-001, ADRL-SAF-009, ADRL-SEM-003, ADRL-SEM-004, ADRL-SEM-006, ADRL-TRU-002 | The per-request pipeline. Primary: ADRL-FND-003. |
+ | `adrl/proxy/stages.py` | ADRL-CAS-005, ADRL-FND-002, ADRL-RTG-002, ADRL-SAF-001 | Stage protocols the pipeline composes. Primary: ADRL-FND-002. |
+ | `adrl/proxy/upstream.py` | ADRL-CAS-007, ADRL-FND-001 | Gateway client: one attempt, verbatim relay. Primary: ADRL-CAS-007. Secondary: ADRL-FND-001. |
+ | `adrl/routing/advisor.py` | ADRL-LRN-008, ADRL-RTG-006 | Advisory LLM classifier and the exploration port. Primary: ADRL-RTG-006. |
+@@ -153,10 +153,10 @@
+ | ADRL-LRN-006 | `adrl/learning/abstention.py`, `adrl/learning/readiness.py` |
+ | ADRL-LRN-007 | `adrl/app.py`, `adrl/cli/improvement.py`, `adrl/learning/artifacts.py`, `adrl/learning/improvement.py` |
+ | ADRL-LRN-008 | `adrl/learning/explore.py`, `adrl/learning/tiers.py`, `adrl/routing/advisor.py`, `adrl/routing/router.py` |
+-| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/core/isolated_execution.py`, `adrl/core/launch_markers.py`, `adrl/core/resource_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/isolated_execution.py`, `adrl/core/resource_owner.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cascade/controller.py`, `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/core/isolated_execution.py`, `adrl/core/launch_markers.py`, `adrl/core/resource_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py`, `adrl/proxy/pipeline.py` |
++| ADRL-MEM-002 | `adrl/cascade/controller.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/isolated_execution.py`, `adrl/core/resource_owner.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py`, `adrl/proxy/pipeline.py` |
+ | ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/isolated_execution.py`, `adrl/core/process_owner.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-004 | `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/learning/artifacts.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/upcast.py` |
++| ADRL-MEM-004 | `adrl/cascade/controller.py`, `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/learning/artifacts.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/upcast.py` |
+ | ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/execution_control.py`, `adrl/core/isolated_execution.py`, `adrl/core/launch_markers.py`, `adrl/core/ports.py`, `adrl/core/resource_owner.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-006 | `adrl/core/ports.py`, `adrl/learning/abstention.py`, `adrl/ledger/facade.py`, `adrl/ledger/readiness.py`, `adrl/ledger/state.py`, `adrl/ledger/store.py`, `adrl/proxy/observe_only.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-MEM-007 | `adrl/learning/dataset.py`, `adrl/ledger/erasure.py`, `adrl/ledger/projections.py`, `adrl/ledger/replay.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/store.py` |
+--- before/docs/outcome-contract.md
++++ after/docs/outcome-contract.md
+@@ -0,0 +1,26 @@
++# Cascade outcome contract
++
++9 September 2026. Owning ADRs: MEM-001/002/004, CAS-003/007 and FND-003.
++
++The cascade now uses the existing `outcome_event` constructor: event type `outcome`,
++state in `payload.state`, schema `events-v1`, failure taxonomy version retained.
++Pending and closed-turn transitions carry session/lineage HMACs, existing diagnostic
++facts and unknown harness success. Terminal failure cause survives subsequent turns.
++The proxy forwards returned LedgerEvent objects without replacing their route,
++producer, sequence or schema. Normal composition supplies the controller's ledger;
++without that ledger, plan-phase events are not persisted. Observe-phase forwarding
++is tested, not a replacement for required plan-phase ledger wiring.
++
++The integration test connects the composed proxy/cascade/store to explicitly invoked
++Closer and readiness projection. It proves a closed count, not verified success or
++learning eligibility. No background closer is installed by this repair. Shared E2E
++fixtures use synthetic ASGI responses and SHADOW-loaded bundles with LIVE pipeline
++settings. This is not production admission, real-harness or lab portability evidence.
++
++Historical state-valued event types are left untouched. They do not enter canonical
++readiness counts, even as censored rows; recovery needs a separately reviewed replay.
++No schema migration, historical relabeling or maturity promotion is performed.
++
++Other review findings remain: rule-health event shape/refresh, correction consumption,
++verifier calibration, learning features-v2 admission, estimator selection, lab portability
++and live-config admission. Thus RV-01 repair does not establish a complete learning loop.
+--- before/src/adrl/cascade/controller.py
++++ after/src/adrl/cascade/controller.py
+@@ -1,6 +1,6 @@
+-"""Cascade controller: plan dispatch, observe responses, escalate at boundaries.
+-
+-Primary: ADRL-CAS-003. Secondary: ADRL-CAS-001/004/005/006/007/008, ADRL-SEM-006.
++"""ADRL-CAS-003: plan dispatch, observe responses, escalate at boundaries.
++
++Secondary: ADRL-CAS-001/004/005/006/007/008, ADRL-SEM-006, ADRL-MEM-001/002/004.
+ ADRL makes exactly one attempt per request and never re-issues a request whose response had
+ begun streaming tool content; terminal failures are Anthropic error objects, never synthetic
+ assistant content.
+@@ -50,7 +50,7 @@
+ from adrl.core.ids import LineageId, RouteId
+ from adrl.core.ports import LedgerPort, StateProvider, StickyState
+ from adrl.core.types import Decision, HandoffNote, LedgerEvent, PermittedSet, RequestContext
+-from adrl.ledger.events import VERIFIER_FAILED_EVENT
++from adrl.ledger.events import VERIFIER_FAILED_EVENT, OutcomeFields, outcome_event
+ from adrl.routing.registry import RungRegistry
+ from adrl.routing.side_effects import (
+     UNTRUSTED,
+@@ -206,6 +206,27 @@
+             payload=dict(payload),
+         )
+ 
++    def _outcome(
++        self,
++        ctx: RequestContext,
++        route_id: RouteId,
++        state: OutcomeState,
++        payload: Mapping[str, Any],
++    ) -> LedgerEvent:
++        counter = self._seq.setdefault(route_id, itertools.count(1))
++        return outcome_event(
++            route_id,
++            state,
++            PRODUCER,
++            next(counter),
++            OutcomeFields(
++                session_hmac=str(ctx.session_hmac),
++                lineage_hmac=str(ctx.lineage_hmac),
++                served_rung=payload.get("rung"),
++                extra=payload,
++            ),
++        )
++
+     async def _emit(self, events: list[LedgerEvent]) -> None:
+         if self._ledger is None:
+             return
+@@ -273,9 +294,10 @@
+         permitted = gate.permitted
+         if sticky is not None:
+             events.append(
+-                self._event(
++                self._outcome(
++                    ctx,
+                     sticky.route_id,
+-                    OutcomeState.CLOSED_TURN.value,
++                    OutcomeState.CLOSED_TURN,
+                     {
+                         "reason": "next_user_turn",
+                         "rung": sticky.rung.value,
+@@ -315,9 +337,10 @@
+         )
+         await self._state.set_sticky(new)
+         events.append(
+-            self._event(
++            self._outcome(
++                ctx,
+                 decision.route_id,
+-                OutcomeState.PENDING.value,
++                OutcomeState.PENDING,
+                 {"rung": rung.value, "decided_rung": decision.rung.value, "state_loss": False},
+             )
+         )
+@@ -356,9 +379,10 @@
+             )
+             await self._state.set_sticky(sticky)
+             events.append(
+-                self._event(
++                self._outcome(
++                    ctx,
+                     decision.route_id,
+-                    OutcomeState.PENDING.value,
++                    OutcomeState.PENDING,
+                     {
+                         "rung": sticky.rung.value,
+                         "decided_rung": decision.rung.value,
+@@ -632,9 +656,10 @@
+         detail = f"failure_type={primary.value} rung={plan.rung.value} status={obs.status}"
+         surfaced = render_error(code, detail)
+         events.append(
+-            self._event(
++            self._outcome(
++                ctx,
+                 sticky.route_id,
+-                OutcomeState.CLOSED_TURN.value,
++                OutcomeState.CLOSED_TURN,
+                 {
+                     "reason": "terminal_failure",
+                     "failure_type": primary.value,
+--- before/src/adrl/proxy/pipeline.py
++++ after/src/adrl/proxy/pipeline.py
+@@ -4,7 +4,8 @@
+ Secondary: ADRL-FND-001 (byte-exact relay), ADRL-FND-004 (fail-open by class and pin state),
+ ADRL-SAF-001 (gates on every class), ADRL-SAF-009 (egress write-ahead), ADRL-SEM-003
+ (continuations inherit), ADRL-SEM-004 (utility on pinned lineages), ADRL-SEM-006 (pin
+-inheritance materialised per lineage), ADRL-CAS-006 (served identity recorded).
++inheritance materialised per lineage), ADRL-CAS-006 (served identity recorded),
++ADRL-MEM-001/002 (forwarded outcome identity).
+ 
+ Order per request: parse, identity, pin lookup, classify, gate, sticky lookup, route-or-inherit,
+ cascade plan, egress write-ahead, ledger decision (write-through), dispatch once, relay while
+@@ -617,12 +618,18 @@
+                 await self._append_event(ctx, turn.decision.route_id, event_type, payload)
+                 await self._record_receipt(turn, obs)
+                 for outcome_event in events.outcome_events:
+-                    await self._append_event(
+-                        ctx,
+-                        turn.decision.route_id,
+-                        str(getattr(outcome_event, "event_type", "outcome")),
+-                        dict(getattr(outcome_event, "payload", {})),
+-                    )
++                    # Preserve the cascade's route and idempotency identity on continuations.
++                    if not isinstance(outcome_event, LedgerEvent):
++                        raise TypeError("cascade must return LedgerEvent instances")
++                    if not await self._ledger.append_event(outcome_event):
++                        EVENT_DROPPED_TOTAL.labels(producer=outcome_event.producer).inc()
++                        log.warning(
++                            "event_dropped",
++                            route_id=outcome_event.route_id,
++                            event_type=outcome_event.event_type,
++                            producer=outcome_event.producer,
++                            producer_seq=outcome_event.producer_seq,
++                        )
+         except Exception as exc:
+             log.error("finalize_failed", error=str(exc), route_id=turn.decision.route_id)
+ 
+--- before/tests/integration/cascade/test_controller.py
++++ after/tests/integration/cascade/test_controller.py
+@@ -19,6 +19,7 @@
+ from adrl.core.errors import ErrorCode
+ from adrl.core.ids import LineageId
+ from adrl.core.types import PermittedSet
++from adrl.ledger.events import OUTCOME_EVENT
+ from adrl.ledger.facade import SqliteLedgerProvider
+ from adrl.ledger.store import LedgerStore
+ from adrl.routing.router import Router
+@@ -121,7 +122,11 @@
+     decision2 = await router.decide(next_turn, make_gate(), events4.sticky)
+     plan6 = await controller.plan(next_turn, decision2, make_gate(), events4.sticky)
+     assert plan6.rung is Rung.CHEAP_CLOUD
+-    closed = _events(ledger_store, OutcomeState.CLOSED_TURN.value)
++    closed = [
++        e
++        for e in _events(ledger_store, OUTCOME_EVENT)
++        if e["state"] == OutcomeState.CLOSED_TURN.value
++    ]
+     assert closed and closed[-1]["reason"] == "next_user_turn"
+ 
+     # SEM-005 boundary releases the ratchet only; the next decision decides afresh
+@@ -218,7 +223,11 @@
+         ErrorCode.PARTIAL_STREAM_FAILURE.value
+     )
+     assert events.failure_type is FailureType.INFRASTRUCTURE
+-    closed = _events(ledger_store, OutcomeState.CLOSED_TURN.value)
++    closed = [
++        e
++        for e in _events(ledger_store, OUTCOME_EVENT)
++        if e["state"] == OutcomeState.CLOSED_TURN.value
++    ]
+     assert closed[-1]["partial_stream"] is True and closed[-1]["surfaced"] is True
+     assert closed[-1]["gateway_attempts_observed"] == 1
+     assert controller.pending_for(LINEAGE) is None
+--- before/tests/integration/e2e/test_outcome_contract.py
++++ after/tests/integration/e2e/test_outcome_contract.py
+@@ -0,0 +1,129 @@
++"""ADRL-MEM-002: persisted cascade outcomes reach the canonical lifecycle consumers.
++
++Synthetic ASGI transport only. The shared E2E fixture loads SHADOW configuration into
++LIVE components; these tests do not qualify live configuration admission or real traffic.
++"""
++
++from datetime import UTC, datetime, timedelta
++
++import pytest
++
++from adrl.cascade.controller import CascadeController
++from adrl.cascade.sticky import MemoryStateProvider
++from adrl.config.models import CloseRule
++from adrl.core.enums import FailureType, OutcomeState
++from adrl.core.ids import RouteId
++from adrl.core.types import LedgerEvent
++from adrl.ledger.events import OUTCOME_EVENT, read_stored_events
++from adrl.ledger.outcomes import Closer, read_projection, routes_in_state
++from adrl.ledger.readiness import learning_readiness
++from tests.unit.routing.helpers import make_ctx, make_gate, make_obs, user_body
++
++from .conftest import E2E, user_turn_body
++
++
++async def test_composed_outcomes_close_once_without_inventing_success(live: E2E) -> None:
++    await live.send("user_turn", body=user_turn_body("Fix the typo in README.md"))
++    first = RouteId(live.decisions()[0]["route_id"])
++    await live.send("user_turn", body=user_turn_body("Fix another typo in README.md"))
++    second = RouteId(live.decisions()[1]["route_id"])
++    assert [e.route_id for e in routes_in_state(live.store, OutcomeState.CLOSED_TURN)] == [first]
++    events = read_stored_events(live.store, first, OUTCOME_EVENT)
++    assert [e.payload["state"] for e in events] == ["pending", "closed_turn"]
++    assert all(
++        e.event.producer == "cascade" and e.event.schema_version == "events-v1" for e in events
++    )
++    assert [e.event.producer_seq for e in events] == [1, 2]
++    assert all(e.payload.get("harness_reported_success") is None for e in events)
++    assert events[-1].payload["session_hmac"] == live.decisions()[0]["session_hmac"]
++    assert read_projection(live.store, second).state is OutcomeState.PENDING
++    closer = Closer(live.store, CloseRule())
++    future = datetime.now(UTC) + timedelta(days=1)
++    assert await closer.scan(now=future) == [(first, "idle")]
++    assert await closer.scan(now=future) == []
++    projected = read_projection(live.store, first)
++    assert projected.state is OutcomeState.CLOSED_FINAL
++    assert projected.label.failure_type is FailureType.UNVERIFIABLE
++    assert projected.label.result == "excluded"
++    assert len(live.store.read_events(first, "label")) == 1
++    readiness = learning_readiness(live.store)
++    assert readiness.closed_final_count == 1
++    assert readiness.censored_count == 1
++    assert readiness.capability_evidence_count == readiness.verified_success_count == 0
++    assert readiness.window_blocked and "no_capability_evidence" in readiness.blockers
++
++
++@pytest.mark.parametrize(
++    "status,cause", [(503, FailureType.INFRASTRUCTURE), (400, FailureType.INFRASTRUCTURE)]
++)
++async def test_terminal_cause_survives_next_turn_and_close(
++    live: E2E, status: int, cause: FailureType
++) -> None:
++    live.gateway_state.status_code = status
++    response = await live.send("user_turn")
++    assert response.status_code == status
++    first = RouteId(live.decisions()[0]["route_id"])
++    assert read_projection(live.store, first).state is OutcomeState.CLOSED_TURN
++    live.gateway_state.status_code = 200
++    await live.send("user_turn", body=user_turn_body("Fix the typo in README.md"))
++    closed = [
++        e
++        for e in read_stored_events(live.store, first, OUTCOME_EVENT)
++        if e.payload["state"] == "closed_turn"
++    ]
++    assert len(closed) == 2
++    assert closed[0].payload["failure_type"] == cause.value
++    assert closed[-1].payload["reason"] == "next_user_turn"
++    await Closer(live.store, CloseRule()).scan(now=datetime.now(UTC) + timedelta(days=1))
++    label = read_projection(live.store, first).label
++    assert label.result == "excluded" and label.failure_type is cause
++    assert learning_readiness(live.store).capability_evidence_count == 0
++
++
++async def test_completed_400_stays_unverifiable(live: E2E) -> None:
++    controller = CascadeController(
++        live.components.bundle, MemoryStateProvider(), ledger=live.components.facade
++    )
++    ctx = make_ctx(user_body())
++    decision = await live.components.router.decide(ctx, make_gate(), None)
++    plan = await controller.plan(ctx, decision, make_gate(), None)
++    await controller.observe(ctx, plan, make_obs(status=400, completed=True))
++    projected = read_projection(live.store, decision.route_id)
++    assert projected.state is OutcomeState.CLOSED_TURN
++    assert projected.label.failure_type is FailureType.UNVERIFIABLE
++    assert not projected.label.is_capability_evidence
++
++
++@pytest.mark.parametrize("forwarded", [False, True])
++async def test_continuation_terminal_event_preserves_identity(
++    live: E2E, monkeypatch: pytest.MonkeyPatch, forwarded: bool
++) -> None:
++    await live.send("user_turn")
++    route = RouteId(live.decisions()[0]["route_id"])
++    if forwarded:
++        # Only observe-phase fallback is supported; plan-phase persistence requires a ledger.
++        monkeypatch.setattr(live.components.cascade, "_ledger", None)
++    live.gateway_state.status_code = 503
++    await live.send("continuation")
++    closed = routes_in_state(live.store, OutcomeState.CLOSED_TURN)
++    assert len(closed) == 1 and closed[0].route_id == route
++    assert closed[0].event.producer == "cascade"
++    assert closed[0].event.producer_seq == 2
++    assert closed[0].event.schema_version == "events-v1"
++    assert closed[0].payload["failure_type"] == "infrastructure"
++
++
++async def test_restart_sequence_includes_legacy_events(live: E2E) -> None:
++    ctx = make_ctx(user_body())
++    decision = await live.components.router.decide(ctx, make_gate(), None)
++    legacy = LedgerEvent(decision.route_id, "pending", "cascade", 77, {"legacy": True})
++    await live.components.facade.append_event(legacy)
++    controller = CascadeController(
++        live.components.bundle, MemoryStateProvider(), ledger=live.components.facade
++    )
++    await controller.plan(ctx, decision, make_gate(), None)
++    events = read_stored_events(live.store, decision.route_id)
++    assert events[0].event == legacy
++    assert events[-1].event_type == OUTCOME_EVENT
++    assert events[-1].event.producer_seq == 78
++    assert events[-1].payload["state"] == "pending"

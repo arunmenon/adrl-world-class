@@ -1,0 +1,88 @@
+{
+  "version": "mixed-intent-review-v1",
+  "variants": [
+    "ordinary",
+    "previous_edit_failed",
+    "large_context",
+    "local_only",
+    "local_and_cheap_only"
+  ],
+  "repeats": 2,
+  "cases": [
+    {
+      "id": "reverse-order",
+      "prompt": "Redesign the concurrency algorithm in worker.py and rename a variable",
+      "review_expectation": "not_local",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    },
+    {
+      "id": "punctuation",
+      "prompt": "Rename a variable in worker.py. Then implement a scheduler.",
+      "review_expectation": "not_local",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    },
+    {
+      "id": "mechanical-and-bug",
+      "prompt": "Fix the typo in README.md and debug the parser crash",
+      "review_expectation": "not_local",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    },
+    {
+      "id": "explain-and-write",
+      "prompt": "Explain this function; create a new parser in parser.py",
+      "review_expectation": "not_local",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    },
+    {
+      "id": "quoted-hard-word",
+      "prompt": "Rename the variable called `redesign` in worker.py",
+      "review_expectation": "not_local",
+      "limitation": "Conservative lexical false positive; no complex work requested",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    },
+    {
+      "id": "negated-hard-action",
+      "prompt": "Do not redesign anything; only rename this variable in worker.py",
+      "review_expectation": "not_local",
+      "limitation": "Negation is not resolved; conservative over-routing accepted for now",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    },
+    {
+      "id": "ambiguous-explanation",
+      "prompt": "Explain how to implement a scheduler",
+      "review_expectation": "not_local",
+      "limitation": "Implementation vocabulary does not prove requested execution",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    },
+    {
+      "id": "simple-rename",
+      "prompt": "Rename a variable in worker.py",
+      "review_expectation": "local",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    },
+    {
+      "id": "simple-explanation",
+      "prompt": "Explain this function in worker.py",
+      "review_expectation": "local",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    },
+    {
+      "id": "simple-format",
+      "prompt": "Format this file in worker.py",
+      "review_expectation": "local",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    },
+    {
+      "id": "mechanical-typo",
+      "prompt": "Fix the typo in README.md",
+      "review_expectation": "local",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    },
+    {
+      "id": "mechanical-spelling",
+      "prompt": "Correct the misspelling in README.md",
+      "review_expectation": "local",
+      "review_hypothesis": "Frozen lexical routing expectation; not a model-quality label"
+    }
+  ]
+}

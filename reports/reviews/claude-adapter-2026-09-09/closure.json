@@ -1,0 +1,406 @@
+{
+  "wave": "claude-adapter",
+  "date": "2026-09-09",
+  "changes": {
+    "C:src/adrl/proxy/claude_experiment.py": {
+      "before": null,
+      "after": "314d6c687ad15abea7df78c9f8bcf687eb0dcdca4e3138b5ccc53076f1b9fc39"
+    },
+    "R:adr/FND/README.md": {
+      "before": "923d0137c307386150dfd63aca5e137d972ca77ea823531963264b6504758e8e",
+      "after": "5a120c8209a52e3883f4224a48410241241ab288c5ff5a029946f708dad6ba8a"
+    },
+    "C:AGENTS.md": {
+      "before": "6e7c1dac3fe6db3449d78c27b27d622d99f4e7557acd52e078aafdf927feabbb",
+      "after": "592f3905d3f9c2c197399e229355872f0b09d21bc9596a2024351a9af8899b52"
+    },
+    "R:adr/SEM/README.md": {
+      "before": "dfb93b43b350a1e3d04dde96ad894bdb3cc8223709f268355f90e43c3849e809",
+      "after": "99221c02cea52e7bdfec9994f33c12c3fd865370f28987576af8f2e340efa6b6"
+    },
+    "R:adr/FND/ADRL-FND-001.md": {
+      "before": "ce51cb4e2d30c67d3721581a13552feccb1aed262ecbbd0f597c15cd9ab87e97",
+      "after": "c6e17249e30198c3a8a820931bea7b6e50bc7af9dfebcf046c39996f55c65e75"
+    },
+    "R:adr/SEM/ADRL-SEM-007.md": {
+      "before": "75b42786cb76b73776ff7a8fd4500d45c466bcd9b8346a27651b5e8b6b0de0a0",
+      "after": "4af796d313fd1ee37087903b40f57b1a1499aeea7157da28f2a227b06272d066"
+    },
+    "C:tests/unit/test_claude_experiment.py": {
+      "before": null,
+      "after": "115acd3a77e8090625c129c438329e42a479251b892d31841fc94d6d8b8b147c"
+    },
+    "R:adr/TRU/ADRL-TRU-002.md": {
+      "before": "009d5b1c4d5880d0e74fb6c19b5d5bc8886f47ae447442353afead32fadf4edd",
+      "after": "c14c74f74aea4782ce36fb6a7afdce961d9bc813c04dc158abfd088151fb846d"
+    },
+    "R:adr/CAS/README.md": {
+      "before": "b82039705fdeeca85eac8a8456294d45d00eefcaadc0851d64fe8e38c9fedf71",
+      "after": "57d84bbb723db958495e627235b4269a45c02eaa995600d240482ec0691ebc3d"
+    },
+    "R:adr/TRU/README.md": {
+      "before": "ed6c9a3df2f6d8daa44b4ac84404f1746005ca76a1c2a3d374c6d5aa23c517bd",
+      "after": "ca3bc02bf686b7e1e27ab8be5da353fc97d9e288a623cd599192db62fb34b3c1"
+    },
+    "R:adr/FND/ADRL-FND-005.md": {
+      "before": "75e8a531d87a75a331a819aebf6869d6293cff48f2ed06f28d1830c58c86f220",
+      "after": "44ce2bf6fdb852c815a0f6921a47e6cc66d7254d620b39adfdb06f926e86fa3f"
+    },
+    "R:adr/FND/ADRL-FND-003.md": {
+      "before": "c0241d9fdbd2eb0280b0df9533aa4efb6c5d1ad532c2aef6827cff11b9c5fbc6",
+      "after": "a10d7ddf849fdfe98ff9975c4a62cec6d61ec612a2079668ae8681701ed19355"
+    },
+    "R:CHANGELOG.md": {
+      "before": "72b1971ef6da97c9807633d2bfb026dd2247baf3bcdbcd50eeccd5db7f2312d5",
+      "after": "6330e5e7c87fd08bff31830b42cd2baf4798a8c4a1ae19cc421b6ca79a9e555f"
+    },
+    "R:INDEX.md": {
+      "before": "bc52e3e52ea2458df1583e11f3710656e1c024e75dad181f144c009a1feec60f",
+      "after": "5d802ca3d8daf7c55f2e818176892fd2c5c128a809996ac6d53ac2a027a0ca54"
+    },
+    "R:adr/CAS/ADRL-CAS-007.md": {
+      "before": "3b04efc1a20f61791a108f3a18abcfee87c936e0fe51009e04cf63269139c64f",
+      "after": "74b233029349d4967c0fe677d04030fe909842d2a6c106fbbf43fd83d8b8a190"
+    },
+    "C:tests/integration/proxy/test_claude_experiment.py": {
+      "before": null,
+      "after": "faab0c53cb98aac0e222321f621c9c3e8a734c1cde9ca26e98884954cbd5c6aa"
+    },
+    "C:src/adrl/proxy/pipeline.py": {
+      "before": "68a170c352ad7793113626002be84608f9c656740280156405682040407b152f",
+      "after": "300069be159da6ec62b42cac934f4ab834b87cbb34d78cdfd0f01d287f20b3af"
+    },
+    "R:adr/CAS/ADRL-CAS-006.md": {
+      "before": "022e62bbc6e71a533309736d5ad721f5f49fc6128efa7242a6886d2553a46e81",
+      "after": "22f2eb1725e732a608dd8e157cc37b18d7fc4fa351110243cd51a1e87d5dd284"
+    }
+  },
+  "file_owners": {
+    "C:src/adrl/proxy/claude_experiment.py": [
+      "ADRL-FND-001",
+      "ADRL-FND-003",
+      "ADRL-FND-005",
+      "ADRL-SEM-007",
+      "ADRL-TRU-002",
+      "ADRL-CAS-006",
+      "ADRL-CAS-007"
+    ],
+    "C:AGENTS.md": [
+      "ADRL-FND-001"
+    ],
+    "C:tests/unit/test_claude_experiment.py": [
+      "ADRL-FND-001",
+      "ADRL-FND-003",
+      "ADRL-FND-005",
+      "ADRL-SEM-007",
+      "ADRL-TRU-002",
+      "ADRL-CAS-006",
+      "ADRL-CAS-007"
+    ],
+    "C:tests/integration/proxy/test_claude_experiment.py": [
+      "ADRL-FND-001",
+      "ADRL-FND-003",
+      "ADRL-FND-005",
+      "ADRL-SEM-007",
+      "ADRL-TRU-002",
+      "ADRL-CAS-006",
+      "ADRL-CAS-007"
+    ],
+    "C:src/adrl/proxy/pipeline.py": [
+      "ADRL-FND-001",
+      "ADRL-FND-003",
+      "ADRL-FND-005",
+      "ADRL-SEM-007",
+      "ADRL-TRU-002",
+      "ADRL-CAS-006",
+      "ADRL-CAS-007"
+    ]
+  },
+  "owners": [
+    {
+      "id": "ADRL-FND-001",
+      "kind": "behavior",
+      "summary": "Scoped offline Claude initial selection, finite dispatch and observed evidence",
+      "limitations": "No live profile, real model task, routing merit, ROI or maturity promotion; constructor-only candidate and launch gates remain",
+      "fields": {
+        "Status": "Accepted \u00b7 amended 2026-09-02 \u00b7 product boundary clarified 2026-09-07",
+        "Maturity": "D3 Shadow, review recommends D3 Shadow for the Anthropic-Messages path only; the Codex CLI (Responses API) path has no evidence and should carry D0",
+        "Review verdict": "AMEND"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/report.md",
+          "sha256": "924bd32b5c505c4f3bcde45238bcfcd7f59355ee6ff69c817036ef80c96a69f8"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-focused.log",
+          "sha256": "a29872bd61ea3b656eb816aee08238ba7d89d3bbd80627ce07a8480b484c9531"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/checks.json",
+          "sha256": "851cdc169e05196094f3dd57976acdb057cc6d820cae7909227566ac81a2ede6"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/4.log",
+          "sha256": "6e025fcf10919aeadeca40d5cb1f9ae31dcdfa643d563f0744bba17ba17be38f"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck.md",
+          "sha256": "f1eb235e5124766c1770a6c636c56c4b4885398e711d548d6c84a43b26d59c29"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/final-review.md",
+          "sha256": "07aad8b3a09808a12e706d9ae2831151f8cf66d58ccfc41bf7ad3b0334dd3468"
+        }
+      ]
+    },
+    {
+      "id": "ADRL-FND-003",
+      "kind": "behavior",
+      "summary": "Scoped offline Claude initial selection, finite dispatch and observed evidence",
+      "limitations": "No live profile, real model task, routing merit, ROI or maturity promotion; constructor-only candidate and launch gates remain",
+      "fields": {
+        "Status": "Accepted \u00b7 amended 2026-09-02",
+        "Maturity": "D3 Shadow, review recommends D3 Shadow (cache-hit evidence on real traffic supports it; the warm-up-request and subagent edge cases need golden tests before D4)",
+        "Review verdict": "AMEND"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/report.md",
+          "sha256": "924bd32b5c505c4f3bcde45238bcfcd7f59355ee6ff69c817036ef80c96a69f8"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-focused.log",
+          "sha256": "a29872bd61ea3b656eb816aee08238ba7d89d3bbd80627ce07a8480b484c9531"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/checks.json",
+          "sha256": "851cdc169e05196094f3dd57976acdb057cc6d820cae7909227566ac81a2ede6"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/4.log",
+          "sha256": "6e025fcf10919aeadeca40d5cb1f9ae31dcdfa643d563f0744bba17ba17be38f"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck.md",
+          "sha256": "f1eb235e5124766c1770a6c636c56c4b4885398e711d548d6c84a43b26d59c29"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/final-review.md",
+          "sha256": "07aad8b3a09808a12e706d9ae2831151f8cf66d58ccfc41bf7ad3b0334dd3468"
+        }
+      ]
+    },
+    {
+      "id": "ADRL-FND-005",
+      "kind": "behavior",
+      "summary": "Scoped offline Claude initial selection, finite dispatch and observed evidence",
+      "limitations": "No live profile, real model task, routing merit, ROI or maturity promotion; constructor-only candidate and launch gates remain",
+      "fields": {
+        "Status": "Accepted \u00b7 unchanged",
+        "Maturity": "D3 Shadow, review recommends D3 Shadow with a note: the D-scale measures runtime behaviour and fits a governance commitment poorly; the honest reading is \"the readiness tooling runs against shadow data and its verdicts have so far been respected\"",
+        "Review verdict": "APPROVE"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/report.md",
+          "sha256": "924bd32b5c505c4f3bcde45238bcfcd7f59355ee6ff69c817036ef80c96a69f8"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-focused.log",
+          "sha256": "a29872bd61ea3b656eb816aee08238ba7d89d3bbd80627ce07a8480b484c9531"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/checks.json",
+          "sha256": "851cdc169e05196094f3dd57976acdb057cc6d820cae7909227566ac81a2ede6"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/4.log",
+          "sha256": "6e025fcf10919aeadeca40d5cb1f9ae31dcdfa643d563f0744bba17ba17be38f"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck.md",
+          "sha256": "f1eb235e5124766c1770a6c636c56c4b4885398e711d548d6c84a43b26d59c29"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/final-review.md",
+          "sha256": "07aad8b3a09808a12e706d9ae2831151f8cf66d58ccfc41bf7ad3b0334dd3468"
+        }
+      ]
+    },
+    {
+      "id": "ADRL-SEM-007",
+      "kind": "behavior",
+      "summary": "Scoped offline Claude initial selection, finite dispatch and observed evidence",
+      "limitations": "No live profile, real model task, routing merit, ROI or maturity promotion; constructor-only candidate and launch gates remain",
+      "fields": {
+        "Status": "Proposed 2026-09-03 (new, from external review)",
+        "Maturity": "D2 for the Messages boundary and local services, plus one bounded live observation pilot (2026-09-07). Full cross-protocol contract remains incomplete, D0 for the second profile; no general D3/D4 graduation or live gateway validation",
+        "Review verdict": "PROPOSED (new)"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/report.md",
+          "sha256": "924bd32b5c505c4f3bcde45238bcfcd7f59355ee6ff69c817036ef80c96a69f8"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-focused.log",
+          "sha256": "a29872bd61ea3b656eb816aee08238ba7d89d3bbd80627ce07a8480b484c9531"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/checks.json",
+          "sha256": "851cdc169e05196094f3dd57976acdb057cc6d820cae7909227566ac81a2ede6"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/4.log",
+          "sha256": "6e025fcf10919aeadeca40d5cb1f9ae31dcdfa643d563f0744bba17ba17be38f"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck.md",
+          "sha256": "f1eb235e5124766c1770a6c636c56c4b4885398e711d548d6c84a43b26d59c29"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/final-review.md",
+          "sha256": "07aad8b3a09808a12e706d9ae2831151f8cf66d58ccfc41bf7ad3b0334dd3468"
+        }
+      ],
+      "field_change_record": {
+        "path": "reports/reviews/claude-adapter-2026-09-09/overview-owner-disposition.json",
+        "sha256": "3e601b21394b5d2f1cb806c1be35afe9d1cfcca8200876b254bcb2c9af152f70"
+      }
+    },
+    {
+      "id": "ADRL-TRU-002",
+      "kind": "behavior",
+      "summary": "Scoped offline Claude initial selection, finite dispatch and observed evidence",
+      "limitations": "No live profile, real model task, routing merit, ROI or maturity promotion; constructor-only candidate and launch gates remain",
+      "fields": {
+        "Status": "Proposed 2026-09-03 (new, from external review)",
+        "Maturity": "D0 Design, review recommends D0 Design (the 2026-09-02 implementation tightens a set of rung labels; nothing compares a deployment's geography or host to policy)",
+        "Review verdict": "PROPOSED (new)"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/report.md",
+          "sha256": "924bd32b5c505c4f3bcde45238bcfcd7f59355ee6ff69c817036ef80c96a69f8"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-focused.log",
+          "sha256": "a29872bd61ea3b656eb816aee08238ba7d89d3bbd80627ce07a8480b484c9531"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/checks.json",
+          "sha256": "851cdc169e05196094f3dd57976acdb057cc6d820cae7909227566ac81a2ede6"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/4.log",
+          "sha256": "6e025fcf10919aeadeca40d5cb1f9ae31dcdfa643d563f0744bba17ba17be38f"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck.md",
+          "sha256": "f1eb235e5124766c1770a6c636c56c4b4885398e711d548d6c84a43b26d59c29"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/final-review.md",
+          "sha256": "07aad8b3a09808a12e706d9ae2831151f8cf66d58ccfc41bf7ad3b0334dd3468"
+        }
+      ]
+    },
+    {
+      "id": "ADRL-CAS-006",
+      "kind": "behavior",
+      "summary": "Scoped offline Claude initial selection, finite dispatch and observed evidence",
+      "limitations": "No live profile, real model task, routing merit, ROI or maturity promotion; constructor-only candidate and launch gates remain",
+      "fields": {
+        "Status": "Accepted \u00b7 amended 2026-09-02",
+        "Maturity": "D2 Tested, review recommends D2 Tested (served-rung correction is tested in `tests/test_router_proxy.py`; served-model capture and the state-loss case are untested and are added as gates for D3)",
+        "Review verdict": "AMEND"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/report.md",
+          "sha256": "924bd32b5c505c4f3bcde45238bcfcd7f59355ee6ff69c817036ef80c96a69f8"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-focused.log",
+          "sha256": "a29872bd61ea3b656eb816aee08238ba7d89d3bbd80627ce07a8480b484c9531"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/checks.json",
+          "sha256": "851cdc169e05196094f3dd57976acdb057cc6d820cae7909227566ac81a2ede6"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/4.log",
+          "sha256": "6e025fcf10919aeadeca40d5cb1f9ae31dcdfa643d563f0744bba17ba17be38f"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck.md",
+          "sha256": "f1eb235e5124766c1770a6c636c56c4b4885398e711d548d6c84a43b26d59c29"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/final-review.md",
+          "sha256": "07aad8b3a09808a12e706d9ae2831151f8cf66d58ccfc41bf7ad3b0334dd3468"
+        }
+      ]
+    },
+    {
+      "id": "ADRL-CAS-007",
+      "kind": "behavior",
+      "summary": "Scoped offline Claude initial selection, finite dispatch and observed evidence",
+      "limitations": "No live profile, real model task, routing merit, ROI or maturity promotion; constructor-only candidate and launch gates remain",
+      "fields": {
+        "Status": "Accepted \u00b7 amended 2026-09-02",
+        "Maturity": "D2 Tested, review recommends D2 Tested (terminal-failure surfacing is tested; the retry-ownership contract with the gateway and the protocol-conformant error shape need tests before D3)",
+        "Review verdict": "AMEND"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/report.md",
+          "sha256": "924bd32b5c505c4f3bcde45238bcfcd7f59355ee6ff69c817036ef80c96a69f8"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-focused.log",
+          "sha256": "a29872bd61ea3b656eb816aee08238ba7d89d3bbd80627ce07a8480b484c9531"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/checks.json",
+          "sha256": "851cdc169e05196094f3dd57976acdb057cc6d820cae7909227566ac81a2ede6"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck-checks/4.log",
+          "sha256": "6e025fcf10919aeadeca40d5cb1f9ae31dcdfa643d563f0744bba17ba17be38f"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/recheck.md",
+          "sha256": "f1eb235e5124766c1770a6c636c56c4b4885398e711d548d6c84a43b26d59c29"
+        },
+        {
+          "path": "reports/reviews/claude-adapter-2026-09-09/final-review.md",
+          "sha256": "07aad8b3a09808a12e706d9ae2831151f8cf66d58ccfc41bf7ad3b0334dd3468"
+        }
+      ]
+    }
+  ],
+  "review": {
+    "record": {
+      "path": "reports/reviews/claude-adapter-2026-09-09/final-review.md",
+      "sha256": "07aad8b3a09808a12e706d9ae2831151f8cf66d58ccfc41bf7ad3b0334dd3468"
+    },
+    "inputs": {
+      "path": "reports/reviews/claude-adapter-2026-09-09/final-inputs.json",
+      "sha256": "e099c322184ab392f594c5d2a85fabb6627029dc7a21eede77ad4398141b37dc"
+    },
+    "status": "accepted",
+    "reviewer": "Claude Fable 5.1, original post-review, material recheck and final documentation recheck retained",
+    "covered_adrs": [
+      "ADRL-FND-001",
+      "ADRL-FND-003",
+      "ADRL-FND-005",
+      "ADRL-SEM-007",
+      "ADRL-TRU-002",
+      "ADRL-CAS-006",
+      "ADRL-CAS-007"
+    ],
+    "blocking_findings": []
+  }
+}

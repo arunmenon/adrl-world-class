@@ -1,0 +1,48 @@
+{
+  "checked_at": "2026-09-08T06:39:25.459522+00:00",
+  "scope": "Focused primary-source architecture check, not an exhaustive state-of-art performance ranking",
+  "sources": [
+    {
+      "title": "RouteLLM",
+      "url": "https://arxiv.org/abs/2406.18665",
+      "version": "v4, 23 February 2025",
+      "access_scope": "Abstract and primary bibliographic record",
+      "used_for": "Preference-trained stronger/weaker routing; benefit is benchmark-specific."
+    },
+    {
+      "title": "LLMRouterBench",
+      "url": "https://arxiv.org/abs/2601.07206",
+      "version": "v1, 12 January 2026",
+      "access_scope": "Abstract and primary bibliographic record",
+      "used_for": "Model complementarity does not ensure a router beats a simple baseline."
+    },
+    {
+      "title": "LLMRouter",
+      "url": "https://arxiv.org/html/2608.06867v1",
+      "version": "v1, 7 August 2026",
+      "access_scope": "Introduction, sequential formulation, experimental results and primary abstract; HF paper metadata also fetched",
+      "used_for": "Modular state/model/scoring/decision/learning design; no universal winner; multi-round overhead can lose."
+    },
+    {
+      "title": "The Replay Gap",
+      "url": "https://arxiv.org/abs/2608.08239",
+      "version": "v1, 8 August 2026",
+      "access_scope": "Abstract and primary bibliographic record",
+      "used_for": "Switching changes future trajectories; stored-output substitution is insufficient causal evidence."
+    },
+    {
+      "title": "Darwin Godel Machine",
+      "url": "https://arxiv.org/html/2505.22954v3",
+      "version": "v3, 12 March 2026",
+      "access_scope": "Abstract, safety discussion and objective-hacking discussion",
+      "used_for": "Self-modifying candidate archive with empirical evaluation; evaluation weaknesses and objective hacking matter."
+    },
+    {
+      "title": "AlphaEvolve",
+      "url": "https://arxiv.org/abs/2506.13131",
+      "version": "v1, 16 June 2025",
+      "access_scope": "White-paper abstract and primary bibliographic record",
+      "used_for": "Evaluator-driven algorithm improvement; no direct validation of ADRL routing."
+    }
+  ]
+}

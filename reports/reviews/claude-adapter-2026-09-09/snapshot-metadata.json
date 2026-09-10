@@ -1,0 +1,7 @@
+{
+  "baseline": "/Users/arunmenon/projects/.adrl-execution-state/claude-adapter-baseline-20260909.json",
+  "scope": "All changed inputs copied, runtime sources embedded, owning register decision/mapping excerpts embedded; full current source hashes saved",
+  "exclusions": "Unrelated source not copied; secrets, keys, private payloads and unrelated reports excluded",
+  "changed_count": 18,
+  "input_sha256": "0f501543724c51d6ad539bd63e3835c50817ede51a2614e4299abbb910cf32c6"
+}

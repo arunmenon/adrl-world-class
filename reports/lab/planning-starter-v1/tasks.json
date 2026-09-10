@@ -1,0 +1,101 @@
+{
+  "schema_version": "adrl-planning-task-pack-draft-v1",
+  "origin": "curated_synthetic",
+  "status": "prepared_for_contract_review",
+  "assessment_profile": "assessment.md",
+  "tasks": [
+    {
+      "task_id": "prd-feature-rollout-v1",
+      "deliverable_type": "prd",
+      "phase": "planning_document",
+      "brief": "prd/brief.md",
+      "output_filename": "prd.md",
+      "requirement_ids": [
+        "PRD-1",
+        "PRD-2",
+        "PRD-3",
+        "PRD-4",
+        "PRD-5"
+      ],
+      "rubric_dimensions": [
+        "Scope and prioritization",
+        "Authorization and tenant isolation",
+        "Measurable propagation requirement",
+        "Audit and data minimization",
+        "Grounded assumptions and open decisions"
+      ],
+      "critical_defects": [
+        "Unauthorized operators can change rollout state",
+        "Tenant configuration is exposed across tenants"
+      ],
+      "evaluation_profile": "planning-rubric-draft-v1",
+      "harness_execution_profile": null,
+      "state": "prepared_not_run",
+      "eligible_for_learning": false
+    },
+    {
+      "task_id": "hld-webhook-delivery-v1",
+      "deliverable_type": "hld",
+      "phase": "planning_document",
+      "brief": "hld/brief.md",
+      "output_filename": "hld.md",
+      "requirement_ids": [
+        "HLD-1",
+        "HLD-2",
+        "HLD-3",
+        "HLD-4",
+        "HLD-5"
+      ],
+      "rubric_dimensions": [
+        "Delivery semantics and idempotency",
+        "Tenant isolation and signing",
+        "Failure handling and fair capacity",
+        "Residency and retention",
+        "Capacity reasoning and operating tradeoffs"
+      ],
+      "critical_defects": [
+        "Cross-tenant events or secrets are exposed",
+        "Prohibited payload storage or observability export",
+        "Exactly-once receiver side effects are promised"
+      ],
+      "evaluation_profile": "planning-rubric-draft-v1",
+      "harness_execution_profile": null,
+      "state": "prepared_not_run",
+      "eligible_for_learning": false
+    },
+    {
+      "task_id": "lld-inventory-reservations-v1",
+      "deliverable_type": "lld",
+      "phase": "planning_document",
+      "brief": "lld/brief.md",
+      "output_filename": "lld.md",
+      "requirement_ids": [
+        "LLD-1",
+        "LLD-2",
+        "LLD-3",
+        "LLD-4",
+        "LLD-5"
+      ],
+      "rubric_dimensions": [
+        "Tenant isolation",
+        "Stock invariant",
+        "Idempotency semantics",
+        "Lifecycle transitions and concurrent races",
+        "Implementability and testing"
+      ],
+      "critical_defects": [
+        "Stock can be oversold",
+        "Cross-tenant access is allowed",
+        "Cancellation or expiry can release stock more than once"
+      ],
+      "evaluation_profile": "planning-rubric-draft-v1",
+      "harness_execution_profile": null,
+      "state": "prepared_not_run",
+      "eligible_for_learning": false
+    }
+  ],
+  "real_runs": 0,
+  "independent_review": false,
+  "model_comparison_qualified": false,
+  "paid_execution_authorized": false
+}

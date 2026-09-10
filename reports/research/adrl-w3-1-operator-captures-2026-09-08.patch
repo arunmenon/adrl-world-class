@@ -1,0 +1,1170 @@
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,9 @@
+ # adrl-core
++
++W3.1 adds [retained operator captures](docs/operator-captures.md) as an internal, fixture-tested
++API. Encrypted output A can be recovered after the workspace changes to B. Exact task-close
++attribution, active-copy erasure coordination and verifier/CLI integration remain later W3 work;
++real task capture is not enabled by this slice.
+ 
+ Offline verifier experiments now compare reviewed proposals against a baseline on fixed
+ curated examples, preserve encrypted evidence and recommend review without deployment.
+--- a/docs/adr-module-map.md
++++ b/docs/adr-module-map.md
+@@ -60,6 +60,7 @@
+ | `adrl/learning/readiness.py` | ADRL-EVL-004, ADRL-EVL-009, ADRL-FND-005, ADRL-LRN-001, ADRL-LRN-002, ADRL-LRN-006 | Learning readiness report. Primary: ADRL-LRN-001. Secondary: ADRL-FND-005, ADRL-EVL-004, |
+ | `adrl/learning/tiers.py` | ADRL-EVL-005, ADRL-LRN-001, ADRL-LRN-002, ADRL-LRN-008, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-004 | Evidence tiers and pooling rules. Primary: ADRL-LRN-001. |
+ | `adrl/ledger/anchoring.py` | ADRL-OPS-002, ADRL-OPS-007, ADRL-SAF-009, ADRL-TRU-003 | Checkpoint key custody, off-device anchoring and anchor verification. Primary: ADRL-SAF-009. |
++| `adrl/ledger/capture.py` | ADRL-MEM-001, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-005, ADRL-MEM-010, ADRL-SAF-007, ADRL-SEM-002, ADRL-SEM-007, ADRL-TRU-001 | Retained operator-time snapshots. Primary: ADRL-MEM-003. |
+ | `adrl/ledger/counterfactual.py` | ADRL-LRN-001, ADRL-MEM-009 | Counterfactual evidence bound to an explicit route_id. Primary: ADRL-MEM-009. |
+ | `adrl/ledger/crypto.py` | ADRL-MEM-005, ADRL-MEM-010 | AES-GCM and keyed hashing primitives for prompt-class data. Primary: ADRL-MEM-010. |
+ | `adrl/ledger/egress.py` | ADRL-SAF-009, ADRL-TRU-003 | Tamper-evident, content-free egress ledger. Primary: ADRL-SAF-009. |
+@@ -143,16 +144,16 @@
+ | ADRL-LRN-006 | `adrl/learning/abstention.py`, `adrl/learning/readiness.py` |
+ | ADRL-LRN-007 | `adrl/app.py`, `adrl/cli/improvement.py`, `adrl/learning/artifacts.py`, `adrl/learning/improvement.py` |
+ | ADRL-LRN-008 | `adrl/learning/explore.py`, `adrl/learning/tiers.py`, `adrl/routing/advisor.py`, `adrl/routing/router.py` |
+-| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
++| ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/learning/tiers.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-004 | `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/learning/artifacts.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/ports.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/ports.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-006 | `adrl/core/ports.py`, `adrl/learning/abstention.py`, `adrl/ledger/facade.py`, `adrl/ledger/readiness.py`, `adrl/ledger/state.py`, `adrl/ledger/store.py`, `adrl/proxy/observe_only.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-MEM-007 | `adrl/learning/dataset.py`, `adrl/ledger/erasure.py`, `adrl/ledger/projections.py`, `adrl/ledger/replay.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/store.py` |
+ | ADRL-MEM-008 | `adrl/ledger/shadow_retrieval.py` |
+ | ADRL-MEM-009 | `adrl/learning/pairs.py`, `adrl/ledger/counterfactual.py`, `adrl/ledger/events.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/ports.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/ports.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/telemetry/logging.py` |
+ | ADRL-OPS-002 | `adrl/ledger/anchoring.py` |
+ | ADRL-OPS-003 | `adrl/config/checks.py` |
+@@ -175,17 +176,17 @@
+ | ADRL-SAF-004 | `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-005 | `adrl/config/checks.py`, `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py`, `adrl/telemetry/metrics.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-006 | `adrl/core/ports.py`, `adrl/gates/content.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py` |
+-| ADRL-SAF-007 | `adrl/core/ports.py`, `adrl/gates/cli.py`, `adrl/gates/sandbox.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-SAF-007 | `adrl/core/ports.py`, `adrl/gates/cli.py`, `adrl/gates/sandbox.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-SAF-008 | `adrl/config/loaders.py`, `adrl/config/models.py`, `adrl/gates/content.py`, `adrl/gates/deployments.py`, `adrl/gates/pipeline.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py` |
+ | ADRL-SAF-009 | `adrl/cli/main.py`, `adrl/gates/cli.py`, `adrl/gates/deployments.py`, `adrl/gates/egress.py`, `adrl/gates/pipeline.py`, `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-SEM-001 | `adrl/core/types.py`, `adrl/gates/feasibility.py`, `adrl/telemetry/metrics.py`, `adrl/wire/classify.py`, `adrl/wire/parse.py` |
+-| ADRL-SEM-002 | `adrl/api/auth.py`, `adrl/core/ids.py`, `adrl/wire/adapters.py`, `adrl/wire/identity.py` |
++| ADRL-SEM-002 | `adrl/api/auth.py`, `adrl/core/ids.py`, `adrl/ledger/capture.py`, `adrl/wire/adapters.py`, `adrl/wire/identity.py` |
+ | ADRL-SEM-003 | `adrl/proxy/pipeline.py` |
+ | ADRL-SEM-004 | `adrl/config/models.py`, `adrl/gates/block.py`, `adrl/proxy/pipeline.py`, `adrl/wire/classify.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SEM-005 | `adrl/cascade/sticky.py` |
+ | ADRL-SEM-006 | `adrl/cascade/controller.py`, `adrl/proxy/observe_only.py`, `adrl/proxy/pipeline.py`, `adrl/wire/identity.py` |
+-| ADRL-SEM-007 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/schema.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/ledger/session_verification.py`, `adrl/proxy/errors.py`, `adrl/wire/adapters.py`, `adrl/wire/profiles/base.py`, `adrl/wire/profiles/messages.py`, `adrl/wire/profiles/messages_responses.py` |
+-| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py` |
++| ADRL-SEM-007 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/schema.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/proxy/errors.py`, `adrl/wire/adapters.py`, `adrl/wire/profiles/base.py`, `adrl/wire/profiles/messages.py`, `adrl/wire/profiles/messages_responses.py` |
++| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py`, `adrl/ledger/capture.py` |
+ | ADRL-TRU-002 | `adrl/core/types.py`, `adrl/gates/deployments.py`, `adrl/proxy/pipeline.py`, `adrl/wire/observe.py` |
+ | ADRL-TRU-003 | `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py` |
+ 
+--- a/docs/data-inventory.md
++++ b/docs/data-inventory.md
+@@ -311,3 +311,29 @@
+ | `improvement_records.nonce` | `skeleton` | AEAD nonce |
+ | `improvement_records.ciphertext` | `encrypted_prompt_class` | Full versioned evidence envelope |
+ | `improvement_records.ts` | `skeleton` | Record time |
++
++## Retained operator captures (internal, migration 0007)
++
++Every request field, raw attempt/task identity, workspace reference, source hash, policy,
++capture time, relative path, mode and file byte is inside the encrypted envelope. Captures reuse
++the existing bound session key; this code never creates a key. No route or learning label is
++created. The new table contains complete captures only, with atomic append and identity checks.
++
++| Field | Class | Note |
++|---|---|---|
++| `product_captures.seq` | `skeleton` | Append order, not a task-close clock |
++| `product_captures.session_hmac` | `keyed_hash` | Existing bound product session |
++| `product_captures.capture_key` | `keyed_hash` | Session-key HMAC of the capture UUID |
++| `product_captures.attempt_key` | `keyed_hash` | Session-key HMAC of the attempt UUID |
++| `product_captures.nonce` | `skeleton` | AEAD nonce |
++| `product_captures.ciphertext` | `encrypted_prompt_class` | Entire retained-operator-capture-v1 envelope |
++| `product_captures.ts` | `skeleton` | Durable append time |
++
++Key shredding denies future access, including after restoring an old key when its erasure audit
++remains intact. Already returned objects and leased plaintext copies have their own lifetime.
++Materialization cleans its private temporary directory on ordinary exit, exceptions and Python
++cancellation. Process death, backups, swap, filesystem remnants and copies made by an operator
++are not physically erased by this mechanism. Startup reconciliation and active-lease erasure
++coordination remain required before real task capture. Only synthetic fixtures use this internal
++slice. Erased ciphertext still consumes the archive quota; no automatic data rewrite or quota
++reclamation is implemented. See [capture boundary](operator-captures.md).
+--- a/docs/known-gaps.md
++++ b/docs/known-gaps.md
+@@ -1,4 +1,9 @@
+-# Known gaps (reconciled 2026-09-07)
++# Known gaps (reconciled 2026-09-08)
++
++W3.1 current context: [retained operator capture](operator-captures.md) is implemented internally
++for synthetic fixtures. Trusted task closure, active-copy erasure coordination, crash-leftover
++cleanup and verifier/CLI binding still block real task capture. The older entries below keep
++their existing policy scope; this addition changes no routing behavior.
+ 
+ W0 reconciliation: the health reader returns unknown for an unlisted group, but the feasibility
+ policy still permits a rung when it sees no reported member state. Hook failures are now ingested
+--- /dev/null
++++ b/docs/operator-captures.md
+@@ -0,0 +1,81 @@
++# Retained operator captures: internal W3.1 boundary
++
++Primary: ADRL-MEM-003. Secondary: ADRL-MEM-001/002/005/010, ADRL-SEM-002/007,
++ADRL-SAF-007, ADRL-TRU-001.
++
++`CaptureArchive` preserves a bounded copy of the workspace when a trusted local operator invokes
++it. If the working folder later changes from A to B, materialization still yields A and its
++original source reference. This is `operator_capture`; the schema cannot claim exact task-close
++attribution or verification success. The trusted close supervisor is W3.2, and receipt binding,
++CLI/timeline integration and a native Claude task demonstration remain W3.3.
++
++This slice is an internal Python API exercised on synthetic fixtures. It adds no CLI or public
++HTTP operation. The public contract remains API preview 4. Do not enable real repository payload
++capture before the plaintext-lease/crash-recovery and approved retention boundaries below are
++implemented and tested. Existing temporary session verification keeps its previous behavior.
++
++## Storage and identity
++
++The caller supplies a previously authenticated local `Principal`. It must still name a bound,
++unexpired session and the same workload. Capture also checks the signed inventory's workspace
++root. This is the existing same-OS-user trusted launcher/operator boundary, not a remote verifier
++role or a defense against arbitrary code running as that user. No key is created or recovered.
++
++`CaptureRequest` contains a capture UUID, separate attempt UUID, opaque task reference and optional
++parent attempt UUID. A parent must have a retained capture in the same session. This records an
++operator-declared relationship; it does not implement trusted task lifecycle or infer execution
++order. Every raw request field remains encrypted. The SQLite table uses session-key HMACs for
++capture and attempt uniqueness. Each attempt can have one capture in this slice.
++
++Two scans must agree. Reads use directory descriptors and no-follow opens, reject symlinks,
++special files and hard-linked regular files, compare file/directory metadata around reads, and
++reject observed drift. Path traversal, missing parent directories, reserved verifier paths and
++duplicate manifest entries are invalid. The existing cache/version-control exclusions apply:
++`.git`, `.venv`, `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.ruff_cache`, and `.pyc` entries.
++These exclusions are not a secret scanner, and the capture is only of the included tree.
++Repeated scans cannot establish atomic close or defeat an adversarial same-user writer.
++
++Migration 0007 appends one authenticated encrypted envelope in a transaction. There is no separate
++payload file that can become an orphan while capture commits. File bytes, names, permissions,
++source references and policy are encrypted with the existing session key. A retry with identical
++request, policy, workspace and content returns the original capture time. Changed content or
++identity under the same capture ID conflicts. A different capture ID cannot replace an attempt's
++existing capture. A failed transaction leaves no complete object. A lost acknowledgement may
++follow a successful commit; reading/retrying that stable ID reconciles it without duplicate rows.
++
++Authentication checks and AEAD integrity are repeated when reading. Missing or corrupt data
++never falls back to the current workspace. A source reference can be compared with the existing
++snapshot fingerprint for the included tree; it still describes capture-time input only.
++
++## Bounds and erasure
++
++`CapturePolicy` is versioned and retained inside the envelope. Upper/default bounds are 10,000
++entries (directories count), 100,000,000 source bytes, three captures per session, and 500,000,000
++stored ciphertext-plus-nonce bytes across the capture table. Operators may lower them. Quotas
++are checked inside the serialized write transaction. The archive quota includes erased sessions;
++key shredding does not remove ciphertext or reclaim capacity. SQLite/WAL overhead is outside this
++logical byte count, so it is not a precise filesystem quota. Encoding, repeated scans and AEAD
++also require more memory than the raw byte count. There is no bulk collection or automatic retry.
++
++Materialization yields a private disposable copy with non-writable files and executable bits
++preserved. Its directories permit cleanup; this is not a hostile-code execution sandbox. The
++caller must use a separate scratch directory. The context cleans on ordinary exit, exceptions
++and Python cancellation. Killing the process can leave plaintext. Existing leases and previously
++returned in-memory objects are not retroactively withdrawn by shredding a key. Fresh reads and
++new captures are denied after erasure, even if an old wrapped key is restored while the audit
++remains intact. Physical storage, external backups and malicious operator copies have no new
++erasure guarantee. Global host-secret/key-backup recovery remains an operator lifecycle problem.
++
++Before real capture, W3 must implement startup leftover reconciliation, active-lease erasure
++coordination, aggregate retention/recovery operation and a bounded native-run packet. DQ6 remains
++open for broader payload/copy lifecycle policy. This internal slice does not settle it by storing
++real data. Capture restart/atomicity tests do not qualify whole-application crash recovery.
++
++## Verification
++
++`tests/unit/test_capture.py` attacks output substitution, input drift, directory replacement,
++unsafe paths/files, invalid identity, duplicate captures, quota failures, key erasure/restoration,
++corruption, failed transactions, cancellation and lost acknowledgements. Migration tests preserve
++and decrypt an existing preview-4 receipt through schema version 6 to 7. The complete engineering
++runner checks regression behavior and the unchanged API export. No retained capture is yet fed
++into a production verifier receipt or learned objective.
+--- a/docs/product-services.md
++++ b/docs/product-services.md
+@@ -91,6 +91,10 @@
+ pins, complete egress accounting, trusted outcomes, local model compatibility or routing savings.
+ 
+ ## Independent session verification
++
++W3.1 adds a separate [internal retained-capture API](operator-captures.md). The command below
++still takes its own temporary snapshot; it does not yet consume the retained capture or establish
++exact task-close attribution. Public API preview 4 and historical receipts remain unchanged.
+ 
+ `adrl product verify` is a local operator command. It uses the configured ledger and keystore,
+ validates the connection against its signed workload and snapshots that exact working copy.
+--- /dev/null
++++ b/src/adrl/ledger/capture.py
+@@ -0,0 +1,430 @@
++"""Retained operator-time snapshots. Primary: ADRL-MEM-003.
++
++Secondary: ADRL-MEM-001/002/005/010, ADRL-SEM-002/007, ADRL-TRU-001, ADRL-SAF-007.
++Internal trusted-operator API, not harness intake. Captures assert neither exact task close
++nor successful verification. Payloads reuse the bound session key; no keys are created here.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import base64
++import binascii
++import hashlib
++import os
++import sqlite3
++import stat
++import tempfile
++import time
++from collections.abc import Iterator
++from contextlib import contextmanager
++from datetime import UTC, datetime
++from pathlib import Path, PurePosixPath
++from typing import Any, Literal, cast
++from uuid import UUID
++
++from cryptography.exceptions import InvalidTag
++from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
++
++from adrl.api.auth import Principal
++from adrl.api.contracts import OpaqueId
++from adrl.api.store import ProductStore
++from adrl.core.ids import session_identity
++from adrl.ledger import crypto
++from adrl.ledger.session_verification import IGNORED, RESERVED, SnapshotLimits, _tree_ref
++from adrl.ledger.store import utc_now_iso
++
++
++class CaptureError(ValueError):
++    """The capture is unavailable, inconsistent or outside its declared limits."""
++
++
++class CapturePolicy(SnapshotLimits):
++    schema_version: Literal["operator-capture-policy-v1"] = "operator-capture-policy-v1"
++    max_files: int = Field(default=10000, ge=1, le=10000)
++    max_bytes: int = Field(default=100_000_000, ge=1, le=100_000_000)
++    max_session_captures: int = Field(default=3, ge=1, le=3)
++    max_archive_bytes: int = Field(default=500_000_000, ge=1, le=500_000_000)
++
++
++class CaptureRequest(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    schema_version: Literal["operator-capture-request-v1"] = "operator-capture-request-v1"
++    attribution: Literal["operator_capture"] = "operator_capture"
++    capture_id: UUID
++    attempt_id: UUID
++    parent_attempt_id: UUID | None = None
++    task_ref: OpaqueId
++
++    @model_validator(mode="after")
++    def distinct_parent(self) -> CaptureRequest:
++        if self.parent_attempt_id == self.attempt_id:
++            raise ValueError("An attempt cannot be its own parent.")
++        return self
++
++
++class CaptureEntry(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    path: str = Field(min_length=1, max_length=4096)
++    kind: Literal["file", "directory"]
++    executable: bool = False
++    content: str | None = None
++
++    @model_validator(mode="after")
++    def safe_entry(self) -> CaptureEntry:
++        path = PurePosixPath(self.path)
++        if (
++            path.is_absolute()
++            or ".." in path.parts
++            or not path.parts
++            or str(path) != self.path
++            or "\0" in self.path
++            or "\\" in self.path
++            or path.parts[0] == RESERVED
++            or any(part in IGNORED for part in path.parts)
++            or self.path.endswith(".pyc")
++        ):
++            raise ValueError("Invalid capture path.")
++        if self.kind == "directory":
++            if self.content is not None or self.executable:
++                raise ValueError("Directory entries cannot carry file content or mode.")
++        elif self.content is None:
++            raise ValueError("File content is required.")
++        else:
++            self.bytes()
++        return self
++
++    def bytes(self) -> bytes:
++        try:
++            return base64.b64decode(self.content or "", validate=True)
++        except (binascii.Error, ValueError) as exc:
++            raise CaptureError("invalid_capture_content") from exc
++
++
++def _manifest(entries: tuple[CaptureEntry, ...]) -> dict[str, str]:
++    return {
++        entry.path + ("/" if entry.kind == "directory" else ""): (
++            "directory"
++            if entry.kind == "directory"
++            else f"{int(entry.executable)}:" + hashlib.sha256(entry.bytes()).hexdigest()
++        )
++        for entry in entries
++    }
++
++
++class CapturedSnapshot(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    schema_version: Literal["retained-operator-capture-v1"] = "retained-operator-capture-v1"
++    request: CaptureRequest
++    policy: CapturePolicy
++    captured_at: datetime
++    workspace_ref: str = Field(pattern=r"^hmac:[a-f0-9]{64}$")
++    source_ref: str = Field(pattern=r"^hmac:[a-f0-9]{64}$")
++    entries: tuple[CaptureEntry, ...] = Field(max_length=10000)
++
++    @model_validator(mode="after")
++    def complete_tree(self) -> CapturedSnapshot:
++        by_path = {entry.path: entry for entry in self.entries}
++        if len(by_path) != len(self.entries) or len(by_path) > self.policy.max_files:
++            raise ValueError("Duplicate entries or capture count limit exceeded.")
++        if self.captured_at.tzinfo is None:
++            raise ValueError("Capture time requires a timezone.")
++        if sum(len(entry.bytes()) for entry in self.entries) > self.policy.max_bytes:
++            raise ValueError("Capture byte limit exceeded.")
++        for entry in self.entries:
++            for parent in PurePosixPath(entry.path).parents:
++                if str(parent) == ".":
++                    continue
++                if str(parent) not in by_path or by_path[str(parent)].kind != "directory":
++                    raise ValueError("Missing directory or file used as directory.")
++        return self
++
++
++def _stamp(value: os.stat_result) -> tuple[int, ...]:
++    return (
++        value.st_dev,
++        value.st_ino,
++        value.st_mode,
++        value.st_size,
++        value.st_mtime_ns,
++        value.st_ctime_ns,
++    )
++
++
++def _scan(root: Path, policy: CapturePolicy) -> tuple[CaptureEntry, ...]:
++    """Scan via directory descriptors; reject symlinks, special files and observed drift."""
++    entries: list[CaptureEntry] = []
++    total = 0
++
++    def walk(directory: int, prefix: str) -> None:
++        nonlocal total
++        before = os.fstat(directory)
++        for name in sorted(os.listdir(directory)):
++            if name in IGNORED or name.endswith(".pyc"):
++                continue
++            if not prefix and name == RESERVED:
++                raise CaptureError("reserved_verifier_path")
++            if len(entries) >= policy.max_files:
++                raise CaptureError("capture_count_limit")
++            relative = prefix + name
++            initial = os.stat(name, dir_fd=directory, follow_symlinks=False)
++            if stat.S_ISDIR(initial.st_mode):
++                child = os.open(
++                    name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=directory
++                )
++                try:
++                    if _stamp(initial) != _stamp(os.fstat(child)):
++                        raise CaptureError("workspace_changed_during_capture")
++                    entries.append(CaptureEntry(path=relative, kind="directory"))
++                    walk(child, relative + "/")
++                finally:
++                    os.close(child)
++            elif stat.S_ISREG(initial.st_mode) and initial.st_nlink == 1:
++                descriptor = os.open(
++                    name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory
++                )
++                try:
++                    opened = os.fstat(descriptor)
++                    if _stamp(initial) != _stamp(opened):
++                        raise CaptureError("workspace_changed_during_capture")
++                    if opened.st_size > policy.max_bytes - total:
++                        raise CaptureError("capture_byte_limit")
++                    with os.fdopen(descriptor, "rb", closefd=False) as stream:
++                        content = stream.read(policy.max_bytes - total + 1)
++                    if _stamp(opened) != _stamp(os.fstat(descriptor)):
++                        raise CaptureError("workspace_changed_during_capture")
++                finally:
++                    os.close(descriptor)
++                total += len(content)
++                if total > policy.max_bytes:
++                    raise CaptureError("capture_byte_limit")
++                entries.append(
++                    CaptureEntry(
++                        path=relative,
++                        kind="file",
++                        executable=bool(opened.st_mode & 0o111),
++                        content=base64.b64encode(content).decode(),
++                    )
++                )
++            else:
++                raise CaptureError("symlink_special_or_hardlinked_file")
++        if _stamp(before) != _stamp(os.fstat(directory)):
++            raise CaptureError("workspace_changed_during_capture")
++
++    descriptor = os.open(root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++    try:
++        initial = os.fstat(descriptor)
++        walk(descriptor, "")
++        if _stamp(initial) != _stamp(root.stat(follow_symlinks=False)):
++            raise CaptureError("workspace_changed_during_capture")
++    finally:
++        os.close(descriptor)
++    return tuple(entries)
++
++
++def _capture(root: Path, policy: CapturePolicy) -> tuple[CaptureEntry, ...]:
++    first = _scan(root, policy)
++    second = _scan(root, policy)
++    if first != second:
++        raise CaptureError("workspace_changed_during_capture")
++    return second
++
++
++class CaptureArchive:
++    """Local operator storage; callers supply a previously authenticated Principal.
++
++    Public/harness intake never calls this API. Same-OS-user compromise is outside its trust
++    boundary. Raw identity, path, policy, hashes and file bytes are all session-key encrypted.
++    """
++
++    def __init__(self, data: ProductStore, policy: CapturePolicy | None = None) -> None:
++        self.data = data
++        self.policy = policy or CapturePolicy()
++
++    def _key(self, principal: Principal) -> bytes:
++        binding = self.data.binding(principal.session_hmac)
++        if (
++            binding is None
++            or binding["workload_ref"] != principal.workload_ref
++            or principal.assertion.session_id != principal.session_id
++            or principal.assertion.expires_at <= time.time()
++            or session_identity(principal.session_id, self.data.keys.hmac_key())
++            != principal.session_hmac
++        ):
++            raise CaptureError("capture_session_binding_unavailable")
++        key = self.data.keys.get_session_key(principal.session_hmac)
++        if key is None or self.data.was_erased(principal.session_hmac):
++            raise CaptureError("capture_key_unavailable")
++        return key
++
++    def _decode(self, principal: Principal, key: bytes, row: dict[str, Any]) -> CapturedSnapshot:
++        aad = f"capture:{principal.session_hmac}:{row['capture_key']}:{row['attempt_key']}".encode()
++        try:
++            capture = CapturedSnapshot.model_validate_json(
++                crypto.decrypt(key, row["nonce"], row["ciphertext"], aad=aad)
++            )
++        except (InvalidTag, ValidationError, ValueError) as exc:
++            raise CaptureError("capture_integrity_failure") from exc
++        if (
++            row["session_hmac"] != principal.session_hmac
++            or row["capture_key"]
++            != crypto.keyed_hash(key, "capture:" + str(capture.request.capture_id))
++            or row["attempt_key"]
++            != crypto.keyed_hash(key, "attempt:" + str(capture.request.attempt_id))
++            or capture.source_ref
++            != _tree_ref(self.data.keys.hmac_key(), _manifest(capture.entries))
++        ):
++            raise CaptureError("capture_integrity_failure")
++        if self._key(principal) != key:
++            raise CaptureError("capture_key_unavailable")
++        return capture
++
++    def read(self, principal: Principal, capture_id: UUID) -> CapturedSnapshot:
++        key = self._key(principal)
++        rows = self.data.ledger.read(
++            "SELECT * FROM product_captures WHERE session_hmac=? AND capture_key=?",
++            (principal.session_hmac, crypto.keyed_hash(key, "capture:" + str(capture_id))),
++        )
++        if not rows:
++            raise CaptureError("capture_unavailable")
++        return self._decode(principal, key, dict(rows[0]))
++
++    def _inputs(
++        self, principal: Principal, workspace: Path
++    ) -> tuple[Path, tuple[CaptureEntry, ...]]:
++        if workspace.is_symlink():
++            raise CaptureError("symlink_workspace")
++        root = workspace.resolve(strict=True)
++        if Path(principal.assertion.inventory.root).resolve(strict=True) != root:
++            raise CaptureError("capture_workspace_binding_mismatch")
++        return root, _capture(root, self.policy)
++
++    async def capture(
++        self, principal: Principal, workspace: Path, request: CaptureRequest
++    ) -> CapturedSnapshot:
++        key = self._key(principal)
++        try:
++            root, entries = await asyncio.to_thread(self._inputs, principal, workspace)
++        except OSError as exc:
++            raise CaptureError("capture_input_unavailable") from exc
++        snapshot = CapturedSnapshot(
++            request=request,
++            policy=self.policy,
++            captured_at=datetime.now(UTC),
++            workspace_ref="hmac:" + crypto.keyed_hash(key, str(root)),
++            source_ref=_tree_ref(self.data.keys.hmac_key(), _manifest(entries)),
++            entries=entries,
++        )
++        if self._key(principal) != key:
++            raise CaptureError("capture_key_unavailable")
++        capture_key = crypto.keyed_hash(key, "capture:" + str(request.capture_id))
++        attempt_key = crypto.keyed_hash(key, "attempt:" + str(request.attempt_id))
++        aad = f"capture:{principal.session_hmac}:{capture_key}:{attempt_key}".encode()
++        nonce, ciphertext = crypto.encrypt(key, snapshot.model_dump_json().encode(), aad=aad)
++
++        def write(conn: sqlite3.Connection) -> tuple[str, dict[str, Any] | None]:
++            if principal.assertion.expires_at <= time.time():
++                return "capture_session_binding_unavailable", None
++            erased = conn.execute(
++                "SELECT 1 FROM lineage_events WHERE lineage_hmac=? AND event_type='erased' "
++                "UNION ALL SELECT 1 FROM session_keys WHERE session_hmac=? AND action='shredded'",
++                (principal.session_hmac, principal.session_hmac),
++            ).fetchone()
++            if erased or self.data.keys.get_session_key(principal.session_hmac) != key:
++                return "capture_key_unavailable", None
++            prior = conn.execute(
++                "SELECT * FROM product_captures WHERE session_hmac=? AND capture_key=?",
++                (principal.session_hmac, capture_key),
++            ).fetchone()
++            if prior:
++                return "prior", dict(prior)
++            if conn.execute(
++                "SELECT 1 FROM product_captures WHERE session_hmac=? AND attempt_key=?",
++                (principal.session_hmac, attempt_key),
++            ).fetchone():
++                return "attempt_already_captured", None
++            if request.parent_attempt_id is not None:
++                parent = conn.execute(
++                    "SELECT 1 FROM product_captures WHERE session_hmac=? AND attempt_key=?",
++                    (
++                        principal.session_hmac,
++                        crypto.keyed_hash(key, "attempt:" + str(request.parent_attempt_id)),
++                    ),
++                ).fetchone()
++                if parent is None:
++                    return "parent_capture_unavailable", None
++            count = conn.execute(
++                "SELECT COUNT(*) FROM product_captures WHERE session_hmac=?",
++                (principal.session_hmac,),
++            ).fetchone()[0]
++            size = conn.execute(
++                "SELECT COALESCE(SUM(LENGTH(ciphertext)+LENGTH(nonce)),0) FROM product_captures"
++            ).fetchone()[0]
++            if count >= self.policy.max_session_captures:
++                return "session_capture_limit", None
++            if size + len(ciphertext) + len(nonce) > self.policy.max_archive_bytes:
++                return "archive_byte_limit", None
++            cursor = conn.execute(
++                "INSERT INTO product_captures "
++                "(session_hmac,capture_key,attempt_key,nonce,ciphertext,ts) VALUES (?,?,?,?,?,?)",
++                (
++                    principal.session_hmac,
++                    capture_key,
++                    attempt_key,
++                    nonce,
++                    ciphertext,
++                    utc_now_iso(),
++                ),
++            )
++            return "recorded", dict(
++                conn.execute(
++                    "SELECT * FROM product_captures WHERE seq=?", (cursor.lastrowid,)
++                ).fetchone()
++            )
++
++        status, row = cast(
++            tuple[str, dict[str, Any] | None], await self.data.ledger.write_through(write)
++        )
++        if row is None:
++            raise CaptureError(status)
++        stored = self._decode(principal, key, row)
++        if stored.model_dump(exclude={"captured_at"}) != snapshot.model_dump(
++            exclude={"captured_at"}
++        ):
++            raise CaptureError("capture_identity_conflict")
++        return stored
++
++    @contextmanager
++    def materialize(self, principal: Principal, capture_id: UUID, scratch: Path) -> Iterator[Path]:
++        """Lease a disposable plaintext copy; cleanup runs on exit, exceptions and cancellation.
++
++        Killing the process can leave this copy on disk. This internal slice has no startup
++        reconciler and must not yet be enabled for real task payloads. Erasure denies new reads;
++        an already leased copy is removed when this context exits, not retroactively withdrawn.
++        """
++        snapshot = self.read(principal, capture_id)
++        if scratch.is_symlink() or not scratch.is_dir():
++            raise CaptureError("invalid_capture_scratch")
++        scratch = scratch.resolve(strict=True)
++        root = Path(principal.assertion.inventory.root).resolve()
++        if (
++            scratch == root
++            or scratch.is_relative_to(root)
++            or self.data.keys.root.resolve().is_relative_to(scratch)
++            or scratch.is_relative_to(self.data.keys.root.resolve())
++        ):
++            raise CaptureError("invalid_capture_scratch")
++        with tempfile.TemporaryDirectory(prefix="adrl-capture-", dir=scratch) as directory:
++            target = Path(directory)
++            for entry in sorted(
++                snapshot.entries, key=lambda item: (len(PurePosixPath(item.path).parts), item.path)
++            ):
++                path = target / entry.path
++                if entry.kind == "directory":
++                    path.mkdir(mode=0o700)
++                else:
++                    with path.open("xb") as output:
++                        output.write(entry.bytes())
++                    path.chmod(0o500 if entry.executable else 0o400)
++            self._key(principal)
++            yield target
+--- /dev/null
++++ b/src/adrl/ledger/migrations/0007_captures.sql
+@@ -0,0 +1,13 @@
++-- Retained operator captures. Primary: ADRL-MEM-001. Secondary: ADRL-MEM-010.
++CREATE TABLE product_captures (
++    seq INTEGER PRIMARY KEY AUTOINCREMENT,
++    session_hmac TEXT NOT NULL REFERENCES product_sessions(session_hmac),
++    capture_key TEXT NOT NULL,
++    attempt_key TEXT NOT NULL,
++    nonce BLOB NOT NULL,
++    ciphertext BLOB NOT NULL,
++    ts TEXT NOT NULL,
++    UNIQUE(session_hmac, capture_key),
++    UNIQUE(session_hmac, attempt_key)
++);
++CREATE INDEX product_captures_session_idx ON product_captures(session_hmac, seq);
+--- /dev/null
++++ b/tests/unit/test_capture.py
+@@ -0,0 +1,436 @@
++"""Fault cases for retained operator captures. Primary: ADRL-MEM-003, ADRL-MEM-010."""
++
++from __future__ import annotations
++
++import asyncio
++import os
++import shutil
++import sqlite3
++import threading
++import time
++from collections.abc import AsyncIterator
++from dataclasses import dataclass, replace
++from pathlib import Path
++from typing import Any
++from uuid import uuid4
++
++import pytest
++from pydantic import ValidationError
++
++from adrl.api.auth import Principal
++from adrl.api.contracts import SessionRequest, VersionRef
++from adrl.api.store import ProductStore
++from adrl.core.errors import LedgerAppendFailure
++from adrl.core.ids import session_identity
++from adrl.gates.workload import RepoInventory, WorkloadAssertion
++from adrl.ledger import capture as module
++from adrl.ledger.capture import (
++    CaptureArchive,
++    CaptureEntry,
++    CaptureError,
++    CapturePolicy,
++    CaptureRequest,
++)
++from adrl.ledger.keystore import FileKeyStore
++from adrl.ledger.session_verification import snapshot_fingerprint
++from adrl.ledger.store import LedgerStore
++
++
++@dataclass
++class Fixture:
++    store: LedgerStore
++    keys: FileKeyStore
++    data: ProductStore
++    archive: CaptureArchive
++    principal: Principal
++    workspace: Path
++    scratch: Path
++
++    def request(self, **changes: Any) -> CaptureRequest:
++        return CaptureRequest.model_validate(
++            {"capture_id": uuid4(), "attempt_id": uuid4(), "task_ref": "task-one"} | changes
++        )
++
++
++async def bind(data: ProductStore, workspace: Path, sid: str) -> Principal:
++    assertion = WorkloadAssertion(
++        RepoInventory(str(workspace), None, None, "a" * 64, 1),
++        time.time() - 1,
++        time.time() + 3600,
++        str(uuid4()),
++        data.keys.hmac_key_id(),
++        sid,
++    )
++    principal = Principal(sid, session_identity(sid, data.keys.hmac_key()), "fixture", assertion)
++    data.keys.create_session_key(principal.session_hmac)
++    await data.bind(
++        principal,
++        SessionRequest(
++            adapter=VersionRef(id="claude-code", version="1"),
++            profile=VersionRef(id="anthropic-messages-v1", version="1"),
++            workload_ref="fixture",
++        ),
++        "fixture-policy",
++        "fixture-config",
++    )
++    return principal
++
++
++@pytest.fixture
++async def capture(tmp_path: Path) -> AsyncIterator[Fixture]:
++    workspace = tmp_path / "work"
++    workspace.mkdir()
++    (workspace / "code.txt").write_text("output-A-private-canary")
++    scratch = tmp_path / "scratch"
++    scratch.mkdir(mode=0o700)
++    store = LedgerStore(tmp_path / "ledger.db")
++    store.open()
++    keys = FileKeyStore(tmp_path / "keys", store=store)
++    data = ProductStore(store, keys)
++    principal = await bind(data, workspace, str(uuid4()))
++    try:
++        yield Fixture(store, keys, data, CaptureArchive(data), principal, workspace, scratch)
++    finally:
++        store.close()
++        shutil.rmtree(tmp_path)
++
++
++async def test_retained_a_survives_b_restart_and_materialization(capture: Fixture) -> None:
++    (capture.workspace / "empty").mkdir()
++    executable = capture.workspace / "run"
++    executable.write_bytes(b"binary\0content")
++    executable.chmod(0o700)
++    request = capture.request()
++    first = await capture.archive.capture(capture.principal, capture.workspace, request)
++    (_, reference) = snapshot_fingerprint(capture.workspace, first.policy, capture.keys.hmac_key())
++    assert first.source_ref == reference
++    assert first.request.attribution == "operator_capture"
++    (capture.workspace / "code.txt").write_text("output-B")
++    capture.store.close()
++    capture.store.open()
++    archive = CaptureArchive(
++        ProductStore(capture.store, FileKeyStore(capture.keys.root, store=capture.store))
++    )
++    assert archive.read(capture.principal, request.capture_id) == first
++    with archive.materialize(capture.principal, request.capture_id, capture.scratch) as restored:
++        assert (restored / "code.txt").read_text() == "output-A-private-canary"
++        assert (restored / "empty").is_dir()
++        assert (restored / "run").read_bytes() == b"binary\0content"
++        assert os.access(restored / "run", os.X_OK)
++        assert snapshot_fingerprint(restored, first.policy, capture.keys.hmac_key())[1] == reference
++    assert not restored.exists()
++    assert not list(capture.scratch.iterdir())
++    row = dict(capture.store.read("SELECT * FROM product_captures")[0])
++    serialized = repr(row).encode()
++    for private in [
++        b"output-A-private-canary",
++        b"code.txt",
++        str(request.attempt_id).encode(),
++        str(capture.workspace).encode(),
++    ]:
++        assert private not in serialized
++    assert not capture.store.read("SELECT * FROM decisions")
++    assert not capture.store.read("SELECT * FROM product_verifications")
++
++
++async def test_idempotent_retry_conflicts_and_distinct_attempts(capture: Fixture) -> None:
++    request = capture.request()
++    first = await capture.archive.capture(capture.principal, capture.workspace, request)
++    assert await capture.archive.capture(capture.principal, capture.workspace, request) == first
++    with pytest.raises(CaptureError, match="attempt_already_captured"):
++        await capture.archive.capture(
++            capture.principal, capture.workspace, capture.request(attempt_id=request.attempt_id)
++        )
++    second = await capture.archive.capture(
++        capture.principal, capture.workspace, capture.request(task_ref="task-two")
++    )
++    assert first.request.attempt_id != second.request.attempt_id
++    (capture.workspace / "code.txt").write_text("B")
++    with pytest.raises(CaptureError, match="identity_conflict"):
++        await capture.archive.capture(capture.principal, capture.workspace, request)
++    assert capture.archive.read(capture.principal, request.capture_id) == first
++    assert len(capture.store.read("SELECT * FROM product_captures")) == 2
++
++
++async def test_parent_must_be_captured_in_same_session(capture: Fixture) -> None:
++    parent = capture.request()
++    with pytest.raises(CaptureError, match="parent_capture_unavailable"):
++        await capture.archive.capture(
++            capture.principal,
++            capture.workspace,
++            capture.request(parent_attempt_id=parent.attempt_id),
++        )
++    await capture.archive.capture(capture.principal, capture.workspace, parent)
++    child = capture.request(parent_attempt_id=parent.attempt_id)
++    assert (
++        await capture.archive.capture(capture.principal, capture.workspace, child)
++    ).request == child
++
++
++async def test_wrong_session_workload_root_and_expiry_are_denied(capture: Fixture) -> None:
++    request = capture.request()
++    await capture.archive.capture(capture.principal, capture.workspace, request)
++    other = await bind(capture.data, capture.workspace, str(uuid4()))
++    with pytest.raises(CaptureError, match="capture_unavailable"):
++        capture.archive.read(other, request.capture_id)
++    for principal in [
++        replace(capture.principal, workload_ref="wrong"),
++        replace(capture.principal, assertion=replace(capture.principal.assertion, expires_at=0)),
++    ]:
++        with pytest.raises(CaptureError, match="binding_unavailable"):
++            capture.archive.read(principal, request.capture_id)
++    with pytest.raises(CaptureError, match="workspace_binding_mismatch"):
++        await capture.archive.capture(capture.principal, capture.scratch, capture.request())
++
++
++@pytest.mark.parametrize(
++    "kind", ["file_symlink", "directory_symlink", "fifo", "hardlink", "reserved"]
++)
++async def test_unsafe_inputs_never_commit(capture: Fixture, kind: str) -> None:
++    target = capture.workspace / "unsafe"
++    if kind == "file_symlink":
++        target.symlink_to(capture.workspace / "code.txt")
++    elif kind == "directory_symlink":
++        target.symlink_to(capture.scratch, target_is_directory=True)
++    elif kind == "fifo":
++        os.mkfifo(target)
++    elif kind == "hardlink":
++        os.link(capture.workspace / "code.txt", target)
++    else:
++        (capture.workspace / ".adrl-verifier").mkdir()
++    with pytest.raises(CaptureError):
++        await capture.archive.capture(capture.principal, capture.workspace, capture.request())
++    assert not capture.store.read("SELECT * FROM product_captures")
++
++
++@pytest.mark.parametrize(
++    "path", ["../escape", "/escape", "a/../b", "a//b", ".", "a\\b", ".adrl-verifier/x"]
++)
++def test_untrusted_manifest_paths_rejected(path: str) -> None:
++    with pytest.raises(ValidationError):
++        CaptureEntry(path=path, kind="file", content="")
++
++
++@pytest.mark.parametrize("change", ["edit", "remove"])
++async def test_capture_drift_or_missing_file_never_commits(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch, change: str
++) -> None:
++    original = module._scan
++    count = 0
++
++    def scan(root: Path, policy: CapturePolicy) -> tuple[CaptureEntry, ...]:
++        nonlocal count
++        count += 1
++        if count == 2:
++            if change == "edit":
++                (root / "code.txt").write_text("changed during capture")
++            else:
++                (root / "code.txt").unlink()
++        return original(root, policy)
++
++    monkeypatch.setattr(module, "_scan", scan)
++    with pytest.raises(CaptureError, match="changed_during_capture"):
++        await capture.archive.capture(capture.principal, capture.workspace, capture.request())
++    assert not capture.store.read("SELECT * FROM product_captures")
++
++
++async def test_directory_swap_cannot_follow_symlink(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    nested = capture.workspace / "nested"
++    nested.mkdir()
++    (capture.scratch / "private").write_text("outside capture")
++    original = os.open
++
++    def open_checked(path: Any, flags: int, mode: int = 0o777, *, dir_fd: int | None = None) -> int:
++        if path == "nested" and dir_fd is not None:
++            nested.rename(capture.scratch / "moved")
++            nested.symlink_to(capture.scratch, target_is_directory=True)
++        return original(path, flags, mode, dir_fd=dir_fd)
++
++    monkeypatch.setattr(module.os, "open", open_checked)
++    with pytest.raises(CaptureError, match="capture_input_unavailable"):
++        await capture.archive.capture(capture.principal, capture.workspace, capture.request())
++    assert not capture.store.read("SELECT * FROM product_captures")
++
++
++@pytest.mark.parametrize(
++    "policy",
++    [CapturePolicy(max_bytes=1), CapturePolicy(max_files=1), CapturePolicy(max_archive_bytes=1)],
++)
++async def test_limits_cannot_leave_partial_capture(capture: Fixture, policy: CapturePolicy) -> None:
++    (capture.workspace / "second").write_text("two")
++    archive = CaptureArchive(capture.data, policy)
++    with pytest.raises(CaptureError, match="limit"):
++        await archive.capture(capture.principal, capture.workspace, capture.request())
++    assert not capture.store.read("SELECT * FROM product_captures")
++
++
++async def test_session_quota_preserves_idempotency(capture: Fixture) -> None:
++    archive = CaptureArchive(capture.data, CapturePolicy(max_session_captures=1))
++    request = capture.request()
++    first = await archive.capture(capture.principal, capture.workspace, request)
++    assert await archive.capture(capture.principal, capture.workspace, request) == first
++    with pytest.raises(CaptureError, match="session_capture_limit"):
++        await archive.capture(capture.principal, capture.workspace, capture.request())
++
++
++async def test_archive_quota_counts_other_and_erased_sessions(capture: Fixture) -> None:
++    await capture.archive.capture(capture.principal, capture.workspace, capture.request())
++    row = capture.store.read("SELECT * FROM product_captures")[0]
++    used = len(row["ciphertext"]) + len(row["nonce"])
++    capture.keys.shred_session_key(capture.principal.session_hmac, "fixture_erasure")
++    other = await bind(capture.data, capture.workspace, str(uuid4()))
++    archive = CaptureArchive(capture.data, CapturePolicy(max_archive_bytes=used + 1))
++    with pytest.raises(CaptureError, match="archive_byte_limit"):
++        await archive.capture(other, capture.workspace, capture.request())
++    assert len(capture.store.read("SELECT * FROM product_captures")) == 1
++
++
++async def test_missing_capture_never_materializes_workspace(capture: Fixture) -> None:
++    with (
++        pytest.raises(CaptureError, match="capture_unavailable"),
++        capture.archive.materialize(capture.principal, uuid4(), capture.scratch),
++    ):
++        pass
++    assert not list(capture.scratch.iterdir())
++
++
++def test_request_cannot_claim_exact_close_or_verification() -> None:
++    request = {"capture_id": uuid4(), "attempt_id": uuid4(), "task_ref": "fixture"}
++    for extra in [{"attribution": "trusted_close"}, {"verified": True}]:
++        with pytest.raises(ValidationError):
++            CaptureRequest.model_validate(request | extra)
++
++
++async def test_erasure_and_restored_key_do_not_resurrect(capture: Fixture) -> None:
++    request = capture.request()
++    await capture.archive.capture(capture.principal, capture.workspace, request)
++    path = capture.keys.root / "sessions" / f"{capture.principal.session_hmac}.key"
++    prior = path.read_bytes()
++    capture.keys.shred_session_key(capture.principal.session_hmac, "fixture_erasure")
++    for restore in [False, True]:
++        if restore:
++            path.write_bytes(prior)
++        with pytest.raises(CaptureError, match="key_unavailable"):
++            capture.archive.read(capture.principal, request.capture_id)
++        with pytest.raises(CaptureError, match="key_unavailable"):
++            await capture.archive.capture(capture.principal, capture.workspace, request)
++        with (
++            pytest.raises(CaptureError, match="key_unavailable"),
++            capture.archive.materialize(capture.principal, request.capture_id, capture.scratch),
++        ):
++            pass
++    assert len(capture.store.read("SELECT * FROM product_captures")) == 1
++    assert not list(capture.scratch.iterdir())
++
++
++async def test_erasure_before_queued_append_is_rechecked(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    original = capture.store.write_through
++
++    async def erase_then_write(fn: Any) -> Any:
++        capture.keys.shred_session_key(capture.principal.session_hmac, "fixture_erasure")
++        return await original(fn)
++
++    monkeypatch.setattr(capture.store, "write_through", erase_then_write)
++    with pytest.raises(CaptureError, match="key_unavailable"):
++        await capture.archive.capture(capture.principal, capture.workspace, capture.request())
++    assert not capture.store.read("SELECT * FROM product_captures")
++
++
++@pytest.mark.parametrize("field", ["ciphertext", "nonce", "attempt_key"])
++async def test_corruption_never_falls_back_to_working_tree(capture: Fixture, field: str) -> None:
++    request = capture.request()
++    await capture.archive.capture(capture.principal, capture.workspace, request)
++    with sqlite3.connect(capture.store.path) as connection:
++        connection.execute(f"UPDATE product_captures SET {field}=?", (b"tampered",))
++    with pytest.raises(CaptureError, match="integrity_failure"):
++        capture.archive.read(capture.principal, request.capture_id)
++    assert not list(capture.scratch.iterdir())
++
++
++async def test_failed_transaction_is_absent_after_reopen(capture: Fixture) -> None:
++    request = capture.request()
++    with sqlite3.connect(capture.store.path) as connection:
++        connection.execute(
++            "CREATE TRIGGER fail_capture BEFORE INSERT ON product_captures "
++            "BEGIN SELECT RAISE(ABORT,'injected failure'); END"
++        )
++    with pytest.raises(LedgerAppendFailure):
++        await capture.archive.capture(capture.principal, capture.workspace, request)
++    capture.store.close()
++    capture.store.open()
++    with pytest.raises(CaptureError, match="capture_unavailable"):
++        capture.archive.read(capture.principal, request.capture_id)
++    with sqlite3.connect(capture.store.path) as connection:
++        connection.execute("DROP TRIGGER fail_capture")
++    await capture.archive.capture(capture.principal, capture.workspace, request)
++    assert len(capture.store.read("SELECT * FROM product_captures")) == 1
++
++
++async def test_cancel_before_commit_leaves_no_record(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    started, release, finished = threading.Event(), threading.Event(), threading.Event()
++    original = module._capture
++
++    def wait_then_capture(root: Path, policy: CapturePolicy) -> tuple[CaptureEntry, ...]:
++        started.set()
++        try:
++            if not release.wait(timeout=5):
++                raise RuntimeError("fixture wait timed out")
++            return original(root, policy)
++        finally:
++            finished.set()
++
++    monkeypatch.setattr(module, "_capture", wait_then_capture)
++    task = asyncio.create_task(
++        capture.archive.capture(capture.principal, capture.workspace, capture.request())
++    )
++    try:
++        assert await asyncio.to_thread(started.wait, 5)
++        task.cancel()
++        with pytest.raises(asyncio.CancelledError):
++            await task
++    finally:
++        release.set()
++        assert await asyncio.to_thread(finished.wait, 5)
++    assert not capture.store.read("SELECT * FROM product_captures")
++
++
++async def test_lost_acknowledgement_retries_original_record(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    original = capture.store.write_through
++
++    async def commit_then_cancel(fn: Any) -> Any:
++        await original(fn)
++        raise asyncio.CancelledError
++
++    request = capture.request()
++    monkeypatch.setattr(capture.store, "write_through", commit_then_cancel)
++    with pytest.raises(asyncio.CancelledError):
++        await capture.archive.capture(capture.principal, capture.workspace, request)
++    stored = capture.archive.read(capture.principal, request.capture_id)
++    monkeypatch.setattr(capture.store, "write_through", original)
++    assert await capture.archive.capture(capture.principal, capture.workspace, request) == stored
++    assert len(capture.store.read("SELECT * FROM product_captures")) == 1
++
++
++@pytest.mark.parametrize("failure", [RuntimeError, asyncio.CancelledError])
++async def test_materialization_cleans_on_exception_or_cancellation(
++    capture: Fixture, failure: type[BaseException]
++) -> None:
++    request = capture.request()
++    await capture.archive.capture(capture.principal, capture.workspace, request)
++    with (
++        pytest.raises(failure),
++        capture.archive.materialize(
++            capture.principal, request.capture_id, capture.scratch
++        ) as target,
++    ):
++        assert target.exists()
++        raise failure()
++    assert not list(capture.scratch.iterdir())
+--- a/tests/unit/test_product_migration.py
++++ b/tests/unit/test_product_migration.py
+@@ -3,8 +3,14 @@
+ from __future__ import annotations
+ 
+ import sqlite3
++from datetime import UTC, datetime
+ from pathlib import Path
+ 
++from adrl.api.contracts import SessionVerification, VersionRef
++from adrl.api.store import ProductStore
++from adrl.core.ids import SessionId
++from adrl.ledger import crypto
++from adrl.ledger.keystore import FileKeyStore
+ from adrl.ledger.migrations import load_migrations
+ from adrl.ledger.store import LedgerStore
+ 
+@@ -42,7 +48,55 @@
+         assert row["session_hmac"] == "session"
+         assert row["config_digest"] == "digest"
+         assert row["ts"] == "ts"
+-        assert store.schema_user_version() == 6
++        assert store.schema_user_version() == 7
+         assert not store.read("SELECT * FROM product_verifications")
++        assert not store.read("SELECT * FROM product_captures")
+     finally:
+         store.close()
++
++
++def test_version_six_receipt_still_decrypts_after_capture_migration(tmp_path: Path) -> None:
++    path = tmp_path / "ledger.db"
++    session = SessionId("a" * 64)
++    keys = FileKeyStore(tmp_path / "keys")
++    key = keys.create_session_key(session)
++    receipt = SessionVerification(
++        sandbox_implementation=VersionRef(id="fixture", version="1"),
++        job_id="old-job",
++        task_ref="old-task",
++        phase="started",
++        verifier=VersionRef(id="fixture-check", version="1"),
++        plan_ref="old-plan",
++        started_at=datetime.now(UTC),
++    )
++    job = crypto.keyed_hash(key, "verification:" + receipt.job_id)
++    nonce, ciphertext = crypto.encrypt(
++        key, receipt.model_dump_json().encode(), f"verification:{session}:{job}:started".encode()
++    )
++    with sqlite3.connect(path) as connection:
++        for migration in load_migrations():
++            if migration.version <= 6:
++                connection.executescript(migration.sql)
++        connection.execute(
++            "INSERT INTO product_sessions "
++            "(session_hmac,workload_ref,adapter_id,adapter_version,profile_id,profile_version,"
++            "policy_version,config_digest,ts) VALUES (?,?,?,?,?,?,?,?,?)",
++            (session, "fixture", "claude-code", "1", "anthropic-messages-v1", "1", "1", "d", "t"),
++        )
++        connection.execute(
++            "INSERT INTO product_verifications "
++            "(session_hmac,job_key,phase,nonce,ciphertext,ts) VALUES (?,?,?,?,?,?)",
++            (session, job, "started", nonce, ciphertext, "old-time"),
++        )
++        connection.execute("PRAGMA user_version=6")
++    store = LedgerStore(path)
++    store.open()
++    try:
++        data = ProductStore(store, FileKeyStore(keys.root, store=store))
++        row = dict(store.read("SELECT * FROM product_verifications")[0])
++        assert store.schema_user_version() == 7
++        assert row["ciphertext"] == ciphertext and row["ts"] == "old-time"
++        assert data.verification(row) == receipt
++        assert not store.read("SELECT * FROM product_captures")
++    finally:
++        store.close()

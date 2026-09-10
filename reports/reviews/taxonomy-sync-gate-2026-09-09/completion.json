@@ -1,0 +1,17 @@
+{
+  "receipt_original": "/Users/arunmenon/projects/.adrl-execution-state/taxonomy-sync-20260909-final.json",
+  "receipt_sha256": "71253cff6f6509dd55934942247f2a92ad9fe93d5a5d85b9819d1e995058d40a",
+  "receipt_copy": "receipt-copy.json",
+  "tests_passed": 19,
+  "test_output_equivalent_excluding_elapsed": true,
+  "reviewed_source_unchanged": true,
+  "mirror_check_exercised_in_real_run": true,
+  "maturity_changes": 0,
+  "status_changes": 0,
+  "local_gate_only": true,
+  "historical_bucket_gap": "CAS-009 remains absent from bucket overview",
+  "review": {
+    "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/recheck.md",
+    "sha256": "39d997effda082a71252d04de82e2416c53c9710afb71f5e69e688465ea65769"
+  }
+}

@@ -1,0 +1,67 @@
+[
+  {
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "src",
+      "tests",
+      "tools"
+    ],
+    "exit_code": 0,
+    "log": "1.log"
+  },
+  {
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "ruff",
+      "format",
+      "--check",
+      "src",
+      "tests",
+      "tools"
+    ],
+    "exit_code": 0,
+    "log": "2.log"
+  },
+  {
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "mypy"
+    ],
+    "exit_code": 0,
+    "log": "3.log"
+  },
+  {
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "-q"
+    ],
+    "exit_code": 0,
+    "log": "4.log"
+  },
+  {
+    "argv": [
+      ".venv/bin/python",
+      "tools/check_ledger_discipline.py"
+    ],
+    "exit_code": 0,
+    "log": "5.log"
+  },
+  {
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "adrl.cli.main",
+      "config",
+      "check"
+    ],
+    "exit_code": 0,
+    "log": "6.log"
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "files": {
+    "C:src/adrl/wire/rewrite.py": "eb49c51565003b70432666f557b33ce7c89064d630fdd448b15254198d8fe468",
+    "C:src/adrl/wire/parse.py": "f4c7c61438e50c8b91ab08ff927dbb17d5887802949ff3ac27925c0d9fcef28e",
+    "C:src/adrl/wire/observe.py": "a8a9e237b1cf6397597dfda4762f0e65507d7b2fbe09e8bdfa3970c35d928cca",
+    "C:src/adrl/proxy/upstream.py": "cbfc2436d9f3e87813a392e3839b4388d34b8d4c17194cce3c5f0bba84ec98d2",
+    "C:src/adrl/config/checks.py": "de6b5ba06701c0deeddde05ba9f9bbe057a507e58107cfb4f5fd56568b277cc6",
+    "C:src/adrl/config/settings.py": "4a4daad400b9786e32edead3c7ad41e117e39459f93e915b83651b237a1d98b6",
+    "C:src/adrl/config/loaders.py": "fe0ad675a1d6b49648c7b9c3a2c7ba813b3abcc421d204a35309cfc066896792",
+    "C:src/adrl/cli/product.py": "048db7e3d777a32b57badea048e37fb3cc0774ecabfdeefc5eff927e53ff02c5",
+    "C:src/adrl/gates/deployments.py": "4657f74d3f2aefeb4c4c3c007d5d97ba67635475df500c8479278129295203c2",
+    "C:config/rungs.yaml": "39c0b9521d9e8ccbb0b4750bed1fc90a95be9f4427d4d0cb94d7f8d56c79935e",
+    "C:config/policy.yaml": "fd7522fda0c1d1c9fb1d096e603b8b3df2d981894658012e4ae2fa08439dc9bc",
+    "C:src/adrl/app.py": "ee397176ddcd305a1b5c70eb551a06e98b2065a076fa04593edb9da724a7741a",
+    "C:src/adrl/cascade/handoff.py": "7a6e066343ac3fd87a63f1dd1ddecda6aa29269f28dc9ec13da88aad106b747c",
+    "R:adr/SEM/ADRL-SEM-007.md": "75b42786cb76b73776ff7a8fd4500d45c466bcd9b8346a27651b5e8b6b0de0a0",
+    "R:adr/FND/ADRL-FND-001.md": "ce51cb4e2d30c67d3721581a13552feccb1aed262ecbbd0f597c15cd9ab87e97",
+    "R:adr/FND/ADRL-FND-002.md": "d8e0917457539974efde42c07f7637b8c2368f5480b183a8be7a1f4394731218",
+    "R:adr/FND/ADRL-FND-005.md": "75e8a531d87a75a331a819aebf6869d6293cff48f2ed06f28d1830c58c86f220",
+    "R:adr/RTG/ADRL-RTG-001.md": "72bc11406c9275c8aedf35a3ab41d1a54fe21bb207d667eb284495399da68d85",
+    "R:adr/CAS/ADRL-CAS-004.md": "67e48f9f36d35e1511ebdc8e7a56faee20cbbe9b51d9fb799b5d75f787746370",
+    "R:adr/CAS/ADRL-CAS-006.md": "022e62bbc6e71a533309736d5ad721f5f49fc6128efa7242a6886d2553a46e81",
+    "R:adr/TRU/ADRL-TRU-002.md": "009d5b1c4d5880d0e74fb6c19b5d5bc8886f47ae447442353afead32fadf4edd",
+    "R:adr/EVL/ADRL-EVL-005.md": "c7c562e90444633bc9cececbd469c59a23ea0031139e437351a7ef0ea7a689bd"
+  },
+  "scope": "complete listed runtime source; ADR decision excerpts embedded, full records saved",
+  "exclusions": "credentials, private keys, payloads, unrelated runtime, historical report archives",
+  "baseline": "/Users/arunmenon/projects/.adrl-execution-state/claude-code-spike-baseline-20260909.json",
+  "snapshot_date": "2026-09-09"
+}

@@ -1,0 +1,3472 @@
+Independently review this OFFLINE implementation candidate using actual source below. Existing Fable pre-review is included. You are not the implementer. No tools, execution, edits, delegation or model experiments. Return at most 650 words: evidence-backed blocking defects, scoped acceptance or changes requested, taxonomy ownership and claim accuracy. Do not grant live admission or human graduation. Missing SEM-007/CAS-009 overview rows remain an explicit taxonomy closure blocker; no human disposition has been fabricated. Focus on whether implementation is sound in its declared offline scope, not whether it is already launch-ready.
+
+# Claude adapter: bounded offline implementation
+
+2026-09-09. P1 implementation slice 1 of the six-slice ceiling. Pre-wave challenge: ../claude-code-compatibility-2026-09-09/pre-review.md and dispositions.md. User authorized the next adapter implementation; no model experiment, paid access, signed inventory creation or runtime activation.
+
+Implement initial-choice Claude model selection as an explicit opt-in to the existing LIVE pipeline, never SHADOW/OFF. Keep all existing LIVE admission checks. No startup setting enables the candidate yet. Only a fresh session can acquire the fixed selection; requests with pre-existing assistant history cannot start it. Continuations preserve their original non-model fields. Target must belong to the actual post-gate deployment set, with no fallback widening, and use direct Anthropic. Record forced-experiment identity and version separately from estimator merit. No mid-session switching or automatic learning.
+
+Also implement a bounded direct transport: exact provider endpoint, paths, methods, allowed model IDs, request bytes/output cap, separate Messages/count limits, single active request, deadline and no retries/redirects. All outbound methods must share enforcement; no hidden health call. Test with in-process HTTP transports only. This does not establish signed production inventory, real OAuth, quota handling or harness confinement.
+
+FND-001 receives a scoped application for the disabled-by-default offline candidate; unchanged passthrough and non-Claude behavior remain. SEM-007 owns native model serialization; TRU-002/CAS-006 own allowed destination and observed identity; FND-005 owns finite control. Review exact diff, tests and taxonomy synchronization before closure. Live eligibility remains blocked by the actual existing config and account/access prerequisites. Do not waive these using synthetic evidence.
+
+# Claude initial-choice candidate: implementation evidence
+
+2026-09-09. P1, first attempted engineering slice of the six-slice ceiling. This report describes an offline candidate, not a live-ready product or an ROI result. Independent post-review is pending until its original output and dispositions are recorded.
+
+The pipeline can now select a configured Claude model at the beginning of one lineage, preserve all non-model JSON fields and record forced selection/version separately from estimator output. A dedicated client fixes the direct Anthropic destination and bounds request attempts, bytes, requested output, concurrency and time. Normal startup does not expose this client. SHADOW/OFF cannot enable it, and current unqualified LIVE configuration still fails.
+
+The synthetic composition test sends a real pipeline request through an in-process HTTP provider and checks the emitted model, unchanged other fields, decision record and actual observed response model. This is integration evidence only: the provider is a test fixture, not Claude. The fixture uses explicitly synthetic admission references; these never modify config/ or establish live eligibility. Unit checks cover pin/permitted-set denial, existing-history and cross-lineage refusal, ambiguous JSON, exhausted budgets, HTTP failures, wrong paths/models/output caps, timeout and redirect refusal. Existing proxy regressions also run.
+
+Known launch limits: process-local counters and lineage binding are not restart-safe custody; no approved signed direct profile/workspace, no native harness confinement or paid-overflow disposition, no confirmed direct deployment receipt and no real native thinking/signature compatibility. Actual Claude Code may request more than the proposed output cap; this is rejected, never silently rewritten. Initial model selection is distinct from mid-session switching, routing merit, savings and learning.
+
+No historical maturity/status/verdict field is promoted. Owning records: FND-001/003/005, SEM-007, TRU-002 and CAS-006/007. SEM-007 and CAS-009 overview rows are historically missing. Restoration is drafted separately; no overview grades are invented. The taxonomy closure gate remains pending on these omissions.
+
+Code: [candidate client/selection](/Users/arunmenon/projects/adrl-core/src/adrl/proxy/claude_experiment.py), [pipeline](/Users/arunmenon/projects/adrl-core/src/adrl/proxy/pipeline.py). Tests: [unit](/Users/arunmenon/projects/adrl-core/tests/unit/test_claude_experiment.py), [composition](/Users/arunmenon/projects/adrl-core/tests/integration/proxy/test_claude_experiment.py). Raw checks are in checks.json and check-*.log. Initial test failures were fixture stream construction and a fixture exceeding the declared output cap; both were corrected without relaxing limits. One import-order lint correction was also required.
+
+**Verdict: no-go for the forced Opus-to-Sonnet live launch as the source stands. Conditional go for a cheaper two-step scouting sequence that needs no policy exception.**
+
+**Cheapest valid experiment**
+
+The packet bundles two unknowns: whether Anthropic accepts Opus thinking-plus-tool history on Sonnet under this OAuth account, and whether ADRL can perform the switch. The first is the larger unknown and needs zero ADRL code.
+
+1. **Step 0, no proxy.** Native Claude Code in the synthetic workspace, Opus turn with Read, then a mid-session `/model` switch to Sonnet and one continuation. The session transcript records the response model and usage per assistant message. Caveat: the harness may reshape history on its own switch, so this bounds compatibility from above rather than proving a proxy rewrite.
+2. **Step 1, passthrough only.** Same script through ADRL in SHADOW routing with the upstream pointed at Anthropic. This exercises subscription forwarding, beta passthrough, and lineage capture from the real stream with no rewrite and no LIVE admission. Only the inventory fix below is required first.
+3. **Step 2, forced rewrite.** Only if steps 0 and 1 pass, and only after amendments 1 to 4.
+
+**Exact blockers in the frozen source**
+
+- **No model-only rewrite exists.** The only code that sets a model is `strip_for_rung` in src/adrl/wire/rewrite.py, which refuses frontier bodies and strips thinking, output_config and cache markers. The probe's tool removal is an artifact of a server-tool-only fixture. Read has an input_schema and would survive. The thinking and output_config loss alone disqualifies it. Amendment 1 is essential.
+- **Frame the force as intra-rung, not cheap_cloud.** Both candidate IDs already sit in the frontier name list in config/rungs.yaml. A within-rung served-model change is already contemplated by CAS-006 clause 2, and the same-family pair needs no CAS-004 transform. This keeps the permitted deployment set identical before and after the switch, avoids any cheap_cloud evidence question, and makes RTG-001 amendment unnecessary. It does not avoid amendment 1, since FND-001 clause 1 still forbids rewriting a frontier body.
+- **Receipts would be mislabeled.** With no LiteLLM headers, `DeploymentPolicy.receipt` in src/adrl/gates/deployments.py returns the intended deployment as assumed. That deployment is the LiteLLM frontier entry, so the egress ledger would name the wrong host. A signed direct-Anthropic deployment entry is required even for step 1. Amendment 2 reduces to this one entry plus a receipt source that trusts the observed model when the upstream is the provider itself.
+- **LIVE mode is unusable and unnecessary.** Every rung lacks an evidence reference, so LIVE fails at load. Adding a placeholder reference is fake admission. The experiment control should run under SHADOW as a versioned post-gate stage, which is the minimal declared mechanism amendment 3 asks for. That still requires owner disposition because FND-001 gains a clause.
+- **Header leak to verify.** The connect command emits three custom headers, but the forwarding filter in src/adrl/wire/parse.py strips only two names. If the gates module's session header differs from the x-adrl-session-id name, a local identifier reaches Anthropic. One offline fixture settles this before any credential-bearing run.
+- **No limit enforcement exists.** Attempt counts, body bytes, max_tokens, count_tokens caps and single-active-request are all unimplemented. The retry budget in config/policy.yaml allows two attempts per turn, which should be set to one so a failed switch is not silently retried. Timeout and health refresh are existing settings and can be set to the proposed values.
+- **Workspace registration.** The connect command requires the checkout to match exactly one entry in the signed classification manifest with a class permitting the frontier rung. The synthetic workspace must be registered and the manifest re-signed.
+
+**What already holds**
+
+Authorization and beta pass through verbatim. The transport uses zero retries, does not follow redirects, and verifies TLS by default. The stream observer reads model and usage from message_start and message_delta and marks the source as proxy-observed. Redaction covers authorization, API keys and cookies.
+
+**Shortcuts that break contracts**
+
+Pointing the cheap_cloud group at Anthropic remaps a rung by label and fakes admission. Setting evidence references to pass LIVE is fake qualification. Running the cascade handoff on the switch would append a note and strip older thinking, which mutates the request and confounds the compatibility criterion. Skip the transform for the same-family pair.
+
+**Also plan for**
+
+Claude Code background calls may use Haiku and will count against the eight attempts. Sonnet may reject an effort value in output_config that Opus accepts. Record that as a boundary finding, not as a failure to preserve.
+
+**Ownership split**
+
+Implementation prerequisites: model-only rewrite stage, direct-upstream inventory entry and receipt source, limit enforcement with offline fixtures, header-name fixture, workspace registration. Human dispositions: the FND-001 clause for scoped Claude-to-Claude rewrite, the SHADOW experiment profile, and the included-usage overflow policy for the account.
+
+REGISTER MAPPING R:adr/CAS/ADRL-CAS-006.md
+
+| 2026-09-09 | <!-- taxonomy-sync:claude-adapter:ADRL-CAS-006 --> [Offline candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); Direct experiment observation ignores gateway-specific identity headers and preserves the actual provider model source. Host is the fixed configured HTTPS destination; deployment, geography and trust receipt fields stay unknown. Intended deployment is separate. Model mismatch stops further dispatch. No fabricated confirmed receipt. | Prior decision wording preserved; no grade change |
+<!-- taxonomy-sync:claude-adapter:ADRL-CAS-006 --> Direct experiment observation ignores gateway-specific identity headers and preserves the actual provider model source. Host is the fixed configured HTTPS destination; deployment, geography and trust receipt fields stay unknown. Intended deployment is separate. Model mismatch stops further dispatch. No fabricated confirmed receipt. [Evidence and limits](../../reports/reviews/claude-adapter-2026-09-09/report.md). Formal grades and status unchanged.
+
+CURRENT DECISION
+
+
+
+Sticky state records the rung that actually served the response, including transport fallback — and, alongside it, the served model and provider identity as reported by the gateway, and the confidence of that record — because prompt caches and reasoning signatures follow the model, not the rung.
+
+1. Fields: `served_rung`, `served_model`, `served_provider`, `served_source` ∈ {gateway_reported, proxy_observed, assumed_intended} on both sticky state (`router/state.py`) and the outcome row (MEM-001). `assumed_intended` is set when the gateway did not report identity; a continuation routed on an `assumed_intended` record is flagged so the outcome is `unverifiable` for cause typing if it fails (CAS-002).
+2. A within-rung change of `served_model` between consecutive requests of an episode is recorded as an infrastructure event (CAS-002 clause 2), triggers the CAS-004 provider-pair rule for the next continuation if the model family changed, and is charged as a cache-cold switch in RTG-009.
+3. If sticky state is unavailable (process restart; OPS-001 single-process dict), the next request in an episode is routed as a fresh decision but with `state_loss=true` on the decision row, and the outcome is excluded from stickiness evidence.
+
+
+REGISTER MAPPING R:adr/CAS/ADRL-CAS-007.md
+
+| 2026-09-09 | <!-- taxonomy-sync:claude-adapter:ADRL-CAS-007 --> [Offline candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); Finite experiment transport performs no retry, redirect or health forwarding. Attempt reservation precedes dispatch, failed attempts consume allowance, and response lifetime retains the single-active slot. Terminal failures use existing error rendering; response bytes are unchanged. Process-local counters do not establish restart-safe run custody. | Prior decision wording preserved; no grade change |
+<!-- taxonomy-sync:claude-adapter:ADRL-CAS-007 --> Finite experiment transport performs no retry, redirect or health forwarding. Attempt reservation precedes dispatch, failed attempts consume allowance, and response lifetime retains the single-active slot. Terminal failures use existing error rendering; response bytes are unchanged. Process-local counters do not establish restart-safe run custody. [Evidence and limits](../../reports/reviews/claude-adapter-2026-09-09/report.md). Formal grades and status unchanged.
+
+CURRENT DECISION
+
+
+
+Failure at the top permitted rung, or on a privacy-pinned route, is surfaced to the developer as a protocol-conformant error carrying the typed cause, rather than hidden by another automatic retry — where ADRL itself performs no retries at any rung, the gateway's retries are bounded by a per-turn budget agreed under FND-002, and a retry never crosses a rung, a pin, or a streamed-response boundary.
+
+1. Surfacing: the harness receives a well-formed error in the protocol it speaks (Anthropic Messages error object for Claude Code; the equivalent for Codex CLI) with a stable ADRL error code and the CAS-002 type; ADRL never synthesises a normal-looking assistant message to explain a failure, because that would be a fabricated model output inside the transcript.
+2. Retry ownership: ADRL makes exactly one attempt per request at the chosen rung. Connection-level retries before any response byte is forwarded are the gateway's (FND-002) under a per-turn budget (attempts and wall-clock) shared as versioned config; no retry after first byte (CAS-003 clause 2); no gateway fallback to a model outside the rung's membership list (RTG-008 clause 3) or to a cloud model on a pinned session (SAF-004).
+3. Ledger: a surfaced failure closes the outcome as `closed_turn` with the type, the rung, the number of gateway attempts observed, and `surfaced=true`; a later developer re-issue of the same instruction is a new turn (FND-003) and is not counted as an automatic retry.
+
+
+SOURCE C:tests/integration/proxy/test_claude_experiment.py
+
+"""Synthetic pipeline composition, not live admission or native Claude qualification."""
+
+import json
+from dataclasses import replace
+
+import pytest
+
+from adrl.core.enums import GateMode, RoutingMode, Rung
+from adrl.gates.deployments import DeploymentPolicy
+from adrl.proxy.claude_experiment import ClaudeExperimentClient, ClaudeExperimentConfig
+from adrl.proxy.observe_only import ObserveOnlyGate
+from adrl.proxy.pipeline import Pipeline
+
+from .conftest import load_fixture
+
+
+def build(harness, *, mode=RoutingMode.LIVE, qualify=False):
+    old = harness.pipeline
+    cfg = ClaudeExperimentConfig(
+        source_model="claude-fable-5-1",
+        target_model="claude-sonnet-5",
+        target_deployment="offline-direct-sonnet",
+    )
+    client = ClaudeExperimentClient(cfg, client=old._gateway.client)
+    bundle = harness.bundle
+    if qualify:
+        # Synthetic config fixture only. These refs do not qualify shipped rungs.
+        specs = {
+            r: s.model_copy(
+                update={
+                    "boundary": s.boundary.model_copy(
+                        update={"evidence_ref": "offline-fixture-not-production-admission"}
+                    )
+                }
+            )
+            for r, s in bundle.rungs.rungs.items()
+        }
+        template = bundle.endpoint_inventory.deployments[-1]
+        dep = template.model_copy(
+            update={
+                "id": cfg.target_deployment,
+                "rung": Rung.FRONTIER,
+                "provider": "anthropic",
+                "api_base": "https://api.anthropic.com",
+                "model": cfg.target_model,
+                "trust_zone": "cloud",
+            }
+        )
+        bundle = replace(
+            bundle,
+            rungs=bundle.rungs.model_copy(update={"rungs": specs}),
+            endpoint_inventory=bundle.endpoint_inventory.model_copy(update={"deployments": (dep,)}),
+        )
+    policy = DeploymentPolicy(bundle.endpoint_inventory)
+
+    class Gate(ObserveOnlyGate):
+        async def evaluate(self, ctx):
+            result = await super().evaluate(ctx)
+            return replace(
+                result,
+                permitted_deployments=policy.permitted_for(
+                    permitted_rungs=result.permitted.rungs,
+                    pinned=result.pinned,
+                    residency=result.residency,
+                ),
+            )
+
+    return Pipeline(
+        settings=harness.settings.model_copy(
+            update={"routing_mode": mode, "gate_mode": GateMode.ENFORCE}
+        ),
+        bundle=bundle,
+        ledger=old._ledger,
+        egress=old._egress,
+        gateway=client,
+        gate=Gate(old._ledger),
+        router=old._router,
+        cascade=old._cascade,
+        state=old._state,
+        identity=old._identity,
+    )
+
+
+@pytest.mark.parametrize("mode", [RoutingMode.SHADOW, RoutingMode.OFF])
+async def test_nonlive_cannot_activate_candidate(harness, mode):
+    with pytest.raises(ValueError, match="explicit LIVE"):
+        build(harness, mode=mode)
+
+
+async def test_current_config_cannot_activate_candidate(harness):
+    with pytest.raises(ValueError, match="cannot bypass LIVE"):
+        build(harness)
+
+
+async def test_pipeline_records_forced_choice_and_preserves_fields(harness):
+    pipeline = build(harness, qualify=True)
+    harness.gateway_state.served_model = "claude-sonnet-5"
+    # Even a gateway-style header must not override direct-provider model observation.
+    harness.gateway_state.served_model_header = "fake-litellm-id"
+    fixture = load_fixture("user_turn")
+    payload = {**fixture["body"], "max_tokens": 1024}
+    original = json.loads(json.dumps(payload))
+    response = await pipeline.handle(
+        "POST",
+        "/v1/messages",
+        fixture.get("headers", {}),
+        json.dumps(payload).encode(),
+        ("127.0.0.1", 1),
+    )
+    if response.stream is not None:
+        async for _ in response.stream:
+            pass
+    if response.after is not None:
+        await response.after()
+    await pipeline.drain()
+    assert response.status == 200
+    sent = harness.last_gateway_body()
+    original["model"] = "claude-sonnet-5"
+    assert sent == original
+    decisions = harness.decisions()
+    assert decisions[-1]["estimator"] == "experiment_forced_claude"
+    served = harness.events("served")[-1]["payload"]
+    assert served["served_model"] == "claude-sonnet-5"
+    assert served["served_source"] == "proxy_observed"
+    assert served["served_deployment_id"] is None
+    assert served["intended_deployment_id"] == "offline-direct-sonnet"
+
+
+async def test_query_is_refused_without_silent_removal(harness):
+    pipeline = build(harness, qualify=True)
+    response = await pipeline.handle(
+        "POST", "/v1/messages", {}, b"{}", ("127.0.0.1", 1), query="beta=true"
+    )
+    assert response.status == 400
+    assert not harness.gateway_state.requests
+
+
+REGISTER MAPPING R:adr/SEM/README.md
+
+2026-09-09 <!-- taxonomy-sync:claude-adapter:ADRL-SEM-007 --> Constructor-only initial-choice Claude candidate preserves non-model JSON fields. Duplicate JSON keys, old assistant history and initial tool results are refused. One lineage retains the fixed choice; native harness and real-provider compatibility are untested. [Evidence](../../reports/reviews/claude-adapter-2026-09-09/report.md). Existing overview row absent; restoration disposition is pending, so taxonomy closure is not claimed.
+
+REGISTER MAPPING R:INDEX.md
+
+| [ADRL-FND-001](adr/FND/ADRL-FND-001.md) | Transparent control layer, protocol-scoped | AMEND | Historical D3; extracted Messages boundary D2 (2026-09-07) | Q1, Q7 | Product services: local API implemented; bound traffic validates identity/endpoints; legacy unbound scope remains (2026-09-07)  <!-- taxonomy-sync:claude-adapter:ADRL-FND-001 --> [2026-09-09 offline Claude candidate](reports/reviews/claude-adapter-2026-09-09/report.md); no maturity change |
+| [ADRL-FND-003](adr/FND/ADRL-FND-003.md) | Routing boundary is the user turn | AMEND | D3 | Q3 | Amended: mechanical definition of user turn; pre-warm excluded; gating per request; per-lineage boundary ; [2026-09-09 outcome repair](reports/reviews/outcome-contract-2026-09-09/report.md)  <!-- taxonomy-sync:claude-adapter:ADRL-FND-003 --> [2026-09-09 offline Claude candidate](reports/reviews/claude-adapter-2026-09-09/report.md); no maturity change |
+| [ADRL-FND-005](adr/FND/ADRL-FND-005.md) | Scope expands only through measured gates | APPROVE | Historical D3 governance; product release gate unmet | Q6 | 549 tests and first offline verifier comparison; scoped D2 only, broader product and cross-harness maturity unchanged (2026-09-07) · W0: [baseline checks and limits](reports/waves/w0-baseline.md), no maturity change (2026-09-07)  2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-FND-005 --> [Scoped sync gate](reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); maturity unchanged  <!-- taxonomy-sync:claude-adapter:ADRL-FND-005 --> [2026-09-09 offline Claude candidate](reports/reviews/claude-adapter-2026-09-09/report.md); no maturity change |
+| [ADRL-SEM-007](adr/SEM/ADRL-SEM-007.md) | Protocol profiles (Proposed) | PROPOSED (new) | D2 Messages boundary and local services; D0 second profile | Q1, Q7 | API preview 4 exposes independent receipts in the shared timeline; older observations remain compatible; second harness pending (2026-09-07) · W0: [baseline checks and limits](reports/waves/w0-baseline.md), no maturity change (2026-09-07) · [W3.1 capture evidence](reports/adrl-w3-1-operator-captures-2026-09-08.md), scoped offline only (2026-09-08) · [W3.2a journal evidence](reports/adrl-w3-2a-attempt-journal-2026-09-08.md), supervision pending · [W3.2b2c boundary research](reports/adrl-w3-2b2c-writer-boundary-2026-09-08.md), candidate only; runtime unchanged  <!-- taxonomy-sync:claude-adapter:ADRL-SEM-007 --> [2026-09-09 offline Claude candidate](reports/reviews/claude-adapter-2026-09-09/report.md); no maturity change |
+| [ADRL-CAS-006](adr/CAS/ADRL-CAS-006.md) | Record the served model, not only the served rung | AMEND | D2 | Q7 | Amended: served model/provider and record provenance added; within-rung substitution typed; state loss made explicit  <!-- taxonomy-sync:claude-adapter:ADRL-CAS-006 --> [2026-09-09 offline candidate](reports/reviews/claude-adapter-2026-09-09/report.md); no grade change |
+| [ADRL-CAS-007](adr/CAS/ADRL-CAS-007.md) | Terminal failure surfaced; ADRL owns zero retries | AMEND | D2 | Q7 | Product services: native errors for rejected bound traffic; retryable observations add no model retries (2026-09-07) ; [2026-09-09 outcome repair](reports/reviews/outcome-contract-2026-09-09/report.md)  <!-- taxonomy-sync:claude-adapter:ADRL-CAS-007 --> [2026-09-09 offline candidate](reports/reviews/claude-adapter-2026-09-09/report.md); no grade change |
+| [ADRL-TRU-002](adr/TRU/ADRL-TRU-002.md) | Permitted deployment set (Proposed) | PROPOSED (new) | D0 | Q1, Q2, Q7 | Proposed (external review); supersedes the residency half of SAF-008; amends FND-002, RTG-001, RTG-008  <!-- taxonomy-sync:claude-adapter:ADRL-TRU-002 --> [2026-09-09 offline candidate](reports/reviews/claude-adapter-2026-09-09/report.md); no grade change |
+
+REGISTER MAPPING R:adr/FND/ADRL-FND-003.md
+
+<!-- taxonomy-sync:claude-adapter:ADRL-FND-003 --> The experiment selection occurs after permission/deployment checks and before write-ahead egress and decision recording. Decisions name experiment_forced_claude and a configuration fingerprint, distinguishing a forced compatibility choice from estimator merit. Fallback, pinned, transformed and missing-permitted-set requests cannot use the candidate. [Implementation and evidence limits](../../reports/reviews/claude-adapter-2026-09-09/report.md). Formal maturity/status/verdict are unchanged.
+| 2026-09-09 | <!-- taxonomy-sync:claude-adapter:ADRL-FND-003 --> [Offline Claude candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); The experiment selection occurs after permission/deployment checks and before write-ahead egress and decision recording. Decisions name experiment_forced_claude and a configuration fingerprint, distinguishing a forced compatibility choice from estimator merit. Fallback, pinned, transformed and missing-permitted-set requests cannot use the candidate. | Previous decision wording and dated evidence preserved; no grade change |
+
+CURRENT DECISION
+
+
+
+The normal routing boundary is a user turn, not every HTTP request; a user turn is the first request in an agent lineage whose latest message is developer-authored content and which is neither a utility call, a passthrough call, nor a harness pre-warm request.
+
+1. Routing (rung selection) happens once per user turn; hard gates (SAF-001) run on every request regardless of class.
+2. The harness's cache pre-warm request — a request carrying the full tool list and conversation prefix with `max_tokens: 1` — is not a turn boundary and inherits the current sticky route.
+3. Each agent lineage (parent, and each subagent identified by `x-claude-code-agent-id`) has its own turn boundary; a subagent's first request is its own boundary, not a continuation of the parent's turn (SEM-006).
+4. The only in-turn route change permitted is a CAS escalation at an action boundary.
+
+
+
+SOURCE C:src/adrl/proxy/pipeline.py
+
+"""The per-request pipeline. Primary: ADRL-FND-003.
+Also implements: ADRL-TRU-002 (register additions of 2026-09-03).
+
+Secondary: ADRL-FND-001 (byte-exact relay), ADRL-FND-004 (fail-open by class and pin state),
+ADRL-SAF-001 (gates on every class), ADRL-SAF-009 (egress write-ahead), ADRL-SEM-003
+(continuations inherit), ADRL-SEM-004 (utility on pinned lineages), ADRL-SEM-006 (pin
+inheritance materialised per lineage), ADRL-CAS-006 (served identity recorded),
+ADRL-MEM-001/002 (forwarded outcome identity).
+
+Order per request: parse, identity, pin lookup, classify, gate, sticky lookup, route-or-inherit,
+cascade plan, egress write-ahead, ledger decision (write-through), dispatch once, relay while
+observing, cascade observe, ledger events (write-behind). The per-lineage lock is held from the
+gate through the decision write and again briefly when the response has been observed.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import dataclasses
+import hashlib
+import hmac
+import json
+from collections.abc import AsyncIterator, Awaitable, Callable, Mapping
+from dataclasses import dataclass, field
+from typing import Any
+
+import structlog
+
+from adrl.config.checks import check_live_rung_has_evidence
+from adrl.config.loaders import ConfigBundle
+from adrl.config.settings import Settings
+from adrl.core.enums import FailureClass, GateMode, RequestClass, RoutingMode, Rung, UtilityKind
+from adrl.core.errors import VENDOR_PROMPT_TOO_LONG_PHRASE, ErrorCode, LedgerAppendFailure
+from adrl.core.ids import LineageId, RouteId
+from adrl.core.ports import EgressEvent, LineageEvent, StateProvider, StickyState, Tokenizer
+from adrl.core.types import (
+    Decision,
+    DeploymentInfo,
+    DeploymentSet,
+    Finding,
+    GateVerdict,
+    LedgerEvent,
+    PermittedSet,
+    RequestContext,
+)
+from adrl.gates.deployments import DeploymentPolicy, egress_fields
+from adrl.ledger.egress import EgressLedger
+from adrl.ledger.facade import PIN_EVENT, MemoryFacade
+from adrl.proxy.claude_experiment import ClaudeExperimentClient
+from adrl.proxy.errors import (
+    JSON_HEADERS,
+    block_message,
+)
+from adrl.proxy.fallback import FailureResolution, FallbackAction, FallbackRecorder, resolve_failure
+from adrl.proxy.observe_only import ObserveOnlyGateOutcome
+from adrl.proxy.stages import (
+    CascadeStage,
+    DispatchPlanLike,
+    GateOutcomeLike,
+    GateStage,
+    RouteStage,
+    TranscriptTransform,
+)
+from adrl.proxy.upstream import HttpxGatewayClient, UpstreamUnreachableError, read_all, relay
+from adrl.telemetry.logging import bind_request
+from adrl.telemetry.metrics import (
+    EVENT_DROPPED_TOTAL,
+    GATE_LATENCY_SECONDS,
+    LEDGER_DEGRADED_TOTAL,
+    REQUESTS_TOTAL,
+)
+from adrl.wire.adapters import ClaudeCodeAdapter, HarnessAdapter, IdentitySignals
+from adrl.wire.classify import Classification, UnclassifiableError
+from adrl.wire.identity import Identity, IdentityResolver, LineageLocks
+from adrl.wire.observe import ResponseObservation
+from adrl.wire.parse import (
+    forward_headers,
+    parse_request,
+    response_headers,
+)
+from adrl.wire.profiles.base import ProtocolProfile, ProtocolResponse, RequestView
+from adrl.wire.profiles.messages import MessagesProfile
+
+log = structlog.get_logger(__name__)
+
+PRODUCER = "proxy"
+INHERITED_ESTIMATOR = "inherited"
+INHERITED_ESTIMATOR_VERSION = "sticky-v1"
+FALLBACK_ESTIMATOR = "fail_open"
+FALLBACK_ESTIMATOR_VERSION = "fnd-004-v1"
+AGENT_PARENT_EVENT = "agent_parent"
+ALLOWLISTED_ERROR_PHRASES: tuple[str, ...] = (
+    VENDOR_PROMPT_TOO_LONG_PHRASE,
+    "prompt is too long",
+    "rate limit",
+    "overloaded",
+    "thinking",
+    "context",
+    "invalid_request",
+)
+
+
+def _content_free_error(error: Mapping[str, Any], status: int, key: bytes) -> dict[str, Any]:
+    """Record an upstream error without its wording (ADRL-SAF-009, MEM-005).
+
+    Vendor validation errors quote prompt fragments; only the error type, the status, a keyed
+    hash and length of the message, and an allow-listed phrase match are kept.
+    """
+    inner = error.get("error", error)
+    inner_map = inner if isinstance(inner, Mapping) else {}
+    message = str(inner_map.get("message", ""))
+    lowered = message.lower()
+    phrase = next((p for p in ALLOWLISTED_ERROR_PHRASES if p in lowered), None)
+    return {
+        "type": inner_map.get("type"),
+        "status": status,
+        "message_hmac": hmac.new(key, message.encode("utf-8"), hashlib.sha256).hexdigest()[:32],
+        "message_length": len(message),
+        "phrase": phrase,
+    }
+
+
+Finalizer = Callable[[], Awaitable[None]]
+
+
+@dataclass
+class ProxyResponse:
+    status: int
+    headers: dict[str, str]
+    body: bytes | None = None
+    stream: AsyncIterator[bytes] | None = None
+    after: Finalizer | None = None
+    route_id: str | None = None
+
+    @property
+    def is_stream(self) -> bool:
+        return self.stream is not None
+
+
+@dataclass(frozen=True, slots=True)
+class _Turn:
+    ctx: RequestContext
+    gate: GateOutcomeLike
+    decision: Decision
+    plan: DispatchPlanLike
+    target_rung: Rung
+    body: bytes
+    fresh_decision: bool
+    state_loss: bool
+    resolution: FailureResolution | None
+    ledger_degraded: bool
+    forward_original: bool
+    deployment: DeploymentInfo | None = None
+
+
+@dataclass
+class _RouteSeq:
+    """Per-route producer sequence continued from the ledger (ADRL-MEM-001 idempotency).
+
+    The key (route_id, event_type, producer, producer_seq) must never be reused, so the first
+    event for a route_id in this process starts after the highest sequence already stored.
+    """
+
+    counters: dict[str, int] = field(default_factory=dict)
+
+    async def next(self, ledger: MemoryFacade, route_id: str) -> int:
+        if route_id not in self.counters:
+            try:
+                stored = await ledger.read_events(RouteId(route_id))
+            except Exception:
+                stored = []
+            self.counters[route_id] = max(
+                (e.producer_seq for e in stored if e.producer == PRODUCER), default=0
+            )
+        self.counters[route_id] += 1
+        return self.counters[route_id]
+
+
+class Pipeline:
+    def __init__(
+        self,
+        *,
+        settings: Settings,
+        bundle: ConfigBundle,
+        ledger: MemoryFacade,
+        egress: EgressLedger | None,
+        gateway: HttpxGatewayClient,
+        gate: GateStage,
+        router: RouteStage,
+        cascade: CascadeStage,
+        state: StateProvider | None,
+        identity: IdentityResolver,
+        locks: LineageLocks | None = None,
+        transcript_transform: TranscriptTransform | None = None,
+        tokenizer: Tokenizer | None = None,
+        profile: ProtocolProfile | None = None,
+        adapter: HarnessAdapter | None = None,
+    ) -> None:
+        self._settings = settings
+        self._bundle = bundle
+        self._ledger = ledger
+        self._egress = egress
+        self._gateway = gateway
+        self._claude_experiment = gateway if isinstance(gateway, ClaudeExperimentClient) else None
+        if self._claude_experiment is not None:
+            if (
+                settings.routing_mode is not RoutingMode.LIVE
+                or settings.gate_mode is not GateMode.ENFORCE
+            ):
+                raise ValueError(
+                    "Claude experiment requires explicit LIVE routing and enforcing gates"
+                )
+            if not check_live_rung_has_evidence(bundle, settings).ok:
+                raise ValueError("Claude experiment cannot bypass LIVE admission")
+        self._gate = gate
+        self._router = router
+        self._cascade = cascade
+        self._state = state
+        self._identity = identity
+        self._locks = locks or LineageLocks()
+        self._transform = transcript_transform
+        self._tokenizer = tokenizer
+        self._profile: ProtocolProfile = profile or MessagesProfile()
+        self._adapter: HarnessAdapter = adapter or ClaudeCodeAdapter()
+        self._recorder = FallbackRecorder(ledger, egress, deployment_tag=settings.deployment_tag)
+        self._deployments = DeploymentPolicy(bundle.endpoint_inventory)
+        self._seq = _RouteSeq()
+        self._background: set[asyncio.Task[Any]] = set()
+        self._persisted_parents: set[tuple[str, str]] = set()
+
+    # ------------------------------------------------------------------ public entry point
+
+    async def handle(
+        self,
+        method: str,
+        path: str,
+        headers: Mapping[str, str],
+        body: bytes,
+        peer: tuple[str, int] | None,
+        *,
+        query: str = "",
+    ) -> ProxyResponse:
+        if self._claude_experiment is not None and query:
+            return self._error_response(
+                ErrorCode.CAPABILITY_REJECTED, "experiment query not admitted"
+            )
+        if not self._profile.handles(method, path, headers):
+            return await self._forward_non_api(parse_request(method, path, headers, body, query))
+        parsed = self._profile.parse(method, path, headers, body, query)
+        signals = self._adapter.identity_signals(parsed)
+        is_pre_warm = self._profile.is_pre_warm(parsed)
+        root = await self._prime_parents(signals, peer, is_pre_warm=is_pre_warm)
+        identity = self._identity.resolve_signals(signals, peer, is_pre_warm=is_pre_warm)
+        await self._persist_parent(identity, root)
+
+        # Pin lookup and classification run under the per-lineage lock so a request racing the
+        # pinning request resolves its gate failure against the pinned state (ADRL-FND-004).
+        lock = self._locks.get(identity.lineage_hmac)
+        async with lock:
+            pinned_before = await self._effective_pin(identity)
+            try:
+                classification = self._profile.classify(
+                    parsed,
+                    self._bundle.utility_fingerprints,
+                    pinned=self._enforcing and pinned_before,
+                )
+            except UnclassifiableError as exc:
+                return self._error_response(exc.code, exc.detail)
+            ctx = self._context(parsed, identity, classification)
+            bind_request(lineage=ctx.lineage_hmac, request_class=ctx.request_class.value)
+            prepared = await self._prepare(ctx, classification, pinned_before)
+        if isinstance(prepared, ProxyResponse):
+            return prepared
+        return await self._dispatch(prepared)
+
+    async def _prime_parents(
+        self, signals: IdentitySignals, peer: tuple[str, int] | None, *, is_pre_warm: bool
+    ) -> LineageId | None:
+        """Rebuild the agent chain from persisted parent links after a restart (ADRL-SEM-006)."""
+        if not signals.agent_id:
+            return None
+        root = self._identity.session_root_from_signals(signals, peer, is_pre_warm=is_pre_warm)
+        if self._identity.needs_priming(root):
+            try:
+                events = await self._ledger.read_lineage_events(root, AGENT_PARENT_EVENT)
+            except Exception as exc:
+                log.warning("agent_parent_read_failed", error=type(exc).__name__)
+                events = []
+            self._identity.prime_parents(
+                root,
+                [
+                    (str(e.payload.get("agent_id", "")), str(e.payload.get("parent_agent_id", "")))
+                    for e in events
+                ],
+            )
+        return root
+
+    async def _persist_parent(self, identity: Identity, root: LineageId | None) -> None:
+        if root is None or identity.agent_id is None or identity.parent_agent_id is None:
+            return
+        pair = (identity.agent_id, identity.parent_agent_id)
+        if pair in self._persisted_parents:
+            return
+        self._persisted_parents.add(pair)
+        try:
+            await self._ledger.append_lineage_event(
+                LineageEvent(
+                    lineage_hmac=root,
+                    event_type=AGENT_PARENT_EVENT,
+                    payload={"agent_id": pair[0], "parent_agent_id": pair[1]},
+                )
+            )
+        except Exception as exc:
+            log.warning("agent_parent_persist_failed", error=type(exc).__name__)
+
+    async def drain(self) -> None:
+        """Wait for write-behind ledger work; used by tests and shutdown."""
+        if self._background:
+            await asyncio.gather(*list(self._background), return_exceptions=True)
+
+    # ------------------------------------------------------------------ preparation under lock
+
+    async def _prepare(
+        self, ctx: RequestContext, classification: Classification, pinned_before: bool
+    ) -> _Turn | ProxyResponse:
+        gate, gate_resolution = await self._run_gate(ctx, pinned_before)
+        if isinstance(gate, ProxyResponse):
+            return gate
+        pinned = self._enforcing and gate.pinned
+
+        if gate.block is not None and self._enforcing:
+            return await self._blocked(ctx, gate, gate.block)
+
+        if ctx.request_class is RequestClass.UTILITY and pinned:
+            serve_empty = bool(getattr(gate, "serve_empty_utility", False))
+            if ctx.utility_kind is UtilityKind.COSMETIC and (
+                serve_empty or Rung.LOCAL not in gate.permitted
+            ):
+                await self._record_egress(ctx, gate, None, 0, kind="empty_utility")
+                return self._protocol_response(self._profile.empty_utility(ctx))
+
+        if pinned and gate.permitted.is_empty:
+            return await self._blocked(ctx, gate, ErrorCode.PINNED_CLOUD_DENIED)
+
+        if ctx.request_class is RequestClass.PASSTHROUGH and self._profile.is_token_count(ctx.path):
+            if pinned or bool(getattr(gate, "serve_local_estimate", False)):
+                return await self._count_tokens_locally(ctx, gate)
+
+        sticky, sticky_failure = await self._sticky(ctx)
+        state_loss = sticky is None and classification.inherits_route
+        resolution = gate_resolution or sticky_failure
+
+        decision: Decision | None = None
+        fresh = (
+            classification.is_routed
+            or (classification.request_class is RequestClass.SUBAGENT)
+            or sticky is None
+        )
+        if resolution is None:
+            if fresh:
+                try:
+                    decision = await self._router.decide(ctx, gate, sticky)
+                except Exception as exc:
+                    resolution = resolve_failure(
+                        FailureClass.ROUTING_PATH, pinned=pinned, mode=self._settings.fallback_mode
+                    )
+                    await self._recorder.record(ctx, resolution, exception=exc)
+            else:
+                assert sticky is not None
+                decision = self._inherited_decision(ctx, gate, sticky)
+        if resolution is not None and resolution.action in (
+            FallbackAction.BLOCK,
+            FallbackAction.SURFACE,
+        ):
+            return self._error_response(
+                resolution.code or ErrorCode.TERMINAL_FAILURE,
+                f"{resolution.failure_class.value} failure; last-known-safe is to refuse",
+            )
+        if decision is None:
+            assert resolution is not None
+            decision = self._fallback_decision(ctx, gate, resolution)
+
+        try:
+            plan = await self._cascade.plan(ctx, decision, gate, sticky)
+        except Exception as exc:
+            plan_resolution = resolve_failure(
+                FailureClass.ROUTING_PATH, pinned=pinned, mode=self._settings.fallback_mode
+            )
+            await self._recorder.record(ctx, plan_resolution, exception=exc)
+            if plan_resolution.action in (FallbackAction.BLOCK, FallbackAction.SURFACE):
+                return self._error_response(
+                    plan_resolution.code or ErrorCode.TERMINAL_FAILURE, "cascade stage failed"
+                )
+            resolution = plan_resolution
+            decision = self._fallback_decision(ctx, gate, plan_resolution)
+            plan = _FallbackPlan.for_decision(
+                ctx, decision, sticky, is_boundary=self._profile.is_action_boundary(ctx.json)
+            )
+        if plan.block is not None and self._enforcing:
+            return await self._blocked(ctx, gate, plan.block)
+
+        target_rung, forward_original = self._target(ctx, gate, plan, resolution)
+        if pinned and target_rung is not Rung.LOCAL:
+            return await self._blocked(ctx, gate, ErrorCode.PINNED_CLOUD_DENIED)
+        deployment, deployment_block = self._choose_deployment(
+            ctx, gate, target_rung, forward_original
+        )
+        if deployment_block is not None:
+            return await self._blocked(ctx, gate, deployment_block)
+        plan = _with_deployment(plan, deployment, forward_original)
+
+        body = self._body_for(ctx, plan, target_rung, forward_original, deployment)
+        if self._claude_experiment is not None:
+            # Do not force a cloud model after fallback, pinning or an escalated transform.
+            permitted = getattr(gate, "permitted_deployments", None)
+            if (
+                resolution is not None
+                or pinned
+                or target_rung is not Rung.FRONTIER
+                or not forward_original
+                or permitted is None
+            ):
+                return await self._blocked(ctx, gate, ErrorCode.CAPABILITY_REJECTED)
+            try:
+                body, deployment = self._claude_experiment.selection.prepare(
+                    ctx.body, lineage=str(ctx.lineage_hmac), permitted=permitted, pinned=pinned
+                )
+            except ValueError:
+                return await self._blocked(ctx, gate, ErrorCode.CAPABILITY_REJECTED)
+            if self._deployments.catalog.get(deployment.deployment_id) != deployment:
+                return await self._blocked(ctx, gate, ErrorCode.CAPABILITY_REJECTED)
+            decision = dataclasses.replace(
+                decision,
+                estimator="experiment_forced_claude",
+                estimator_version=self._claude_experiment.config.version,
+                features={
+                    **decision.features,
+                    "experiment_config_hash": self._claude_experiment.config.fingerprint,
+                    "experiment_model": deployment.model,
+                },
+            )
+            forward_original = False
+            plan = _with_deployment(plan, deployment, False)
+        ledger_degraded = await self._record_egress(
+            ctx, gate, target_rung, len(body), deployment=deployment, receipt_source="intended"
+        )
+        if ledger_degraded is None:
+            return await self._blocked(ctx, gate, ErrorCode.EGRESS_LEDGER_UNAVAILABLE)
+
+        if fresh and resolution is None:
+            await self._ledger.append_decision(
+                decision, self._decision_context(ctx, gate, state_loss)
+            )
+        if self._state is not None:
+            try:
+                await self._state.set_sticky(plan.sticky)
+            except Exception as exc:
+                log.warning("sticky_write_failed", error=str(exc))
+        self._write_behind(
+            ctx,
+            decision.route_id,
+            "request",
+            {
+                "request_class": ctx.request_class.value,
+                "target_rung": target_rung.value,
+                "deployment_id": deployment.deployment_id if deployment else None,
+                "decided_rung": decision.rung.value,
+                "is_boundary": plan.is_boundary,
+                "escalated": plan.escalated,
+                "forward_original": forward_original,
+                "unscanned": gate.unscanned,
+                "pinned": gate.pinned,
+                "fail_open": resolution.failure_class.value if resolution else None,
+                "state_loss": state_loss,
+                "routing_mode": self._settings.routing_mode.value,
+                "experiment_config_hash": (
+                    self._claude_experiment.config.fingerprint if self._claude_experiment else None
+                ),
+                "experiment_selected_model": deployment.model
+                if self._claude_experiment and deployment
+                else None,
+            },
+        )
+        return _Turn(
+            ctx=ctx,
+            gate=gate,
+            decision=decision,
+            plan=plan,
+            target_rung=target_rung,
+            body=body,
+            fresh_decision=fresh,
+            state_loss=state_loss,
+            resolution=resolution,
+            ledger_degraded=ledger_degraded,
+            forward_original=forward_original,
+            deployment=deployment,
+        )
+
+    def _choose_deployment(
+        self,
+        ctx: RequestContext,
+        gate: GateOutcomeLike,
+        rung: Rung,
+        forward_original: bool,
+    ) -> tuple[DeploymentInfo | None, ErrorCode | None]:
+        """Pick the attested deployment for the rung inside the permitted set (ADRL-SAF-008).
+
+        A rung label never reaches the gateway on its own: the alias sent is the deployment id.
+        A pinned lineage may only reach a ``local_host`` deployment, whatever the label says.
+        """
+        policy = self._deployments
+        permitted = getattr(gate, "permitted_deployments", None)
+        if permitted is None:
+            permitted = policy.permitted_for(
+                permitted_rungs=gate.permitted.rungs,
+                pinned=self._enforcing and gate.pinned,
+                residency=gate.residency,
+            )
+        if forward_original and rung not in permitted.rungs():
+            # Routing is not live: the rung ceiling is advisory here (the harness's own model
+            # is forwarded), but the pin and residency still bind at the deployment level.
+            log.info("rung_ceiling_advisory_passthrough", rung=rung.value)
+            permitted = policy.permitted_for(
+                permitted_rungs=frozenset(Rung),
+                pinned=self._enforcing and gate.pinned,
+                residency=gate.residency,
+            )
+        if not self._enforcing and permitted.is_empty:
+            log.warning("deployment_set_empty_observe_mode", rung=rung.value)
+            permitted = policy.universe()
+        if forward_original:
+            deployment = policy.frontier_for_model(permitted, ctx.requested_model)
+        else:
+            spec = self._bundle.rungs.rungs.get(rung)
+            members = spec.members if spec is not None else ()
+            deployment = policy.choose(permitted, rung, rung_member_order=tuple(members))
+        if deployment is None:
+            if self._enforcing and gate.pinned:
+                return None, ErrorCode.PINNED_CLOUD_DENIED
+            log.warning(
+                "no_permitted_deployment",
+                rung=rung.value,
+                residency=gate.residency,
+                permitted=permitted.as_list(),
+            )
+            return None, ErrorCode.CAPABILITY_REJECTED
+        if self._enforcing and gate.pinned and not deployment.is_local_host:
+            log.error(
+                "pinned_lineage_non_local_deployment",
+                deployment=deployment.deployment_id,
+                trust_zone=deployment.trust_zone,
+            )
+            return None, ErrorCode.PINNED_CLOUD_DENIED
+        return deployment, None
+
+    def _with_receipt(
+        self, turn: _Turn, obs: ResponseObservation, headers: Mapping[str, str]
+    ) -> ResponseObservation:
+        """Attach the gateway's destination receipt to the observation (ADRL-RTG-008)."""
+        if self._claude_experiment is not None:
+            served = dataclasses.replace(
+                obs.served,
+                provider="anthropic",
+                api_base_host="api.anthropic.com",
+                deployment_id=None,
+                trust_zone=None,
+                geo=None,
+            )
+            if served.model != self._claude_experiment.config.target_model:
+                self._claude_experiment.stopped = True
+            return dataclasses.replace(obs, served=served)
+        served = self._deployments.served_identity(obs.served, headers, turn.deployment)
+        return dataclasses.replace(obs, served=served)
+
+    # ------------------------------------------------------------------ dispatch and relay
+
+    async def _dispatch(self, turn: _Turn) -> ProxyResponse:
+        ctx = turn.ctx
+        headers = forward_headers(ctx.headers)
+        headers["content-type"] = "application/json"
+        try:
+            response = await self._gateway.send(
+                turn.body, headers, path=ctx.path, rung=turn.target_rung
+            )
+        except UpstreamUnreachableError as exc:
+            self._write_behind(
+                ctx,
+                turn.decision.route_id,
+                "upstream_unreachable",
+                {"rung": turn.target_rung.value, "error": type(exc).__name__},
+            )
+            return self._error_response(
+                ErrorCode.TERMINAL_FAILURE, str(exc), turn.decision.route_id
+            )
+
+        status = response.status_code
+        out_headers = response_headers(response.headers)
+        observer = self._profile.stream_observer(
+            status=status,
+            headers={} if self._claude_experiment else response.headers,
+            intended_rung=turn.target_rung,
+            requested_model=ctx.requested_model,
+            rungs=self._bundle.rungs,
+            hash_key=self._identity.hmac_key,
+        )
+        content_type = str(response.headers.get("content-type", "")).lower()
+        if status >= 400 or not ctx.is_stream or "text/event-stream" not in content_type:
+            raw = await read_all(response)
+            obs = self._profile.observe_response(
+                raw,
+                status=status,
+                headers={} if self._claude_experiment else response.headers,
+                intended_rung=turn.target_rung,
+                requested_model=ctx.requested_model,
+                rungs=self._bundle.rungs,
+                hash_key=self._identity.hmac_key,
+            )
+            obs = self._with_receipt(turn, obs, response.headers)
+            await self._finalize(turn, obs)
+            return ProxyResponse(
+                status=status, headers=out_headers, body=raw, route_id=turn.decision.route_id
+            )
+
+        response_headers_snapshot = dict(response.headers)
+
+        async def after() -> None:
+            await self._finalize(
+                turn, self._with_receipt(turn, observer.finish(), response_headers_snapshot)
+            )
+
+        return ProxyResponse(
+            status=status,
+            headers=out_headers,
+            stream=relay(response, observer),
+            after=after,
+            route_id=turn.decision.route_id,
+        )
+
+    async def _finalize(self, turn: _Turn, obs: ResponseObservation) -> None:
+        ctx = turn.ctx
+        REQUESTS_TOTAL.labels(
+            request_class=ctx.request_class.value, rung=obs.served.rung.value
+        ).inc()
+        lock = self._locks.get(ctx.lineage_hmac)
+        try:
+            async with lock:
+                events = await self._cascade.observe(ctx, turn.plan, obs)
+                if self._state is not None and events.sticky is not None:
+                    await self._state.set_sticky(events.sticky)
+                payload: dict[str, Any] = {
+                    "status": obs.status,
+                    "served_rung": obs.served.rung.value,
+                    "served_model": obs.served.model,
+                    "served_provider": obs.served.provider,
+                    "served_source": obs.served.source.value,
+                    "served_deployment_id": obs.served.deployment_id,
+                    "served_trust_zone": obs.served.trust_zone,
+                    "served_geo": obs.served.geo,
+                    "receipt_confirmed": obs.served.receipt_confirmed,
+                    "intended_rung": turn.target_rung.value,
+                    "intended_deployment_id": (
+                        turn.deployment.deployment_id if turn.deployment else None
+                    ),
+                    "stop_reason": obs.stop_reason,
+                    "streamed_tool_content": obs.streamed_tool_content,
+                    "completed": obs.completed,
+                    "malformed_tool_json": obs.malformed_tool_json,
+                    "tool_uses": [dataclasses.asdict(t) for t in obs.tool_uses],
+                    "bytes_relayed": obs.bytes_relayed,
+                    "fired_wires": list(events.fired_wires),
+                }
+                if obs.usage is not None:
+                    payload["usage"] = {
+                        "input_tokens": obs.usage.input_tokens,
+                        "output_tokens": obs.usage.output_tokens,
+                        "cache_read_input_tokens": obs.usage.cache_read_input_tokens,
+                        "cache_creation_input_tokens": obs.usage.cache_creation_input_tokens,
+                    }
+                if obs.error is not None:
+                    payload["error"] = _content_free_error(
+                        obs.error, obs.status, self._identity.hmac_key
+                    )
+                event_type = "upstream_error" if obs.status >= 400 else "served"
+                await self._append_event(ctx, turn.decision.route_id, event_type, payload)
+                await self._record_receipt(turn, obs)
+                for outcome_event in events.outcome_events:
+                    # Preserve the cascade's route and idempotency identity on continuations.
+                    if not isinstance(outcome_event, LedgerEvent):
+                        raise TypeError("cascade must return LedgerEvent instances")
+                    if not await self._ledger.append_event(outcome_event):
+                        EVENT_DROPPED_TOTAL.labels(producer=outcome_event.producer).inc()
+                        log.warning(
+                            "event_dropped",
+                            route_id=outcome_event.route_id,
+                            event_type=outcome_event.event_type,
+                            producer=outcome_event.producer,
+                            producer_seq=outcome_event.producer_seq,
+                        )
+        except Exception as exc:
+            log.error("finalize_failed", error=str(exc), route_id=turn.decision.route_id)
+
+    # ------------------------------------------------------------------ helpers
+
+    @property
+    def _enforcing(self) -> bool:
+        return self._settings.gate_mode is GateMode.ENFORCE
+
+    def _context(
+        self, parsed: RequestView, identity: Identity, classification: Classification
+    ) -> RequestContext:
+        return RequestContext(
+            body=parsed.body,
+            json=parsed.json,
+            headers=parsed.headers,
+            path=parsed.path,
+            request_class=classification.request_class,
+            content_bearing=classification.content_bearing,
+            interaction_mode=classification.interaction_mode,
+            session_hmac=identity.session_hmac,
+            lineage_hmac=identity.lineage_hmac,
+            requested_model=parsed.requested_model,
+            is_stream=parsed.is_stream,
+            max_tokens=parsed.max_tokens,
+            agent_id=identity.agent_id,
+            parent_agent_id=identity.parent_agent_id,
+            utility_kind=classification.utility_kind,
+            session_key_source=identity.source,
+            fingerprint_id=classification.fingerprint_id,
+            protocol_profile_id=self._profile.profile_id,
+            protocol_profile_version=self._profile.version,
+            harness_adapter_id=self._adapter.adapter_id,
+            harness_adapter_version=self._adapter.version,
+        )
+
+    async def _effective_pin(self, identity: Identity) -> bool:
+        """Own pin, or an ancestor's, materialised as an inherited pin event (ADRL-SEM-006)."""
+        own = await self._ledger.pin_state(identity.lineage_hmac)
+        if own.effective_pinned:
+            return True
+        for ancestor in identity.ancestor_lineages:
+            state = await self._ledger.pin_state(ancestor)
+            if state.effective_pinned:
+                await self._ledger.append_lineage_event(
+                    LineageEvent(
+                        lineage_hmac=identity.lineage_hmac,
+                        event_type=PIN_EVENT,
+                        payload={
+                            "finding_id": f"inherited:{ancestor}",
+                            "detector_id": "inherited",
+                            "inherited_from": ancestor,
+                        },
+                    )
+                )
+                return True
+        return False
+
+    async def _run_gate(
+        self, ctx: RequestContext, pinned_before: bool
+    ) -> tuple[GateOutcomeLike | ProxyResponse, FailureResolution | None]:
+        try:
+            gate = await self._gate.evaluate(ctx)
+        except Exception as exc:
+            resolution = resolve_failure(
+                FailureClass.GATE_PATH, pinned=pinned_before, mode=self._settings.fallback_mode
+            )
+            await self._recorder.record(ctx, resolution, exception=exc)
+            if resolution.action in (FallbackAction.BLOCK, FallbackAction.SURFACE):
+                return (
+                    self._error_response(
+                        resolution.code or ErrorCode.GATE_UNAVAILABLE,
+                        "gate unavailable on a pinned lineage; failing closed",
+                    ),
+                    resolution,
+                )
+            synthetic = ObserveOnlyGateOutcome(
+                permitted=resolution.permitted,
+                verdicts=(
+                    GateVerdict(
+                        gate="fail_open",
+                        permitted_after=resolution.permitted,
+                        unscanned=True,
+                        reason=type(exc).__name__,
+                        pinned=pinned_before,
+                    ),
+                ),
+                pinned=pinned_before,
+                unscanned=True,
+                findings=(),
+                block=None,
+                repo_class=None,
+                residency=None,
+                latency_s=0.0,
+            )
+            return synthetic, resolution
+        GATE_LATENCY_SECONDS.labels(request_class=ctx.request_class.value).observe(gate.latency_s)
+        if pinned_before and not gate.pinned:
+            # The gate never sees an inherited pin; the pipeline owns lineage inheritance.
+            gate = _PinnedOverlay(gate)
+        return gate, None
+
+    async def _sticky(
+        self, ctx: RequestContext
+    ) -> tuple[StickyState | None, FailureResolution | None]:
+        if self._state is None:
+            return None, None
+        try:
+            return await self._state.get_sticky(ctx.lineage_hmac), None
+        except Exception as exc:
+            resolution = resolve_failure(
+                FailureClass.ROUTING_PATH,
+                pinned=await self._pin_flag(ctx),
+                mode=self._settings.fallback_mode,
+            )
+            await self._recorder.record(ctx, resolution, exception=exc)
+            return None, resolution
+
+    async def _pin_flag(self, ctx: RequestContext) -> bool:
+        return (await self._ledger.pin_state(ctx.lineage_hmac)).effective_pinned
+
+    def _inherited_decision(
+        self, ctx: RequestContext, gate: GateOutcomeLike, sticky: StickyState
+    ) -> Decision:
+        rung = sticky.rung
+        reason = "inherited"
+        if rung not in gate.permitted:
+            highest = gate.permitted.highest
+            rung = highest if highest is not None else Rung.LOCAL
+            reason = "inherited_tightened"
+        return Decision(
+            route_id=sticky.route_id,
+            rung=rung,
+            permitted=gate.permitted,
+            estimator=INHERITED_ESTIMATOR,
+            estimator_version=INHERITED_ESTIMATOR_VERSION,
+            policy_version=self._bundle.policy.version,
+            objective_version=self._bundle.policy.objective_version,
+            cascade_feasible=False,
+            cascade_reason=reason,
+            features={"request_class": ctx.request_class.value},
+            features_version="features-inherited-v1",
+        )
+
+    def _fallback_decision(
+        self, ctx: RequestContext, gate: GateOutcomeLike, resolution: FailureResolution
+    ) -> Decision:
+        from adrl.core.ids import mint_route_id
+
+        rung = Rung.LOCAL if resolution.action is FallbackAction.FORWARD_LOCAL else Rung.FRONTIER
+        return Decision(
+            route_id=mint_route_id(),
+            rung=rung,
+            permitted=resolution.permitted,
+            estimator=FALLBACK_ESTIMATOR,
+            estimator_version=FALLBACK_ESTIMATOR_VERSION,
+            policy_version=self._bundle.policy.version,
+            objective_version=self._bundle.policy.objective_version,
+            cascade_feasible=False,
+            cascade_reason=resolution.failure_class.value,
+            features={"request_class": ctx.request_class.value},
+            features_version="features-fallback-v1",
+        )
+
+    def _target(
+        self,
+        ctx: RequestContext,
+        gate: GateOutcomeLike,
+        plan: DispatchPlanLike,
+        resolution: FailureResolution | None,
+    ) -> tuple[Rung, bool]:
+        """Effective destination and whether the original bytes are forwarded."""
+        pinned = self._enforcing and gate.pinned
+        if resolution is not None:
+            if resolution.action is FallbackAction.FORWARD_LOCAL:
+                return Rung.LOCAL, False
+            return Rung.FRONTIER, True
+        if self._settings.routing_mode is RoutingMode.LIVE:
+            rung = plan.rung
+            suppressed = bool(getattr(plan, "thinking_suppressed", False))
+            original = rung is Rung.FRONTIER and not plan.escalated and not suppressed
+            return rung, original
+        if pinned:
+            return Rung.LOCAL, False
+        return Rung.FRONTIER, True
+
+    def _body_for(
+        self,
+        ctx: RequestContext,
+        plan: DispatchPlanLike,
+        rung: Rung,
+        forward_original: bool,
+        deployment: DeploymentInfo | None = None,
+    ) -> bytes:
+        if forward_original:
+            return ctx.body
+        body: dict[str, Any] = dict(ctx.json)
+        if plan.escalated and self._transform is not None:
+            body = self._transform(body, plan.pair_rule, plan.handoff)
+        alias = (
+            deployment.deployment_id
+            if deployment is not None
+            else self._bundle.rungs.alias_for(rung)
+        )
+        return self._profile.serialize(
+            body,
+            rung=rung,
+            alias=alias,
+            bundle=self._bundle,
+            suppress_thinking=bool(getattr(plan, "thinking_suppressed", False)),
+        )
+
+    async def _record_egress(
+        self,
+        ctx: RequestContext,
+        gate: GateOutcomeLike,
+        rung: Rung | None,
+        bytes_out: int,
+        *,
+        kind: str = "forward",
+        deployment: DeploymentInfo | None = None,
+        receipt_source: str | None = None,
+    ) -> bool | None:
+        """Write-ahead egress record. Returns degraded flag, or None when a pinned append failed."""
+        if self._egress is None:
+            return False
+        findings: tuple[Finding, ...] = tuple(gate.findings)
+        tier = findings[0].tier.value if findings else None
+        try:
+            self._egress.append(
+                EgressEvent(
+                    lineage_hmac=ctx.lineage_hmac,
+                    request_class=ctx.request_class.value,
+                    content_bearing=ctx.content_bearing,
+                    destination_rung=rung.value if rung is not None else None,
+                    deployment_tag=self._settings.deployment_tag,
+                    gate_verdicts=[v.as_record() for v in gate.verdicts],
+                    detector_tier=tier,
+                    span_hashes=[f.span_hash for f in findings],
+                    bytes_out=bytes_out,
+                    actor="adrl",
+                    reason=None,
+                    event_kind=kind,
+                    **egress_fields(deployment, receipt_source or "intended"),
+                )
+            )
+        except LedgerAppendFailure as exc:
+            if self._enforcing and gate.pinned:
+                log.error("egress_append_failed_pinned", error=str(exc))
+                return None
+            LEDGER_DEGRADED_TOTAL.inc()
+            log.warning("egress_append_failed_unpinned", error=str(exc))
+            return True
+        return False
+
+    async def _record_receipt(self, turn: _Turn, obs: ResponseObservation) -> None:
+        """Append the actual destination as a content-free egress row (ADRL-SAF-009).
+
+        This row, not the write-ahead ``forward`` row, is what the audit trusts. A missing
+        receipt is recorded as ``assumed_intended`` so the audit can say "unconfirmed".
+        """
+        if self._egress is None:
+            return
+        served = obs.served
+        deployment = self._deployments.catalog.get(served.deployment_id or "")
+        if deployment is None and turn.deployment is not None and served.deployment_id is None:
+            deployment = turn.deployment
+        fields = egress_fields(deployment, served.source.value)
+        if served.deployment_id is None and served.api_base_host is not None:
+            fields["api_base_host"] = served.api_base_host
+        try:
+            self._egress.append(
+                EgressEvent(
+                    lineage_hmac=turn.ctx.lineage_hmac,
+                    request_class=turn.ctx.request_class.value,
+                    content_bearing=turn.ctx.content_bearing,
+                    destination_rung=served.rung.value,
+                    deployment_tag=self._settings.deployment_tag,
+                    gate_verdicts=[{"status": obs.status, "intended_rung": turn.target_rung.value}],
+                    bytes_out=obs.bytes_relayed,
+                    actor="gateway",
+                    reason=None,
+                    event_kind="served_receipt",
+                    **fields,
+                )
+            )
+        except LedgerAppendFailure as exc:
+            LEDGER_DEGRADED_TOTAL.inc()
+            log.error("egress_receipt_append_failed", error=str(exc))
+
+    async def _blocked(
+        self, ctx: RequestContext, gate: GateOutcomeLike, code: ErrorCode
+    ) -> ProxyResponse:
+        detector = gate.findings[0].detector_id if gate.findings else None
+        if detector is None and gate.pinned:
+            pins = await self._ledger.read_lineage_events(ctx.lineage_hmac, PIN_EVENT)
+            if pins:
+                detector = str(pins[-1].payload.get("detector_id") or "") or None
+        executed_tool = self._profile.executed_tool(ctx)
+        await self._record_egress(ctx, gate, None, 0, kind="block")
+        await self._ledger.append_lineage_event(
+            LineageEvent(
+                lineage_hmac=ctx.lineage_hmac,
+                event_type="block",
+                payload={"code": code.value, "request_class": ctx.request_class.value},
+            )
+        )
+        rendered = getattr(gate, "block_response", None)
+        if rendered is not None and getattr(rendered, "code", None) is code:
+            return ProxyResponse(
+                status=int(rendered.status),
+                headers={**JSON_HEADERS, **dict(getattr(rendered, "headers", {}) or {})},
+                body=(
+                    rendered.bytes
+                    if isinstance(getattr(rendered, "bytes", None), bytes)
+                    else json.dumps(rendered.body).encode("utf-8")
+                ),
+            )
+        return self._error_response(
+            code, block_message(code, detector=detector, executed_tool=executed_tool)
+        )
+
+    async def _count_tokens_locally(
+        self, ctx: RequestContext, gate: GateOutcomeLike
+    ) -> ProxyResponse:
+        """A pinned lineage's count_tokens body never leaves the machine (ADRL-SEM-001)."""
+        feasibility = getattr(self._gate, "feasibility", None)
+        estimate_fn = getattr(feasibility, "estimate_count_tokens", None)
+        if callable(estimate_fn):
+            estimate = int(estimate_fn(ctx.json)["input_tokens"])
+            await self._record_egress(ctx, gate, Rung.LOCAL, 0, kind="count_tokens_local")
+            return self._protocol_response(self._profile.count_tokens_response(max(1, estimate)))
+        estimate = self._profile.estimate_count_tokens(
+            ctx, self._tokenizer, ratio=self._bundle.rungs.rungs[Rung.LOCAL].tokenizer_ratio
+        )
+        await self._record_egress(ctx, gate, Rung.LOCAL, 0, kind="count_tokens_local")
+        return self._protocol_response(self._profile.count_tokens_response(estimate))
+
+    async def _forward_non_api(self, parsed: RequestView) -> ProxyResponse:
+        path = parsed.path + (f"?{parsed.query}" if parsed.query else "")
+        try:
+            response = await self._gateway.forward(
+                parsed.method, path, forward_headers(parsed.headers), parsed.body
+            )
+        except UpstreamUnreachableError as exc:
+            return self._error_response(ErrorCode.TERMINAL_FAILURE, str(exc))
+        raw = await read_all(response)
+        return ProxyResponse(
+            status=response.status_code, headers=response_headers(response.headers), body=raw
+        )
+
+    def _decision_context(
+        self, ctx: RequestContext, gate: GateOutcomeLike, state_loss: bool
+    ) -> dict[str, Any]:
+        return {
+            "session_hmac": ctx.session_hmac,
+            "lineage_hmac": ctx.lineage_hmac,
+            "request_class": ctx.request_class.value,
+            "content_bearing": ctx.content_bearing,
+            "interaction_mode": ctx.interaction_mode.value,
+            "requested_model": ctx.requested_model,
+            "is_subagent": ctx.is_subagent,
+            "session_key_source": ctx.session_key_source,
+            "fingerprint_id": ctx.fingerprint_id,
+            "pinned": gate.pinned,
+            "unscanned": gate.unscanned,
+            "gate_verdicts": [v.as_record() for v in gate.verdicts],
+            "repo_class": gate.repo_class,
+            "residency": gate.residency,
+            "permitted_deployment_ids": _deployment_ids(gate),
+            "state_loss": state_loss,
+            "routing_mode": self._settings.routing_mode.value,
+            "gate_mode": self._settings.gate_mode.value,
+            "config_versions": self._bundle.versions,
+            "protocol_profile_id": ctx.protocol_profile_id,
+            "protocol_profile_version": ctx.protocol_profile_version,
+            "harness_adapter_id": ctx.harness_adapter_id,
+            "harness_adapter_version": ctx.harness_adapter_version,
+            "protocol_operation_supported": ctx.path in self._profile.endpoints,
+        }
+
+    async def _append_event(
+        self, ctx: RequestContext, route_id: str, event_type: str, payload: Mapping[str, Any]
+    ) -> None:
+        producer_seq = await self._seq.next(self._ledger, route_id)
+        stored = await self._ledger.append_event(
+            LedgerEvent(
+                route_id=RouteId(route_id),
+                event_type=event_type,
+                producer=PRODUCER,
+                producer_seq=producer_seq,
+                payload=payload,
+            )
+        )
+        if not stored:
+            EVENT_DROPPED_TOTAL.labels(producer=PRODUCER).inc()
+            log.warning(
+                "event_dropped",
+                route_id=route_id,
+                event_type=event_type,
+                producer_seq=producer_seq,
+                degraded=self._ledger.degraded,
+            )
+
+    def _write_behind(
+        self, ctx: RequestContext, route_id: str, event_type: str, payload: Mapping[str, Any]
+    ) -> None:
+        task = asyncio.create_task(self._append_event(ctx, route_id, event_type, payload))
+        self._background.add(task)
+        task.add_done_callback(self._background.discard)
+
+    @staticmethod
+    def _protocol_response(
+        response: ProtocolResponse, route_id: str | None = None
+    ) -> ProxyResponse:
+        return ProxyResponse(
+            status=response.status,
+            headers=dict(response.headers),
+            body=response.body,
+            route_id=route_id,
+        )
+
+    def _error_response(
+        self, code: ErrorCode, detail: str, route_id: str | None = None
+    ) -> ProxyResponse:
+        return self._protocol_response(self._profile.error(code, detail), route_id)
+
+
+class _PinnedOverlay:
+    """A gate outcome re-read as pinned because an ancestor lineage is pinned (ADRL-SEM-006)."""
+
+    def __init__(self, inner: GateOutcomeLike) -> None:
+        self._inner = inner
+        self.permitted: PermittedSet = inner.permitted.tighten({Rung.LOCAL} & inner.permitted.rungs)
+        self.verdicts: tuple[GateVerdict, ...] = (
+            *inner.verdicts,
+            GateVerdict(
+                gate="inherited_pin",
+                permitted_after=self.permitted,
+                reason="ancestor lineage pinned",
+                pinned=True,
+            ),
+        )
+        self.pinned = True
+        self.unscanned = inner.unscanned
+        self.findings = inner.findings
+        self.block = inner.block
+        self.repo_class = inner.repo_class
+        self.residency = inner.residency
+        self.latency_s = inner.latency_s
+        inherited = getattr(inner, "permitted_deployments", None)
+        self.permitted_deployments: DeploymentSet | None = (
+            inherited.local_host_only() if inherited is not None else None
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class _FallbackPlan:
+    rung: Rung
+    is_boundary: bool
+    escalated: bool
+    from_rung: Rung | None
+    handoff: Any
+    pair_rule: Any
+    block: ErrorCode | None
+    sticky: StickyState
+
+    @classmethod
+    def for_decision(
+        cls,
+        ctx: RequestContext,
+        decision: Decision,
+        sticky: StickyState | None,
+        *,
+        is_boundary: bool,
+    ) -> _FallbackPlan:
+        turn_index = (sticky.turn_index + 1) if sticky is not None else 0
+        state = StickyState(
+            lineage_hmac=ctx.lineage_hmac,
+            route_id=decision.route_id,
+            rung=decision.rung,
+            escalated=False,
+            served_model=None,
+            served_provider=None,
+            served_source="assumed_intended",
+            turn_index=turn_index,
+            last_served_at=None,
+            state_loss=sticky is None,
+        )
+        return cls(
+            rung=decision.rung,
+            is_boundary=is_boundary,
+            escalated=False,
+            from_rung=None,
+            handoff=None,
+            pair_rule=None,
+            block=None,
+            sticky=state,
+        )
+
+
+def _deployment_ids(gate: GateOutcomeLike) -> list[str] | None:
+    deployments = getattr(gate, "permitted_deployments", None)
+    return deployments.as_list() if deployments is not None else None
+
+
+def _with_deployment(
+    plan: DispatchPlanLike, deployment: DeploymentInfo | None, forward_original: bool
+) -> DispatchPlanLike:
+    """Record the chosen deployment on the plan when the plan type carries the fields."""
+    candidate: Any = plan
+    if deployment is None or not dataclasses.is_dataclass(candidate):
+        return plan
+    names = {f.name for f in dataclasses.fields(candidate)}
+    if "deployment_id" not in names:
+        return plan
+    alias = None if forward_original else deployment.deployment_id
+    replace_fn: Any = dataclasses.replace
+    replaced: Any = replace_fn(candidate, deployment_id=deployment.deployment_id, model_alias=alias)
+    return replaced  # type: ignore[no-any-return]
+
+
+REGISTER MAPPING R:adr/FND/README.md
+
+| ADRL-FND-001 | Transparent control layer, protocol-scoped | AMEND | D3 → D3 (Anthropic path); D0 (Codex path) | "Transparent" contradicts SAF-004/005 and documented harness capability-degradation; must be wire-level, with enumerated exceptions; Codex CLI is Responses-API only and unevidenced  <!-- taxonomy-sync:claude-adapter:ADRL-FND-001 --> [2026-09-09 offline Claude candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); no maturity change |
+| ADRL-FND-003 | Routing boundary is the user turn | AMEND | D3 → D3 | Principle vindicated by cache evidence; "user turn" undefined mechanically; pre-warm request misfiles as a turn; gating must be per request; boundary must be per agent lineage  <!-- taxonomy-sync:claude-adapter:ADRL-FND-003 --> [2026-09-09 offline Claude candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); no maturity change |
+| ADRL-FND-005 | Scope expands only through measured gates | APPROVE | D3 → D3 (governance note) | Sound and currently honoured; gaps (self-graded, no pre-registration, no de-promotion) belong to EVL follow-ups  2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-FND-005 --> [Scoped sync gate](../../reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); maturity unchanged  <!-- taxonomy-sync:claude-adapter:ADRL-FND-005 --> [2026-09-09 offline Claude candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); no maturity change |
+
+REGISTER MAPPING R:adr/SEM/ADRL-SEM-007.md
+
+<!-- taxonomy-sync:claude-adapter:ADRL-SEM-007 --> Constructor-only native Claude initial-choice candidate preserves every parsed JSON field except model, including thinking, output settings, tools and cache markers. Ambiguous duplicate-key JSON and pre-existing assistant/tool-result history cannot start selection. One lineage retains the fixed choice. Native Claude Code and real-provider compatibility remain untested. [Implementation and evidence limits](../../reports/reviews/claude-adapter-2026-09-09/report.md). Formal maturity/status/verdict are unchanged.
+| 2026-09-09 | <!-- taxonomy-sync:claude-adapter:ADRL-SEM-007 --> [Offline Claude candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); Constructor-only native Claude initial-choice candidate preserves every parsed JSON field except model, including thinking, output settings, tools and cache markers. Ambiguous duplicate-key JSON and pre-existing assistant/tool-result history cannot start selection. One lineage retains the fixed choice. Native Claude Code and real-provider compatibility remain untested. | Previous decision wording and dated evidence preserved; no grade change |
+
+CURRENT DECISION
+
+
+
+Every wire format ADRL accepts is a named, versioned protocol profile that defines its request classes, turn and boundary signals, identity headers, content-bearing rules, error shapes and handoff rules; profile `anthropic-messages-v1` is the Anthropic Messages API with the six request classes of SEM-001, and no other format (in particular the OpenAI Responses API spoken by Codex CLI) enters scope until it has its own profile with an adapter, a mechanical discriminator and a captured corpus.
+
+1. *Profile contents*: request-class discriminator (SEM-001), user-turn and action-boundary definitions (FND-003, CAS-003), session and lineage identity sources (SEM-002, SEM-006), utility fingerprints (SEM-004), content-bearing rule per class, protocol-conformant error shapes (SAF-004, CAS-007), and the provider-pair handoff rules the profile participates in (CAS-004). Each is versioned with the profile.
+2. *No branch without a profile*: a discriminator, classifier or rewrite may not gain a code path for a second format; the second format is a second profile selected by endpoint path and headers before classification.
+3. *Responses API prerequisites*: a `openai-responses-v1` profile requires, before Proposed status: a mapping of input and output item types to request classes; a state model for `previous_response_id` and server-side conversation state; handling of reasoning items (encrypted, same-family only); tool output items as the boundary signal; compaction semantics; and a scrubbed corpus of at least the SEM-001 fixture set.
+4. *Cross-profile handoff* is forbidden until both profiles are at D2 and CAS-004 carries a pair rule for them.
+
+
+
+SOURCE C:tests/unit/test_claude_experiment.py
+
+"""Offline candidate checks. Primary: ADRL-SEM-007; ADRL-FND-001/005, ADRL-TRU-002."""
+
+from __future__ import annotations
+
+import asyncio
+import json
+from dataclasses import replace
+
+import httpx
+import pytest
+
+from adrl.core.enums import Rung
+from adrl.core.types import DeploymentInfo, DeploymentSet
+from adrl.proxy.claude_experiment import (
+    ClaudeExperimentClient,
+    ClaudeExperimentConfig,
+    ClaudeSelection,
+)
+from adrl.proxy.upstream import UpstreamUnreachableError, read_all
+
+
+def config(**changes):
+    return ClaudeExperimentConfig(
+        source_model="claude-opus-5",
+        target_model="claude-sonnet-5",
+        target_deployment="direct-sonnet",
+        **changes,
+    )
+
+
+def permitted(**changes):
+    dep = DeploymentInfo(
+        "direct-sonnet",
+        Rung.FRONTIER,
+        "direct",
+        "anthropic",
+        "cloud",
+        "unknown",
+        "api.anthropic.com",
+        model="claude-sonnet-5",
+    )
+    return DeploymentSet.all_of({dep.deployment_id: replace(dep, **changes)})
+
+
+def body(**changes):
+    return json.dumps(
+        {
+            "model": "claude-opus-5",
+            "messages": [{"role": "user", "content": "Read numbers"}],
+            "max_tokens": 100,
+            **changes,
+        }
+    ).encode()
+
+
+def test_model_only_preserves_features_and_continuation():
+    selection = ClaudeSelection(config())
+    original = body(
+        thinking={"type": "adaptive"},
+        output_config={"effort": "high"},
+        tools=[{"name": "Read", "input_schema": {"type": "object"}}],
+        system=[{"type": "text", "text": "system", "cache_control": {"type": "ephemeral"}}],
+    )
+    raw, dep = selection.prepare(original, lineage="one", permitted=permitted(), pinned=False)
+    expected = json.loads(original)
+    expected["model"] = "claude-sonnet-5"
+    assert json.loads(raw) == expected
+    assert dep.model == "claude-sonnet-5"
+    history = [
+        {
+            "role": "assistant",
+            "content": [{"type": "thinking", "thinking": "synthetic", "signature": "SYNTHETIC"}],
+        },
+        {"role": "user", "content": "continue"},
+    ]
+    raw, _ = selection.prepare(
+        body(messages=history), lineage="one", permitted=permitted(), pinned=False
+    )
+    assert json.loads(raw)["messages"] == history
+    assert json.loads(original)["model"] == "claude-opus-5"
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"rung": Rung.LOCAL},
+        {"api_base_host": "other.example"},
+        {"provider": "other"},
+        {"model": "other"},
+        {"trust_zone": "local_host"},
+    ],
+)
+def test_wrong_target_denied(changes):
+    with pytest.raises(ValueError):
+        ClaudeSelection(config()).prepare(
+            body(), lineage="one", permitted=permitted(**changes), pinned=False
+        )
+
+
+def test_pin_removal_and_cross_lineage_denied():
+    selection = ClaudeSelection(config())
+    for pin, allowed in [(True, permitted()), (False, permitted().tighten([]))]:
+        with pytest.raises(ValueError):
+            selection.prepare(body(), lineage="one", permitted=allowed, pinned=pin)
+    selection.prepare(body(), lineage="one", permitted=permitted(), pinned=False)
+    with pytest.raises(ValueError):
+        selection.prepare(body(), lineage="two", permitted=permitted(), pinned=False)
+    with pytest.raises(ValueError):
+        selection.prepare(body(), lineage="one", permitted=permitted().tighten([]), pinned=False)
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        b'{"model":"claude-opus-5","model":"claude-sonnet-5"}',
+        body(messages=[{"role": "assistant", "content": "old"}]),
+        body(messages=[{"role": "user", "content": [{"type": "tool_result"}]}]),
+    ],
+)
+def test_ambiguous_or_existing_session_denied(raw):
+    with pytest.raises(ValueError):
+        ClaudeSelection(config()).prepare(raw, lineage="one", permitted=permitted(), pinned=False)
+
+
+async def test_limits_cover_forward_and_send_failures_and_response_lifetime():
+    calls = []
+
+    async def handler(request):
+        calls.append(request)
+        return httpx.Response(400, stream=httpx.ByteStream(b"upstream error"))
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
+        client = ClaudeExperimentClient(config(messages_limit=2, count_tokens_limit=1), client=http)
+        response = await client.send(
+            body(),
+            {
+                "authorization": "Bearer SYNTHETIC",
+                "anthropic-beta": "oauth-SYNTHETIC",
+                "host": "other.example",
+                "content-length": "1",
+                "x-adrl-workload-assertion": "LOCAL",
+            },
+            path="/v1/messages",
+            rung=Rung.FRONTIER,
+        )
+        with pytest.raises(UpstreamUnreachableError):
+            await client.forward("POST", "/v1/messages", {}, body())
+        assert await read_all(response) == b"upstream error"
+        assert calls[0].url.host == "api.anthropic.com"
+        assert calls[0].headers["host"] == "api.anthropic.com"
+        assert calls[0].headers["authorization"] == "Bearer SYNTHETIC"
+        assert calls[0].headers["anthropic-beta"] == "oauth-SYNTHETIC"
+        assert "x-adrl-workload-assertion" not in calls[0].headers
+        await read_all(await client.forward("POST", "/v1/messages", {}, body()))
+        with pytest.raises(UpstreamUnreachableError):
+            await client.send(body(), {}, path="/v1/messages", rung=Rung.FRONTIER)
+        await read_all(await client.forward("POST", "/v1/messages/count_tokens", {}, body()))
+        with pytest.raises(UpstreamUnreachableError):
+            await client.forward("POST", "/v1/messages/count_tokens", {}, body())
+        await client.health()
+        assert len(calls) == 3
+
+
+@pytest.mark.parametrize(
+    "method,path,raw",
+    [
+        ("GET", "/v1/messages", body()),
+        ("POST", "https://other.example/v1/messages", body()),
+        ("POST", "/v1/messages?beta=true", body()),
+        ("POST", "/v1/messages", body(max_tokens=4097)),
+        ("POST", "/v1/messages", body(max_tokens=True)),
+        ("POST", "/v1/messages", body(model="adrl-local")),
+        ("POST", "/v1/messages", b"x" * 262145),
+    ],
+)
+async def test_denial_before_http(method, path, raw):
+    async def handler(request):
+        raise AssertionError("must not dispatch")
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
+        client = ClaudeExperimentClient(config(), client=http)
+        with pytest.raises(UpstreamUnreachableError):
+            await client.forward(method, path, {}, raw)
+        assert sum(client.attempts.values()) == 0
+
+
+async def test_timeout_consumes_attempt_and_no_retry():
+    calls = []
+
+    async def handler(request):
+        calls.append(request)
+        await asyncio.sleep(1)
+        return httpx.Response(200)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
+        client = ClaudeExperimentClient(config(messages_limit=1, request_seconds=0.01), client=http)
+        with pytest.raises(UpstreamUnreachableError):
+            await client.forward("POST", "/v1/messages", {}, body())
+        with pytest.raises(UpstreamUnreachableError):
+            await client.forward("POST", "/v1/messages", {}, body())
+        assert len(calls) == 1 and not client.active
+
+
+async def test_redirect_not_followed_and_closed_client_denied():
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        return httpx.Response(
+            307, headers={"location": "https://other.example/"}, stream=httpx.ByteStream(b"")
+        )
+
+    async with httpx.AsyncClient(
+        transport=httpx.MockTransport(handler), follow_redirects=True
+    ) as http:
+        client = ClaudeExperimentClient(config(), client=http)
+        response = await client.forward("POST", "/v1/messages", {}, body())
+        assert response.status_code == 307
+        await read_all(response)
+        await client.aclose()
+        with pytest.raises(UpstreamUnreachableError):
+            await client.forward("POST", "/v1/messages", {}, body())
+        assert len(calls) == 1
+
+
+async def test_stream_deadline_releases_slot():
+    class Slow(httpx.AsyncByteStream):
+        async def __aiter__(self):
+            yield b"first"
+            await asyncio.sleep(1)
+            yield b"late"
+
+    def handler(request):
+        return httpx.Response(200, stream=Slow())
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
+        client = ClaudeExperimentClient(config(request_seconds=0.01), client=http)
+        response = await client.forward("POST", "/v1/messages", {}, body())
+        with pytest.raises(TimeoutError):
+            await read_all(response)
+        assert not client.active and client.attempts["/v1/messages"] == 1
+
+
+REGISTER MAPPING R:adr/FND/ADRL-FND-001.md
+
+<!-- taxonomy-sync:claude-adapter:ADRL-FND-001 --> Scoped application: a constructor-only Claude initial-choice experiment may rewrite only the model field after enforcing gates in LIVE mode. Normal frontier, OFF and SHADOW paths remain byte-exact. This candidate has no startup setting or approved live launch profile; it does not grant an exception to admission. Continuations preserve non-model fields; no cross-model mid-session handoff is implemented. [Implementation and evidence limits](../../reports/reviews/claude-adapter-2026-09-09/report.md). Formal maturity/status/verdict are unchanged.
+| 2026-09-09 | <!-- taxonomy-sync:claude-adapter:ADRL-FND-001 --> [Offline Claude candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); Scoped application: a constructor-only Claude initial-choice experiment may rewrite only the model field after enforcing gates in LIVE mode. Normal frontier, OFF and SHADOW paths remain byte-exact. This candidate has no startup setting or approved live launch profile; it does not grant an exception to admission. Continuations preserve non-model fields; no cross-model mid-session handoff is implemented. | Previous decision wording and dated evidence preserved; no grade change |
+
+CURRENT DECISION
+
+
+
+ADRL is a protocol-transparent, removable control layer between an Anthropic-Messages-format coding harness and the model gateway; it never changes the wire contract the harness observes except through the enumerated user-facing surfaces owned by SAF.
+
+1. *Protocol-transparent* means: request headers the harness marks forward-unchanged (`anthropic-version`, `anthropic-beta`) reach the gateway byte-for-byte; response bodies, streaming events (including keep-alive pings) and upstream error wording are relayed unmodified on the passthrough path; and any body the layer must rewrite for a non-Claude rung (for example stripping `thinking`, `cache_control`, or beta tool fields) is rewritten by ADRL, not left for the upstream to reject.
+2. *Removable* means the golden test: point `ANTHROPIC_BASE_URL` back at the gateway and every behaviour is unchanged, with nothing to uninstall and no residual state the harness depends on.
+3. *Enumerated surfaces* means the only developer-visible differences ADRL may introduce are those listed in SAF-004/SAF-005 (blocked or surfaced failures on a pinned session) and the harness's own capability-degradation behaviour when a request is served by a non-Claude rung; each such surface must be documented, and each is a measured cost, not a transparency violation.
+4. Harnesses that speak the OpenAI Responses API (Codex CLI) are out of scope for this decision until a Responses-format discriminator and corpus exist (SEM-001 follow-up).
+5. *Product boundary, clarified 2026-09-07*: ADRL is developed as one reusable policy, routing and evidence engine with harness adapters and versioned protocol profiles (SEM-007). Harness setup, identity correlation and event translation belong to adapters; native model semantics belong to profiles. Product APIs use a separate `/adrl/v1` namespace. This direction does not expand the currently supported model-traffic protocols beyond clause 4's admission rule.
+
+
+
+SOURCE C:AGENTS.md
+
+# adrl-core engineering rules
+
+These rules apply to every change in this repository. The architecture source of truth is the ADR
+register in `../adrl-world-class/adr/<BUCKET>/ADRL-<BUCKET>-NNN.md` (reviewed 2026-09-02). The stack
+proposal that this repository implements is `../adrl-world-class/design/implementation-stack.md`.
+
+## Ownership
+
+- Every module docstring names its primary ADRL ID on the first line, for example
+  `"""Secret detection on new content. Primary: ADRL-SAF-003."""`. Secondary IDs are listed only for
+  real cross-cutting contracts.
+- Packages map to buckets: `wire` (SEM), `gates` (SAF), `routing` (RTG), `cascade` (CAS), `ledger`
+  (MEM), `learning` (LRN). `core`, `config`, `proxy`, `telemetry` and `cli` are shared plumbing.
+- A task implements an indexed decision. It does not need a new decision merely because it adds a
+  file. If no decision fits, stop and propose one in the register; do not invent behaviour.
+
+## Invariants the code must keep
+
+- Never rewrite a request body on the frontier or passthrough path. The bytes the harness sent are
+  the bytes the gateway receives, and response bytes (SSE `ping` events, upstream error wording)
+  are relayed unmodified. Body rewrites exist only for non-Claude rungs (ADRL-FND-001).
+  One carve-out (ADRL-CAS-004): after an escalation whose source turn carried no thinking
+  blocks, the `thinking` parameter is stripped from frontier-bound requests until the next user
+  turn, and the plan records `thinking_suppressed`.
+  Scoped FND-001 application (2026-09-09): the constructor-only Claude initial-choice
+  experiment may change only model after enforcing deployment gates in explicitly LIVE mode.
+  Normal startup does not enable it; SHADOW/OFF and LIVE admission are not bypassed.
+  This offline candidate is not an authorized live profile or a mid-session switch.
+- No `UPDATE` or `DELETE` SQL anywhere under `src/`. The evidence ledger and the egress ledger are
+  append-only. Corrections are new events; erasure is key deletion plus an `erased` event
+  (ADRL-MEM-001, ADRL-MEM-010). `tools/check_ledger_discipline.py` enforces this in CI.
+- Every "versioned policy constant" named in an ADR is a field on a versioned config model, and the
+  config version is recorded on the decision row it influenced. Changing a threshold is a config
+  version bump, never a literal in code.
+- Shadow code never imports into live routing. Nothing under `adrl.learning` and no module whose
+  name starts with `shadow_` may be imported by `adrl.routing` or `adrl.proxy` (ADRL-MEM-008).
+- A privacy pin can only be released by the audited human path (ADRL-SAF-002). No code path in
+  routing, cascade, fallback or episode handling may clear pin state.
+- Gate outcomes only tighten the permitted rung set within a lineage. `PermittedSet.tighten`
+  raises on any attempt to widen (ADRL-SAF-001).
+- Terminal failures are rendered as Anthropic Messages API error objects, never as synthetic
+  assistant content (ADRL-CAS-007).
+
+## Code quality
+
+- No mock implementations. Write the real thing, or leave a `TODO(ADRL-XXX-NNN):` comment naming
+  the owning decision and raise `NotImplementedError` with the same text.
+- Type hints on every public function; `mypy --strict` must pass.
+- No em dashes in any file, including docs, docstrings and log messages.
+- Descriptive names. No adjectives in file names.
+- `structlog` for logging, never `print` in `src/`.
+- Pydantic v2 at config and record boundaries; frozen dataclasses for internal value objects.
+
+## Running checks
+
+```bash
+.venv/bin/python -m ruff check src tests tools
+.venv/bin/python -m ruff format --check src tests tools
+.venv/bin/python -m mypy
+.venv/bin/python -m pytest -q
+.venv/bin/python tools/check_ledger_discipline.py
+.venv/bin/python -m adrl.cli.main config check
+```
+
+All six must pass before a change is considered done. Use `uv sync --all-extras` to refresh the
+virtual environment; the lockfile is checked in and only binary wheels are used.
+
+## Taxonomy synchronization completion gate
+
+Before implementation/configuration/adapter/tooling changes, use `adrl-taxonomy-sync` at
+`/Users/arunmenon/projects/adrl-world-class/skills/adrl-taxonomy-sync/SKILL.md`
+(installed in both Codex and Claude). Capture the declared dirty-worktree baseline before edits.
+At closure, map every changed input to owning ADRs, synchronize dated evidence in the ADRs,
+INDEX, affected bucket rows and CHANGELOG, and retain independent semantic review. Run
+`python3 /Users/arunmenon/projects/adrl-world-class/tools/check_taxonomy_sync.py check`
+with its required baseline, packet and new outside-repository receipt arguments.
+A failed or absent receipt means taxonomy synchronization is incomplete: do not claim the
+implementation wave complete. Recheck after any source/evidence/review change. Preserve
+historical grades and unrelated changes; this local gate does not replace runtime tests,
+human graduation, or remote CI/branch protection. Scope exclusions and unresolved historic
+register defects must be explicit. Routine documentation updates need no extra permission.
+
+
+REGISTER MAPPING R:adr/TRU/README.md
+
+| ADRL-TRU-002 | Permitted deployment set | PROPOSED (new) | none → D0 | The monotone object is a signed inventory entry (deployment id, rung, provider, api_base, trust zone, geo, data-use profile), not a rung label; dispatch yields a served-deployment receipt  <!-- taxonomy-sync:claude-adapter:ADRL-TRU-002 --> [2026-09-09 offline candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); no grade change |
+
+REGISTER MAPPING R:adr/TRU/ADRL-TRU-002.md
+
+| 2026-09-09 | <!-- taxonomy-sync:claude-adapter:ADRL-TRU-002 --> [Offline candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); Configured target must match the inventory catalog and the actual permitted deployment set, with frontier rung, Anthropic provider, direct api.anthropic.com host and non-local trust zone. Pinned and fallback requests are refused. The transport fixes its origin and refuses redirects. This does not qualify a signed live profile or workspace. | Prior decision wording preserved; no grade change |
+<!-- taxonomy-sync:claude-adapter:ADRL-TRU-002 --> Configured target must match the inventory catalog and the actual permitted deployment set, with frontier rung, Anthropic provider, direct api.anthropic.com host and non-local trust zone. Pinned and fallback requests are refused. The transport fixes its origin and refuses redirects. This does not qualify a signed live profile or workspace. [Evidence and limits](../../reports/reviews/claude-adapter-2026-09-09/report.md). Formal grades and status unchanged.
+
+CURRENT DECISION
+
+
+
+The object that the gates tighten and that routing chooses from is the permitted deployment set: a subset of a signed, versioned endpoint inventory in which every entry names a deployment id, its rung, provider, `api_base`, trust zone, geography and data-use profile; a rung is the economic tier of a deployment, not a security boundary, and no policy, pin, residency rule or fallback may be expressed in terms of a rung alone.
+
+1. *Inventory*: `deployment-inventory-v1` is signed by security and shared with the gateway generator (FND-002). An entry is `{deployment_id, rung, provider, api_base, trust_zone, geo, data_use_profile, evidence_ref}`. A `local` rung entry must have a loopback or unix-socket `api_base` and `trust_zone: local_host`; the configuration checker rejects any other local entry.
+2. *Tightening*: TRU-001 identity, residency, the SAF-002 pin and SAF-006 feasibility each remove deployments, never rungs: a pin removes every deployment whose `trust_zone` is not `local_host`; a residency tag removes every deployment whose `geo` does not match; a data-class restriction removes every deployment whose `data_use_profile` is not approved for the class. The set is monotone within a lineage (SAF-001).
+3. *Gateway contract*: the gateway generator emits one model group per deployment and fallback groups only within the permitted-set-closed subsets that ADRL names per request (a pinned lineage's group contains only `local_host` deployments); alias fallback lists must be subsets of the inventory. This replaces "rung-closed" in FND-002 and RTG-008 with "deployment-set-closed".
+4. *Receipt*: every dispatch yields a served-deployment receipt (`deployment_id`, provider, `api_base` host, `geo`, `trust_zone`, source in {gateway_reported, proxy_observed, assumed_intended}) recorded on the outcome row (CAS-006) and in the egress ledger (TRU-003). An `assumed_intended` receipt on a pinned or residency-tagged lineage is a gate failure for the next request until a reported receipt arrives.
+5. *Routing inside the set*: RTG chooses among the permitted deployments by rung economics (RTG-002, RTG-009); cost and cache identity are keyed by deployment id, because caches and signatures are per endpoint.
+
+
+SOURCE C:src/adrl/proxy/claude_experiment.py
+
+"""Initial-choice Claude experiment. Primary: ADRL-SEM-007.
+
+Secondary: ADRL-FND-001/005, ADRL-TRU-002, ADRL-CAS-006/007.
+Explicit constructor-only candidate, not a launch profile or rung admission.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import hashlib
+import json
+import time
+from collections.abc import AsyncIterator, Mapping
+from typing import Any, Literal
+
+import httpx
+from pydantic import BaseModel, ConfigDict, Field
+
+from adrl.core.enums import Rung
+from adrl.core.types import DeploymentInfo, DeploymentSet
+from adrl.proxy.upstream import HttpxGatewayClient, HttpxStreamingResponse, UpstreamUnreachableError
+from adrl.wire.parse import forward_headers
+
+ANTHROPIC_ORIGIN = "https://api.anthropic.com"
+
+
+class ClaudeExperimentConfig(BaseModel):
+    """Frozen, finite candidate; configuring it does not grant execution authority."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid", strict=True)
+    version: Literal["claude-initial-choice-v1"] = "claude-initial-choice-v1"
+    source_model: str = Field(pattern=r"^claude-[a-z0-9-]+$")
+    target_model: str = Field(pattern=r"^claude-[a-z0-9-]+$")
+    target_deployment: str = Field(min_length=1)
+    messages_limit: int = Field(default=8, ge=1, le=8)
+    count_tokens_limit: int = Field(default=4, ge=0, le=4)
+    body_bytes_limit: int = Field(default=262144, ge=1, le=262144)
+    output_tokens_limit: int = Field(default=4096, ge=1, le=4096)
+    request_seconds: float = Field(default=90.0, gt=0, le=90)
+    session_seconds: float = Field(default=3600.0, gt=0, le=3600)
+
+    @property
+    def fingerprint(self) -> str:
+        return hashlib.sha256(self.model_dump_json().encode()).hexdigest()
+
+
+def _object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON key")
+        result[key] = value
+    return result
+
+
+def parse_body(raw: bytes) -> dict[str, Any]:
+    """Reject ambiguous inputs before a model-only transformation."""
+    value = json.loads(raw, object_pairs_hook=_object)
+    if not isinstance(value, dict):
+        raise ValueError("request must be an object")
+    return value
+
+
+class ClaudeSelection:
+    """One initial selection, pinned to one lineage for this process lifetime."""
+
+    def __init__(self, config: ClaudeExperimentConfig) -> None:
+        self.config = config
+        self.lineage: str | None = None
+
+    def prepare(
+        self, raw: bytes, *, lineage: str, permitted: DeploymentSet, pinned: bool
+    ) -> tuple[bytes, DeploymentInfo]:
+        deployment = permitted.get(self.config.target_deployment)
+        if (
+            pinned
+            or deployment is None
+            or deployment.rung is not Rung.FRONTIER
+            or deployment.api_base_host != "api.anthropic.com"
+            or deployment.provider != "anthropic"
+            or deployment.model != self.config.target_model
+            or deployment.is_local_host
+        ):
+            raise ValueError("experiment target is not a permitted direct Claude deployment")
+        body = parse_body(raw)
+        if body.get("model") != self.config.source_model:
+            raise ValueError("unexpected requested model")
+        messages = body.get("messages")
+        if not isinstance(messages, list) or not messages:
+            raise ValueError("messages required")
+        if self.lineage is None:
+            if any(not isinstance(m, dict) or m.get("role") != "user" for m in messages):
+                raise ValueError("initial-choice experiment requires fresh user-only history")
+            # A tool result with no assistant history is not a fresh user task.
+            if any(
+                isinstance(m.get("content"), list)
+                and any(
+                    isinstance(b, dict) and b.get("type") == "tool_result" for b in m["content"]
+                )
+                for m in messages
+            ):
+                raise ValueError("initial tool results are not admitted")
+        elif self.lineage != lineage:
+            raise ValueError("experiment is bound to another lineage")
+        body["model"] = self.config.target_model
+        encoded = json.dumps(body, separators=(",", ":"), allow_nan=False).encode()
+        self.lineage = lineage
+        return encoded, deployment
+
+
+class _BoundedResponse(HttpxStreamingResponse):
+    def __init__(self, response: httpx.Response, owner: ClaudeExperimentClient, deadline: float):
+        super().__init__(response)
+        self._owner = owner
+        self._deadline = deadline
+        self._closed = False
+
+    async def aiter_raw(self) -> AsyncIterator[bytes]:
+        try:
+            async with asyncio.timeout(max(0, self._deadline - time.monotonic())):
+                async for chunk in self._response.aiter_raw():
+                    yield chunk
+        finally:
+            await self.aclose()
+
+    async def aclose(self) -> None:
+        if not self._closed:
+            self._closed = True
+            try:
+                await super().aclose()
+            finally:
+                self._owner.active = False
+
+
+class ClaudeExperimentClient(HttpxGatewayClient):
+    """Finite direct transport. Not exposed by app settings or the normal launcher.
+
+    Counters are process-local; restart-safe run custody is a live-launch prerequisite.
+    Injected clients are for isolated offline validation and must not widen transport policy.
+    """
+
+    def __init__(self, config: ClaudeExperimentConfig, *, client: httpx.AsyncClient | None = None):
+        super().__init__(ANTHROPIC_ORIGIN, client=client, timeout_s=config.request_seconds)
+        self.config = config
+        self.selection = ClaudeSelection(config)
+        self.attempts = {"/v1/messages": 0, "/v1/messages/count_tokens": 0}
+        self.active = False
+        self.started = time.monotonic()
+        self.stopped = False
+
+    async def send(
+        self,
+        body: bytes,
+        headers: Mapping[str, str],
+        *,
+        path: str,
+        rung: Rung,
+        timeout_s: float | None = None,
+    ) -> HttpxStreamingResponse:
+        if rung is not Rung.FRONTIER:
+            raise UpstreamUnreachableError("experiment only admits frontier Claude")
+        return await self.forward("POST", path, headers, body)
+
+    async def forward(
+        self, method: str, path: str, headers: Mapping[str, str], body: bytes
+    ) -> HttpxStreamingResponse:
+        try:
+            if (
+                self.stopped
+                or self.active
+                or time.monotonic() - self.started >= self.config.session_seconds
+            ):
+                raise ValueError("experiment inactive, expired or already forwarding")
+            if method != "POST" or path not in self.attempts:
+                raise ValueError("experiment operation not admitted")
+            if len(body) > self.config.body_bytes_limit:
+                raise ValueError("experiment body limit")
+            if any(k.lower() == "x-api-key" for k in headers):
+                raise ValueError("experiment does not admit API-key billing")
+            data = parse_body(body)
+            if data.get("model") not in {self.config.source_model, self.config.target_model}:
+                raise ValueError("experiment model not admitted")
+            limit = self.config.count_tokens_limit
+            if path == "/v1/messages":
+                limit = self.config.messages_limit
+                tokens = data.get("max_tokens")
+                if type(tokens) is not int or not 0 < tokens <= self.config.output_tokens_limit:
+                    raise ValueError("experiment output limit")
+            if self.attempts[path] >= limit:
+                raise ValueError("experiment attempt limit")
+        except (ValueError, TypeError) as exc:
+            raise UpstreamUnreachableError(str(exc)) from exc
+        self.active = True
+        self.attempts[path] += 1  # Reserve before any await; failures consume attempts.
+        deadline = min(
+            self.started + self.config.session_seconds,
+            time.monotonic() + self.config.request_seconds,
+        )
+        safe_headers = forward_headers(headers)
+        # HTTP routing/framing must come from the fixed URL and actual rewritten bytes.
+        safe_headers = {
+            k: v for k, v in safe_headers.items() if k.lower() not in {"host", "content-length"}
+        }
+        request = self.client.build_request(
+            "POST", ANTHROPIC_ORIGIN + path, headers=safe_headers, content=body
+        )
+        try:
+            async with asyncio.timeout(max(0, deadline - time.monotonic())):
+                response = await self.client.send(request, stream=True, follow_redirects=False)
+            return _BoundedResponse(response, self, deadline)
+        except (httpx.TransportError, TimeoutError) as exc:
+            self.active = False
+            raise UpstreamUnreachableError("bounded experiment transport failed") from exc
+        except BaseException:
+            self.active = False
+            raise
+
+    async def health(self) -> Mapping[str, Any]:
+        return {"available": False, "reason": "experiment health forwarding disabled"}
+
+    async def aclose(self) -> None:
+        self.stopped = True
+        await super().aclose()
+
+
+REGISTER MAPPING R:adr/CAS/README.md
+
+| ADRL-CAS-006 | Record the served model, not only the served rung | AMEND | D2 Tested → D2 Tested | Caches and signatures follow the model, not the rung; the record needs provenance (gateway may echo the alias) and an explicit state-loss marker.  <!-- taxonomy-sync:claude-adapter:ADRL-CAS-006 --> [2026-09-09 offline candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); no grade change |
+| ADRL-CAS-007 | Terminal failure surfaced; ADRL owns zero retries | AMEND | D2 Tested → D2 Tested | "Another automatic retry" needed a layer: ADRL zero, gateway bounded and constrained to rung/pin/streaming rules; "surfaced" must be a protocol error, never a synthetic assistant message.  <!-- taxonomy-sync:claude-adapter:ADRL-CAS-007 --> [2026-09-09 offline candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); no grade change |
+
+REGISTER MAPPING R:adr/FND/ADRL-FND-005.md
+
+<!-- taxonomy-sync:claude-adapter:ADRL-FND-005 --> Finite direct-client controls bound Messages and count_tokens attempts separately, request bytes, output allowance, concurrency and elapsed time. Failures consume forwarded attempts; rejected inputs are not forwarded. Counters are process-local: restart-safe custody, native harness confinement, signed workspace/profile and account overflow disposition remain launch prerequisites. Existing LIVE admission remains enforced. [Implementation and evidence limits](../../reports/reviews/claude-adapter-2026-09-09/report.md). Formal maturity/status/verdict are unchanged.
+| 2026-09-09 | <!-- taxonomy-sync:claude-adapter:ADRL-FND-005 --> [Offline Claude candidate](../../reports/reviews/claude-adapter-2026-09-09/report.md); Finite direct-client controls bound Messages and count_tokens attempts separately, request bytes, output allowance, concurrency and elapsed time. Failures consume forwarded attempts; rejected inputs are not forwarded. Counters are process-local: restart-safe custody, native harness confinement, signed workspace/profile and account overflow disposition remain launch prerequisites. Existing LIVE admission remains enforced. | Previous decision wording and dated evidence preserved; no grade change |
+
+CURRENT DECISION
+
+
+
+Scope expands only through measured phase gates; component presence is not readiness.
+
+### Product application, 2026-09-07
+
+For the current product workstream, keep the public API in preview until real integrations have
+validated at least two harnesses and two protocols. Claude Code is the first path, OpenCode tests
+reuse of the Messages profile, and Codex tests a separately admitted Responses profile. Passing
+offline tests for the first extraction does not satisfy that release gate. Changes to the contract
+during preview are versioned and recorded with their compatibility impact. See the
+[product contract](/Users/arunmenon/projects/adrl-world-class/design/adrl-multi-harness-product-contract-2026-09-07.md)
+and [implementation evidence](/Users/arunmenon/projects/adrl-world-class/reports/adrl-product-foundation-implementation-2026-09-07.md).
+
+
+
+REGISTER MAPPING R:CHANGELOG.md
+
+2026-09-09 <!-- taxonomy-sync:claude-adapter:ADRL-FND-001 --> ADRL-FND-001: Scoped application: a constructor-only Claude initial-choice experiment may rewrite only the model field after enforcing gates in LIVE mode. Normal frontier, OFF and SHADOW paths remain byte-exact. This candidate has no startup setting or approved live launch profile; it does not grant an exception to admission. Continuations preserve non-model fields; no cross-model mid-session handoff is implemented. [Evidence](reports/reviews/claude-adapter-2026-09-09/report.md).
+2026-09-09 <!-- taxonomy-sync:claude-adapter:ADRL-FND-003 --> ADRL-FND-003: The experiment selection occurs after permission/deployment checks and before write-ahead egress and decision recording. Decisions name experiment_forced_claude and a configuration fingerprint, distinguishing a forced compatibility choice from estimator merit. Fallback, pinned, transformed and missing-permitted-set requests cannot use the candidate. [Evidence](reports/reviews/claude-adapter-2026-09-09/report.md).
+2026-09-09 <!-- taxonomy-sync:claude-adapter:ADRL-FND-005 --> ADRL-FND-005: Finite direct-client controls bound Messages and count_tokens attempts separately, request bytes, output allowance, concurrency and elapsed time. Failures consume forwarded attempts; rejected inputs are not forwarded. Counters are process-local: restart-safe custody, native harness confinement, signed workspace/profile and account overflow disposition remain launch prerequisites. Existing LIVE admission remains enforced. [Evidence](reports/reviews/claude-adapter-2026-09-09/report.md).
+2026-09-09 <!-- taxonomy-sync:claude-adapter:ADRL-SEM-007 --> ADRL-SEM-007: Constructor-only initial-choice Claude candidate preserves non-model JSON fields. Duplicate JSON keys, old assistant history and initial tool results are refused. One lineage retains the fixed choice; native harness and real-provider compatibility are untested. [Evidence](reports/reviews/claude-adapter-2026-09-09/report.md).
+2026-09-09 <!-- taxonomy-sync:claude-adapter:ADRL-TRU-002 --> ADRL-TRU-002: Configured target must match the inventory catalog and the actual permitted deployment set, with frontier rung, Anthropic provider, direct api.anthropic.com host and non-local trust zone. Pinned and fallback requests are refused. The transport fixes its origin and refuses redirects. This does not qualify a signed live profile or workspace. [Evidence](reports/reviews/claude-adapter-2026-09-09/report.md).
+2026-09-09 <!-- taxonomy-sync:claude-adapter:ADRL-CAS-006 --> ADRL-CAS-006: Direct experiment observation ignores gateway-specific identity headers and preserves the actual provider model source. Host is the fixed configured HTTPS destination; deployment, geography and trust receipt fields stay unknown. Intended deployment is separate. Model mismatch stops further dispatch. No fabricated confirmed receipt. [Evidence](reports/reviews/claude-adapter-2026-09-09/report.md).
+2026-09-09 <!-- taxonomy-sync:claude-adapter:ADRL-CAS-007 --> ADRL-CAS-007: Finite experiment transport performs no retry, redirect or health forwarding. Attempt reservation precedes dispatch, failed attempts consume allowance, and response lifetime retains the single-active slot. Terminal failures use existing error rendering; response bytes are unchanged. Process-local counters do not establish restart-safe run custody. [Evidence](reports/reviews/claude-adapter-2026-09-09/report.md).
+
+DEPENDENCY src/adrl/proxy/upstream.py
+
+"""Gateway client: one attempt, verbatim relay. Primary: ADRL-CAS-007. Secondary: ADRL-FND-001.
+
+httpx performs no retries here. Response bytes are yielded exactly as received while the observer
+reads the same chunks; nothing is buffered or re-encoded.
+"""
+
+from __future__ import annotations
+
+from collections.abc import AsyncIterator, Mapping
+from typing import Any
+
+import httpx
+
+from adrl.core.enums import Rung
+from adrl.core.errors import AdrlError, ErrorCode
+from adrl.wire.profiles.base import StreamObserver
+
+
+class UpstreamUnreachableError(AdrlError):
+    """Transport-level failure before any byte was received (ADRL-CAS-007)."""
+
+    code = ErrorCode.TERMINAL_FAILURE
+
+
+class HttpxStreamingResponse:
+    """StreamingResponse port over an httpx streaming response."""
+
+    def __init__(self, response: httpx.Response) -> None:
+        self._response = response
+
+    @property
+    def status_code(self) -> int:
+        return self._response.status_code
+
+    @property
+    def headers(self) -> Mapping[str, str]:
+        return dict(self._response.headers.items())
+
+    def aiter_raw(self) -> AsyncIterator[bytes]:
+        return self._response.aiter_raw()
+
+    async def aclose(self) -> None:
+        await self._response.aclose()
+
+
+class HttpxGatewayClient:
+    """GatewayClient port. Exactly one HTTP attempt per call; no retries, no fallbacks."""
+
+    def __init__(
+        self,
+        base_url: str,
+        *,
+        client: httpx.AsyncClient | None = None,
+        timeout_s: float = 600.0,
+        health_path: str = "/health",
+    ) -> None:
+        self._base_url = base_url.rstrip("/")
+        self._timeout = timeout_s
+        self._health_path = health_path
+        self._owned = client is None
+        self._client = client or httpx.AsyncClient(
+            base_url=self._base_url,
+            timeout=httpx.Timeout(timeout_s, connect=10.0),
+            transport=httpx.AsyncHTTPTransport(retries=0),
+        )
+
+    @property
+    def client(self) -> httpx.AsyncClient:
+        """The underlying client, shared with the gateway health reader (ADRL-FND-002)."""
+        return self._client
+
+    async def send(
+        self,
+        body: bytes,
+        headers: Mapping[str, str],
+        *,
+        path: str,
+        rung: Rung,
+        timeout_s: float | None = None,
+    ) -> HttpxStreamingResponse:
+        request = self._client.build_request(
+            "POST",
+            path,
+            content=body,
+            headers=dict(headers),
+            timeout=httpx.Timeout(timeout_s or self._timeout, connect=10.0),
+        )
+        try:
+            response = await self._client.send(request, stream=True)
+        except httpx.TransportError as exc:
+            raise UpstreamUnreachableError(
+                f"gateway unreachable for rung {rung.value}: {exc}"
+            ) from exc
+        return HttpxStreamingResponse(response)
+
+    async def forward(
+        self, method: str, path: str, headers: Mapping[str, str], body: bytes
+    ) -> HttpxStreamingResponse:
+        """Non-API passthrough with the original method (ADRL-SEM-001 non_api class)."""
+        request = self._client.build_request(method, path, content=body, headers=dict(headers))
+        try:
+            response = await self._client.send(request, stream=True)
+        except httpx.TransportError as exc:
+            raise UpstreamUnreachableError(f"gateway unreachable: {exc}") from exc
+        return HttpxStreamingResponse(response)
+
+    async def health(self) -> Mapping[str, Any]:
+        try:
+            response = await self._client.get(self._health_path, timeout=5.0)
+        except httpx.TransportError as exc:
+            return {"available": False, "error": str(exc)}
+        try:
+            data = response.json()
+        except ValueError:
+            data = {}
+        return {"available": response.status_code < 500, "status": response.status_code, **data}
+
+    async def aclose(self) -> None:
+        if self._owned:
+            await self._client.aclose()
+
+
+async def relay(response: HttpxStreamingResponse, observer: StreamObserver) -> AsyncIterator[bytes]:
+    """Yield upstream chunks verbatim while feeding the observer the same bytes."""
+    try:
+        async for chunk in response.aiter_raw():
+            observer.feed(chunk)
+            yield chunk
+    finally:
+        await response.aclose()
+
+
+async def read_all(response: HttpxStreamingResponse) -> bytes:
+    chunks: list[bytes] = []
+    try:
+        async for chunk in response.aiter_raw():
+            chunks.append(chunk)
+    finally:
+        await response.aclose()
+    return b"".join(chunks)
+
+
+DEPENDENCY src/adrl/gates/deployments.py
+
+"""Permitted deployment sets and destination receipts. Primary: ADRL-SAF-008.
+Also implements: ADRL-TRU-002 (register additions of 2026-09-03).
+
+Secondary: ADRL-SAF-001 (monotone constraint), ADRL-FND-002 (rung-closed execution),
+ADRL-RTG-008 (served identity), ADRL-SAF-009 (actual destination in the egress ledger).
+
+The object ADRL constrains is the set of attested deployments a request may reach. A rung is a
+projection of that set. The pin keeps only ``local_host`` deployments; residency keeps only
+deployments in the lineage's geo plus the local host; the repository ceiling keeps only the
+rungs the class allows. Nothing here reads a label off a deployment the inventory has not
+attested, and every dispatch is expected to come back with a receipt naming the deployment
+that actually served it.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Mapping
+from dataclasses import dataclass
+from typing import Any
+from urllib.parse import urlsplit
+
+from adrl.config.models import EndpointInventory
+from adrl.core.enums import Rung, ServedSource
+from adrl.core.types import (
+    DeploymentInfo,
+    DeploymentSet,
+    ServedIdentity,
+)
+
+RECEIPT_HEADER_MODEL_ID = "x-litellm-model-id"
+RECEIPT_HEADER_API_BASE = "x-litellm-model-api-base"
+RECEIPT_HEADER_GROUP = "x-litellm-model-group"
+
+
+def catalog_from_inventory(inventory: EndpointInventory) -> dict[str, DeploymentInfo]:
+    return {
+        dep.id: DeploymentInfo(
+            deployment_id=dep.id,
+            rung=dep.rung,
+            model_group=dep.model_group,
+            provider=dep.provider,
+            trust_zone=dep.trust_zone,
+            geo=dep.geo,
+            api_base_host=dep.api_base_host,
+            data_use_profile=dep.data_use_profile,
+            model=dep.model,
+        )
+        for dep in inventory.deployments
+    }
+
+
+@dataclass(frozen=True, slots=True)
+class DeploymentReceipt:
+    """What the gateway said it served, mapped back onto the attested inventory."""
+
+    deployment: DeploymentInfo | None
+    source: ServedSource
+    api_base_host: str | None
+    raw_model_id: str | None
+
+
+class DeploymentPolicy:
+    """Derive the permitted deployment set from gate facts and pick the dispatch target."""
+
+    def __init__(self, inventory: EndpointInventory) -> None:
+        self._inventory = inventory
+        self._catalog = catalog_from_inventory(inventory)
+        self._order: dict[str, int] = {}
+        position = 0
+        for dep in inventory.deployments:
+            self._order[dep.id] = position
+            position += 1
+
+    @property
+    def inventory(self) -> EndpointInventory:
+        return self._inventory
+
+    @property
+    def catalog(self) -> Mapping[str, DeploymentInfo]:
+        return self._catalog
+
+    def universe(self) -> DeploymentSet:
+        return DeploymentSet.all_of(self._catalog)
+
+    def permitted_for(
+        self,
+        *,
+        permitted_rungs: frozenset[Rung],
+        pinned: bool,
+        residency: str | None,
+    ) -> DeploymentSet:
+        """Monotone derivation: rung ceiling, then residency, then the pin (ADRL-SAF-001)."""
+        deployments = self.universe().only_rungs(permitted_rungs)
+        if residency is not None:
+            deployments = deployments.only_geo(residency, keep_local_host=True)
+        if pinned:
+            deployments = deployments.local_host_only()
+        return deployments
+
+    def choose(
+        self,
+        deployments: DeploymentSet,
+        rung: Rung,
+        *,
+        preferred_group: str | None = None,
+        rung_member_order: tuple[str, ...] = (),
+    ) -> DeploymentInfo | None:
+        """First permitted deployment of ``rung``, honouring the rung's member order."""
+        candidates = list(deployments.for_rung(rung))
+        if not candidates:
+            return None
+        if preferred_group is not None:
+            for dep in candidates:
+                if dep.model_group == preferred_group:
+                    return dep
+        rank = {group: i for i, group in enumerate(rung_member_order)}
+        candidates.sort(
+            key=lambda d: (rank.get(d.model_group, len(rank)), self._order[d.deployment_id])
+        )
+        return candidates[0]
+
+    def frontier_for_model(
+        self, deployments: DeploymentSet, requested_model: str
+    ) -> DeploymentInfo | None:
+        """The deployment a frontier passthrough reaches; aliases resolve to the frontier group."""
+        target_group = self._inventory.frontier_aliases_to
+        for dep in deployments.for_rung(Rung.FRONTIER):
+            if target_group is None or dep.model_group == target_group:
+                return dep
+        first = deployments.for_rung(Rung.FRONTIER)
+        return first[0] if first else None
+
+    # ------------------------------------------------------------------ receipts
+
+    def receipt(
+        self, headers: Mapping[str, str], intended: DeploymentInfo | None
+    ) -> DeploymentReceipt:
+        """Map the gateway's response headers to an attested deployment.
+
+        Order: an ``x-litellm-model-id`` equal to a deployment id (the generator sets
+        ``model_info.id`` to the deployment id); else ``x-litellm-model-api-base`` whose host
+        matches a deployment; else assumed intended.
+        """
+        lowered = {k.lower(): v for k, v in headers.items()}
+        raw_id = lowered.get(RECEIPT_HEADER_MODEL_ID)
+        api_base = lowered.get(RECEIPT_HEADER_API_BASE)
+        host = _host_of(api_base) if api_base else None
+        if raw_id is not None:
+            head = raw_id.split("/", 1)[0]
+            if head in self._catalog:
+                dep = self._catalog[head]
+                return DeploymentReceipt(
+                    dep, ServedSource.GATEWAY_REPORTED, dep.api_base_host, raw_id
+                )
+        if host is not None:
+            found = self._inventory.by_host(host)
+            if found is not None:
+                dep = self._catalog[found.id]
+                return DeploymentReceipt(dep, ServedSource.GATEWAY_REPORTED, host, raw_id)
+            return DeploymentReceipt(None, ServedSource.GATEWAY_REPORTED, host, raw_id)
+        return DeploymentReceipt(intended, ServedSource.ASSUMED_INTENDED, None, raw_id)
+
+    def served_identity(
+        self, base: ServedIdentity, headers: Mapping[str, str], intended: DeploymentInfo | None
+    ) -> ServedIdentity:
+        """Enrich a served identity with the receipt; never downgrade a confirmed source."""
+        receipt = self.receipt(headers, intended)
+        dep = receipt.deployment
+        if receipt.source is ServedSource.GATEWAY_REPORTED:
+            return ServedIdentity(
+                rung=dep.rung if dep else base.rung,
+                model=(dep.model if dep and dep.model else base.model),
+                provider=dep.provider if dep else base.provider,
+                source=ServedSource.GATEWAY_REPORTED,
+                deployment_id=dep.deployment_id if dep else None,
+                api_base_host=receipt.api_base_host,
+                trust_zone=dep.trust_zone if dep else None,
+                geo=dep.geo if dep else None,
+            )
+        return ServedIdentity(
+            rung=base.rung,
+            model=base.model,
+            provider=base.provider if base.provider else (dep.provider if dep else None),
+            source=base.source,
+            deployment_id=dep.deployment_id if dep else None,
+            api_base_host=dep.api_base_host if dep else None,
+            trust_zone=dep.trust_zone if dep else None,
+            geo=dep.geo if dep else None,
+        )
+
+
+def _host_of(url: str) -> str | None:
+    parts = urlsplit(url)
+    if parts.scheme in ("unix", "http+unix"):
+        return "unix"
+    if parts.hostname is None:
+        return None
+    return f"{parts.hostname}:{parts.port}" if parts.port else parts.hostname
+
+
+def egress_fields(deployment: DeploymentInfo | None, receipt_source: str) -> dict[str, Any]:
+    return {
+        "deployment_id": deployment.deployment_id if deployment else None,
+        "trust_zone": deployment.trust_zone if deployment else None,
+        "geo": deployment.geo if deployment else None,
+        "api_base_host": deployment.api_base_host if deployment else None,
+        "receipt_source": receipt_source,
+    }
+
+
+DEPENDENCY src/adrl/config/checks.py
+
+"""Load-time configuration checks. Primary: ADRL-FND-002.
+Also implements: ADRL-OPS-003 (register additions of 2026-09-03).
+
+Secondary: ADRL-RTG-001 (evidence before live), ADRL-SAF-005 (compaction feasibility),
+ADRL-LRN-004 (deny-list), ADRL-CAS-002 (enum version).
+"""
+
+from __future__ import annotations
+
+from collections.abc import Sequence
+from dataclasses import dataclass
+
+from adrl.config.loaders import ConfigBundle
+from adrl.config.settings import Settings
+from adrl.core.enums import FAILURE_TYPES_VERSION, RoutingMode, Rung
+from adrl.core.errors import ConfigError
+
+
+@dataclass(frozen=True, slots=True)
+class CheckResult:
+    name: str
+    ok: bool
+    detail: str = ""
+
+
+def check_rung_closed_membership(bundle: ConfigBundle) -> CheckResult:
+    seen: dict[str, Rung] = {}
+    for rung, spec in bundle.rungs.rungs.items():
+        for member in spec.members:
+            if member in seen:
+                return CheckResult(
+                    "rung_closed_membership",
+                    False,
+                    f"model group {member!r} is in both {seen[member].value} and {rung.value}",
+                )
+            seen[member] = rung
+    return CheckResult("rung_closed_membership", True)
+
+
+def check_fallback_groups_within_rung(bundle: ConfigBundle) -> CheckResult:
+    group_to_rung = bundle.rungs.group_to_rung
+    for group in bundle.rungs.fallback_groups:
+        if group.primary not in group_to_rung:
+            return CheckResult(
+                "fallback_within_rung", False, f"fallback primary {group.primary!r} is in no rung"
+            )
+        rung = group_to_rung[group.primary]
+        for fallback in group.fallbacks:
+            if group_to_rung.get(fallback) is not rung:
+                return CheckResult(
+                    "fallback_within_rung",
+                    False,
+                    f"fallback group {group.primary!r} spans rungs via {fallback!r}",
+                )
+    return CheckResult("fallback_within_rung", True)
+
+
+def check_live_rung_has_evidence(bundle: ConfigBundle, settings: Settings) -> CheckResult:
+    if settings.routing_mode is not RoutingMode.LIVE:
+        return CheckResult("live_rung_has_evidence", True, "routing not live")
+    for rung, spec in bundle.rungs.rungs.items():
+        if spec.enabled and spec.boundary.evidence_ref is None:
+            return CheckResult(
+                "live_rung_has_evidence",
+                False,
+                f"rung {rung.value} is enabled in live mode without an evidence_ref",
+            )
+    return CheckResult("live_rung_has_evidence", True)
+
+
+def check_compaction_feasibility(bundle: ConfigBundle) -> CheckResult:
+    local = bundle.rungs.rungs.get(Rung.LOCAL)
+    if local is None or not local.enabled:
+        return CheckResult("compaction_feasibility", True, "no local rung")
+    needed = bundle.rungs.compaction_window_tokens + bundle.rungs.compaction_overhead_tokens
+    if local.boundary.context_ceiling < needed:
+        return CheckResult(
+            "compaction_feasibility",
+            False,
+            "pinned lineages will deadlock: largest local context "
+            f"{local.boundary.context_ceiling} < {needed} (compaction window plus overhead)",
+        )
+    return CheckResult("compaction_feasibility", True)
+
+
+def check_policy_references(bundle: ConfigBundle) -> CheckResult:
+    for rung in Rung:
+        if rung not in bundle.policy.tau_by_rung:
+            return CheckResult("policy_references", False, f"tau_by_rung missing {rung.value}")
+        if rung not in bundle.prices.by_rung:
+            return CheckResult("policy_references", False, f"prices missing {rung.value}")
+        if rung not in bundle.tripwires.by_rung:
+            return CheckResult("policy_references", False, f"tripwires missing {rung.value}")
+    ambiguous = [b for b in bundle.policy.bands if b.rung is None]
+    if len(ambiguous) != 1:
+        return CheckResult("policy_references", False, "exactly one ambiguous band is required")
+    if bundle.prices.by_rung[Rung.LOCAL].input <= 0:
+        return CheckResult(
+            "policy_references", False, "local rung must carry a non-zero latency-equivalent cost"
+        )
+    return CheckResult("policy_references", True)
+
+
+def check_learning_contract(bundle: ConfigBundle) -> CheckResult:
+    contract = bundle.learning_contract
+    if contract.failure_types_version != FAILURE_TYPES_VERSION:
+        return CheckResult(
+            "learning_contract",
+            False,
+            f"learning contract cites {contract.failure_types_version}, "
+            f"code is {FAILURE_TYPES_VERSION}",
+        )
+    required_denied = {"served_rung", "served_model", "escalated"}
+    missing = required_denied - set(contract.deny_list)
+    if missing:
+        return CheckResult("learning_contract", False, f"deny-list missing {sorted(missing)}")
+    for feature in contract.features:
+        if feature.name in contract.deny_list:
+            return CheckResult(
+                "learning_contract", False, f"feature {feature.name!r} is on the deny-list"
+            )
+    if (
+        "served_rung" not in contract.forbidden_targets
+        or "decision" not in contract.forbidden_targets
+    ):
+        return CheckResult(
+            "learning_contract", False, "forbidden_targets must include served_rung and decision"
+        )
+    return CheckResult("learning_contract", True)
+
+
+def check_repo_classification(bundle: ConfigBundle) -> CheckResult:
+    manifest = bundle.repo_classification
+    ids = {c.class_id for c in manifest.classes}
+    if manifest.default_class_id not in ids:
+        return CheckResult("repo_classification", False, "default class is not defined")
+    default = manifest.class_by_id(manifest.default_class_id)
+    if Rung.FRONTIER in default.allowed_rungs and not default.restricted:
+        pass
+    for entry in manifest.repos:
+        if entry.class_id not in ids:
+            return CheckResult(
+                "repo_classification", False, f"repo {entry.repo_id} cites unknown class"
+            )
+    for cls in manifest.classes:
+        if cls.restricted and cls.allowed_rungs != (Rung.LOCAL,):
+            return CheckResult(
+                "repo_classification",
+                False,
+                f"restricted class {cls.class_id} must be local-only",
+            )
+        if cls.restricted and cls.release_permitted:
+            return CheckResult(
+                "repo_classification",
+                False,
+                f"restricted class {cls.class_id} must not permit pin release",
+            )
+    return CheckResult("repo_classification", True)
+
+
+def check_endpoint_inventory(bundle: ConfigBundle) -> CheckResult:
+    """Deployments, not labels: the local rung is loopback-only and trust zones are coherent.
+
+    This is the substitution experiment from the 2026-09-03 review: a local group pointed at
+    a remote host must fail here, at load, not be discovered in the egress ledger.
+    """
+    from adrl.config.models import TRUST_ZONE_ORDER
+
+    inventory = bundle.endpoint_inventory
+    group_to_rung = bundle.rungs.group_to_rung
+    zones_by_rung: dict[Rung, set[str]] = {}
+    for dep in inventory.deployments:
+        expected = group_to_rung.get(dep.model_group)
+        if expected is None:
+            return CheckResult(
+                "endpoint_inventory",
+                False,
+                f"deployment {dep.id} names group {dep.model_group!r} that is in no rung",
+            )
+        if expected is not dep.rung:
+            return CheckResult(
+                "endpoint_inventory",
+                False,
+                f"deployment {dep.id} claims rung {dep.rung.value} but its group is in "
+                f"{expected.value}",
+            )
+        if dep.rung is Rung.LOCAL:
+            if dep.trust_zone != "local_host":
+                return CheckResult(
+                    "endpoint_inventory",
+                    False,
+                    f"local deployment {dep.id} has trust_zone {dep.trust_zone}; "
+                    "must be local_host",
+                )
+            if not dep.is_loopback:
+                return CheckResult(
+                    "endpoint_inventory",
+                    False,
+                    f"local deployment {dep.id} api_base {dep.api_base!r} is not loopback or a "
+                    "unix socket; a local label on a remote host would leave the machine",
+                )
+        elif dep.trust_zone == "local_host":
+            return CheckResult(
+                "endpoint_inventory",
+                False,
+                f"cloud deployment {dep.id} cannot claim trust_zone local_host",
+            )
+        zones_by_rung.setdefault(dep.rung, set()).add(dep.trust_zone)
+    for spec in bundle.rungs.rungs.values():
+        if not spec.enabled:
+            continue
+        for member in spec.members:
+            if not inventory.for_group(member):
+                return CheckResult(
+                    "endpoint_inventory", False, f"rung member {member!r} has no deployment"
+                )
+    ranks = {r: max(TRUST_ZONE_ORDER[z] for z in zs) for r, zs in zones_by_rung.items()}
+    for lower, higher in zip(Rung.ordered(), Rung.ordered()[1:], strict=False):
+        if lower in ranks and higher in ranks and ranks[lower] > ranks[higher]:
+            return CheckResult(
+                "endpoint_inventory",
+                False,
+                f"rung {lower.value} reaches a less trusted zone than rung {higher.value}",
+            )
+    return CheckResult("endpoint_inventory", True)
+
+
+def check_residency_reachable(
+    bundle: ConfigBundle, settings: Settings | None = None
+) -> CheckResult:
+    """A residency class in use must have an in-geo deployment on every cloud rung it allows."""
+    manifest = bundle.repo_classification
+    inventory = bundle.endpoint_inventory
+    in_use = {entry.class_id for entry in manifest.repos} | {manifest.default_class_id}
+    for cls in manifest.classes:
+        if cls.residency is None:
+            continue
+        cloud_rungs = [r for r in cls.allowed_rungs if r.is_cloud]
+        missing = [
+            r.value
+            for r in cloud_rungs
+            if not any(d.geo == cls.residency for d in inventory.for_rung(r))
+        ]
+        if missing and cls.class_id in in_use:
+            strict = settings is None or settings.residency_unreachable_is_error
+            return CheckResult(
+                "residency_reachable",
+                not strict,
+                f"class {cls.class_id} requires geo {cls.residency} but rungs "
+                f"{missing} have no deployment there",
+            )
+        if missing:
+            return CheckResult(
+                "residency_reachable",
+                True,
+                f"class {cls.class_id} is unused; rungs {missing} have no {cls.residency} "
+                "deployment, so lineages in that class would be local-or-block",
+            )
+    return CheckResult("residency_reachable", True)
+
+
+def all_checks(bundle: ConfigBundle, settings: Settings) -> Sequence[CheckResult]:
+    return (
+        check_rung_closed_membership(bundle),
+        check_fallback_groups_within_rung(bundle),
+        check_live_rung_has_evidence(bundle, settings),
+        check_compaction_feasibility(bundle),
+        check_policy_references(bundle),
+        check_learning_contract(bundle),
+        check_repo_classification(bundle),
+        check_endpoint_inventory(bundle),
+        check_residency_reachable(bundle, settings),
+    )
+
+
+def run_checks(bundle: ConfigBundle, settings: Settings) -> None:
+    failures = [c for c in all_checks(bundle, settings) if not c.ok]
+    if failures:
+        raise ConfigError("; ".join(f"{c.name}: {c.detail}" for c in failures))
+
+
+DEPENDENCY src/adrl/wire/observe.py
+
+"""Response observation on the relayed byte stream. Primary: ADRL-CAS-006.
+Also implements: ADRL-OPS-006 (served identity, not intended).
+Also implements: ADRL-TRU-002 (register additions of 2026-09-03).
+
+Secondary: ADRL-CAS-003 (first streamed tool content), ADRL-RTG-009 (cache usage),
+ADRL-FND-001 (bytes are observed, never altered).
+"""
+
+from __future__ import annotations
+
+import hashlib
+import hmac
+import json
+import time
+from collections.abc import Mapping
+from dataclasses import dataclass, field
+from typing import Any
+
+from adrl.config.models import RungsConfig
+from adrl.core.enums import Rung, ServedSource
+from adrl.core.types import ServedIdentity, Usage
+
+
+@dataclass(frozen=True, slots=True)
+class ToolUseSummary:
+    id: str
+    name: str
+    input_hash: str
+    input_size: int
+    input_parse_ok: bool
+
+
+@dataclass(frozen=True, slots=True)
+class ResponseObservation:
+    status: int
+    served: ServedIdentity
+    usage: Usage | None
+    stop_reason: str | None
+    streamed_tool_content: bool
+    tool_uses: tuple[ToolUseSummary, ...]
+    error: dict[str, Any] | None
+    first_byte_at: float | None
+    completed: bool
+    malformed_tool_json: bool
+    model_reported: str | None
+    bytes_relayed: int = 0
+
+
+@dataclass
+class _ToolBlock:
+    id: str
+    name: str
+    parts: list[str] = field(default_factory=list)
+    initial_input: Any = None
+
+
+def _hash_input(value: Any, key: bytes | None) -> str:
+    """Keyed hash of a tool input (ADRL-MEM-005): never a plain digest a dictionary can invert."""
+    canonical = json.dumps(value, sort_keys=True, separators=(",", ":"), default=str).encode(
+        "utf-8"
+    )
+    if key:
+        return hmac.new(key, canonical, hashlib.sha256).hexdigest()[:24]
+    return "unkeyed:" + hashlib.sha256(canonical).hexdigest()[:16]
+
+
+def served_identity(
+    headers: Mapping[str, str],
+    model_reported: str | None,
+    *,
+    intended_rung: Rung,
+    requested_model: str,
+    rungs: RungsConfig,
+) -> ServedIdentity:
+    """Gateway header first, then the model the response reported, else assumed intended."""
+    header_name = rungs.gateway_served_model_header.lower()
+    reported = None
+    for key, value in headers.items():
+        if key.lower() == header_name:
+            reported = value
+            break
+    if reported:
+        group = reported.split("/", 1)[0]
+        model = reported.split("/", 1)[1] if "/" in reported else reported
+        rung = rungs.group_to_rung.get(group, intended_rung)
+        provider = _provider_for(model)
+        return ServedIdentity(rung, model, provider, ServedSource.GATEWAY_REPORTED)
+    if model_reported:
+        return ServedIdentity(
+            intended_rung,
+            model_reported,
+            _provider_for(model_reported),
+            ServedSource.PROXY_OBSERVED,
+        )
+    return ServedIdentity.assumed(intended_rung, requested_model)
+
+
+def _provider_for(model: str) -> str | None:
+    lowered = model.lower()
+    if lowered.startswith("claude"):
+        return "anthropic"
+    if lowered.startswith(("gpt", "o1", "o3", "o4")):
+        return "openai"
+    if "/" in lowered:
+        return lowered.split("/", 1)[0]
+    return None
+
+
+class SseObserver:
+    """Consumes the same chunks the relay forwards and reconstructs what matters.
+
+    Nothing here alters bytes. Partial lines across chunks are buffered. Unknown events are
+    ignored. A tool_use block whose accumulated JSON does not parse is recorded as malformed so a
+    dialect trip-wire can fire (ADRL-CAS-001).
+    """
+
+    def __init__(
+        self,
+        *,
+        status: int,
+        headers: Mapping[str, str],
+        intended_rung: Rung,
+        requested_model: str,
+        rungs: RungsConfig,
+        hash_key: bytes | None = None,
+    ) -> None:
+        self._hash_key = hash_key
+        self._status = status
+        self._headers = dict(headers)
+        self._intended_rung = intended_rung
+        self._requested_model = requested_model
+        self._rungs = rungs
+        self._buffer = b""
+        self._usage: Usage | None = None
+        self._stop_reason: str | None = None
+        self._model: str | None = None
+        self._streamed_tool = False
+        self._tools: dict[int, _ToolBlock] = {}
+        self._summaries: list[ToolUseSummary] = []
+        self._error: dict[str, Any] | None = None
+        self._first_byte_at: float | None = None
+        self._completed = False
+        self._malformed = False
+        self._bytes = 0
+        self._current_event: str | None = None
+
+    def feed(self, chunk: bytes) -> None:
+        if not chunk:
+            return
+        if self._first_byte_at is None:
+            self._first_byte_at = time.monotonic()
+        self._bytes += len(chunk)
+        self._buffer += chunk
+        while True:
+            newline = self._buffer.find(b"\n")
+            if newline < 0:
+                break
+            line = self._buffer[:newline].rstrip(b"\r")
+            self._buffer = self._buffer[newline + 1 :]
+            self._line(line)
+
+    def _line(self, line: bytes) -> None:
+        if line.startswith(b"event:"):
+            self._current_event = line[6:].strip().decode("utf-8", "replace")
+            return
+        if not line.startswith(b"data:"):
+            return
+        payload = line[5:].strip()
+        if not payload or payload == b"[DONE]":
+            return
+        try:
+            event = json.loads(payload)
+        except ValueError:
+            return
+        if isinstance(event, dict):
+            self._event(event)
+
+    def _event(self, event: dict[str, Any]) -> None:
+        kind = event.get("type")
+        if kind == "message_start":
+            message = event.get("message") or {}
+            if isinstance(message.get("model"), str):
+                self._model = message["model"]
+            self._usage = Usage.from_anthropic(message.get("usage"))
+        elif kind == "content_block_start":
+            block = event.get("content_block") or {}
+            index = int(event.get("index", 0))
+            if block.get("type") == "tool_use":
+                self._streamed_tool = True
+                self._tools[index] = _ToolBlock(
+                    id=str(block.get("id", "")),
+                    name=str(block.get("name", "")),
+                    initial_input=block.get("input"),
+                )
+        elif kind == "content_block_delta":
+            delta = event.get("delta") or {}
+            index = int(event.get("index", 0))
+            if delta.get("type") == "input_json_delta" and index in self._tools:
+                self._tools[index].parts.append(str(delta.get("partial_json", "")))
+        elif kind == "content_block_stop":
+            index = int(event.get("index", 0))
+            tool_block = self._tools.pop(index, None)
+            if tool_block is not None:
+                self._summaries.append(self._summarise(tool_block))
+        elif kind == "message_delta":
+            delta = event.get("delta") or {}
+            if isinstance(delta.get("stop_reason"), str):
+                self._stop_reason = delta["stop_reason"]
+            usage = Usage.from_anthropic(event.get("usage"))
+            self._usage = usage if self._usage is None else self._usage.merged(usage)
+        elif kind == "message_stop":
+            self._completed = True
+        elif kind == "error":
+            self._error = event
+
+    def _summarise(self, block: _ToolBlock) -> ToolUseSummary:
+        raw = "".join(block.parts)
+        if raw:
+            try:
+                parsed: Any = json.loads(raw)
+                ok = True
+            except ValueError:
+                parsed = raw
+                ok = False
+                self._malformed = True
+        else:
+            parsed = block.initial_input if block.initial_input is not None else {}
+            ok = isinstance(parsed, dict)
+        return ToolUseSummary(
+            id=block.id,
+            name=block.name,
+            input_hash=_hash_input(parsed, self._hash_key),
+            input_size=len(raw) if raw else len(json.dumps(parsed, default=str)),
+            input_parse_ok=ok,
+        )
+
+    def finish(self) -> ResponseObservation:
+        if self._buffer:
+            self._line(self._buffer.rstrip(b"\r"))
+            self._buffer = b""
+        for block in list(self._tools.values()):
+            self._summaries.append(self._summarise(block))
+        self._tools.clear()
+        return ResponseObservation(
+            status=self._status,
+            served=served_identity(
+                self._headers,
+                self._model,
+                intended_rung=self._intended_rung,
+                requested_model=self._requested_model,
+                rungs=self._rungs,
+            ),
+            usage=self._usage,
+            stop_reason=self._stop_reason,
+            streamed_tool_content=self._streamed_tool,
+            tool_uses=tuple(self._summaries),
+            error=self._error,
+            first_byte_at=self._first_byte_at,
+            completed=self._completed,
+            malformed_tool_json=self._malformed,
+            model_reported=self._model,
+            bytes_relayed=self._bytes,
+        )
+
+
+def observe_json(
+    body: bytes,
+    *,
+    status: int,
+    headers: Mapping[str, str],
+    intended_rung: Rung,
+    requested_model: str,
+    rungs: RungsConfig,
+    first_byte_at: float | None = None,
+    hash_key: bytes | None = None,
+) -> ResponseObservation:
+    """Observation of a non-streaming response body."""
+    try:
+        data = json.loads(body) if body else {}
+    except ValueError:
+        data = {}
+    if not isinstance(data, dict):
+        data = {}
+    error = data if data.get("type") == "error" else None
+    model = data.get("model") if isinstance(data.get("model"), str) else None
+    summaries: list[ToolUseSummary] = []
+    streamed = False
+    malformed = False
+    for block in data.get("content") or []:
+        if isinstance(block, dict) and block.get("type") == "tool_use":
+            streamed = True
+            tool_input = block.get("input")
+            ok = isinstance(tool_input, dict)
+            malformed = malformed or not ok
+            summaries.append(
+                ToolUseSummary(
+                    id=str(block.get("id", "")),
+                    name=str(block.get("name", "")),
+                    input_hash=_hash_input(tool_input, hash_key),
+                    input_size=len(json.dumps(tool_input, default=str)),
+                    input_parse_ok=ok,
+                )
+            )
+    return ResponseObservation(
+        status=status,
+        served=served_identity(
+            headers,
+            model,
+            intended_rung=intended_rung,
+            requested_model=requested_model,
+            rungs=rungs,
+        ),
+        usage=Usage.from_anthropic(data.get("usage")) if "usage" in data else None,
+        stop_reason=data.get("stop_reason") if isinstance(data.get("stop_reason"), str) else None,
+        streamed_tool_content=streamed,
+        tool_uses=tuple(summaries),
+        error=error,
+        first_byte_at=first_byte_at,
+        completed=error is None and bool(data),
+        malformed_tool_json=malformed,
+        model_reported=model,
+        bytes_relayed=len(body),
+    )
+
+
+DEPENDENCY src/adrl/proxy/observe_only.py
+
+"""Observe-only stage implementations. Primary: ADRL-FND-001. Secondary: ADRL-SEM-006, ADRL-MEM-006.
+
+Real, not mock: these are the stages the proxy runs when a package has not been installed. The
+gate reads pin state from the ledger and marks every request unscanned (no scanner is present);
+the router honours the harness-requested model; the cascade tracks boundaries and sticky state
+without ever escalating.
+"""
+
+from __future__ import annotations
+
+import time
+from collections.abc import Sequence
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from typing import Any
+
+from adrl.config.loaders import ConfigBundle
+from adrl.core.enums import Rung
+from adrl.core.errors import ErrorCode
+from adrl.core.ids import mint_route_id
+from adrl.core.ports import StickyState
+from adrl.core.types import (
+    Decision,
+    DeploymentSet,
+    Finding,
+    GateVerdict,
+    HandoffNote,
+    PermittedSet,
+    RequestContext,
+)
+from adrl.ledger.facade import MemoryFacade
+from adrl.proxy.stages import DispatchPlanLike
+from adrl.wire.observe import ResponseObservation
+from adrl.wire.parse import estimate_chars, last_assistant_message, tool_result_ids, tool_use_ids
+
+OBSERVE_ONLY_ESTIMATOR = "harness-requested"
+OBSERVE_ONLY_ESTIMATOR_VERSION = "observe-only-v1"
+FEATURES_VERSION = "features-observe-v1"
+
+
+@dataclass(frozen=True, slots=True)
+class ObserveOnlyGateOutcome:
+    permitted: PermittedSet
+    verdicts: tuple[GateVerdict, ...]
+    pinned: bool
+    unscanned: bool
+    findings: tuple[Finding, ...]
+    block: ErrorCode | None
+    repo_class: str | None
+    residency: str | None
+    latency_s: float
+    permitted_deployments: DeploymentSet | None = None
+
+
+class ObserveOnlyGate:
+    """Pin state from the ledger, everything else unscanned (ADRL-SAF-001 without a scanner)."""
+
+    def __init__(self, facade: MemoryFacade) -> None:
+        self._facade = facade
+
+    async def evaluate(self, ctx: RequestContext) -> ObserveOnlyGateOutcome:
+        started = time.monotonic()
+        lookup = await self._facade.pin_state(ctx.lineage_hmac)
+        pinned = lookup.effective_pinned
+        permitted = PermittedSet.local_only() if pinned else PermittedSet.all()
+        verdict = GateVerdict(
+            gate="observe_only",
+            permitted_after=permitted,
+            unscanned=True,
+            reason="no scanner installed" if not pinned else f"pin lookup {lookup.value}",
+            pinned=pinned,
+        )
+        return ObserveOnlyGateOutcome(
+            permitted=permitted,
+            verdicts=(verdict,),
+            pinned=pinned,
+            unscanned=True,
+            findings=(),
+            block=None,
+            repo_class=None,
+            residency=None,
+            latency_s=time.monotonic() - started,
+        )
+
+
+def rung_for_requested_model(model: str, bundle: ConfigBundle) -> Rung:
+    """Frontier for harness model names and unknowns; a rung alias maps to its rung."""
+    group_rung = bundle.rungs.group_to_rung.get(model)
+    if group_rung is not None:
+        return group_rung
+    return Rung.FRONTIER
+
+
+class InheritOnlyRouter:
+    """Honours the harness-requested model inside the permitted set (ADRL-SEM-006 interim)."""
+
+    def __init__(self, bundle: ConfigBundle) -> None:
+        self._bundle = bundle
+
+    async def decide(self, ctx: RequestContext, gate: Any, sticky: StickyState | None) -> Decision:
+        requested = rung_for_requested_model(ctx.requested_model, self._bundle)
+        permitted: PermittedSet = gate.permitted
+        if requested in permitted:
+            rung = requested
+        else:
+            highest = permitted.highest
+            rung = highest if highest is not None else Rung.LOCAL
+        features = {
+            "request_class": ctx.request_class.value,
+            "content_chars": estimate_chars(ctx.json),
+            "message_count": len(ctx.json.get("messages") or []),
+            "tools_present": bool(ctx.json.get("tools")),
+            "is_subagent": ctx.is_subagent,
+            "interaction_mode": ctx.interaction_mode.value,
+        }
+        return Decision(
+            route_id=mint_route_id(),
+            rung=rung,
+            permitted=permitted,
+            estimator=OBSERVE_ONLY_ESTIMATOR,
+            estimator_version=OBSERVE_ONLY_ESTIMATOR_VERSION,
+            policy_version=self._bundle.policy.version,
+            objective_version=self._bundle.policy.objective_version,
+            cascade_feasible=False,
+            cascade_reason="observe_only",
+            features=features,
+            features_version=FEATURES_VERSION,
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class PassthroughPlan:
+    rung: Rung
+    is_boundary: bool
+    escalated: bool
+    from_rung: Rung | None
+    handoff: HandoffNote | None
+    pair_rule: Any
+    block: ErrorCode | None
+    sticky: StickyState
+
+
+@dataclass(frozen=True, slots=True)
+class PassthroughEvents:
+    fired_wires: Sequence[str]
+    outcome_events: Sequence[Any]
+    sticky: StickyState | None
+
+
+def is_action_boundary(body: Any) -> bool:
+    """Every tool_use id of the last assistant message answered (ADRL-CAS-003)."""
+    last_assistant = last_assistant_message(body)
+    if last_assistant is None:
+        return False
+    expected = tool_use_ids(last_assistant)
+    if not expected:
+        return False
+    messages = body.get("messages") or []
+    last = messages[-1] if messages else None
+    if not isinstance(last, dict) or last.get("role") != "user":
+        return False
+    return expected <= tool_result_ids(last)
+
+
+class PassthroughCascade:
+    """Boundary and sticky bookkeeping; never escalates (ADRL-CAS-005 posture without wires)."""
+
+    async def plan(
+        self,
+        ctx: RequestContext,
+        decision: Decision,
+        gate: Any,
+        sticky: StickyState | None,
+    ) -> PassthroughPlan:
+        turn_index = (sticky.turn_index + 1) if sticky is not None else 0
+        state = StickyState(
+            lineage_hmac=ctx.lineage_hmac,
+            route_id=decision.route_id,
+            rung=decision.rung,
+            escalated=False,
+            served_model=None,
+            served_provider=None,
+            served_source="assumed_intended",
+            turn_index=turn_index,
+            last_served_at=None,
+        )
+        return PassthroughPlan(
+            rung=decision.rung,
+            is_boundary=is_action_boundary(ctx.json),
+            escalated=False,
+            from_rung=None,
+            handoff=None,
+            pair_rule=None,
+            block=None,
+            sticky=state,
+        )
+
+    async def observe(
+        self, ctx: RequestContext, plan: DispatchPlanLike, obs: ResponseObservation
+    ) -> PassthroughEvents:
+        updated = StickyState(
+            lineage_hmac=plan.sticky.lineage_hmac,
+            route_id=plan.sticky.route_id,
+            rung=obs.served.rung,
+            escalated=plan.sticky.escalated,
+            served_model=obs.served.model,
+            served_provider=obs.served.provider,
+            served_source=obs.served.source.value,
+            turn_index=plan.sticky.turn_index,
+            last_served_at=datetime.now(UTC),
+        )
+        return PassthroughEvents(fired_wires=(), outcome_events=(), sticky=updated)
+
+
+PIPELINE DIFF (baseline hash verified)
+
+--- baseline
++++ candidate
+@@ -26,6 +26,7 @@
+ 
+ import structlog
+ 
++from adrl.config.checks import check_live_rung_has_evidence
+ from adrl.config.loaders import ConfigBundle
+ from adrl.config.settings import Settings
+ from adrl.core.enums import FailureClass, GateMode, RequestClass, RoutingMode, Rung, UtilityKind
+@@ -45,6 +46,7 @@
+ from adrl.gates.deployments import DeploymentPolicy, egress_fields
+ from adrl.ledger.egress import EgressLedger
+ from adrl.ledger.facade import PIN_EVENT, MemoryFacade
++from adrl.proxy.claude_experiment import ClaudeExperimentClient
+ from adrl.proxy.errors import (
+     JSON_HEADERS,
+     block_message,
+@@ -199,6 +201,17 @@
+         self._ledger = ledger
+         self._egress = egress
+         self._gateway = gateway
++        self._claude_experiment = gateway if isinstance(gateway, ClaudeExperimentClient) else None
++        if self._claude_experiment is not None:
++            if (
++                settings.routing_mode is not RoutingMode.LIVE
++                or settings.gate_mode is not GateMode.ENFORCE
++            ):
++                raise ValueError(
++                    "Claude experiment requires explicit LIVE routing and enforcing gates"
++                )
++            if not check_live_rung_has_evidence(bundle, settings).ok:
++                raise ValueError("Claude experiment cannot bypass LIVE admission")
+         self._gate = gate
+         self._router = router
+         self._cascade = cascade
+@@ -227,6 +240,10 @@
+         *,
+         query: str = "",
+     ) -> ProxyResponse:
++        if self._claude_experiment is not None and query:
++            return self._error_response(
++                ErrorCode.CAPABILITY_REJECTED, "experiment query not admitted"
++            )
+         if not self._profile.handles(method, path, headers):
+             return await self._forward_non_api(parse_request(method, path, headers, body, query))
+         parsed = self._profile.parse(method, path, headers, body, query)
+@@ -393,6 +410,37 @@
+         plan = _with_deployment(plan, deployment, forward_original)
+ 
+         body = self._body_for(ctx, plan, target_rung, forward_original, deployment)
++        if self._claude_experiment is not None:
++            # Do not force a cloud model after fallback, pinning or an escalated transform.
++            permitted = getattr(gate, "permitted_deployments", None)
++            if (
++                resolution is not None
++                or pinned
++                or target_rung is not Rung.FRONTIER
++                or not forward_original
++                or permitted is None
++            ):
++                return await self._blocked(ctx, gate, ErrorCode.CAPABILITY_REJECTED)
++            try:
++                body, deployment = self._claude_experiment.selection.prepare(
++                    ctx.body, lineage=str(ctx.lineage_hmac), permitted=permitted, pinned=pinned
++                )
++            except ValueError:
++                return await self._blocked(ctx, gate, ErrorCode.CAPABILITY_REJECTED)
++            if self._deployments.catalog.get(deployment.deployment_id) != deployment:
++                return await self._blocked(ctx, gate, ErrorCode.CAPABILITY_REJECTED)
++            decision = dataclasses.replace(
++                decision,
++                estimator="experiment_forced_claude",
++                estimator_version=self._claude_experiment.config.version,
++                features={
++                    **decision.features,
++                    "experiment_config_hash": self._claude_experiment.config.fingerprint,
++                    "experiment_model": deployment.model,
++                },
++            )
++            forward_original = False
++            plan = _with_deployment(plan, deployment, False)
+         ledger_degraded = await self._record_egress(
+             ctx, gate, target_rung, len(body), deployment=deployment, receipt_source="intended"
+         )
+@@ -425,6 +473,12 @@
+                 "fail_open": resolution.failure_class.value if resolution else None,
+                 "state_loss": state_loss,
+                 "routing_mode": self._settings.routing_mode.value,
++                "experiment_config_hash": (
++                    self._claude_experiment.config.fingerprint if self._claude_experiment else None
++                ),
++                "experiment_selected_model": deployment.model
++                if self._claude_experiment and deployment
++                else None,
+             },
+         )
+         return _Turn(
+@@ -503,6 +557,18 @@
+         self, turn: _Turn, obs: ResponseObservation, headers: Mapping[str, str]
+     ) -> ResponseObservation:
+         """Attach the gateway's destination receipt to the observation (ADRL-RTG-008)."""
++        if self._claude_experiment is not None:
++            served = dataclasses.replace(
++                obs.served,
++                provider="anthropic",
++                api_base_host="api.anthropic.com",
++                deployment_id=None,
++                trust_zone=None,
++                geo=None,
++            )
++            if served.model != self._claude_experiment.config.target_model:
++                self._claude_experiment.stopped = True
++            return dataclasses.replace(obs, served=served)
+         served = self._deployments.served_identity(obs.served, headers, turn.deployment)
+         return dataclasses.replace(obs, served=served)
+ 
+@@ -531,7 +597,7 @@
+         out_headers = response_headers(response.headers)
+         observer = self._profile.stream_observer(
+             status=status,
+-            headers=response.headers,
++            headers={} if self._claude_experiment else response.headers,
+             intended_rung=turn.target_rung,
+             requested_model=ctx.requested_model,
+             rungs=self._bundle.rungs,
+@@ -543,7 +609,7 @@
+             obs = self._profile.observe_response(
+                 raw,
+                 status=status,
+-                headers=response.headers,
++                headers={} if self._claude_experiment else response.headers,
+                 intended_rung=turn.target_rung,
+                 requested_model=ctx.requested_model,
+                 rungs=self._bundle.rungs,
+
+FOCUSED CHECK OUTPUT
+..........................                                               [100%]
+26 passed in 0.51s
+
+Full suite prior candidate: 946 passed, 8 skipped; final full suite is running, not yet evidence. Lint/type checks passed. Evaluate final scope subject to final checks.

@@ -1,0 +1,22 @@
+# Claude initial-choice candidate: implementation evidence
+
+2026-09-09. P1, first attempted engineering slice of the six-slice ceiling. This report describes an offline candidate, not a live-ready product or an ROI result. Fable verified both claim/evidence corrections and accepted the offline scope. Final documentation recheck found no remaining register blocker. See completion.md for the closure receipt and next gate.
+
+The pipeline can now select a configured Claude model at the beginning of one lineage, preserve all non-model JSON fields and record forced selection/version separately from estimator output. A dedicated client fixes the direct Anthropic destination and bounds request attempts, bytes, requested output, concurrency and time. Normal startup does not expose this client. SHADOW/OFF cannot enable it, and current unqualified LIVE configuration still fails.
+
+The synthetic composition test sends a real pipeline request through an in-process HTTP provider and checks the emitted model, unchanged other fields, decision record and actual observed response model. This is integration evidence only: the provider is a test fixture, not Claude. The fixture uses explicitly synthetic admission references; these never modify config/ or establish live eligibility. Unit checks cover pin/permitted-set denial, existing-history and cross-lineage refusal, ambiguous JSON, exhausted budgets, HTTP failures, wrong paths/models/output caps, timeout and redirect refusal. Existing proxy regressions also run.
+
+Known launch limits: process-local counters and lineage binding are not restart-safe custody; no approved signed direct profile/workspace, no native harness confinement or paid-overflow disposition, no confirmed direct deployment receipt and no real native thinking/signature compatibility. Actual Claude Code may request more than the proposed output cap; this is rejected, never silently rewritten. Initial model selection is distinct from mid-session switching, routing merit, savings and learning.
+
+No historical maturity/status/verdict field is promoted. Owning records: FND-001/003/005, SEM-007, TRU-002 and CAS-006/007. SEM-007 and CAS-009 overview rows were historically missing. Following the owner disposition, they now carry the existing INDEX values. Canonical grades remain unchanged; corrected-source recheck is accepted; the closure receipt is recorded in completion.md.
+
+Code: [candidate client/selection](/Users/arunmenon/projects/adrl-core/src/adrl/proxy/claude_experiment.py), [pipeline](/Users/arunmenon/projects/adrl-core/src/adrl/proxy/pipeline.py). Tests: [unit](/Users/arunmenon/projects/adrl-core/tests/unit/test_claude_experiment.py), [composition](/Users/arunmenon/projects/adrl-core/tests/integration/proxy/test_claude_experiment.py). Raw checks are in checks.json and check-*.log. Initial test failures were fixture stream construction and a fixture exceeding the declared output cap; both were corrected without relaxing limits. One import-order lint correction was also required.
+
+
+## Review corrections and limits
+
+The first post-review found that the egress served receipt copied intended deployment/geo/trust despite the main served event leaving those unknown. The new regression first failed, then passed after removing that fallback only for this candidate. This is an evidence-integrity correction, not newly confirmed provider identity. Any response not reporting the target model, including upstream errors and absent model identity, stops subsequent dispatch.
+
+Subagent/other lineages and background calls using other models are refused. Lineage reservation precedes final dispatch and is not released after a locally blocked preparation. The composition fixture uses in-memory synthetic configuration that is not established as loadable by the full inventory checker; it exercises mechanism composition only. Native session identity remains forwarded; local assertion/session headers are stripped. Rewritten JSON preserves values, not whitespace/escaping. Deadline cancellation can surface as CancelledError to a slow consumer. The collaborator's production integration behind the native profile remains open. No public launcher or setting exposes the candidate.
+
+Original review: post-review.md. Coordinator responses: dispositions.md. Targeted correction evidence: egress-before-fix.log and recheck-focused.log. Source/evidence review does not replace human graduation.

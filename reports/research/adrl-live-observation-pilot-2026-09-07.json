@@ -1,0 +1,309 @@
+{
+  "date": "2026-09-07",
+  "status": "applied_and_live_observation_pilot_verified",
+  "source_root": "/Users/arunmenon/projects/adrl-core",
+  "staging_root": "/private/tmp/adrl-observe-oc8pv9ll",
+  "source_files": [
+    {
+      "path": "README.md",
+      "before_sha256": "debb84f5f3394788cb834ef5ab014c3565ce75cf669bce8d5294b5677e5f1ab2",
+      "after_sha256": "1b46f3f25a4f005f0b34630a3d971e952ec086070601cb8a789b0fce45d7b0b1"
+    },
+    {
+      "path": "tools/check_data_inventory.py",
+      "before_sha256": "8387cc80ab6665996daf81dd9f5c68f23397447a628cdbdf79f37e9f3d570c12",
+      "after_sha256": "7379c9906b914a869b74ea7b222f431776f576f304ffb044f0ad743170058cb4"
+    },
+    {
+      "path": "docs/product-services.md",
+      "before_sha256": "0a23f1777faedc5b7fe1ef6429fa1a9e2d415e8b867b67a451ef1769699ade01",
+      "after_sha256": "cde9ad77d673eb773b9340c17ffe33c75dbdf42bab4909a987a152a0b71f78fe"
+    },
+    {
+      "path": "docs/data-inventory.md",
+      "before_sha256": "3442d3815c0d797c62961fe3e4b5314d9f41d70482c0f5e89d6621a3df8f5963",
+      "after_sha256": "eb78baf6e033e230de340b172fa2053c9f1705e7e656bf5e949a45868c5f436c"
+    },
+    {
+      "path": "api/adrl-api-v1-preview.json",
+      "before_sha256": "82d2d99b8169a7972a8e83926bb999d1125f136e23b53b5ff057ce59c332ef1f",
+      "after_sha256": "aa5e20f11b9227cdbe037c23b5f23de7a33f7f4735256b4d1647e1645d407c25"
+    },
+    {
+      "path": "src/adrl/cli/product.py",
+      "before_sha256": "e75b60200e438940f80ecee2ff19b5b70108bb6cf53d1fe7390f3f92c11ebc17",
+      "after_sha256": "e32b87098165b3adaafef188af50912751eca62f05e5d6c3f6d5d01b49f463fc"
+    },
+    {
+      "path": "src/adrl/api/store.py",
+      "before_sha256": "f80fc9691d4545357110d63d3b746271bf3e8245a2e4d52ba7df1f12418c159c",
+      "after_sha256": "b558864b57f8bf73242ab2abdca9b170c14e595756cf42927a5b3517a26e1884"
+    },
+    {
+      "path": "src/adrl/api/service.py",
+      "before_sha256": "c34d850000b9046d8d3ad53f5e76550e1b6b79a8def63be65d0c4b91b83f4cc2",
+      "after_sha256": "b9d7c9ebb473c4dbeac10a6f3384f52926d650a6146f3879478edec904450520"
+    },
+    {
+      "path": "src/adrl/api/client.py",
+      "before_sha256": "7610ab03cb614856252f0f0805d99d30479de2c5c65e0cb14c82cb7835fea826",
+      "after_sha256": "7679bff2e7f5afc32800d9bc8bffe5bc7908ddf7c634036cd08bcc9ac18cbd4e"
+    },
+    {
+      "path": "src/adrl/api/contracts.py",
+      "before_sha256": "90c581ed0bc1720c387b430fc11dc933c16f6409bab62ee36173f5541b925946",
+      "after_sha256": "7da7c9067bc3858311515929400c016e08fe6578bc9285ee0880932198ee3588"
+    },
+    {
+      "path": "src/adrl/ledger/migrations/0004_integration_mode.sql",
+      "before_sha256": null,
+      "after_sha256": "f34bc9fab14caad2ed8b85e716a0fd984a1061649cc5f015f2c2ff9236d93bf9"
+    },
+    {
+      "path": "tests/unit/test_product_client.py",
+      "before_sha256": "ee36c1be5b203de8610f7952b39f3f4218965f42b7cfde1928b388b57f33ac9d",
+      "after_sha256": "053582512b7a5ea715eb1b608ca601b1d215689f3b90ad39363bc430653f6bf9"
+    },
+    {
+      "path": "tests/unit/test_data_inventory_migration.py",
+      "before_sha256": null,
+      "after_sha256": "94e45373f18f8d2254a515775493fc186a78873c5f39285701f34ee92522bf5e"
+    },
+    {
+      "path": "tests/unit/test_product_migration.py",
+      "before_sha256": null,
+      "after_sha256": "2eaddca2de10dd6dff8db8cbd469b5c1b49bc003ed4275c5c92ca9967510cefa"
+    },
+    {
+      "path": "tests/integration/e2e/test_product_services.py",
+      "before_sha256": "0246e39475b7f1572359bf907ae5dbd2c789e1ec97a6e5dc46b05fcb962727cb",
+      "after_sha256": "0d877dc936d77b39da7b874dab09fd09894552c32b3a386b71a16c19d8bc377b"
+    }
+  ],
+  "application": {
+    "status": "applied",
+    "files_verified": 15,
+    "unchanged_original_files_verified": 257
+  },
+  "tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "511",
+    "time": "13.920",
+    "timestamp": "2026-09-07T16:12:18.199977+05:30",
+    "hostname": "Aruns-MacBook-Pro.local"
+  },
+  "checks": {
+    "ruff_lint": "passed",
+    "ruff_format": "221 files",
+    "mypy": "112 source files",
+    "pytest": "511 passed",
+    "ledger_discipline": "passed",
+    "configuration": "9 checks, manifest signature verified",
+    "data_inventory": "242 fields / 242 documented"
+  },
+  "runs": [
+    {
+      "run": "native-baseline",
+      "harness_version": "2.1.260",
+      "selected_model": "claude-sonnet-5",
+      "models_reported": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 941,
+          "outputTokens": 16,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.001021,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "thinkingTokens": 0,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        },
+        "claude-sonnet-5": {
+          "inputTokens": 18,
+          "outputTokens": 4269,
+          "cacheReadInputTokens": 146083,
+          "cacheCreationInputTokens": 11054,
+          "webSearchRequests": 0,
+          "costUSD": 0.1161586,
+          "contextWindow": 200000,
+          "maxOutputTokens": 64000,
+          "thinkingTokens": 1553,
+          "canonicalModel": "claude-sonnet-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        }
+      },
+      "wall_seconds": 54.093,
+      "api_equivalent_usd": 0.1171796,
+      "cli_turns": 15,
+      "existing_or_expanded_tests_passed": 4,
+      "accepted_after_independent_review": false,
+      "overage_reported": false,
+      "permission_denials": 1,
+      "raw_trace_sha256": "268579cda45a34cd229cc3ffb47c54c25c0c5a02776f5b1ef12d5725f11189bc"
+    },
+    {
+      "run": "observation-repair",
+      "harness_version": "2.1.263",
+      "selected_model": "claude-sonnet-5",
+      "models_reported": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 941,
+          "outputTokens": 14,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.001011,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000,
+          "thinkingTokens": 0,
+          "canonicalModel": "claude-haiku-4-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        },
+        "claude-sonnet-5": {
+          "inputTokens": 24,
+          "outputTokens": 6884,
+          "cacheReadInputTokens": 214919,
+          "cacheCreationInputTokens": 15511,
+          "webSearchRequests": 0,
+          "costUSD": 0.17391579999999998,
+          "contextWindow": 200000,
+          "maxOutputTokens": 64000,
+          "thinkingTokens": 3468,
+          "canonicalModel": "claude-sonnet-5",
+          "provider": "firstParty",
+          "costBasis": "list"
+        }
+      },
+      "wall_seconds": 96.868,
+      "api_equivalent_usd": 0.1749268,
+      "cli_turns": 19,
+      "existing_or_expanded_tests_passed": 8,
+      "accepted_after_independent_review": true,
+      "overage_reported": false,
+      "permission_denials": 0,
+      "raw_trace_sha256": "9948c6889ce511115e95f6a19603f16168e80ad840b9b868e4d64cd40468be59"
+    }
+  ],
+  "observation_coverage": {
+    "mode": "observe",
+    "real_tool_calls": 18,
+    "events": 18,
+    "completed": 17,
+    "failed": 1,
+    "pending_outbox": 0,
+    "adrl_model_requests": 0,
+    "decision_rows": 0,
+    "trusted_learning_labels": 0,
+    "session_coverage": [
+      {
+        "dimension": "identity_binding",
+        "status": "enforced",
+        "evidence_ref": null
+      },
+      {
+        "dimension": "request_interception",
+        "status": "unavailable",
+        "evidence_ref": null
+      },
+      {
+        "dimension": "content_inspection",
+        "status": "unavailable",
+        "evidence_ref": null
+      },
+      {
+        "dimension": "dispatch_enforcement",
+        "status": "unavailable",
+        "evidence_ref": null
+      },
+      {
+        "dimension": "tool_events",
+        "status": "unknown",
+        "evidence_ref": null
+      },
+      {
+        "dimension": "lineage",
+        "status": "unknown",
+        "evidence_ref": null
+      },
+      {
+        "dimension": "served_destination",
+        "status": "unavailable",
+        "evidence_ref": null
+      },
+      {
+        "dimension": "outcome_verification",
+        "status": "unknown",
+        "evidence_ref": null
+      }
+    ]
+  },
+  "independent_review": {
+    "accepted": true,
+    "independent_tests_passed": 8,
+    "literal_json_and_substitution_reviewed": true,
+    "tests_and_task_files_unchanged": true,
+    "original_repository_files_unchanged": 9,
+    "tool_calls": 18,
+    "hook_responses": 18,
+    "hook_exit_failures": 0,
+    "timeline_events": 18,
+    "all_tool_ids_reconcile": true,
+    "native_failure_hook": 1,
+    "adrl_token_absent_from_claude_stream_and_environment": true,
+    "changed_task_files": [
+      "validation/core/templates.py",
+      "validation/prompts/cot_rubric_generic.txt",
+      "validation/prompts/strict_json_generic.txt"
+    ],
+    "task_snapshot_sha256": {
+      "run_tests.py": "9c691a7e467de20173dc57c6ddeb2ad31d1b9a75c6e9764d900208417c9f2d63",
+      "TASK.md": "94ba56a0837e08bb8bb5c71d17b29ddb7d68edc84f44df5a30f4f816205a290e",
+      "CLAUDE.md": "d9fd9aa46b9362aa4d1af6d8403452cb796ac01bad9d919d29170adc7f73817e",
+      "config/datasets.yaml": "8e6a9ad7509daf0de3dfe2b1c7218e2a3d0dc4bc9abc80ebbfd99b615d21280f",
+      "tests/test_config_loader.py": "14735bc63cae7c558e5bbfccc76d92ec5aa5de68a8e547eea453444ebbfdb1cc",
+      "tests/test_templates.py": "a3604b062ec97ccf3213b85a90eaff48d84e97ed563981b1c35685306441d7fc",
+      "tests/test_template_compatibility.py": "8e49445a81b2e71a8ead3b5fa08411fb6916636ecc011d88ae06887fbd714334",
+      "config/rubrics/qa.yaml": "2f8d3666b8fee9a30be13d905779fde646b77c3999281655fd7410d077170bac",
+      "validation/core/config_loader.py": "1b1faae2ffba7b5e3603605b4821e0da69330a414764280a6948286acd30c7a4",
+      "validation/core/templates.py": "9c4c8af942b55ae3879d4a74b861c4fd9fe85aa50b739f1a1abf9b4166f2df82",
+      "validation/core/rubrics.py": "658b25e57b0356704920e51e2affd6976f927c4710e93578c0b29ada960f7e02",
+      "validation/prompts/cot_rubric_generic.txt": "703f1104492c94a22b547ae2eb843af0255c0a3b9b99c98e6596fcc0c84854ab",
+      "validation/prompts/strict_json_generic.txt": "ffabef36a958ccfb331654a67bd297f14e28cc4a2fb9afe164e6419531db27ab"
+    }
+  },
+  "limits": [
+    "Two engineered sessions on one task family, one repository, one user; no population-quality conclusion",
+    "Repair changed feedback, verifier and harness version; not a paired cost/latency experiment",
+    "No gateway, local-model, privacy-pin or complete egress validation",
+    "No automatic public trusted verifier ingestion or task closure",
+    "Client retention and legacy unbound forwarding limitations remain"
+  ],
+  "pilot_configuration_files_sha256": {
+    "policy.yaml": "fd7522fda0c1d1c9fb1d096e603b8b3df2d981894658012e4ae2fa08439dc9bc",
+    "utility-fingerprints.yaml": "ef9d86f19f39342f3359e7e1fc7551a7ea0a56756ff77e0f8f010905f383411a",
+    "detectors.yaml": "d7e504d17341680bcfbf8bc9f76c435aa1bfc45bf53efbf208305604364d2f55",
+    "repo-classification-v1.json": "49c9a67df5f980ca659fd2acfabfdb0f6cfbfcf0fdf2cedc70239965394a6efa",
+    "prices.yaml": "07fd0c8da1cce030d210f82aabfb785b81d51b3b7e5dddedb848dd2584744dd5",
+    "endpoint-inventory-v1.json": "67d18715549c041215deca75f0002bf486ce946b55a593a6e7d815c3e291212e",
+    "rungs.yaml": "39c0b9521d9e8ccbb0b4750bed1fc90a95be9f4427d4d0cb94d7f8d56c79935e",
+    "trusted-tool-servers.yaml": "b750cb935bdb7547a2b1ded6278df1cf14e8ef59f26a9ec95905bc0edd3dbd7a",
+    "endpoint-inventory-v1.sig": "2a549eb85010fc75b3e3280039985ca82b6b3ab2e4e63a03e1f1d11f3ecf1fe3",
+    "learning-contract-v1.json": "8cfdf6a5f27f3f80839d6874831859dc0b6d71ed31440a9f33e385f0ee5ec58c",
+    "repo-classification-v1.sig": "b0813d7298995216baf96ce8a9f43c7601f90d91f12098dfffd5a981caf211be",
+    "tripwires.yaml": "201d15de3d6115f46c0ac7fe5eeda91011701f63e781e88b6f8b269238dea4db",
+    "provider-pairs.yaml": "032a460e3e2eae0b6715a82c1a0beb60d590b7f78bf0a485245bbb6e3a3d5175",
+    "keys/dev/manifest-signing.pub": "7439ee80460504b54b5f463ad9872e8f734aeb9ffa4df3b650f38822bc777918",
+    "keys/dev/checkpoint-signing.key": "8055c9f5eef645a8b12d4c3141004814fd5ef36c32bf678ffa240f61e0422b16",
+    "keys/dev/README.md": "1f2001f55f04ae0c577e723a7d70205cab0c194d99ad337f5c72c63265ee918a",
+    "keys/dev/checkpoint-signing.pub": "54c0986810789840eaede4560aa9cfbab945ed5a494fd3b83a071e82460adb2c",
+    "keys/dev/manifest-signing.key": "f165947dba885ced7dec9ca745ee2880528d219cabe66a543d6282dd24f0710a"
+  }
+}

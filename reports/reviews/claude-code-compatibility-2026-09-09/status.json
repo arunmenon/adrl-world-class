@@ -1,0 +1,19 @@
+{
+  "status": "changes-requested",
+  "checkpoint": "pre-wave",
+  "preparation": "complete with independent critique",
+  "live_run": "not-started",
+  "reviewer": "claude-fable-5-1",
+  "session_id": "ee26f4d0-61c0-4039-a42b-653edaf55709",
+  "input_sha256": "7ebdd2500b2e307035abd24ec752aa6e1bd0cb2e8f005a223c0f0b697750d740",
+  "unresolved": [
+    "CC-01",
+    "CC-03",
+    "CC-04",
+    "CC-05",
+    "CC-06",
+    "CC-07"
+  ],
+  "next": "Scoped adapter/experiment contract, offline evidence and reviewed disposition before live launch",
+  "maturity_promotions": 0
+}

@@ -1,5 +1,31 @@
 # ADRL Adversarial Architecture Review — Review Log
 
+**Latest forward planning, 2026-09-07:** the [implementation roadmap](reports/adrl-implementation-roadmap-2026-09-07.md)
+links the current baseline to twelve evidence-gated work packages and eight proposed decision
+dispositions. All 77 ADRs have a review-wave assignment. No new scientific adjudication,
+implementation, graduation or model experiment is claimed. The four directly owning planning
+records preserve their prior text and statuses.
+
+**Latest implementation evidence, 2026-09-07:** the [offline verifier experiment](reports/adrl-improvement-experiment-2026-09-07.md)
+records 549 passing tests and a 4/7 baseline versus 7/7 candidate comparison on curated examples.
+The same assistant authored candidate and fixtures; this is a mechanism exercise, not a blind
+assessment, new scientific review or recursive self-improvement result. Twelve owning records
+preserve implementation scope and remaining gaps. Historical research verdicts are unchanged.
+
+**Latest implementation evidence, 2026-09-07:** the [session verification report](reports/adrl-session-verification-2026-09-07.md)
+records applied API preview 4, 532 passing tests, and two repeated verifier jobs on one prior
+pilot task. Ten owning ADRs now record the session application, erasure, authority and sandbox
+limits. This is implementation evidence; historical research verdicts and claims below retain
+their dates. No new scientific review or population-level evaluation is claimed by this update.
+
+## 2026-09-07 live observation pilot
+
+The [pilot report](reports/adrl-live-observation-pilot-2026-09-07.md) records applied observation
+mode, 511 passing tests, and a real 18-event hook session. Independent compatibility review
+rejected the initial four-test-passing fix; the repair passed eight tests. This is limited live
+integration evidence. No policy-economic comparison, general graduation or verified learning
+label follows. Five owning ADRs, their index rows and bucket summaries are synchronized.
+
 **Date:** 2026-09-02
 **Scope:** all 49 Accepted decisions in the seven captured buckets (FND, SEM, SAF, RTG, CAS, MEM, LRN) of the ADRL decision register (Confluence, updated 2026-08-27), plus the seven Open Questions.
 **Not in scope:** EVL and OPS (pages not captured; only EVL-004/005/006/007/009 and OPS-001/006 are known by cross-reference).
@@ -87,3 +113,68 @@
 ## Provenance and limits of this review
 
 The register text was reconstructed from photographs of the Confluence pages and from Codex walkthroughs of the `cc-local` repository; the reviewers did not have read access to the source code itself. Where the review relies on a code-reality fact (Python-dict session state, six failure types, one verified task, 34/300 evaluated decisions, no graph built) it is the fact as reported in the context pack. Every such reliance is a candidate for correction by someone with the repository open — and the proposed schema tests exist precisely so the register and the code stop drifting apart unobserved.
+
+## 2026-09-03 addendum: external review of the first implementation
+
+A brand-new implementation of this register (`adrl-core`) was built on 2026-09-02 and reviewed externally on 2026-09-03. Eleven concrete claims were verified against the code; nine reproduced exactly, one was right on substance (the development signing key was on disk and unignored, not committed), and one was numerically right but cited the wrong file. The findings and their dispositions:
+
+| Finding | Severity | Register disposition |
+|---|---|---|
+| Residency and "local" are labels: nothing compares a deployment's geography or host to policy; a local model group pointed at a remote host passed every configuration check and was recorded as never leaving the machine | P0 | TRU-002 proposed (permitted deployment set with signed inventory and served-deployment receipts); FND-002, RTG-001 amended; RTG-008 to follow |
+| Repository identity derived by regex from prompt and tool text; unknown repositories fall to a class that permits a cloud rung | P0 | TRU-001 proposed (launcher assertion tied to SCM inventory, content fingerprint, unknown is local-only); SAF-008 superseded in part |
+| Egress checkpoints manual, unshipped, verifier ignores signatures, development key loaded unconditionally | P0 | TRU-003 proposed (separate key, automatic checkpoints, off-device anchoring, signature verification, dev-key refusal); SAF-009 superseded |
+| Side-effect classifier trusts MCP hints unconditionally and classifies compound commands by first word; read-only calls omitted from the record | P1 | CAS-009 proposed; CAS-003 amended |
+| Plaintext paths, remotes, argv and verifier output survive crypto-erasure | P1 | MEM-005 and MEM-010 amended (field-level inventory, erasure proof) |
+| Gate observe mode writes durable pins and triggers erasure before the mode is consulted | P1 | OPS decision required (shadow-finding versus pin namespaces); recorded for the OPS draft |
+| Multi-file feature counts extensions, not paths; verification snapshot optional | P2 | Implementation defects; no register change |
+| Register README names Codex CLI as a harness while FND-001 scopes it out | consistency | SEM-007 proposed; README corrected |
+
+The review also argued, from five 2026 routing preprints, that routing should carry a second, temporal estimand at each safe boundary (continue versus escalate, conditioned on the partial trajectory), that static routers plateau below an oracle, and that replayed transcripts are not counterfactuals. RTG-007 is amended to add the temporal estimand with the static CATE as its baseline and replay prohibited; RTG-001 drops the assumed total capability order. Those sources were not independently fetched and are treated as experiment guides.
+
+The review's governance conclusion is adopted: the implementation is a substantial D1/D2 build, not a complete implementation of the register; the traceability map covers 52 of 55 decisions; and no maturity claim transfers from the prior implementation to the new one.
+
+## 2026-09-07: Product implementation evidence and register synchronization
+
+The product foundation extracts the Messages protocol boundary and Claude Code identity adapter,
+adds capability discovery and a versioned product API preview, and records profile/adapter
+provenance in decision context. The applied implementation passed 463 tests and all six required
+checks. All 25 changed source files matched the tested hashes when this register was synchronized.
+
+FND-001 now explicitly describes the shared engine, adapter/profile boundary and product API.
+FND-005 applies measured scope expansion to the first stable interface: two harnesses and two
+protocols. SEM-007 records D2 evidence for the extracted Messages boundary and the initial
+Responses admission design, while retaining Proposed status for its incomplete full contract.
+SEM-002, CAS-007, MEM-001 and TRU-001 record implementation evidence and limits without changing
+their policy clauses. The index and affected bucket overviews expose the same status.
+
+This is an implementation evidence update, not a new disposition of the research critique.
+Live harness validation, a second adapter, a Responses runtime, and product session/event services
+remain pending. The historical findings above remain dated records; they are not automatically
+claims about current code. See the [synchronization record](reports/adrl-register-sync-2026-09-07.md)
+and [implementation report](reports/adrl-product-foundation-implementation-2026-09-07.md).
+
+## 2026-09-07: Local product services applied
+
+API preview 2 now implements authenticated root-session binding, encrypted observations and
+scoped evidence reads, with an isolated Claude Code connection helper and two tool hooks.
+The package passed 506 tests and all six required checks. A real loopback HTTP smoke check
+used synthetic observations and no model calls. Ten decision records and their bucket views
+were synchronized. This supplies scoped D2 service evidence; it does not establish real-harness
+D3 maturity or accept every pending proposal. See the [implementation report](reports/adrl-product-services-implementation-2026-09-07.md)
+for the credential-forwarding and cancellation fixes, source hashes and outstanding limitations.
+
+## 2026-09-09: RV-01 repair critique and recheck
+
+Claude Fable 5.1 independently reviewed the bounded plan and source/evidence, then rechecked material test additions. [Critique, dispositions and final evidence](reports/reviews/outcome-contract-2026-09-09/report.md). No remaining material blocker for this scope; green final checks satisfy its stated condition. Reviewer did not execute tests; no graduation authority or other-finding closure is implied.
+
+## 2026-09-09: taxonomy-sync local completion workflow
+
+Claude Fable 5.1 performed pre-wave challenge, post-wave review and material-fix recheck of the declared workflow scope. Original findings and dispositions retained; four post-review blockers verified fixed, nonblocking limitations explicit. Final 19 tests and local closure pass on rechecked source. No all-ADR audit, runtime/maturity promotion or remote enforcement claim. [Review folder](reports/reviews/taxonomy-sync-gate-2026-09-09/report.md), [recheck](reports/reviews/taxonomy-sync-gate-2026-09-09/recheck.md), [receipt provenance](reports/reviews/taxonomy-sync-gate-2026-09-09/completion.json).
+
+## 2026-09-09: Claude Code compatibility pre-review
+
+Actual Fable 5.1 source-embedded review returned no-go for current live forced-switch implementation and conditional scouting suggestions. Original review retained; unresolved launch blockers and coordinator disagreements recorded. No post-wave completion, model-task execution or maturity promotion. [Report](reports/reviews/claude-code-compatibility-2026-09-09/report.md), [dispositions](reports/reviews/claude-code-compatibility-2026-09-09/dispositions.md).
+
+## 2026-09-09: Claude initial-choice candidate
+
+Fable independently reviewed the offline implementation, verified the reproduced egress-identity correction and stop wording, then accepted final documentation corrections. Original outputs and coordinator dispositions retained. Local taxonomy receipt passed; seven owners synchronized, formal grades unchanged. Real native operation and ROI remain unqualified. [Completion](reports/reviews/claude-adapter-2026-09-09/completion.md), [final acceptance](reports/reviews/claude-adapter-2026-09-09/final-review.md).

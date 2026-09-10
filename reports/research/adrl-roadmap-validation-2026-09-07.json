@@ -1,0 +1,25 @@
+{
+  "date": "2026-09-07",
+  "status": "passed",
+  "planning_only": true,
+  "runtime_tests_run": false,
+  "model_calls_made": false,
+  "runtime_files_hash_verified_unchanged": 280,
+  "test_count_referenced_from_prior_record": 549,
+  "waves": 12,
+  "all_wave_states_proposed": true,
+  "all_exposure_and_budgets_unapproved": true,
+  "dependency_graph_acyclic": true,
+  "required_wave_sections_present": true,
+  "adr_index_count": 77,
+  "all_adrs_have_accountable_review_wave": true,
+  "planning_adr_prior_text_status_and_maturity_preserved": 4,
+  "markdown_documents_checked": 16,
+  "local_links_checked": 323,
+  "broken_links": [],
+  "document_sha256": {
+    "reports/adrl-implementation-roadmap-2026-09-07.md": "6e7c6e0315efec6f82020427b68b11e43f3bd45f43f4d5dc0f9f9d6a1e13241d",
+    "reports/adrl-wave-execution-template.md": "f2fe0d1b54545c8a98c9536e22b801304d33d1e2fdb0758eead4c335c24adbea",
+    "reports/research/adrl-roadmap-plan-2026-09-07.json": "889ed500f83d5a2b521ad319a6c24549017130bd3fcb064bdf45664979fcd8ce"
+  }
+}

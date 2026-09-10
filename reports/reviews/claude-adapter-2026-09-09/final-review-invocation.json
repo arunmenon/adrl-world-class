@@ -1,0 +1,57 @@
+{
+  "argv": [
+    "claude",
+    "--print",
+    "--model",
+    "claude-fable-5-1",
+    "--effort",
+    "high",
+    "--safe-mode",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--permission-mode",
+    "dontAsk",
+    "--output-format",
+    "json",
+    "--no-session-persistence"
+  ],
+  "started": "2026-09-09T09:35:41.250927+00:00",
+  "timeout_seconds": 120,
+  "scope": "documentation recheck only; runtime hashes unchanged",
+  "returncode": 0,
+  "session_id": "d86aa362-9432-4636-bf4a-509d45a4a39c",
+  "modelUsage": {
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 4295,
+      "outputTokens": 19,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 0,
+      "webSearchRequests": 0,
+      "costUSD": 0.00439,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000,
+      "thinkingTokens": 0,
+      "canonicalModel": "claude-haiku-4-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    },
+    "claude-fable-5-1": {
+      "inputTokens": 2,
+      "outputTokens": 1151,
+      "cacheReadInputTokens": 3219,
+      "cacheCreationInputTokens": 5146,
+      "webSearchRequests": 0,
+      "costUSD": 0.16129475000000001,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 64000,
+      "thinkingTokens": 567,
+      "canonicalModel": "claude-fable-5-1",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "is_error": false,
+  "subtype": "success",
+  "finished": "2026-09-09T09:35:58.767670+00:00"
+}

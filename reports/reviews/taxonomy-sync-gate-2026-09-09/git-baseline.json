@@ -1,0 +1,22 @@
+{
+  "R": {
+    "head": {
+      "returncode": 0,
+      "output": "1c172c9f65b94f4685f8e45c01f373c394c67892\n"
+    },
+    "status": {
+      "returncode": 0,
+      "output": " M BIBLIOGRAPHY.md\n M CHANGELOG.md\n M INDEX.md\n M README.md\n M REVIEW-LOG.md\n M adr/CAS/ADRL-CAS-001.md\n M adr/CAS/ADRL-CAS-003.md\n M adr/CAS/ADRL-CAS-005.md\n M adr/CAS/ADRL-CAS-007.md\n M adr/CAS/README.md\n M adr/EVL/README.md\n M adr/FND/ADRL-FND-001.md\n M adr/FND/ADRL-FND-002.md\n M adr/FND/ADRL-FND-003.md\n M adr/FND/ADRL-FND-005.md\n M adr/FND/README.md\n M adr/LRN/ADRL-LRN-001.md\n M adr/LRN/ADRL-LRN-003.md\n M adr/LRN/ADRL-LRN-004.md\n M adr/LRN/ADRL-LRN-005.md\n M adr/LRN/ADRL-LRN-007.md\n M adr/LRN/ADRL-LRN-008.md\n M adr/LRN/README.md\n M adr/MEM/ADRL-MEM-001.md\n M adr/MEM/ADRL-MEM-002.md\n M adr/MEM/ADRL-MEM-003.md\n M adr/MEM/ADRL-MEM-004.md\n M adr/MEM/ADRL-MEM-005.md\n M adr/MEM/ADRL-MEM-006.md\n M adr/MEM/ADRL-MEM-007.md\n M adr/MEM/ADRL-MEM-008.md\n M adr/MEM/ADRL-MEM-010.md\n M adr/MEM/README.md\n M adr/OPS/README.md\n M adr/RTG/ADRL-RTG-001.md\n M adr/RTG/ADRL-RTG-002.md\n M adr/RTG/ADRL-RTG-003.md\n M adr/RTG/ADRL-RTG-006.md\n M adr/RTG/ADRL-RTG-007.md\n M adr/RTG/README.md\n M adr/SAF/ADRL-SAF-007.md\n M adr/SAF/ADRL-SAF-008.md\n M adr/SAF/ADRL-SAF-009.md\n M adr/SAF/README.md\n M adr/SEM/ADRL-SEM-002.md\n M adr/SEM/ADRL-SEM-006.md\n M adr/SEM/README.md\n M source/01-overview-tenets-taxonomy.md\n?? .chart-data-LkZgow/\n?? .chart-data-jOofKV/\n?? .codex-executive-build/\n?? .project/\n?? AGENTS.md\n?? _to_delete/\n?? adr/CAS/ADRL-CAS-009.md\n?? adr/EVL/ADRL-EVL-001.md\n?? adr/EVL/ADRL-EVL-002.md\n?? adr/EVL/ADRL-EVL-003.md\n?? adr/EVL/ADRL-EVL-004.md\n?? adr/EVL/ADRL-EVL-005.md\n?? adr/EVL/ADRL-EVL-006.md\n?? adr/EVL/ADRL-EVL-007.md\n?? adr/EVL/ADRL-EVL-008.md\n?? adr/EVL/ADRL-EVL-009.md\n?? adr/OPS/ADRL-OPS-001.md\n?? adr/OPS/ADRL-OPS-002.md\n?? adr/OPS/ADRL-OPS-003.md\n?? adr/OPS/ADRL-OPS-004.md\n?? adr/OPS/ADRL-OPS-005.md\n?? adr/OPS/ADRL-OPS-006.md\n?? adr/OPS/ADRL-OPS-007.md\n?? adr/OPS/ADRL-OPS-008.md\n?? adr/SEM/ADRL-SEM-007.md\n?? adr/TRU/\n?? design/\n?? output/\n?? profiles/\n?? reports/\n"
+    }
+  },
+  "C": {
+    "head": {
+      "returncode": 128,
+      "output": "HEAD\n"
+    },
+    "status": {
+      "returncode": 0,
+      "output": "?? .gitignore\n?? .python-version\n?? AGENTS.md\n?? CLAUDE.md\n?? README.md\n?? api/\n?? artifacts/\n?? config/\n?? docs/\n?? pyproject.toml\n?? src/\n?? tests/\n?? tools/\n?? uv.lock\n"
+    }
+  }
+}

@@ -1,0 +1,316 @@
+{
+  "schema_version": "adrl-execution-state-v1",
+  "program_status": "outcome_contract_repair_complete_continuation_paused",
+  "authorization": "User requested triggering the waves, a running journey report, and unattended execution adhering to the plan on 2026-09-07.",
+  "roadmap": "reports/adrl-implementation-roadmap-2026-09-07.md",
+  "journey": "reports/adrl-implementation-journey.md",
+  "active_wave": "review-remediation",
+  "active_slice": "RV-01",
+  "engineering_state": "outcome_contract_reviewed_offline",
+  "completed_slices": [
+    {
+      "id": "W0-baseline",
+      "engineering_state": "validated",
+      "disposition": "advance_to_offline_W3",
+      "evidence": "reports/research/adrl-w0-baseline-2026-09-07.json",
+      "date": "2026-09-07"
+    },
+    {
+      "id": "W3.1",
+      "engineering_state": "validated",
+      "disposition": "advance_to_offline_W3.2",
+      "evidence": "reports/research/adrl-w3-1-operator-captures-2026-09-08.json",
+      "date": "2026-09-08"
+    },
+    {
+      "id": "W3.2a",
+      "engineering_state": "validated",
+      "disposition": "advance_to_offline_W3.2b",
+      "evidence": "reports/research/adrl-w3-2a-attempt-journal-2026-09-08.json",
+      "date": "2026-09-08"
+    },
+    {
+      "id": "W3.2b1",
+      "engineering_state": "validated",
+      "disposition": "advance_to_offline_W3.2b2",
+      "evidence": "reports/research/adrl-w3-2b1-process-ownership-2026-09-08.json",
+      "date": "2026-09-08"
+    },
+    {
+      "id": "W3.2b2a",
+      "engineering_state": "validated",
+      "disposition": "advance_to_offline_W3.2b2b",
+      "evidence": "reports/research/adrl-w3-2b2a-terminal-capacity-2026-09-08.json",
+      "date": "2026-09-08"
+    },
+    {
+      "id": "W3.2b2b1",
+      "engineering_state": "validated",
+      "disposition": "advance_to_offline_W3.2b2b2",
+      "evidence": "reports/research/adrl-w3-2b2b1-key-revocation-2026-09-08.json",
+      "date": "2026-09-08"
+    },
+    {
+      "id": "W3.2b2b2",
+      "engineering_state": "validated",
+      "disposition": "advance_to_offline_W3.2b2c_boundary_qualification",
+      "evidence": "reports/research/adrl-w3-2b2b2-process-coordination-2026-09-08.json",
+      "date": "2026-09-08"
+    },
+    {
+      "id": "W3.2b2c",
+      "engineering_state": "research_validated",
+      "disposition": "isolated_backend_candidate_advance_to_resource_ownership",
+      "evidence": "reports/research/adrl-w3-2b2c-writer-boundary-2026-09-08.json",
+      "date": "2026-09-08"
+    },
+    {
+      "id": "W3.2b2d1",
+      "engineering_state": "validated",
+      "disposition": "advance_to_launch_active_recovery_contract",
+      "evidence": "reports/research/adrl-w3-2b2d1-stopped-resource-ownership-2026-09-08.json",
+      "date": "2026-09-08"
+    },
+    {
+      "id": "W3.2b2d2",
+      "engineering_state": "validated_pinned_synthetic_engine",
+      "disposition": "advance_to_offline_active_copy_custody",
+      "evidence": "reports/research/adrl-w3-transport-receipts-2026-09-08.json",
+      "date": "2026-09-08",
+      "scope": "Internal pinned synthetic one-shot launch/stop/recovery only; full B2/B3/W3 and ADR grades unchanged"
+    },
+    {
+      "id": "W7.0-diagnostic",
+      "date": "2026-09-08",
+      "engineering_state": "offline_diagnostic_complete_with_findings",
+      "disposition": "correct_mixed_intent_routing_before_further_infrastructure_progress",
+      "evidence": "reports/research/routing-demonstration-2026-09-08/results.json",
+      "scope": "Synthetic real-component decision exercise only; two failed review hypotheses; no completion or maturity claim for W7"
+    },
+    {
+      "id": "Lab A.1",
+      "date": "2026-09-08",
+      "engineering_state": "validated_synthetic_workbench",
+      "disposition": "mixed_intent_correction_next_full_lab_a_open",
+      "evidence": "reports/research/routing-lab-2026-09-08/run-2/results.json",
+      "scope": "16-cell synthetic diagnostic; no actual task outcomes, policy change or maturity promotion"
+    },
+    {
+      "id": "W7.0a",
+      "date": "2026-09-08",
+      "engineering_state": "validated_offline_routing_correction",
+      "evidence": "reports/research/routing-correction-2026-09-08/validation.json",
+      "scope": "features-v2 plus exploration compatibility; synthetic before/after only; no grade promotion"
+    },
+    {
+      "id": "RV-01",
+      "date": "2026-09-09",
+      "engineering_state": "reviewed_offline_contract_repair",
+      "evidence": "reports/reviews/outcome-contract-2026-09-09/report.md",
+      "scope": "Explicit closing/readiness connection only; other retrospective findings and grades unchanged"
+    }
+  ],
+  "next_action": "Qualify a legitimate isolated Claude live experiment profile with restart-safe allowance, native harness restrictions, exact query/output compatibility and account overflow disposition. Then run a bounded real initial-choice check; no fake LIVE evidence or task-budget expansion. Offline candidate implementation is complete, P1 and ROI remain open.",
+  "run_limits": {
+    "max_slices": 3,
+    "max_failed_attempts_per_task": 3
+  },
+  "paid_api_budget_approved": false,
+  "live_routing_exposure_approved": false,
+  "automatic_graduation": false,
+  "independent_reviewer_assigned": false,
+  "gates_waiting_for_human": [
+    {
+      "gate": "Human evaluation/security dispositions and applicable outside-team independence",
+      "required_before": "Arun assigned both roles; criteria/security dispositions and any later outside-team graduation gate remain pending",
+      "blocks_current_offline_slice": false
+    },
+    {
+      "gate": "DQ1-DQ8 policy dispositions",
+      "required_before": "Each dependent behavior or exposure specified in roadmap",
+      "blocks_current_offline_slice": false
+    }
+  ],
+  "automation": {
+    "status": "paused",
+    "id": "continue-adrl-implementation-waves",
+    "cadence": "hourly",
+    "kind": "heartbeat"
+  },
+  "latest_evidence": [
+    "reports/reviews/claude-adapter-2026-09-09/completion.md",
+    "reports/reviews/outcome-contract-2026-09-09/report.md",
+    "reports/research/routing-correction-2026-09-08/validation.json",
+    "reports/research/routing-lab-2026-09-08/run-2/results.json",
+    "reports/research/routing-demonstration-2026-09-08/results.json",
+    "reports/research/adrl-w3-transport-receipts-2026-09-08.json",
+    "reports/research/adrl-w3-isolated-launch-2026-09-08.json",
+    "reports/research/adrl-w3-execution-identity-2026-09-08.json",
+    "reports/research/adrl-w3-2b2d2-launch-contract-2026-09-08.json",
+    "reports/research/adrl-w3-2b2d1-stopped-resource-ownership-2026-09-08.json",
+    "reports/research/adrl-w3-2b2c-writer-boundary-2026-09-08.json",
+    "reports/research/adrl-w3-2b2b2-process-coordination-2026-09-08.json",
+    "reports/research/adrl-w3-2b2b1-key-revocation-2026-09-08.json",
+    "reports/research/adrl-w3-2b2a-terminal-capacity-2026-09-08.json",
+    "reports/research/adrl-w3-2b1-process-ownership-2026-09-08.json",
+    "reports/research/adrl-w3-2a-attempt-journal-2026-09-08.json",
+    "reports/research/adrl-w3-1-operator-captures-2026-09-08.json",
+    "reports/research/adrl-w0-baseline-2026-09-07.json",
+    "reports/research/adrl-maturity-baseline-2026-09-07.json"
+  ],
+  "updated_at": "2026-09-09T09:38:02.386144+00:00",
+  "source_backup": "/Users/arunmenon/projects/.adrl-execution-state/w0-20260907T181438Z/manifest.json",
+  "active_packet": "reports/reviews/outcome-contract-2026-09-09/packet.md",
+  "active_source_backup": "reports/reviews/outcome-contract-2026-09-09/before-manifest.json",
+  "current_build_checks": {
+    "tests_passed": 922,
+    "tests_skipped": 8,
+    "check_count": 11,
+    "schema_user_version": 12,
+    "public_api": "adrl-api-v1-preview.4",
+    "declared_inputs": 324,
+    "evidence": "reports/reviews/outcome-contract-2026-09-09/checks-2/manifest.json"
+  },
+  "last_run": {
+    "date": "2026-09-09",
+    "slice_kind": "RV-01 outcome contract repair",
+    "tests_passed": 922,
+    "tests_skipped": 8,
+    "declared_inputs": 324,
+    "maturity_promotions": 0,
+    "model_calls_for_adrl_tasks": 0,
+    "reviewer": "Claude Fable 5.1",
+    "review_scope": "Independent source/evidence critique and recheck; not human graduation"
+  },
+  "implementation_gates": [
+    {
+      "gate": "Active plaintext lease erasure, process-death leftovers and container/output storage lifecycle",
+      "required_before": "Real task payload capture",
+      "owner": "Codex",
+      "blocks_current_offline_slice": false
+    },
+    {
+      "gate": "B3 safe output extraction and durable close/capture association after writer-boundary qualification",
+      "required_before": "Verified task-close outcomes and learning eligibility",
+      "owner": "Codex",
+      "blocks_current_offline_slice": false
+    },
+    {
+      "gate": "Concrete real-harness image, network, credential and retention profile",
+      "required_before": "Any isolated real harness pilot",
+      "owner": "Codex and product owner",
+      "blocks_current_offline_slice": false
+    }
+  ],
+  "active_experiment_packet": null,
+  "deferred_work": [
+    {
+      "reason": "User requested visible routing stress and course correction before further infrastructure-first progress.",
+      "deferred_at": "2026-09-08T06:29:47.723879+00:00",
+      "active_wave": "W3",
+      "active_slice": "W3.2b2e",
+      "engineering_state": "pinned_synthetic_launch_validated_active_copy_contract_next",
+      "active_packet": "reports/waves/w3-active-copy-custody.md",
+      "next_action": "Begin the offline active-copy custody packet W3.2b2e: map existing decrypted/materialized copies, authority, retention and cleanup; reproduce a bounded synthetic fault and freeze the smallest lease/custody correction before code. Bounded d2 now passes current pinned-engine launch/recovery: final 895 tests, zero skips, all eleven checks, 316 stable inputs. Execution v2 separates active I/O from stopped preparation; original receipts, v1 semantics and permanent fences remain. Thirteen creates/receipts/absence confirmations and one image removed; the fresh engine allowance is closed. Historical lost-create cause remains unknown. No new engine mutation is authorized by the next packet. Preserve false exact-close/learning, all grades, unrelated dirty files and existing trust/retention gates. Full B2/B3/W3, safe extraction/exact capture, independent review and real-harness profiles remain open.",
+      "status": "unfinished; resume for qualified exact-output evidence"
+    },
+    {
+      "reason": "User explicitly requested the target adaptive routing/RSI plan first, before further implementation.",
+      "active_wave": "W7",
+      "active_slice": "W7.0a",
+      "active_packet": "reports/waves/routing-decision-quality.md",
+      "status": "completed under subsequent bounded user restart; original hold preserved as history"
+    }
+  ],
+  "product_roadmap": "reports/adrl-product-roadmap-2026-09-08.md",
+  "context_graph_proposal": "design/adrl-context-graph-memory-proposal-2026-09-08.md",
+  "latest_planning": {
+    "date": "2026-09-08",
+    "roadmap": "reports/adrl-product-roadmap-2026-09-08.md",
+    "context_graph_proposal": "design/adrl-context-graph-memory-proposal-2026-09-08.md",
+    "source_ledger": "reports/research/product-roadmap-2026-09-08/sources.json",
+    "validation": "reports/research/product-roadmap-2026-09-08/validation.json",
+    "runtime_changed": false,
+    "decision_text_changed": false,
+    "maturity_promotions": 0,
+    "automation_status": "paused",
+    "user_architecture": "Developer-laptop routing and local experience memory; offline learning from admitted evidence; signed compatible knowledge/policy packages distributed to developers. Existing MEM is the foundation; graph enrichment is a candidate.",
+    "experiment_lab": "design/adrl-experiment-lab-plan-2026-09-08.md",
+    "latest_validation": "reports/research/experiment-lab-planning-2026-09-08/validation.json",
+    "planning_task_pack": "reports/lab/planning-starter-v1/tasks.json",
+    "next_lab_packet": "reports/waves/lab-planning-deliverables.md",
+    "planning_task_pack_state": "prepared_not_executed_or_qualified",
+    "current_consolidated_plan": "reports/adrl-milestone-plan-2026-09-09.md"
+  },
+  "experiment_lab_plan": "design/adrl-experiment-lab-plan-2026-09-08.md",
+  "implementation_review": {
+    "reviewer": "Claude Fable 5.1",
+    "scope": "RV-01 only",
+    "disposition": "no remaining material blocker; final check condition met",
+    "evidence": "reports/reviews/outcome-contract-2026-09-09/recheck.md",
+    "human_evaluation_security_appointments": "Arun Menon assigned both roles 2026-09-09; P2 criteria/security dispositions and outside-team independence pending"
+  },
+  "human_review_roles": {
+    "evaluation": {
+      "name": "Arun Menon",
+      "assigned_date": "2026-09-09"
+    },
+    "security": {
+      "name": "Arun Menon",
+      "assigned_date": "2026-09-09"
+    },
+    "agent_assistance": true,
+    "criteria_security_dispositions": "pending",
+    "outside_team_independence": "not established"
+  },
+  "independent_reviewer_assigned_scope": "Legacy boolean retained false for required outside-team independence; named human criteria/security roles are recorded separately, not absent.",
+  "milestone_budget": {
+    "plan": "reports/adrl-milestone-plan-2026-09-09.md",
+    "additional_attempted_slices_limit": 6,
+    "attempted_slices_used": 1,
+    "p2_task_arm_attempts_limit": 10,
+    "discovery_conversations_limit": 12,
+    "on_exhaustion": "Stop and explicitly replan; never relax approval/evidence gates",
+    "proposed_coding_task_arm_attempts": 18,
+    "proposed_planning_task_arm_attempts": 9,
+    "proposed_budget_status": "pending concrete packet disposition"
+  },
+  "historical_owner_decisions": "reports/reviews/milestone-tightening-2026-09-09/decisions.json",
+  "product_priority": {
+    "date": "2026-09-09",
+    "direction": "Claude Code ROI first",
+    "authority": "User requested product pivot; concrete experiment criteria/access profile still require reviewed packet",
+    "learning": "off",
+    "cross_harness": "preserved architecture direction; expansion deferred",
+    "spike_status": "not-started"
+  },
+  "taxonomy_sync_gate": {
+    "status": "reviewed_with_nonblocking_limits",
+    "skill": "skills/adrl-taxonomy-sync/SKILL.md",
+    "checker": "tools/check_taxonomy_sync.py",
+    "evidence": "reports/reviews/taxonomy-sync-gate-2026-09-09/completion.json",
+    "scope": "required local closure, not remote CI",
+    "tests": 19,
+    "core_change": "AGENTS.md only; runtime unchanged",
+    "maturity_promotions": 0
+  },
+  "compatibility_preparation": {
+    "status": "changes-requested",
+    "evidence": "reports/reviews/claude-code-compatibility-2026-09-09/report.md",
+    "live_run": "not-started",
+    "source_inputs_unchanged": 425,
+    "maturity_promotions": 0
+  },
+  "claude_adapter_candidate": {
+    "status": "reviewed_offline_scope_complete",
+    "scope": "constructor-only offline candidate; not launch-ready",
+    "report": "reports/reviews/claude-adapter-2026-09-09/completion.md",
+    "tests_passed": 949,
+    "tests_skipped": 8,
+    "focused_tests": 27,
+    "real_model_task_attempts": 0,
+    "maturity_promotions": 0,
+    "taxonomy_closure": "passed",
+    "receipt": "/Users/arunmenon/projects/.adrl-execution-state/claude-adapter-final-20260909.json"
+  }
+}

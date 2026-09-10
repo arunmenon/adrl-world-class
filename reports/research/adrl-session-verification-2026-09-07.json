@@ -1,0 +1,295 @@
+{
+  "date": "2026-09-07",
+  "status": "applied_and_verified",
+  "source_root": "/Users/arunmenon/projects/adrl-core",
+  "staging_root": "/private/tmp/adrl-verifier-44glb3h2",
+  "source_files": [
+    {
+      "path": "README.md",
+      "before_sha256": "1b46f3f25a4f005f0b34630a3d971e952ec086070601cb8a789b0fce45d7b0b1",
+      "after_sha256": "f56ac99fa09b86e21cd0aec0617fc961bedcb8293e453e46b6a29cd1ac695c54"
+    },
+    {
+      "path": "api/adrl-api-v1-preview.json",
+      "before_sha256": "aa5e20f11b9227cdbe037c23b5f23de7a33f7f4735256b4d1647e1645d407c25",
+      "after_sha256": "5a3f2c5401acd73d3a30a89fb24c94660d9a2b7c9f625b4a7c6acef987d03757"
+    },
+    {
+      "path": "docs/adr-module-map.md",
+      "before_sha256": "67cf6dcc00b0d088c38450a5083e036cd0052f948754f66457f22021ea2cf9c8",
+      "after_sha256": "9f9b436b3a14154e60eb259a0be3466c10e4aaf73434eb07e9b514a5337ac551"
+    },
+    {
+      "path": "docs/data-inventory.md",
+      "before_sha256": "eb78baf6e033e230de340b172fa2053c9f1705e7e656bf5e949a45868c5f436c",
+      "after_sha256": "57d64307bd0bae8b9909a04bb59e3a18d4157e33c60814c113387b475160c359"
+    },
+    {
+      "path": "docs/product-services.md",
+      "before_sha256": "cde9ad77d673eb773b9340c17ffe33c75dbdf42bab4909a987a152a0b71f78fe",
+      "after_sha256": "361769fec246488cfd4d2b690991caf6eddeeb3f854cd9238333ec9a96df91ca"
+    },
+    {
+      "path": "src/adrl/api/contracts.py",
+      "before_sha256": "7da7c9067bc3858311515929400c016e08fe6578bc9285ee0880932198ee3588",
+      "after_sha256": "35036e9782944730250846999f5dcd6e690717d7751e2275463696ff4e26a461"
+    },
+    {
+      "path": "src/adrl/api/service.py",
+      "before_sha256": "b9d7c9ebb473c4dbeac10a6f3384f52926d650a6146f3879478edec904450520",
+      "after_sha256": "add6130fe1b3fe65fe37b2179a025f59aa07c315d14a6a7ea648aed43f5f8818"
+    },
+    {
+      "path": "src/adrl/api/store.py",
+      "before_sha256": "b558864b57f8bf73242ab2abdca9b170c14e595756cf42927a5b3517a26e1884",
+      "after_sha256": "18bf06a035a4e33390af41e5cd121dcdd03301fab85108f221501933f0a3f74d"
+    },
+    {
+      "path": "src/adrl/cli/product.py",
+      "before_sha256": "e32b87098165b3adaafef188af50912751eca62f05e5d6c3f6d5d01b49f463fc",
+      "after_sha256": "f36bf1904c6bf4fe5abd2072432783e74b7ba69f7cf686dc173552ea460a54fd"
+    },
+    {
+      "path": "src/adrl/gates/sandbox.py",
+      "before_sha256": "21a3c0ca44d3c21885e7d0f7170e9aef9803116eaca3bd870c613c48727d5669",
+      "after_sha256": "2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+    },
+    {
+      "path": "src/adrl/ledger/migrations/0005_session_verification.sql",
+      "before_sha256": null,
+      "after_sha256": "854c5ab5137417effded2b1d12317eb3b34ef89fceb9ab044486dcd242a210ac"
+    },
+    {
+      "path": "src/adrl/ledger/session_verification.py",
+      "before_sha256": null,
+      "after_sha256": "7fd835b5e5ac3f698a4ae4f8fc584b6b7ac5e3ef454ba90f6945361df27a5a0b"
+    },
+    {
+      "path": "tests/integration/e2e/test_product_services.py",
+      "before_sha256": "0d877dc936d77b39da7b874dab09fd09894552c32b3a386b71a16c19d8bc377b",
+      "after_sha256": "ec043e749f656e7251a0eea1985950cedf120060f1f6c0b62c590cbced76d5ec"
+    },
+    {
+      "path": "tests/unit/test_product_migration.py",
+      "before_sha256": "2eaddca2de10dd6dff8db8cbd469b5c1b49bc003ed4275c5c92ca9967510cefa",
+      "after_sha256": "e22ef00ff4ba43326ebb1c27605edb9960bcf942245d7e23a0ed74a268d856fd"
+    }
+  ],
+  "application": {
+    "status": "applied",
+    "files_verified": 14,
+    "unchanged_original_files_verified": 260
+  },
+  "checks": [
+    {
+      "command": "python -m ruff check src tests tools",
+      "exit_code": 0,
+      "seconds": 0.083,
+      "output": "All checks passed!\n"
+    },
+    {
+      "command": "python -m ruff format --check src tests tools",
+      "exit_code": 0,
+      "seconds": 0.049,
+      "output": "222 files already formatted\n"
+    },
+    {
+      "command": "python -m mypy",
+      "exit_code": 0,
+      "seconds": 0.451,
+      "output": "Success: no issues found in 113 source files\n"
+    },
+    {
+      "command": "python -m pytest -q --junitxml=/private/tmp/adrl-verifier-44glb3h2/work/../pytest.xml",
+      "exit_code": 0,
+      "seconds": 16.913,
+      "output": "........................................................................ [ 13%]\n........................................................................ [ 27%]\n........................................................................ [ 40%]\n........................................................................ [ 54%]\n........................................................................ [ 67%]\n........................................................................ [ 81%]\n........................................................................ [ 94%]\n............................                                             [100%]\n532 passed in 15.64s\n"
+    },
+    {
+      "command": "python tools/check_ledger_discipline.py",
+      "exit_code": 0,
+      "seconds": 0.112,
+      "output": "ledger discipline: ok\n"
+    },
+    {
+      "command": "python -m adrl.cli.main config check",
+      "exit_code": 0,
+      "seconds": 0.45,
+      "output": "ok   rung_closed_membership\nok   fallback_within_rung\nok   live_rung_has_evidence routing not live\nok   compaction_feasibility\nok   policy_references\nok   learning_contract\nok   repo_classification\nok   endpoint_inventory\nok   residency_reachable class residency-eu is unused; rungs ['cheap_cloud', 'frontier'] have no eu deployment, so lineages in that class would be local-or-block\nversions {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}\nmanifest_signature_verified True\n"
+    },
+    {
+      "command": "python tools/check_data_inventory.py",
+      "exit_code": 0,
+      "seconds": 0.06,
+      "output": "data inventory: ok (249 fields, 249 documented)\n"
+    }
+  ],
+  "pilot": {
+    "status": "passed",
+    "scope": "copied prior observation state; same repaired task; two repeated verifier jobs",
+    "http_server": "real_loopback_asgi",
+    "sandbox_backend": "macos-seatbelt",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "python": "3.12.7 (main, Oct  9 2024, 15:28:06) [Clang 14.0.0 (clang-1400.0.29.202)]",
+    "checks_per_job": 3,
+    "test_cases_per_job": 8,
+    "jobs": [
+      {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "f4c7b8e6-b7d4-4a3f-a888-91b066f210d9",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:3291d88e460a3f8d33513113ab890b4b11575bf6c405767d3efe6cad6f293fea",
+        "source_snapshot_ref": "hmac:83de5c120a07d714d6ee0220690d687bb791da3edcb589c13aeac6dc6d3b95bd",
+        "executed_snapshot_ref": "hmac:e7ff9d615644732d7f1bdef84aeaf47e8f8e39efadd00e606a8539c10c1ef3a0",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T11:09:37.056857Z",
+        "finished_at": "2026-09-07T11:09:37.358620Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:bb58a7797d4ec561f8f2ec958bace2107698d5186d266277b4128719b3dbb9ea",
+            "executable_ref": "hmac:52d4b9d84dffd20d0bbd1e8914d8844e09809cf9a042b04d015f9a3f1242c7b3",
+            "exit_code": 0,
+            "duration_s": 0.1523803339805454,
+            "stdout_ref": "hmac:b40501a136af691ed259382e7db2fd8a64cebc612cba7ab96ebe0c9eb90d3516",
+            "stderr_ref": "hmac:90189f3dcf445647504f1fd79c26ab9b37a82a9d6b18b645590b6dacccd336fb",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:860d401dea6f4dd048abd07480013b54b64222e578ea320ff449f8e59ca957f2",
+            "executable_ref": "hmac:52d4b9d84dffd20d0bbd1e8914d8844e09809cf9a042b04d015f9a3f1242c7b3",
+            "exit_code": 0,
+            "duration_s": 0.05875808303244412,
+            "stdout_ref": "hmac:b40501a136af691ed259382e7db2fd8a64cebc612cba7ab96ebe0c9eb90d3516",
+            "stderr_ref": "hmac:072a5912e9060dbf056851f2c06afeb1550dc0fc16ba6b31b0d2fca18bbecd7d",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:ffbde98b7e73595122c6ee47fa0b81d2356562e46e1dd79bf1227108ee85b797",
+            "executable_ref": "hmac:52d4b9d84dffd20d0bbd1e8914d8844e09809cf9a042b04d015f9a3f1242c7b3",
+            "exit_code": 0,
+            "duration_s": 0.06355966697447002,
+            "stdout_ref": "hmac:b40501a136af691ed259382e7db2fd8a64cebc612cba7ab96ebe0c9eb90d3516",
+            "stderr_ref": "hmac:11b8d69be20315df576384f6cefbc580b209aa39e070a959aa035413a5c767a2",
+            "reason": null
+          }
+        ]
+      },
+      {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "93a31159-6f82-4385-926d-e00b95a5843e",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:3291d88e460a3f8d33513113ab890b4b11575bf6c405767d3efe6cad6f293fea",
+        "source_snapshot_ref": "hmac:83de5c120a07d714d6ee0220690d687bb791da3edcb589c13aeac6dc6d3b95bd",
+        "executed_snapshot_ref": "hmac:e7ff9d615644732d7f1bdef84aeaf47e8f8e39efadd00e606a8539c10c1ef3a0",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T11:09:37.816417Z",
+        "finished_at": "2026-09-07T11:09:38.119901Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:bb58a7797d4ec561f8f2ec958bace2107698d5186d266277b4128719b3dbb9ea",
+            "executable_ref": "hmac:52d4b9d84dffd20d0bbd1e8914d8844e09809cf9a042b04d015f9a3f1242c7b3",
+            "exit_code": 0,
+            "duration_s": 0.15389887499623,
+            "stdout_ref": "hmac:b40501a136af691ed259382e7db2fd8a64cebc612cba7ab96ebe0c9eb90d3516",
+            "stderr_ref": "hmac:90189f3dcf445647504f1fd79c26ab9b37a82a9d6b18b645590b6dacccd336fb",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:860d401dea6f4dd048abd07480013b54b64222e578ea320ff449f8e59ca957f2",
+            "executable_ref": "hmac:52d4b9d84dffd20d0bbd1e8914d8844e09809cf9a042b04d015f9a3f1242c7b3",
+            "exit_code": 0,
+            "duration_s": 0.056420458015054464,
+            "stdout_ref": "hmac:b40501a136af691ed259382e7db2fd8a64cebc612cba7ab96ebe0c9eb90d3516",
+            "stderr_ref": "hmac:072a5912e9060dbf056851f2c06afeb1550dc0fc16ba6b31b0d2fca18bbecd7d",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:ffbde98b7e73595122c6ee47fa0b81d2356562e46e1dd79bf1227108ee85b797",
+            "executable_ref": "hmac:52d4b9d84dffd20d0bbd1e8914d8844e09809cf9a042b04d015f9a3f1242c7b3",
+            "exit_code": 0,
+            "duration_s": 0.06684437510557473,
+            "stdout_ref": "hmac:b40501a136af691ed259382e7db2fd8a64cebc612cba7ab96ebe0c9eb90d3516",
+            "stderr_ref": "hmac:11b8d69be20315df576384f6cefbc580b209aa39e070a959aa035413a5c767a2",
+            "reason": null
+          }
+        ]
+      }
+    ],
+    "timeline_before": 18,
+    "timeline_after": 22,
+    "prior_entries_unchanged": true,
+    "plan_artifact_hashes": {
+      "run.py": "5387d40e618b3ce93332fb2c038193ca032b9fe4180b63a9c7b39ebf0d854ea0",
+      "test_config_loader.py": "14735bc63cae7c558e5bbfccc76d92ec5aa5de68a8e547eea453444ebbfdb1cc",
+      "test_template_compatibility.py": "8e49445a81b2e71a8ead3b5fa08411fb6916636ecc011d88ae06887fbd714334",
+      "test_templates.py": "a3604b062ec97ccf3213b85a90eaff48d84e97ed563981b1c35685306441d7fc"
+    },
+    "source_files_unchanged": 13,
+    "adrl_model_requests": 0,
+    "new_claude_calls": 0,
+    "additional_provider_spend": 0,
+    "counts": {
+      "decisions": 0,
+      "events": 0,
+      "product_verifications": 4
+    },
+    "api_schema": "adrl-api-v1-preview.4",
+    "gateway_health_polling": false,
+    "statistical_quality_estimate": null
+  },
+  "schema": "adrl-api-v1-preview.4",
+  "owning_adrs": [
+    "MEM-003",
+    "MEM-001",
+    "MEM-005",
+    "MEM-010",
+    "SEM-007",
+    "TRU-001",
+    "SAF-007",
+    "LRN-001",
+    "EVL-008",
+    "FND-005"
+  ],
+  "maturity": "D2 for tested session-receipt contract plus two local verifier jobs on one prior live task; no general graduation",
+  "work_uncommitted": true
+}

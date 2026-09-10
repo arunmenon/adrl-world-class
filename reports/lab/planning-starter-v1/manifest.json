@@ -1,0 +1,11 @@
+{
+  "version": "planning-starter-v1",
+  "files": {
+    "assessment.md": "b1f60eea061728e405b76f1f1d15bffc95db62f9a7e38e7822ad4e4ff8e81fef",
+    "contract.md": "57087355b5297b1ee173b9856e9c6fe190cdc24d80a08c3a12fa0acae7c0a94e",
+    "hld/brief.md": "ff0946e94e0b91f7063b4179585a06e9ca4d2ef722ee2024209f38b17c6d8018",
+    "lld/brief.md": "5d09b03c140fe50af81695dde3e8c46fc6853c63ae325d639a2072c763e4371e",
+    "prd/brief.md": "e7cad2bf354c9bded25ebca38af6d60e3f1aac777269cb5c316fe85ee712e244",
+    "tasks.json": "606c8414d581e5588d9353ede1362e400516bfe63cb0c2920230e64b97b235a4"
+  }
+}

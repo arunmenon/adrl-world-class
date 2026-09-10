@@ -1,0 +1,292 @@
+{
+  "date": "2026-09-07",
+  "scope": "Reviewed local verifier-comparison workflow, curated synthetic mechanism exercise; no deployment, learning labels, routing evaluation or general maturity graduation.",
+  "authorship": "The same assistant prepared the candidate and visible fixture set. No blind or independent holdout is claimed.",
+  "source_files": [
+    {
+      "path": "README.md",
+      "before_sha256": "f56ac99fa09b86e21cd0aec0617fc961bedcb8293e453e46b6a29cd1ac695c54",
+      "after_sha256": "88ef3a97cc0453c386bd6cee467f8cafc4fc47259900cf4ae9679fce89bfbfc8"
+    },
+    {
+      "path": "docs/adr-module-map.md",
+      "before_sha256": "9f9b436b3a14154e60eb259a0be3466c10e4aaf73434eb07e9b514a5337ac551",
+      "after_sha256": "9e7858a567ab5516b00cc8359dd0744d1172cc24da3e84af7ae4d2e37ec38554"
+    },
+    {
+      "path": "docs/data-inventory.md",
+      "before_sha256": "57d64307bd0bae8b9909a04bb59e3a18d4157e33c60814c113387b475160c359",
+      "after_sha256": "6756d8099ae6ab58f5ee413a62524d870c3b5449b9fa30a27bacade76c9856fc"
+    },
+    {
+      "path": "docs/verifier-experiments.md",
+      "before_sha256": null,
+      "after_sha256": "1a1c04c2cc2480b4d2c3da48586f1415fe69069ef9301cf60b3a7f74cb415aad"
+    },
+    {
+      "path": "src/adrl/cli/improvement.py",
+      "before_sha256": null,
+      "after_sha256": "916f93bad7c38e57b0626dcea70e833a02ad3487d4aaa8a91970339e10421963"
+    },
+    {
+      "path": "src/adrl/cli/main.py",
+      "before_sha256": "d5de15c803d7741befce0ff85f71168786afc30fa819a4e843ce0f0f88369031",
+      "after_sha256": "b155525971ee910191cccf609bcf2760c1f19a170fb00c6de8907ee567429322"
+    },
+    {
+      "path": "src/adrl/cli/product.py",
+      "before_sha256": "f36bf1904c6bf4fe5abd2072432783e74b7ba69f7cf686dc173552ea460a54fd",
+      "after_sha256": "048db7e3d777a32b57badea048e37fb3cc0774ecabfdeefc5eff927e53ff02c5"
+    },
+    {
+      "path": "src/adrl/learning/improvement.py",
+      "before_sha256": null,
+      "after_sha256": "21cd27a5d31a66797574e2f02ea3fc4e4ea48b6150343ef301a9289ae8b80c81"
+    },
+    {
+      "path": "src/adrl/ledger/improvement.py",
+      "before_sha256": null,
+      "after_sha256": "21e2dc8f8d26af7177a5a5c0cd64102b1154a2368784dd71432861a9aafbdedf"
+    },
+    {
+      "path": "src/adrl/ledger/migrations/0006_improvement.sql",
+      "before_sha256": null,
+      "after_sha256": "b194c62ee650354af4b5f7cbf9ab4d17d226572f9b514dba5fe679bdc9f24f5f"
+    },
+    {
+      "path": "src/adrl/ledger/session_verification.py",
+      "before_sha256": "7fd835b5e5ac3f698a4ae4f8fc584b6b7ac5e3ef454ba90f6945361df27a5a0b",
+      "after_sha256": "e6f5efbc51107337ea75c4a363c4c520d04da76ae021ddf45dca06c76e96bb9e"
+    },
+    {
+      "path": "tests/unit/learning/test_improvement.py",
+      "before_sha256": null,
+      "after_sha256": "dd35b6f67bce6c75f26cfe476cd4464fb12f05e6a069999e36268a00452b1043"
+    },
+    {
+      "path": "tests/unit/test_product_migration.py",
+      "before_sha256": "e22ef00ff4ba43326ebb1c27605edb9960bcf942245d7e23a0ed74a268d856fd",
+      "after_sha256": "0a2e207072e945292d039cf80fb70662c80827add786719aa61710c7066cc4cb"
+    }
+  ],
+  "application": {
+    "status": "applied",
+    "files_verified": 13,
+    "unchanged_original_files_verified": 267
+  },
+  "validation": [
+    {
+      "command": "python -m ruff check src tests tools",
+      "exit_code": 0,
+      "seconds": 0.082,
+      "output": "All checks passed!\n"
+    },
+    {
+      "command": "python -m ruff format --check src tests tools",
+      "exit_code": 0,
+      "seconds": 0.044,
+      "output": "226 files already formatted\n"
+    },
+    {
+      "command": "python -m mypy",
+      "exit_code": 0,
+      "seconds": 0.577,
+      "output": "Success: no issues found in 116 source files\n"
+    },
+    {
+      "command": "python -m pytest -q --junitxml=/private/tmp/adrl-improvement-msnln60g/pytest.xml",
+      "exit_code": 0,
+      "seconds": 17.995,
+      "output": "........................................................................ [ 13%]\n........................................................................ [ 26%]\n........................................................................ [ 39%]\n........................................................................ [ 52%]\n........................................................................ [ 65%]\n........................................................................ [ 78%]\n........................................................................ [ 91%]\n.............................................                            [100%]\n549 passed in 17.17s\n"
+    },
+    {
+      "command": "python tools/check_ledger_discipline.py",
+      "exit_code": 0,
+      "seconds": 0.108,
+      "output": "ledger discipline: ok\n"
+    },
+    {
+      "command": "python -m adrl.cli.main config check",
+      "exit_code": 0,
+      "seconds": 0.446,
+      "output": "ok   rung_closed_membership\nok   fallback_within_rung\nok   live_rung_has_evidence routing not live\nok   compaction_feasibility\nok   policy_references\nok   learning_contract\nok   repo_classification\nok   endpoint_inventory\nok   residency_reachable class residency-eu is unused; rungs ['cheap_cloud', 'frontier'] have no eu deployment, so lineages in that class would be local-or-block\nversions {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}\nmanifest_signature_verified True\n"
+    },
+    {
+      "command": "python tools/check_data_inventory.py",
+      "exit_code": 0,
+      "seconds": 0.056,
+      "output": "data inventory: ok (256 fields, 256 documented)\n"
+    }
+  ],
+  "experiment": {
+    "report": {
+      "schema_version": "verifier-experiment-report-v1",
+      "experiment_id": "f5f5c8ae-49af-4227-903c-e78452406c39",
+      "proposal": {
+        "id": "template-verifier-coverage",
+        "version": "1"
+      },
+      "evaluator": {
+        "id": "verifier-comparison",
+        "version": "sha256:21cd27a5d31a66797574e2f02ea3fc4e4ea48b6150343ef301a9289ae8b80c81"
+      },
+      "snapshot_executor": {
+        "id": "snapshot-execution",
+        "version": "sha256:e6f5efbc51107337ea75c4a363c4c520d04da76ae021ddf45dca06c76e96bb9e"
+      },
+      "suite": {
+        "id": "template-verifier-fixtures",
+        "version": "1"
+      },
+      "evidence_family": "curated_synthetic",
+      "eligible_for_learning": false,
+      "review_required": true,
+      "recommendation": "candidate_supported",
+      "distinct_cases": 7,
+      "repeats": 2,
+      "trials_recorded": 28,
+      "commands_recorded": 98,
+      "baseline_correct": 4,
+      "candidate_correct": 7,
+      "candidate_false_passes": 0,
+      "candidate_false_failures": 0,
+      "blockers": [],
+      "check_duration_s": 7.96632733149454,
+      "started_at": "2026-09-07T12:45:56.295940Z",
+      "finished_at": "2026-09-07T12:46:05.110704Z"
+    },
+    "case_matrix": [
+      {
+        "case_id": "correct_original",
+        "expected": "passed",
+        "baseline": [
+          "passed",
+          "passed"
+        ],
+        "candidate": [
+          "passed",
+          "passed"
+        ]
+      },
+      {
+        "case_id": "correct_equivalent",
+        "expected": "passed",
+        "baseline": [
+          "passed",
+          "passed"
+        ],
+        "candidate": [
+          "passed",
+          "passed"
+        ]
+      },
+      {
+        "case_id": "defect_escaped_braces",
+        "expected": "failed",
+        "baseline": [
+          "failed",
+          "failed"
+        ],
+        "candidate": [
+          "failed",
+          "failed"
+        ]
+      },
+      {
+        "case_id": "defect_repr_conversion",
+        "expected": "failed",
+        "baseline": [
+          "passed",
+          "passed"
+        ],
+        "candidate": [
+          "failed",
+          "failed"
+        ]
+      },
+      {
+        "case_id": "defect_indexed_lookup",
+        "expected": "failed",
+        "baseline": [
+          "passed",
+          "passed"
+        ],
+        "candidate": [
+          "failed",
+          "failed"
+        ]
+      },
+      {
+        "case_id": "defect_json_schema",
+        "expected": "failed",
+        "baseline": [
+          "passed",
+          "passed"
+        ],
+        "candidate": [
+          "failed",
+          "failed"
+        ]
+      },
+      {
+        "case_id": "environment_missing_config",
+        "expected": "indeterminate",
+        "baseline": [
+          "indeterminate",
+          "indeterminate"
+        ],
+        "candidate": [
+          "indeterminate",
+          "indeterminate"
+        ]
+      }
+    ],
+    "archive_reopened_by_cli": true,
+    "archive_records": 30,
+    "no_model_calls_requested": true
+  },
+  "archive_validation": {
+    "status": "passed",
+    "archive_rows": {
+      "improvement_records": 30,
+      "product_sessions": 0,
+      "product_events": 0,
+      "product_verifications": 0,
+      "decisions": 0,
+      "events": 0
+    },
+    "original_archive_readable": true,
+    "erasure_test_on_separate_copy": true,
+    "erased_skeleton_records": 30,
+    "input_artifact_and_suite_digests_verified": true
+  },
+  "private_state": "/private/tmp/adrl-improvement-msnln60g/experiment/state",
+  "declared_budget": {
+    "max_commands": 98,
+    "max_declared_timeout_s": 2940,
+    "meaning": "Admission ceilings, not a total wall-clock or resource guarantee."
+  },
+  "evidence_exports": {
+    "adrl-improvement-experiment-2026-09-07.patch": "5719559994beebba44bed14ec3aa914b7a2b16d4e1f5ad41b64b99a1730302a0",
+    "adrl-improvement-inputs-2026-09-07.json": "75b83b089cf5355bbd4bba9d46db178615cdf77e397531c373874109ffdbdf46",
+    "adrl-improvement-history-2026-09-07.json": "fd55c3e0bd9c27a8d00a26ecd9d357ef79a35bd76d15d807ed2122b5b8f52399",
+    "reproduce-verifier-experiment.py": "edfa88cd0bf9a3a0664fdf3fbd3dfccc408ef4d57bf1267dc3732ba6fc7f3847"
+  },
+  "limitations": [
+    "One task family; seven curated code variants, not seven organic coding tasks.",
+    "Proposer and fixture author are the same assistant; operator expected outcomes are assertions requiring review.",
+    "No genuine protected holdout; same-user Seatbelt sandbox does not restrict all reads.",
+    "Two repeats assess only repeat agreement in this environment; dependencies and OS are not frozen.",
+    "No automatic task-close output binding, proposal-generating service, remote verifier role or routing promotion.",
+    "Interrupted experiments may retain partial histories; no resume/idempotent retry API.",
+    "Exported evidence and code fixtures are separate copies not erased with the private archive key.",
+    "The public API remains preview 4; cross-harness verification and Responses runtime remain unvalidated."
+  ],
+  "reconstruction_validation": {
+    "status": "passed",
+    "fixed_cases_reconstructed": 7,
+    "candidate_and_baseline_artifacts_verified": true,
+    "relocated_suite_and_proposal_admitted": true,
+    "executed": false
+  }
+}

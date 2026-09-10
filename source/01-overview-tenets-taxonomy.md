@@ -1,5 +1,13 @@
 # ADRL — Overview, Design Tenets, Taxonomy & Maturity Model
 
+> **Current-context note, 2026-09-07:** The text below is the historical taxonomy supplied to
+> the original review. Its harness and maturity statements are not claims about the current
+> `adrl-core` build. The [current index](../INDEX.md) contains 77 decisions across ten bucket
+> directories, including the subsequently proposed TRU bucket. ADRL's product direction now
+> explicitly uses a shared engine, harness adapters and protocol profiles. The extracted
+> Messages boundary and local product services have scoped D2 evidence; live harness validation
+> and a Responses runtime are pending. See the [latest implementation record](../reports/adrl-product-services-implementation-2026-09-07.md).
+
 ## What ADRL is, in one paragraph
 
 ADRL is a transparent control layer between the coding harness (Claude Code / Codex CLI) and model execution. It decides **which model capability rung** should serve a piece of work — free local, cheap cloud, or frontier — while LiteLLM continues to own the concrete model endpoint, provider, retry and transport. The goal is to cut cloud spend and keep data local where possible **without the developer feeling a quality drop**.

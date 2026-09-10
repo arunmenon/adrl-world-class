@@ -1,0 +1,1126 @@
+{
+  "schema_version": "adrl-maturity-baseline-v1",
+  "date": "2026-09-07",
+  "decision_count": 77,
+  "mapped_decisions": 74,
+  "unmapped_decisions": [
+    "ADRL-EVL-001",
+    "ADRL-EVL-008",
+    "ADRL-RTG-007"
+  ],
+  "portfolio_score": null,
+  "promotion_count": 0,
+  "note": "Preserves mixed historical and scoped statements verbatim. No conversion into a numerical average; module presence is not tested behavior.",
+  "records": [
+    {
+      "adr_id": "ADRL-CAS-001",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D3 Shadow (trip-wires have post-call shadow evidence; the amendment adds a coverage measurement and a verifier-backed wire that are D2 work, and notes thresholds are untuned for reasoning models)",
+      "record_sha256_before_w0_note": "c17625b84611045109be0ea19fa2ff6d4847ecc77cc844298438eeeb535ac88a",
+      "citing_modules": [
+        "src/adrl/cascade/controller.py",
+        "src/adrl/cascade/tripwires.py",
+        "src/adrl/config/models.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-CAS-002",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (typing is implemented and tested; attribution precision against human labels is not yet reported and is added as a gate before these labels feed LRN)",
+      "record_sha256_before_w0_note": "4f749ddcc3c87bf1ca870ad83f064e3f18635957a462d72fd8b71cc5e7644359",
+      "citing_modules": [
+        "src/adrl/cascade/tripwires.py",
+        "src/adrl/config/checks.py",
+        "src/adrl/core/enums.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-CAS-003",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02 \u00b7 amended 2026-09-03 (proposed amendment, pending disposition)",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested only after the golden trace in the follow-ups exists; the current tests cover \"wait for boundary\" but not the streamed-partial-response and parallel-tool-call cases that are where a replay would actually occur",
+      "record_sha256_before_w0_note": "04c85734af8784afa76159084d70fd10317044cc49ad7d289d5f469135c60920",
+      "citing_modules": [
+        "src/adrl/cascade/boundary.py",
+        "src/adrl/cascade/controller.py",
+        "src/adrl/cascade/handoff.py",
+        "src/adrl/routing/side_effects.py",
+        "src/adrl/wire/observe.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-CAS-004",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D2 Tested \u2014 shadow mode cannot exercise a cross-provider continuation (it never sends the transformed transcript to the target model), so \"shadow evidence\" here is evidence that the transformation *runs*, not that any provider *accepts* it; D3 should be re-claimed only after replay tests against each live provider pair pass",
+      "record_sha256_before_w0_note": "67e48f9f36d35e1511ebdc8e7a56faee20cbbe9b51d9fb799b5d75f787746370",
+      "citing_modules": [
+        "src/adrl/cascade/controller.py",
+        "src/adrl/cascade/handoff.py",
+        "src/adrl/config/models.py",
+        "src/adrl/core/types.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-CAS-005",
+      "architectural_status_verbatim": "Accepted \u00b7 unchanged",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (hysteresis is implemented and tested; the ratchet-cost measurement in the follow-ups is needed before D3)",
+      "record_sha256_before_w0_note": "14663869bd349c67bc8562c70bed5315a3b170cf19b629e650eb41e7e7321dbe",
+      "citing_modules": [
+        "src/adrl/cascade/controller.py",
+        "src/adrl/cascade/sticky.py",
+        "src/adrl/learning/explore.py",
+        "src/adrl/ledger/outcomes.py",
+        "src/adrl/proxy/stages.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-CAS-006",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (served-rung correction is tested in `tests/test_router_proxy.py`; served-model capture and the state-loss case are untested and are added as gates for D3)",
+      "record_sha256_before_w0_note": "022e62bbc6e71a533309736d5ad721f5f49fc6128efa7242a6886d2553a46e81",
+      "citing_modules": [
+        "src/adrl/cascade/controller.py",
+        "src/adrl/cascade/sticky.py",
+        "src/adrl/core/types.py",
+        "src/adrl/ledger/state.py",
+        "src/adrl/proxy/pipeline.py",
+        "src/adrl/wire/observe.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-CAS-007",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (terminal-failure surfacing is tested; the retry-ownership contract with the gateway and the protocol-conformant error shape need tests before D3)",
+      "record_sha256_before_w0_note": "d380709496334dc449e266cecc34d7ec23beece164dad7d2b3e2706935b3795f",
+      "citing_modules": [
+        "src/adrl/cascade/controller.py",
+        "src/adrl/core/errors.py",
+        "src/adrl/proxy/errors.py",
+        "src/adrl/proxy/upstream.py",
+        "src/adrl/wire/profiles/messages_responses.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-CAS-008",
+      "architectural_status_verbatim": "Proposed 2026-09-02 (new, from adversarial review)",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design (depends on SEM-006, also D0; interim behaviour \u2014 passthrough \u2014 is what runs today)",
+      "record_sha256_before_w0_note": "f2b7dc02cc7888579b2d82606a3f791c862146057226f382f9a189408ebe17f5",
+      "citing_modules": [
+        "src/adrl/cascade/controller.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-CAS-009",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (new, from external review)",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design (the 2026-09-02 implementation trusts MCP hints unconditionally and classifies compound shell commands by their first word)",
+      "record_sha256_before_w0_note": "4ddcbc35f12b1435acc5c6e47eaed90df6b5381e62576048219d87fb1fb725f1",
+      "citing_modules": [
+        "src/adrl/routing/side_effects.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-EVL-001",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture)",
+      "maturity_statement_verbatim": "D0 Design; the overview records \"a best-single-model cost baseline exists\" (Phase 0), but no baseline set is defined as a versioned artifact; the adrl-core build carries price vectors but computes no baseline comparison",
+      "record_sha256_before_w0_note": "995f61e40bee03ab53519fd8a3782970f5e01517c9cd87d33e2b01207d4c4e43",
+      "citing_modules": [],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-EVL-002",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture)",
+      "maturity_statement_verbatim": "D1 Code; adrl-core `learning/dataset.py` implements temporal session-grouped splits and rejects random K-fold, and `learning/abstention.py` measures calibration on a time-ordered holdout; no protocol document or scorecard exists",
+      "record_sha256_before_w0_note": "3c725aab19d06181873ce83f97ccfb70317a4bdf1692b8fa6c0641afed0ef93e",
+      "citing_modules": [
+        "src/adrl/learning/dataset.py"
+      ],
+      "primary_review_wave": "W4",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-EVL-003",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture)",
+      "maturity_statement_verbatim": "D0 Design; adrl-core has a branched-pair contract and a subprocess branch runner (LRN-002), but no branch has been executed on organic traffic",
+      "record_sha256_before_w0_note": "04ebbd254736b19a46611dcb478e250ec54d512c3f1ec99aab63e8fcbe9cb395",
+      "citing_modules": [
+        "src/adrl/learning/pairs.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-EVL-004",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture; referenced by MEM-002, MEM-004, MEM-008, LRN-001 since 2026-08-27)",
+      "maturity_statement_verbatim": "D1 Code; adrl-core `ledger/readiness.py` counts only `task_capability` at `closed_final` and reports diversity and excluded fractions; the threshold itself has not been pre-registered",
+      "record_sha256_before_w0_note": "7bc9e3577e319573fc8c9604be065cf736d6ee5ffd31a0c478ec10943bb5751e",
+      "citing_modules": [
+        "src/adrl/learning/readiness.py",
+        "src/adrl/ledger/readiness.py"
+      ],
+      "primary_review_wave": "W4",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-EVL-005",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture; referenced by the overview, LRN-001, MEM-009 since 2026-08-27)",
+      "maturity_statement_verbatim": "D1 Code; adrl-core `learning/tiers.py` assigns simulator and benchmark examples to tier T4 and refuses to pool them with organic tiers; no scorecard separates them yet",
+      "record_sha256_before_w0_note": "f6e2048bc60e242008200a09e6a3be3775d4d15dd2409c288db97b40dafbff03",
+      "citing_modules": [
+        "src/adrl/learning/improvement.py",
+        "src/adrl/learning/tiers.py"
+      ],
+      "primary_review_wave": "W4",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-EVL-006",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture; referenced by LRN-003, LRN-007, LRN-008 since 2026-08-27)",
+      "maturity_statement_verbatim": "D0 Design; adrl-core has an `adrl learning evaluate` command that runs the estimators T1-only, but no evaluation report has been produced against a baseline version",
+      "record_sha256_before_w0_note": "306cdd8daae453d43d3a834e3fd4d5372f3e613e474a738779f6d983a6a04549",
+      "citing_modules": [
+        "src/adrl/cli/improvement.py",
+        "src/adrl/learning/artifacts.py",
+        "src/adrl/learning/improvement.py"
+      ],
+      "primary_review_wave": "W4",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-EVL-007",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture; referenced by LRN-005, LRN-007, LRN-008 since 2026-08-27)",
+      "maturity_statement_verbatim": "D1 Code; adrl-core `learning/artifacts.py` refuses any artifact without a signed graduation record and checks policy compatibility; no graduation has ever been performed and the signing key in use is a development key (OPS-002)",
+      "record_sha256_before_w0_note": "f9906c7c86f252c7de75ef83bc31764d1c0cec256af7ba71f99f34fd187cda7a",
+      "citing_modules": [
+        "src/adrl/learning/artifacts.py"
+      ],
+      "primary_review_wave": "W0",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-EVL-008",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture)",
+      "maturity_statement_verbatim": "D0 Design; the old repository published `reports/learning-readiness.md`; adrl-core produces a readiness report object but no scorecard document",
+      "record_sha256_before_w0_note": "d7d5a3229d36f3bfe2c6e4390114975087281542739f2d6ea4e76f5ace81092b",
+      "citing_modules": [],
+      "primary_review_wave": "W3",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-EVL-009",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture; referenced by the overview, MEM-006, MEM-010, LRN-006 since 2026-08-27)",
+      "maturity_statement_verbatim": "D1 Code; adrl-core `learning/readiness.py` and `ledger/readiness.py` list blockers by name and never fold them into a score; the blocker list itself is not yet pre-registered",
+      "record_sha256_before_w0_note": "d7243493b2e794f244017c20ed505f97b790b5fc4553c75deb3a59be54f71c02",
+      "citing_modules": [
+        "src/adrl/learning/improvement.py",
+        "src/adrl/learning/readiness.py",
+        "src/adrl/ledger/readiness.py"
+      ],
+      "primary_review_wave": "W0",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-FND-001",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02 \u00b7 product boundary clarified 2026-09-07",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D3 Shadow for the Anthropic-Messages path only; the Codex CLI (Responses API) path has no evidence and should carry D0",
+      "record_sha256_before_w0_note": "ce51cb4e2d30c67d3721581a13552feccb1aed262ecbbd0f597c15cd9ab87e97",
+      "citing_modules": [
+        "src/adrl/api/schema.py",
+        "src/adrl/app.py",
+        "src/adrl/proxy/asgi.py",
+        "src/adrl/proxy/observe_only.py",
+        "src/adrl/proxy/pipeline.py",
+        "src/adrl/proxy/upstream.py",
+        "src/adrl/wire/observe.py",
+        "src/adrl/wire/parse.py",
+        "src/adrl/wire/profiles/base.py",
+        "src/adrl/wire/profiles/messages.py",
+        "src/adrl/wire/rewrite.py"
+      ],
+      "primary_review_wave": "W5",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-FND-002",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02 \u00b7 amended 2026-09-03 (proposed amendment, pending disposition)",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (the split is implemented; the rung-closed fallback contract with the gateway is not yet tested and must be before D3)",
+      "record_sha256_before_w0_note": "4328f478243ac0d0872827c33f81392d830ef14e52a14ceee855f0b84ade1450",
+      "citing_modules": [
+        "src/adrl/app.py",
+        "src/adrl/config/checks.py",
+        "src/adrl/config/loaders.py",
+        "src/adrl/config/models.py",
+        "src/adrl/core/ports.py",
+        "src/adrl/gates/deployments.py",
+        "src/adrl/proxy/stages.py",
+        "src/adrl/wire/rewrite.py"
+      ],
+      "primary_review_wave": "W5",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-FND-003",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D3 Shadow (cache-hit evidence on real traffic supports it; the warm-up-request and subagent edge cases need golden tests before D4)",
+      "record_sha256_before_w0_note": "9a8a440628eefe27b07c6e5b95bdfb35bdb681f16b2f9947558f19feea77438b",
+      "citing_modules": [
+        "src/adrl/proxy/pipeline.py",
+        "src/adrl/wire/classify.py"
+      ],
+      "primary_review_wave": "W8A",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-FND-004",
+      "architectural_status_verbatim": "Superseded 2026-09-02 (see replacement)",
+      "maturity_statement_verbatim": "D4 Pilot, review recommends D3 Shadow \u2014 no decision in the register affects live execution for any population (\"live adaptive routing intentionally blocked\"), so nothing can be D4; and the failure-injection matrix has not been run against real traffic",
+      "record_sha256_before_w0_note": "35e19d600610997cf6d89b506b734641876312d82154105ad8ac90a563f4ac5d",
+      "citing_modules": [
+        "src/adrl/gates/pipeline.py",
+        "src/adrl/proxy/fallback.py",
+        "src/adrl/proxy/pipeline.py",
+        "src/adrl/telemetry/metrics.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-FND-005",
+      "architectural_status_verbatim": "Accepted \u00b7 unchanged",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D3 Shadow with a note: the D-scale measures runtime behaviour and fits a governance commitment poorly; the honest reading is \"the readiness tooling runs against shadow data and its verdicts have so far been respected\"",
+      "record_sha256_before_w0_note": "ec1849921d67ae4718d9ad52076d99089cf56932eeeae737bfa7ae1fd52b0eb1",
+      "citing_modules": [
+        "src/adrl/learning/readiness.py",
+        "src/adrl/ledger/readiness.py"
+      ],
+      "primary_review_wave": "W0",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-LRN-001",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D1 Code \u2014 `learning_contract.py` encodes the preference and is unit-tested, but with one strongly-verified task the tier-1 set is a single task, so the contract has never been exercised on a real training set",
+      "record_sha256_before_w0_note": "c206351fb6641f022301260c30c05d9ea79a360201a6812ae6975d441abd7e89",
+      "citing_modules": [
+        "src/adrl/learning/artifacts.py",
+        "src/adrl/learning/dataset.py",
+        "src/adrl/learning/estimator.py",
+        "src/adrl/learning/pairs.py",
+        "src/adrl/learning/readiness.py",
+        "src/adrl/learning/tiers.py",
+        "src/adrl/ledger/counterfactual.py",
+        "src/adrl/ledger/labels.py",
+        "src/adrl/ledger/session_verification.py"
+      ],
+      "primary_review_wave": "W4",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-LRN-002",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested for the pairing contract in `counterfactual.py`; the evidence it is meant to produce is effectively D0 (usable pair volume \"very low\"; no power target)",
+      "record_sha256_before_w0_note": "3dc75f2e78d82b1d5527a097c834812fc2a981f7ab18c105e5bfebf68bead20d",
+      "citing_modules": [
+        "src/adrl/learning/explore.py",
+        "src/adrl/learning/pairs.py",
+        "src/adrl/learning/readiness.py",
+        "src/adrl/learning/tiers.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-LRN-003",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design \u2014 nothing is built and the amended text does not change that",
+      "record_sha256_before_w0_note": "649f2ebd45be3199cd0f8849bf2d86a81191960e2a0fa951484e9263043b0d47",
+      "citing_modules": [
+        "src/adrl/learning/estimator.py"
+      ],
+      "primary_review_wave": "W9",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-LRN-004",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D1 Code \u2014 the prohibition is stated in `learning_contract.py` and tested as a rule, but the enforcement mechanisms (decision-time feature snapshot, time-respecting projections, temporal split) do not exist, so leakage is currently prevented by convention",
+      "record_sha256_before_w0_note": "ee112427826ded8b4fd29faa4aa0328e26139b49c8e1cdd6b245f4af2437663f",
+      "citing_modules": [
+        "src/adrl/config/checks.py",
+        "src/adrl/config/models.py",
+        "src/adrl/learning/abstention.py",
+        "src/adrl/learning/artifacts.py",
+        "src/adrl/learning/dataset.py",
+        "src/adrl/learning/estimator.py",
+        "src/adrl/ledger/projections.py",
+        "src/adrl/routing/features.py"
+      ],
+      "primary_review_wave": "W4",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-LRN-005",
+      "architectural_status_verbatim": "Accepted \u00b7 unchanged",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested for the contract (`learning_contract.py`, `learning-contract-v1.json` are tested), with the explicit note that no learned artifact has ever been produced, so the contract has been tested against fixtures only",
+      "record_sha256_before_w0_note": "119f739c55d947d09fffcf0495c7a759b23a157a258e90d5dc4fb2451f96d673",
+      "citing_modules": [
+        "src/adrl/config/models.py",
+        "src/adrl/learning/artifacts.py",
+        "src/adrl/learning/explore.py",
+        "src/adrl/learning/improvement.py",
+        "src/adrl/ledger/improvement.py"
+      ],
+      "primary_review_wave": "W4",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-LRN-006",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design \u2014 nothing built; the amendment adds that the abstention gate should reach D2 *before* the estimator (LRN-003) is trained, which the register itself suggests",
+      "record_sha256_before_w0_note": "3dff1399a85959d79f220828a571e3f38564c7792b5842b115dfc6107d9930fe",
+      "citing_modules": [
+        "src/adrl/learning/abstention.py",
+        "src/adrl/learning/readiness.py"
+      ],
+      "primary_review_wave": "W9",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-LRN-007",
+      "architectural_status_verbatim": "Accepted \u00b7 unchanged",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design \u2014 the graduation pipeline (EVL-006/007) is the thing that would implement it and it has never been exercised",
+      "record_sha256_before_w0_note": "bfdf430072e18394b4999db6542893f98dac0ebc984612dd1f0111ca1c2996b8",
+      "citing_modules": [
+        "src/adrl/app.py",
+        "src/adrl/cli/improvement.py",
+        "src/adrl/learning/artifacts.py",
+        "src/adrl/learning/improvement.py"
+      ],
+      "primary_review_wave": "W4",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-LRN-008",
+      "architectural_status_verbatim": "Proposed 2026-09-02 (new, from adversarial review)",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design \u2014 nothing exists",
+      "record_sha256_before_w0_note": "5022aec4314fe913c90b488935fd8eb2b9e9a83cf8ff06c1fd70da3646d83c1f",
+      "citing_modules": [
+        "src/adrl/learning/explore.py",
+        "src/adrl/learning/tiers.py",
+        "src/adrl/routing/advisor.py",
+        "src/adrl/routing/router.py"
+      ],
+      "primary_review_wave": "W9",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-MEM-001",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (the append discipline is tested; the amended clauses on schema versioning, idempotency and erasure are D0 until a test exists)",
+      "record_sha256_before_w0_note": "59db629baa696c73bf83c1fd1cb388f20c0069386743cc2324a5e5fce33d93cb",
+      "citing_modules": [
+        "src/adrl/api/client.py",
+        "src/adrl/api/contracts.py",
+        "src/adrl/api/service.py",
+        "src/adrl/api/store.py",
+        "src/adrl/cli/ledger_commands.py",
+        "src/adrl/core/enums.py",
+        "src/adrl/core/ids.py",
+        "src/adrl/ledger/events.py",
+        "src/adrl/ledger/facade.py",
+        "src/adrl/ledger/improvement.py",
+        "src/adrl/ledger/replay.py",
+        "src/adrl/ledger/session_verification.py",
+        "src/adrl/ledger/store.py",
+        "src/adrl/ledger/upcast.py"
+      ],
+      "primary_review_wave": "W3",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-MEM-002",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested for the state machine only; the closing window has never been measured against organic human corrections, so the claim \"closed_final catches late evidence\" is D0",
+      "record_sha256_before_w0_note": "cbbf16653fa28dd2bf0fd0b19fce085df400f7a9f644b3c3ce4898fe1fa72c44",
+      "citing_modules": [
+        "src/adrl/cli/ledger_commands.py",
+        "src/adrl/config/models.py",
+        "src/adrl/learning/tiers.py",
+        "src/adrl/ledger/events.py",
+        "src/adrl/ledger/labels.py",
+        "src/adrl/ledger/outcomes.py",
+        "src/adrl/ledger/readiness.py",
+        "src/adrl/ledger/verification.py"
+      ],
+      "primary_review_wave": "W3",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-MEM-003",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested for the non-overwrite contract; note that only one task has strong verification, so the contract has one real exercise",
+      "record_sha256_before_w0_note": "4f4ee9d2d66ab8f65b9992f4b82da8dd231428396eaed314205db4ff496a4686",
+      "citing_modules": [
+        "src/adrl/cli/ledger_commands.py",
+        "src/adrl/learning/improvement.py",
+        "src/adrl/learning/tiers.py",
+        "src/adrl/ledger/events.py",
+        "src/adrl/ledger/labels.py",
+        "src/adrl/ledger/session_verification.py",
+        "src/adrl/ledger/verification.py"
+      ],
+      "primary_review_wave": "W3",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-MEM-004",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested for the enum and its unit tests; the claim that the typing is *complete* is D0 \u2014 no organic failure corpus has been coded against it",
+      "record_sha256_before_w0_note": "e5445117e646e70be03030ed38a83e60e96e18af39de9c8b53d36c4b87551f9f",
+      "citing_modules": [
+        "src/adrl/cli/ledger_commands.py",
+        "src/adrl/core/enums.py",
+        "src/adrl/learning/artifacts.py",
+        "src/adrl/learning/tiers.py",
+        "src/adrl/ledger/events.py",
+        "src/adrl/ledger/labels.py",
+        "src/adrl/ledger/outcomes.py",
+        "src/adrl/ledger/readiness.py",
+        "src/adrl/ledger/upcast.py"
+      ],
+      "primary_review_wave": "W4",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-MEM-005",
+      "architectural_status_verbatim": "Superseded 2026-09-02 (see replacement) \u00b7 replacement amended 2026-09-03 (proposed amendment, pending disposition)",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D1 Code for the replacement \u2014 the suppression path is tested, but the replacement's storage-class, retention and late-pin clauses have no implementation",
+      "record_sha256_before_w0_note": "8ba26e1fb1b24a149027e3432ee967441cfbf290bdb54180deceea2094bf5943",
+      "citing_modules": [
+        "src/adrl/api/client.py",
+        "src/adrl/core/ports.py",
+        "src/adrl/gates/repo_class.py",
+        "src/adrl/gates/suppression.py",
+        "src/adrl/learning/abstention.py",
+        "src/adrl/ledger/crypto.py",
+        "src/adrl/ledger/embeddings.py",
+        "src/adrl/ledger/erasure.py",
+        "src/adrl/ledger/improvement.py",
+        "src/adrl/ledger/keystore.py",
+        "src/adrl/ledger/shadow_retrieval.py",
+        "src/adrl/ledger/verification.py"
+      ],
+      "primary_review_wave": "W3",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-MEM-006",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested for the facade/NullProvider path; the \"SQLite is not a semantic dependency\" claim is D1 at best because sticky session state lives outside the facade in a process-local dict",
+      "record_sha256_before_w0_note": "86d3e2b8aeea0cec61f0e67a46d70e0e21415c5367f453f91ec41cf56fefec33",
+      "citing_modules": [
+        "src/adrl/core/ports.py",
+        "src/adrl/learning/abstention.py",
+        "src/adrl/ledger/facade.py",
+        "src/adrl/ledger/readiness.py",
+        "src/adrl/ledger/state.py",
+        "src/adrl/ledger/store.py",
+        "src/adrl/proxy/observe_only.py",
+        "src/adrl/telemetry/metrics.py"
+      ],
+      "primary_review_wave": "W5",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-MEM-007",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested, conditional on a rebuild-equivalence test existing; if cross-process detection relies on file mtime it is D1",
+      "record_sha256_before_w0_note": "6ed5bfd559b84242ef0043bd95e856d3aa304e8f5cc3f4aa8cdff74bcb380079",
+      "citing_modules": [
+        "src/adrl/learning/dataset.py",
+        "src/adrl/ledger/erasure.py",
+        "src/adrl/ledger/projections.py",
+        "src/adrl/ledger/replay.py",
+        "src/adrl/ledger/shadow_retrieval.py",
+        "src/adrl/ledger/store.py"
+      ],
+      "primary_review_wave": "W8B",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-MEM-008",
+      "architectural_status_verbatim": "Accepted \u00b7 unchanged",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D3 Shadow \u2014 `shadow_retrieval.py` runs against real traffic without authority, which is the D3 definition; the shadow *measurement* itself is thin (34/300 evaluated decisions) but that is what D3 is for",
+      "record_sha256_before_w0_note": "32418942ab3f53fbf134ede2730b0f83aed6659be287e87a4c62b4a3261f2cd4",
+      "citing_modules": [
+        "src/adrl/ledger/shadow_retrieval.py"
+      ],
+      "primary_review_wave": "W9",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-MEM-009",
+      "architectural_status_verbatim": "Accepted \u00b7 unchanged",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested \u2014 `counterfactual.py` and `live_verification.py` enforce explicit binding under test; usable volume is very low but that is a corpus fact, not a maturity fact",
+      "record_sha256_before_w0_note": "f4b5aa8c6c0105eae41e40f4043077260c7316ae99451116e8e672fba3d77baa",
+      "citing_modules": [
+        "src/adrl/learning/pairs.py",
+        "src/adrl/ledger/counterfactual.py",
+        "src/adrl/ledger/events.py",
+        "src/adrl/ledger/verification.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-MEM-010",
+      "architectural_status_verbatim": "Proposed 2026-09-02 (new, from adversarial review) \u00b7 amended 2026-09-03 (proposed amendment, pending disposition)",
+      "maturity_statement_verbatim": "Historical review baseline: D0. Product observation erasure has scoped D2 evidence (2026-09-07); full ledger/derived-data/client-copy erasure remains incomplete",
+      "record_sha256_before_w0_note": "477601414b625e612283e7ba2b3734055b4642dd14916d9c524db0d490b3a369",
+      "citing_modules": [
+        "src/adrl/api/store.py",
+        "src/adrl/cli/improvement.py",
+        "src/adrl/cli/ledger_commands.py",
+        "src/adrl/config/models.py",
+        "src/adrl/core/ports.py",
+        "src/adrl/ledger/crypto.py",
+        "src/adrl/ledger/embeddings.py",
+        "src/adrl/ledger/erasure.py",
+        "src/adrl/ledger/events.py",
+        "src/adrl/ledger/improvement.py",
+        "src/adrl/ledger/keystore.py",
+        "src/adrl/ledger/projections.py",
+        "src/adrl/ledger/retention.py",
+        "src/adrl/ledger/session_verification.py",
+        "src/adrl/ledger/verification.py"
+      ],
+      "primary_review_wave": "W3",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-OPS-001",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture; referenced by MEM-006, CAS-006, SEM-002 since 2026-08-27)",
+      "maturity_statement_verbatim": "D1 Code; adrl-core keeps sticky state and pins behind a `StateProvider` port with a SQLite adapter and declares the remaining process-local state (pending escalations, verifier consumption, parent map priming) in `docs/known-gaps.md`; no multi-process deployment has been attempted",
+      "record_sha256_before_w0_note": "d801889f989115cbf6e3a025ad0d137edd2e05f97c6d423caa88a14342fadebf",
+      "citing_modules": [
+        "src/adrl/cli/main.py",
+        "src/adrl/config/settings.py",
+        "src/adrl/telemetry/logging.py"
+      ],
+      "primary_review_wave": "W0",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-OPS-002",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture)",
+      "maturity_statement_verbatim": "D0 Design; adrl-core has a file keystore for the host HMAC key and per-session keys, but the manifest-signing development key also signs egress checkpoints and is loaded unconditionally (2026-09-03 external review, P0)",
+      "record_sha256_before_w0_note": "cd3032321e250ae535d7aec58250bb6e2ab15b9382d371cf6971da8cdf473edc",
+      "citing_modules": [
+        "src/adrl/ledger/anchoring.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-OPS-003",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture)",
+      "maturity_statement_verbatim": "D0 Design; adrl-core generates a LiteLLM config from `rungs.yaml` and `gateway-endpoints.yaml` with rung-closed checks, but the inventory is unsigned and carries no trust zone, so a local group pointed at an external host passes every check (2026-09-03 external review, P0)",
+      "record_sha256_before_w0_note": "6d607bae084835011cded5002b4ee3dee03c2bf911310d10a6d8a03ddac83120",
+      "citing_modules": [
+        "src/adrl/config/checks.py"
+      ],
+      "primary_review_wave": "W0",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-OPS-004",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture)",
+      "maturity_statement_verbatim": "D0 Design; adrl-core has replay from events and crypto-shredding by session, but no backup procedure, and prompt-class fields still exist in plaintext rows (2026-09-03 external review, P1)",
+      "record_sha256_before_w0_note": "15254c4669f5e7126de52247516d4e684b5ceed036108391c7f70485922639a4",
+      "citing_modules": [
+        "src/adrl/ledger/erasure.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-OPS-005",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture)",
+      "maturity_statement_verbatim": "D1 Code; adrl-core has independent modes for gates, routing and fallback, but gate observe mode still writes durable pins and triggers suppression before the mode is consulted (2026-09-03 external review, P1)",
+      "record_sha256_before_w0_note": "988463cd198ddeeb443133df1e50fae604f23dc2f9e03414c54ef93f899b7f64",
+      "citing_modules": [
+        "src/adrl/gates/pin.py",
+        "src/adrl/gates/pipeline.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-OPS-006",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture; referenced by CAS-006, RTG-008, LRN-004, MEM-006 since 2026-08-27)",
+      "maturity_statement_verbatim": "D2 Tested; adrl-core records `served_rung`, `served_model`, `served_provider` and `served_source` from the gateway header, then `message_start.model`, else `assumed_intended`, under unit and end-to-end tests; no organic traffic yet, so D3 is not claimed (EVL-007)",
+      "record_sha256_before_w0_note": "52d80794ef166c673c465ce08c6c9fea2171f17636cb516d94cd70adbcf76ba0",
+      "citing_modules": [
+        "src/adrl/cascade/sticky.py",
+        "src/adrl/wire/observe.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-OPS-007",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture)",
+      "maturity_statement_verbatim": "D0 Design; adrl-core has a manual checkpoint method and chain verification, no automatic checkpoints, no shipping, no signature verification in the CLI, and no runbooks (2026-09-03 external review, P0)",
+      "record_sha256_before_w0_note": "d929a6605e714bf27ed2dbfe92c836d4ce6bd0f535cf4a679c69d66558b3f643",
+      "citing_modules": [
+        "src/adrl/ledger/anchoring.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-OPS-008",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (first capture)",
+      "maturity_statement_verbatim": "D1 Code; adrl-core counts fail-open events by failure class and pin state and records bypass events, but thresholds are not pre-registered and no alert route exists",
+      "record_sha256_before_w0_note": "ce03bcee50f6e70d99a87af2b876146f31c3024b2fcf78354c141194b6b510d9",
+      "citing_modules": [
+        "src/adrl/proxy/fallback.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-RTG-001",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02 \u00b7 amended 2026-09-03 (proposed amendment, pending disposition)",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D3 Shadow for the rung *model*, but the local rung's capability boundary is unmeasured (Phase 0 non-claim), so the register must carry that qualifier",
+      "record_sha256_before_w0_note": "72bc11406c9275c8aedf35a3ab41d1a54fe21bb207d667eb284495399da68d85",
+      "citing_modules": [
+        "src/adrl/config/checks.py",
+        "src/adrl/config/models.py",
+        "src/adrl/routing/registry.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-RTG-002",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (the ordering rule is tested; the completion-probability inputs it consumes are heuristic and unverified, which clause 1 now makes explicit)",
+      "record_sha256_before_w0_note": "a4603c1e0b33f177a92a5ceaf6d58220dddb3031b1d405164819757d86240c05",
+      "citing_modules": [
+        "src/adrl/config/models.py",
+        "src/adrl/core/types.py",
+        "src/adrl/proxy/stages.py",
+        "src/adrl/routing/cost.py",
+        "src/adrl/routing/policy.py",
+        "src/adrl/routing/router.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-RTG-003",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D3 Shadow (band split has shadow evidence; per-band rule precision on verified outcomes is not yet reported and is added as a gate)",
+      "record_sha256_before_w0_note": "3bbbb0e5e472282d3b9acf451612600e7eb7840bf1856a3b8b90b786ab0ab005",
+      "citing_modules": [
+        "src/adrl/config/models.py",
+        "src/adrl/routing/features.py",
+        "src/adrl/routing/policy.py",
+        "src/adrl/routing/router.py",
+        "src/adrl/routing/rule_health.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-RTG-004",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (feasibility check is tested; the bounded-attempt and workspace-clean conditions added here need their own tests before the level is re-confirmed)",
+      "record_sha256_before_w0_note": "a6946a715ffa5a9fff8a04503e30795e19205c2a351cd43ec2eaee44272fe2ed",
+      "citing_modules": [
+        "src/adrl/config/models.py",
+        "src/adrl/routing/cascade_feasibility.py",
+        "src/adrl/routing/router.py",
+        "src/adrl/routing/side_effects.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-RTG-005",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D2 Tested for the decision as a *routing criterion*: telemetry collection for the four terms is in shadow, but the objective itself has never been evaluated against a baseline on real traffic (one verified task; 34/300 decisions), so \"shadow\" over-states what has been observed",
+      "record_sha256_before_w0_note": "b4cf4b7bfe2a1ec36fbfa5f61a5816076dcd915b342d34e1954fd007398d5282",
+      "citing_modules": [
+        "src/adrl/config/models.py",
+        "src/adrl/routing/cost.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-RTG-006",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D3 Shadow (bake-off and shadow reports exist; the amendment adds constraints that are testable at D2 and do not lower the shadow evidence already gathered)",
+      "record_sha256_before_w0_note": "7be71bc17c4cd49e58dca54257d46d31d097ac24d040953f25795ee894355244",
+      "citing_modules": [
+        "src/adrl/routing/advisor.py",
+        "src/adrl/routing/router.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-RTG-007",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02 \u00b7 amended 2026-09-03 (proposed amendment, pending disposition)",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design (unchanged; nothing is built and the amendment adds a pre-build gate, not implementation)",
+      "record_sha256_before_w0_note": "b49e789149f5f9beefbe60839bd6a6d12c12588d98cd27775d3bccf58b5ede70",
+      "citing_modules": [],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-RTG-008",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (separation is tested; the gateway-side contract added here is a Q7 deliverable and does not change the level)",
+      "record_sha256_before_w0_note": "859c6e5f2db086d8a38f72db8b3ff8a5df7ad270217bd7f56245399b60d2fcbc",
+      "citing_modules": [
+        "src/adrl/gates/deployments.py",
+        "src/adrl/routing/registry.py",
+        "src/adrl/telemetry/semconv.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-RTG-009",
+      "architectural_status_verbatim": "Proposed 2026-09-02 (new, from adversarial review)",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design (partial telemetry exists in `telemetry.py`/`outcomes.py`; the accounting rule itself is not implemented)",
+      "record_sha256_before_w0_note": "6a3a8ec6dd998acc25c5fce2013dc2242a0bdfff682d4bbcbd51474f16b03251",
+      "citing_modules": [
+        "src/adrl/config/models.py",
+        "src/adrl/core/types.py",
+        "src/adrl/routing/cost.py",
+        "src/adrl/routing/router.py",
+        "src/adrl/wire/observe.py"
+      ],
+      "primary_review_wave": "W7",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SAF-001",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (gates are tested, not attacked; the per-request scope introduced here is untested)",
+      "record_sha256_before_w0_note": "11b5f6eda1709f9716610d7481a701ad0c80bb000ba27af34cad2d961e6c0f4a",
+      "citing_modules": [
+        "src/adrl/core/types.py",
+        "src/adrl/gates/deployments.py",
+        "src/adrl/gates/pipeline.py",
+        "src/adrl/learning/explore.py",
+        "src/adrl/proxy/fallback.py",
+        "src/adrl/proxy/pipeline.py",
+        "src/adrl/proxy/stages.py",
+        "src/adrl/telemetry/metrics.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SAF-002",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D1 Code \u2014 the pin is tested as an in-memory rule, but the property the decision promises (\"stays local-only\") is not implemented: pin state lives in a single-process Python dict and does not survive a proxy restart, and it does not cover passthrough, utility or subagent traffic",
+      "record_sha256_before_w0_note": "47e922be2ff1ababccb4e51e7f220ee65e995f9d225a64d5229d53786640dbfd",
+      "citing_modules": [
+        "src/adrl/gates/cli.py",
+        "src/adrl/gates/pin.py",
+        "src/adrl/gates/pipeline.py",
+        "src/adrl/learning/explore.py",
+        "src/adrl/learning/pairs.py",
+        "src/adrl/ledger/embeddings.py",
+        "src/adrl/ledger/erasure.py",
+        "src/adrl/ledger/facade.py",
+        "src/adrl/ledger/state.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SAF-003",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D3 Shadow conditional on publishing the shadow precision measurement; if no per-detector precision figure exists from real traffic, D2",
+      "record_sha256_before_w0_note": "6b80b05f1eb4ef2abae0a1fe75c7a1d5d72eb66a06ddb300054a197f0139dc9c",
+      "citing_modules": [
+        "src/adrl/core/ports.py",
+        "src/adrl/gates/cli.py",
+        "src/adrl/gates/content.py",
+        "src/adrl/gates/coverage.py",
+        "src/adrl/gates/detectors.py",
+        "src/adrl/gates/measure.py",
+        "src/adrl/gates/pipeline.py",
+        "src/adrl/gates/secrets.py",
+        "src/adrl/gates/suppression.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SAF-004",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (the surfacing contract with the harness is untested; the no-cloud rule depends on FND-002's rung-closed fallback, also untested)",
+      "record_sha256_before_w0_note": "af97e86c911eead28bfb529612aa65ec2f46412a0f5f1ba4ee640da2db56b4bd",
+      "citing_modules": [
+        "src/adrl/core/errors.py",
+        "src/adrl/gates/block.py",
+        "src/adrl/wire/profiles/messages_responses.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SAF-005",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (blocking is tested; recoverability against the real harness is not, and the compaction deadlock has not been ruled out)",
+      "record_sha256_before_w0_note": "26e65e4093867416372d212eb71b2c1a6860fbc1f480e93547a15aa3d0ca760b",
+      "citing_modules": [
+        "src/adrl/config/checks.py",
+        "src/adrl/core/errors.py",
+        "src/adrl/gates/block.py",
+        "src/adrl/gates/feasibility.py",
+        "src/adrl/gates/pipeline.py",
+        "src/adrl/telemetry/metrics.py",
+        "src/adrl/wire/profiles/messages_responses.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SAF-006",
+      "architectural_status_verbatim": "Accepted \u00b7 unchanged",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (correct; the feasibility estimator's tokenizer and budget assumptions need a measured error bound before D3)",
+      "record_sha256_before_w0_note": "e6b9201184b56d4bad20cc885f793a90fb2badadd18adcad8b7ac9381b4572fc",
+      "citing_modules": [
+        "src/adrl/core/ports.py",
+        "src/adrl/gates/content.py",
+        "src/adrl/gates/feasibility.py",
+        "src/adrl/gates/pipeline.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SAF-007",
+      "architectural_status_verbatim": "Superseded 2026-09-02 (see replacement)",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D1 Code for the post-hoc diff check that exists and D0 Design for the OS-enforced sandbox that the replacement requires; the D2 claim describes a detective control while the decision text describes a preventive one",
+      "record_sha256_before_w0_note": "db3de11d63b3d6931340fcf3f6c6fd1116d9aa6e174a1288673814f5f76bc316",
+      "citing_modules": [
+        "src/adrl/core/ports.py",
+        "src/adrl/gates/cli.py",
+        "src/adrl/gates/sandbox.py",
+        "src/adrl/ledger/session_verification.py",
+        "src/adrl/ledger/verification.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SAF-008",
+      "architectural_status_verbatim": "Proposed 2026-09-02 (new, from adversarial review) \u00b7 superseded in part by TRU-001 (identity) and TRU-002 (residency) on 2026-09-03, pending disposition; clause 3 (PII tier) remains a SAF control",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design (nothing built; the register itself lists \"data-residency constraints for specific repositories are not yet expressed as a gate\")",
+      "record_sha256_before_w0_note": "687a248f3dfa590d751f9f78df3caf3682671c412cd355f386c69dc47074dd21",
+      "citing_modules": [
+        "src/adrl/config/loaders.py",
+        "src/adrl/config/models.py",
+        "src/adrl/gates/content.py",
+        "src/adrl/gates/deployments.py",
+        "src/adrl/gates/pipeline.py",
+        "src/adrl/gates/repo_class.py",
+        "src/adrl/gates/workload.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SAF-009",
+      "architectural_status_verbatim": "Proposed 2026-09-02 (new, from adversarial review) \u00b7 superseded by TRU-003 on 2026-09-03, pending disposition; schema and rules retained by reference",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design",
+      "record_sha256_before_w0_note": "d88f291bb0c3c9c2177e1c94a781b3ec5129a56596b70c83825473901eebf882",
+      "citing_modules": [
+        "src/adrl/cli/main.py",
+        "src/adrl/gates/cli.py",
+        "src/adrl/gates/deployments.py",
+        "src/adrl/gates/egress.py",
+        "src/adrl/gates/pipeline.py",
+        "src/adrl/ledger/anchoring.py",
+        "src/adrl/ledger/egress.py",
+        "src/adrl/proxy/fallback.py",
+        "src/adrl/proxy/pipeline.py",
+        "src/adrl/telemetry/metrics.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SEM-001",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D3 Shadow (single-user corpus; pre-warm class and header-based signals must be added to the canary tests before D4)",
+      "record_sha256_before_w0_note": "527bdbb2a6acb5a20e39dcaf5789e9c84f8c81073798be7345a688c27e5a3d38",
+      "citing_modules": [
+        "src/adrl/core/types.py",
+        "src/adrl/gates/feasibility.py",
+        "src/adrl/telemetry/metrics.py",
+        "src/adrl/wire/classify.py",
+        "src/adrl/wire/parse.py"
+      ],
+      "primary_review_wave": "W5",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SEM-002",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D3 Shadow for the key *derivation*; D1 for key *durability* (session\u2192route state is a single-process Python dict, so the key's meaning does not survive a proxy restart)",
+      "record_sha256_before_w0_note": "0eabdcb69d9921631f7297b83637cfd1f4325dd6e07c7b9cc969f0c898825f01",
+      "citing_modules": [
+        "src/adrl/api/auth.py",
+        "src/adrl/core/ids.py",
+        "src/adrl/wire/adapters.py",
+        "src/adrl/wire/identity.py"
+      ],
+      "primary_review_wave": "W3",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SEM-003",
+      "architectural_status_verbatim": "Accepted \u00b7 unchanged",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D3 Shadow \u2014 the Phase 0 cache-hit measurement on real traffic is shadow-grade evidence for exactly this rule, and the register under-claims",
+      "record_sha256_before_w0_note": "20d6de1d7aff5b7b2ac9b7344492a6c0ff69c31cd57fd1a92aab1847d06fcdef",
+      "citing_modules": [
+        "src/adrl/proxy/pipeline.py"
+      ],
+      "primary_review_wave": "W3",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SEM-004",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D3 Shadow, review recommends D2 Tested \u2014 the corpus finding (utility calls run on Opus/Sonnet with tiny budgets) contradicts the design assumption the decision was written under, and the split introduced here is untested",
+      "record_sha256_before_w0_note": "f1f1af99485a064b80a43579341bf54c7d46b56a1af29d544242be52061051b1",
+      "citing_modules": [
+        "src/adrl/config/models.py",
+        "src/adrl/gates/block.py",
+        "src/adrl/proxy/pipeline.py",
+        "src/adrl/wire/classify.py",
+        "src/adrl/wire/profiles/messages_responses.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SEM-005",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D2 Tested, review recommends D2 Tested (correct; but the decision is unfalsifiable until boundary precision/recall is measured in shadow \u2014 see follow-ups)",
+      "record_sha256_before_w0_note": "67e97b6a143ef0b143dc4d0462337080607997ed31aa44fda63378ea4b63967d",
+      "citing_modules": [
+        "src/adrl/cascade/sticky.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SEM-006",
+      "architectural_status_verbatim": "Accepted \u00b7 amended 2026-09-02",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 for routing identity and evidence separation, but requires the constraint-inheritance half to reach D2 *before* any live pilot \u2014 because the current interim (passthrough) violates SAF-002 for forked subagents",
+      "record_sha256_before_w0_note": "98c2ff23f3049b95f5a26f2d557ddadfc86f5f6db1a6fe930b8ee48db09429a2",
+      "citing_modules": [
+        "src/adrl/cascade/controller.py",
+        "src/adrl/proxy/observe_only.py",
+        "src/adrl/proxy/pipeline.py",
+        "src/adrl/wire/identity.py"
+      ],
+      "primary_review_wave": "W3",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-SEM-007",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (new, from external review)",
+      "maturity_statement_verbatim": "D2 for the Messages boundary and local services, plus one bounded live observation pilot (2026-09-07). Full cross-protocol contract remains incomplete, D0 for the second profile; no general D3/D4 graduation or live gateway validation",
+      "record_sha256_before_w0_note": "037bba20aaaf59534b3eee67f2fa2fbe9a5e31b53dc462ab766950d2a239c1c8",
+      "citing_modules": [
+        "src/adrl/api/client.py",
+        "src/adrl/api/contracts.py",
+        "src/adrl/api/http.py",
+        "src/adrl/api/schema.py",
+        "src/adrl/api/service.py",
+        "src/adrl/cli/product.py",
+        "src/adrl/ledger/session_verification.py",
+        "src/adrl/proxy/errors.py",
+        "src/adrl/wire/adapters.py",
+        "src/adrl/wire/profiles/base.py",
+        "src/adrl/wire/profiles/messages.py",
+        "src/adrl/wire/profiles/messages_responses.py"
+      ],
+      "primary_review_wave": "W5",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-TRU-001",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (new, from external review)",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design (the 2026-09-02 implementation resolves identity from prompt text, which this decision forbids)",
+      "record_sha256_before_w0_note": "0e5dbfe9b504a6ee5d147a6d04e3fcf4fde3b085173391b2a9a3d83d11feedd9",
+      "citing_modules": [
+        "src/adrl/api/auth.py",
+        "src/adrl/api/contracts.py",
+        "src/adrl/api/http.py",
+        "src/adrl/api/service.py",
+        "src/adrl/cli/product.py",
+        "src/adrl/gates/repo_class.py",
+        "src/adrl/gates/workload.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-TRU-002",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (new, from external review)",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design (the 2026-09-02 implementation tightens a set of rung labels; nothing compares a deployment's geography or host to policy)",
+      "record_sha256_before_w0_note": "009d5b1c4d5880d0e74fb6c19b5d5bc8886f47ae447442353afead32fadf4edd",
+      "citing_modules": [
+        "src/adrl/core/types.py",
+        "src/adrl/gates/deployments.py",
+        "src/adrl/proxy/pipeline.py",
+        "src/adrl/wire/observe.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    },
+    {
+      "adr_id": "ADRL-TRU-003",
+      "architectural_status_verbatim": "Proposed 2026-09-03 (new, from external review)",
+      "maturity_statement_verbatim": "D0 Design, review recommends D0 Design (the 2026-09-02 implementation has a hash chain, a manual checkpoint method signed with the development manifest key, and a verifier that ignores signatures)",
+      "record_sha256_before_w0_note": "b4159d83c2a9c38633ef0558cd64ffab3c28a1a81d588912cdaa77b8c10e7278",
+      "citing_modules": [
+        "src/adrl/ledger/anchoring.py",
+        "src/adrl/ledger/egress.py"
+      ],
+      "primary_review_wave": "W6",
+      "interpretation": "Existing recorded claim; W0 has not independently validated its whole promise or promoted it."
+    }
+  ]
+}

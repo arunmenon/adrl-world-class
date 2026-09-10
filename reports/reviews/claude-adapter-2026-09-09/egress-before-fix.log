@@ -1,0 +1,46 @@
+...F.                                                                    [100%]
+=================================== FAILURES ===================================
+___________ test_pipeline_records_forced_choice_and_preserves_fields ___________
+
+harness = Harness(settings=Settings(listen_host='127.0.0.1', listen_port=8788, gateway_base_url='http://fake-gateway', gateway_t...lver object at 0x10a4ab620>, state=<tests.integration.proxy.conftest.DictStateProvider object at 0x10abd0e30>, sent=[])
+
+    async def test_pipeline_records_forced_choice_and_preserves_fields(harness):
+        pipeline = build(harness, qualify=True)
+        harness.gateway_state.served_model = "claude-sonnet-5"
+        # Even a gateway-style header must not override direct-provider model observation.
+        harness.gateway_state.served_model_header = "fake-litellm-id"
+        fixture = load_fixture("user_turn")
+        payload = {**fixture["body"], "max_tokens": 1024}
+        original = json.loads(json.dumps(payload))
+        response = await pipeline.handle(
+            "POST",
+            "/v1/messages",
+            fixture.get("headers", {}),
+            json.dumps(payload).encode(),
+            ("127.0.0.1", 1),
+        )
+        if response.stream is not None:
+            async for _ in response.stream:
+                pass
+        if response.after is not None:
+            await response.after()
+        await pipeline.drain()
+        assert response.status == 200
+        sent = harness.last_gateway_body()
+        original["model"] = "claude-sonnet-5"
+        assert sent == original
+        decisions = harness.decisions()
+        assert decisions[-1]["estimator"] == "experiment_forced_claude"
+        served = harness.events("served")[-1]["payload"]
+        assert served["served_model"] == "claude-sonnet-5"
+        assert served["served_source"] == "proxy_observed"
+        assert served["served_deployment_id"] is None
+        assert served["intended_deployment_id"] == "offline-direct-sonnet"
+        rows = harness.egress.events_for_lineage(pipeline._claude_experiment.selection.lineage, "served_receipt")
+>       assert rows[-1]["deployment_id"] is None
+E       AssertionError: assert 'offline-direct-sonnet' is None
+
+tests/integration/proxy/test_claude_experiment.py:128: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/proxy/test_claude_experiment.py::test_pipeline_records_forced_choice_and_preserves_fields
+1 failed, 4 passed in 0.25s

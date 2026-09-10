@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "claude",
+    "--print",
+    "--model",
+    "claude-fable-5-1",
+    "--effort",
+    "high",
+    "--safe-mode",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--permission-mode",
+    "dontAsk",
+    "--output-format",
+    "json",
+    "--no-session-persistence"
+  ],
+  "seconds": 159.65
+}

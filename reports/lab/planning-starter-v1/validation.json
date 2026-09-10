@@ -1,0 +1,13 @@
+{
+  "at": "2026-09-08T10:35:54.644876+00:00",
+  "package_integrity_passed": true,
+  "task_definitions": 3,
+  "referenced_requirements": 15,
+  "files_fingerprinted": 6,
+  "runtime_source_hashes_unchanged": 322,
+  "scope": "Task metadata/references/hashes only; no semantic quality assessment or harness execution",
+  "real_runs": 0,
+  "model_calls": 0,
+  "independent_review": false,
+  "learning_admission_changes": 0
+}

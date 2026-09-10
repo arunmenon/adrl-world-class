@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-07",
+  "status": "passed",
+  "implementation_files_hash_verified": 13,
+  "untouched_source_files_hash_verified": 267,
+  "adrs_in_index": 77,
+  "index_duplicates": 0,
+  "owning_adrs_prior_text_preserved": 12,
+  "statuses_unchanged": true,
+  "updated_markdown_documents_checked": 24,
+  "existing_local_links_checked": 267,
+  "broken_local_links": [],
+  "archived_verifier_artifacts_hash_verified": 5,
+  "complete_history_and_input_bundle_match": true,
+  "applied_cli_reads_original_archive_identically": true,
+  "evaluator_snapshot_executor_and_sandbox_source_hashes_match_applied_code": true,
+  "assessment_cases_reconstructed_without_execution": 7
+}

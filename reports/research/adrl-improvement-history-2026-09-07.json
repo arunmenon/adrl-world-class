@@ -1,0 +1,2513 @@
+[
+  {
+    "sequence": 1,
+    "event_type": "started",
+    "recorded_at": "2026-09-07T12:45:56.296609+00:00",
+    "payload_state": "available",
+    "record": {
+      "schema_version": "verifier-experiment-start-v1",
+      "experiment_id": "f5f5c8ae-49af-4227-903c-e78452406c39",
+      "evaluator": {
+        "id": "verifier-comparison",
+        "version": "sha256:21cd27a5d31a66797574e2f02ea3fc4e4ea48b6150343ef301a9289ae8b80c81"
+      },
+      "snapshot_executor": {
+        "id": "snapshot-execution",
+        "version": "sha256:e6f5efbc51107337ea75c4a363c4c520d04da76ae021ddf45dca06c76e96bb9e"
+      },
+      "started_at": "2026-09-07T12:45:56.295940Z",
+      "proposal": {
+        "schema_version": "verifier-proposal-v1",
+        "proposal": {
+          "id": "template-verifier-coverage",
+          "version": "1"
+        },
+        "parent_ref": "dataset-validator-acceptance-v2",
+        "proposer": {
+          "id": "assistant-reviewed-proposal",
+          "version": "2026-09-07"
+        },
+        "hypothesis": "Add checks for repr conversion, indexed lookup and preservation of literal JSON schema keys. Detect at least three additional known defects while retaining correct and environment-error classifications.",
+        "affected_adrs": [
+          "ADRL-MEM-003",
+          "ADRL-LRN-005",
+          "ADRL-LRN-007",
+          "ADRL-EVL-006"
+        ],
+        "change_scope": "verifier",
+        "suite_sha256": "204b5938fbd07be3a79c4fb1c47e13f2a9238c2fb8fc05b23e2754429286c6b4",
+        "baseline": {
+          "max_files": 10000,
+          "max_bytes": 100000000,
+          "schema_version": "session-verifier-plan-v1",
+          "verifier": {
+            "id": "dataset-validator-acceptance",
+            "version": "2"
+          },
+          "task_ref": "p01-template-repair-r2",
+          "checks": [
+            {
+              "name": "test_config_loader",
+              "argv": [
+                "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+                "-I",
+                "-B",
+                ".adrl-verifier/run.py",
+                "test_config_loader.py",
+                "2"
+              ],
+              "timeout_s": 30.0,
+              "failure_exit_codes": [
+                1
+              ]
+            },
+            {
+              "name": "test_templates",
+              "argv": [
+                "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+                "-I",
+                "-B",
+                ".adrl-verifier/run.py",
+                "test_templates.py",
+                "2"
+              ],
+              "timeout_s": 30.0,
+              "failure_exit_codes": [
+                1
+              ]
+            },
+            {
+              "name": "test_template_compatibility",
+              "argv": [
+                "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+                "-I",
+                "-B",
+                ".adrl-verifier/run.py",
+                "test_template_compatibility.py",
+                "4"
+              ],
+              "timeout_s": 30.0,
+              "failure_exit_codes": [
+                1
+              ]
+            }
+          ],
+          "artifacts": {
+            "run.py": {
+              "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/run.py",
+              "sha256": "5387d40e618b3ce93332fb2c038193ca032b9fe4180b63a9c7b39ebf0d854ea0"
+            },
+            "test_config_loader.py": {
+              "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_config_loader.py",
+              "sha256": "14735bc63cae7c558e5bbfccc76d92ec5aa5de68a8e547eea453444ebbfdb1cc"
+            },
+            "test_templates.py": {
+              "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_templates.py",
+              "sha256": "a3604b062ec97ccf3213b85a90eaff48d84e97ed563981b1c35685306441d7fc"
+            },
+            "test_template_compatibility.py": {
+              "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_template_compatibility.py",
+              "sha256": "8e49445a81b2e71a8ead3b5fa08411fb6916636ecc011d88ae06887fbd714334"
+            }
+          }
+        },
+        "candidate": {
+          "max_files": 10000,
+          "max_bytes": 100000000,
+          "schema_version": "session-verifier-plan-v1",
+          "verifier": {
+            "id": "dataset-validator-acceptance",
+            "version": "3-proposed"
+          },
+          "task_ref": "p01-template-repair-r2",
+          "checks": [
+            {
+              "name": "test_config_loader",
+              "argv": [
+                "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+                "-I",
+                "-B",
+                ".adrl-verifier/run.py",
+                "test_config_loader.py",
+                "2"
+              ],
+              "timeout_s": 30.0,
+              "failure_exit_codes": [
+                1
+              ]
+            },
+            {
+              "name": "test_templates",
+              "argv": [
+                "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+                "-I",
+                "-B",
+                ".adrl-verifier/run.py",
+                "test_templates.py",
+                "2"
+              ],
+              "timeout_s": 30.0,
+              "failure_exit_codes": [
+                1
+              ]
+            },
+            {
+              "name": "test_template_compatibility",
+              "argv": [
+                "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+                "-I",
+                "-B",
+                ".adrl-verifier/run.py",
+                "test_template_compatibility.py",
+                "4"
+              ],
+              "timeout_s": 30.0,
+              "failure_exit_codes": [
+                1
+              ]
+            },
+            {
+              "name": "test_formatting_requirements",
+              "argv": [
+                "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+                "-I",
+                "-B",
+                ".adrl-verifier/run.py",
+                "test_formatting_requirements.py",
+                "3"
+              ],
+              "timeout_s": 30.0,
+              "failure_exit_codes": [
+                1
+              ]
+            }
+          ],
+          "artifacts": {
+            "run.py": {
+              "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/run.py",
+              "sha256": "5387d40e618b3ce93332fb2c038193ca032b9fe4180b63a9c7b39ebf0d854ea0"
+            },
+            "test_config_loader.py": {
+              "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_config_loader.py",
+              "sha256": "14735bc63cae7c558e5bbfccc76d92ec5aa5de68a8e547eea453444ebbfdb1cc"
+            },
+            "test_templates.py": {
+              "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_templates.py",
+              "sha256": "a3604b062ec97ccf3213b85a90eaff48d84e97ed563981b1c35685306441d7fc"
+            },
+            "test_template_compatibility.py": {
+              "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_template_compatibility.py",
+              "sha256": "8e49445a81b2e71a8ead3b5fa08411fb6916636ecc011d88ae06887fbd714334"
+            },
+            "test_formatting_requirements.py": {
+              "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_formatting_requirements.py",
+              "sha256": "edecdd80c5621a74f0fda838c309041dc5e242acf1d9ab6bc222a8deeec71057"
+            }
+          }
+        },
+        "repeats": 2,
+        "min_additional_correct": 3,
+        "budget": {
+          "max_commands": 98,
+          "max_declared_timeout_s": 2940.0
+        }
+      },
+      "suite": {
+        "schema_version": "verifier-assessment-v1",
+        "suite": {
+          "id": "template-verifier-fixtures",
+          "version": "1"
+        },
+        "evidence_family": "curated_synthetic",
+        "limits": {
+          "max_files": 10000,
+          "max_bytes": 100000000
+        },
+        "cases": [
+          {
+            "case_id": "correct_original",
+            "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/correct_original",
+            "snapshot_sha256": "45995d3254b28e9345fff4aafb37a01887b65429e38cc17c670784814f71558b",
+            "expected": "passed"
+          },
+          {
+            "case_id": "correct_equivalent",
+            "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/correct_equivalent",
+            "snapshot_sha256": "eb4cb19ad5c0177bd219c518a89eeb7a9c6239881043d7918875c80bf3b8b80f",
+            "expected": "passed"
+          },
+          {
+            "case_id": "defect_escaped_braces",
+            "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/defect_escaped_braces",
+            "snapshot_sha256": "dd71cf8e1e36f90a6378e358aaef87d16bcc773989861555cb855af4f3c05826",
+            "expected": "failed"
+          },
+          {
+            "case_id": "defect_repr_conversion",
+            "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/defect_repr_conversion",
+            "snapshot_sha256": "78937605c3a8411c32a7e8d13c4cce2c87152e85056a712ab14d044e7da9616d",
+            "expected": "failed"
+          },
+          {
+            "case_id": "defect_indexed_lookup",
+            "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/defect_indexed_lookup",
+            "snapshot_sha256": "5a2f43e1beaed7e06d64d2b36a16fb227f597da55136c1ca7bdad2efd6c2bc8a",
+            "expected": "failed"
+          },
+          {
+            "case_id": "defect_json_schema",
+            "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/defect_json_schema",
+            "snapshot_sha256": "224535665068ac5fc629d156ff2363837a3c47b507489b4cdec31be233100ba2",
+            "expected": "failed"
+          },
+          {
+            "case_id": "environment_missing_config",
+            "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/environment_missing_config",
+            "snapshot_sha256": "293fdacb5b28c3f1b56bfe81f80fa37626ae18a13e017add79b363d270b549a7",
+            "expected": "indeterminate"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "sequence": 2,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:45:56.587633+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "correct_original",
+      "repeat": 0,
+      "arm": "baseline",
+      "expected": "passed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "3b32a480-a799-4cb5-bd54-bb3de7f13148",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:737b55243930290be08e343769c9fb6ab8f63e051cce5662e8177a81b4b9f7f7",
+        "executed_snapshot_ref": "hmac:73ffdfaadb87f48fd705b52534fc2cd28ee7d71d9b684d6911e6d7a88ba91a6e",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:56.300861Z",
+        "finished_at": "2026-09-07T12:45:56.584969Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.14418845809996128,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05368200014345348,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06240049982443452,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 3,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:45:56.929670+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "correct_original",
+      "repeat": 0,
+      "arm": "candidate",
+      "expected": "passed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "02ee1cb6-227a-46a0-ae1e-637015e49802",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:737b55243930290be08e343769c9fb6ab8f63e051cce5662e8177a81b4b9f7f7",
+        "executed_snapshot_ref": "hmac:0089fac55f609b85001098cdb7af2de40c98dfaf474dc159075b93bac874c242",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:56.589878Z",
+        "finished_at": "2026-09-07T12:45:56.927151Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.13492062501609325,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05282845790497959,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06289795879274607,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "passed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06029166607186198,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:79326fdc4a39ed8d67cae6657502dc1e27353bc147789faca40e8f288617c146",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 4,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:45:57.290003+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "correct_original",
+      "repeat": 1,
+      "arm": "candidate",
+      "expected": "passed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "e36bb4e5-d6e4-4bd4-94e8-b6091d8324fc",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:737b55243930290be08e343769c9fb6ab8f63e051cce5662e8177a81b4b9f7f7",
+        "executed_snapshot_ref": "hmac:0089fac55f609b85001098cdb7af2de40c98dfaf474dc159075b93bac874c242",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:56.931982Z",
+        "finished_at": "2026-09-07T12:45:57.287155Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.139077290892601,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05612808302976191,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06716729188337922,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:ee079144cf85757179582539b7f77cf8fcde3378c961eb5097f0b69cbdea6138",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "passed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06722116586752236,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:7e7edb1e05ed8cb83f4f334a2dc3cf90ceac75c078cc59c92ba1c9d4cc2e933e",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 5,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:45:57.597503+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "correct_original",
+      "repeat": 1,
+      "arm": "baseline",
+      "expected": "passed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "bc640fa9-8208-4bd9-b8ef-fda68884344e",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:737b55243930290be08e343769c9fb6ab8f63e051cce5662e8177a81b4b9f7f7",
+        "executed_snapshot_ref": "hmac:73ffdfaadb87f48fd705b52534fc2cd28ee7d71d9b684d6911e6d7a88ba91a6e",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:57.292670Z",
+        "finished_at": "2026-09-07T12:45:57.594600Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.15675279218703508,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05720058409497142,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06350699998438358,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:ee079144cf85757179582539b7f77cf8fcde3378c961eb5097f0b69cbdea6138",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 6,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:45:57.954562+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "correct_equivalent",
+      "repeat": 0,
+      "arm": "candidate",
+      "expected": "passed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "50422197-c538-4d49-afb4-5130aa284189",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:339fba8c8a03054cc356a83de1464d7aab890c578fa96c0f7ae53b5688f4362c",
+        "executed_snapshot_ref": "hmac:634c4745dbc9da282b2e190cd56bc63db609b6f9ca9b7f1b0eba5ad01de42c08",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:57.601000Z",
+        "finished_at": "2026-09-07T12:45:57.951537Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.14496295806020498,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05648258398286998,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06325629190541804,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "passed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05812491709366441,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:7e7edb1e05ed8cb83f4f334a2dc3cf90ceac75c078cc59c92ba1c9d4cc2e933e",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 7,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:45:58.232831+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "correct_equivalent",
+      "repeat": 0,
+      "arm": "baseline",
+      "expected": "passed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "fb8c63e9-0b0d-4bba-a0c7-429aaefc36eb",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:339fba8c8a03054cc356a83de1464d7aab890c578fa96c0f7ae53b5688f4362c",
+        "executed_snapshot_ref": "hmac:0bc71a1b731102a47c4a33d8a67d4a10aece65dc486a4c0b24b2c08e53856802",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:57.956898Z",
+        "finished_at": "2026-09-07T12:45:58.230143Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.1345322080887854,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.0532670000102371,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06158895790576935,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 8,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:45:58.506529+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "correct_equivalent",
+      "repeat": 1,
+      "arm": "baseline",
+      "expected": "passed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "4c92f52e-6883-4cd7-933b-744bc15cd506",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:339fba8c8a03054cc356a83de1464d7aab890c578fa96c0f7ae53b5688f4362c",
+        "executed_snapshot_ref": "hmac:0bc71a1b731102a47c4a33d8a67d4a10aece65dc486a4c0b24b2c08e53856802",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:58.235028Z",
+        "finished_at": "2026-09-07T12:45:58.503622Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.13411266705952585,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05232537491247058,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05858616693876684,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 9,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:45:58.840735+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "correct_equivalent",
+      "repeat": 1,
+      "arm": "candidate",
+      "expected": "passed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "9f286995-bac9-4b1d-8190-0c7eab5ecdb4",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:339fba8c8a03054cc356a83de1464d7aab890c578fa96c0f7ae53b5688f4362c",
+        "executed_snapshot_ref": "hmac:634c4745dbc9da282b2e190cd56bc63db609b6f9ca9b7f1b0eba5ad01de42c08",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:58.508951Z",
+        "finished_at": "2026-09-07T12:45:58.838197Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.13567991694435477,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05209604208357632,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05772020807489753,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "passed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05807537492364645,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:7e7edb1e05ed8cb83f4f334a2dc3cf90ceac75c078cc59c92ba1c9d4cc2e933e",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 10,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:45:59.125944+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_escaped_braces",
+      "repeat": 0,
+      "arm": "baseline",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "98713a52-f995-4cb0-a670-07e51a0ca225",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:55041f33bfa706233887226d15e0edc3ec4490ec9e8c530c15b761080f197f5a",
+        "executed_snapshot_ref": "hmac:4072e9384329b9f31cabc3a7400b26ebb1efd72396fe5fb7b53f2b822a655138",
+        "snapshot_unchanged": true,
+        "result": "failed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:58.844547Z",
+        "finished_at": "2026-09-07T12:45:59.123371Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.14330741693265736,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.0539253749884665,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "failed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 1,
+            "duration_s": 0.05974012496881187,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:8f71a4c05da706ed967cfeb6fbc6e3ab768584ed841bf9e283a9e27150d434fa",
+            "reason": "declared_check_failure"
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 11,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:45:59.473481+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_escaped_braces",
+      "repeat": 0,
+      "arm": "candidate",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "3fa84568-4e5f-4067-bb4b-6ee07142992c",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:55041f33bfa706233887226d15e0edc3ec4490ec9e8c530c15b761080f197f5a",
+        "executed_snapshot_ref": "hmac:95b3b64255d53c6ba41ed0314b46f2c2ce589ee2f2fe09123a11faeec71c0e65",
+        "snapshot_unchanged": true,
+        "result": "failed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:59.128106Z",
+        "finished_at": "2026-09-07T12:45:59.470925Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.1422670828178525,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05523029202595353,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "failed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 1,
+            "duration_s": 0.06300775008276105,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:32fbf049e07aaa9c15b3367b8836130d2005f56e686c29fd98ab572ef1148066",
+            "reason": "declared_check_failure"
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "passed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05746995797380805,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:7e7edb1e05ed8cb83f4f334a2dc3cf90ceac75c078cc59c92ba1c9d4cc2e933e",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 12,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:45:59.814770+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_escaped_braces",
+      "repeat": 1,
+      "arm": "candidate",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "b8eeccfe-8ed8-4955-bcb8-fce5af5a15f7",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:55041f33bfa706233887226d15e0edc3ec4490ec9e8c530c15b761080f197f5a",
+        "executed_snapshot_ref": "hmac:95b3b64255d53c6ba41ed0314b46f2c2ce589ee2f2fe09123a11faeec71c0e65",
+        "snapshot_unchanged": true,
+        "result": "failed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:59.475779Z",
+        "finished_at": "2026-09-07T12:45:59.812275Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.1337316248100251,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05445374990813434,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "failed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 1,
+            "duration_s": 0.061643082881346345,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:b00700d67c5f4c8ea1495e128fa81296be7257c683c5656576e1fc9d75108b91",
+            "reason": "declared_check_failure"
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "passed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06112862494774163,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:79326fdc4a39ed8d67cae6657502dc1e27353bc147789faca40e8f288617c146",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 13,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:00.095215+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_escaped_braces",
+      "repeat": 1,
+      "arm": "baseline",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "977cf611-1123-4da8-b58f-b36e371af325",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:55041f33bfa706233887226d15e0edc3ec4490ec9e8c530c15b761080f197f5a",
+        "executed_snapshot_ref": "hmac:4072e9384329b9f31cabc3a7400b26ebb1efd72396fe5fb7b53f2b822a655138",
+        "snapshot_unchanged": true,
+        "result": "failed",
+        "reason": null,
+        "started_at": "2026-09-07T12:45:59.816983Z",
+        "finished_at": "2026-09-07T12:46:00.092668Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.13849170808680356,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05377433286048472,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "failed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 1,
+            "duration_s": 0.058645958080887794,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:7fc03be75204dc38b26d91b55e50f643daf8bb31aea33a7302cf6311e1534415",
+            "reason": "declared_check_failure"
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 14,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:00.435581+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_repr_conversion",
+      "repeat": 0,
+      "arm": "candidate",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "f824a358-7aee-416e-8c97-954e15e0bb62",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:4b8e9a616b61ad8df34695bb132ced98b6fae0ba018c31018bbc1059c3260f24",
+        "executed_snapshot_ref": "hmac:8eebd8122a912653c83c8aa2fb81e2f0ca58886878fda42d7de267bcee71ac8e",
+        "snapshot_unchanged": true,
+        "result": "failed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:00.098689Z",
+        "finished_at": "2026-09-07T12:46:00.432956Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.13874791702255607,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05257433303631842,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.057878333842381835,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "failed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 1,
+            "duration_s": 0.057670166017487645,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:b7f28b09ec9dde6179a27b6a011ad9201c47f981043739b2a81d66f39e12b2d8",
+            "reason": "declared_check_failure"
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 15,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:00.712988+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_repr_conversion",
+      "repeat": 0,
+      "arm": "baseline",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "9faa0f2b-0def-4fa7-84f8-d1e8e94ec2be",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:4b8e9a616b61ad8df34695bb132ced98b6fae0ba018c31018bbc1059c3260f24",
+        "executed_snapshot_ref": "hmac:dd0e80885df0931626ac1205b995a0831360769669652ee6322ea04a90d3afba",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:00.437868Z",
+        "finished_at": "2026-09-07T12:46:00.710346Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.13689525006338954,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.0531117501668632,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05997945787385106,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 16,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:00.991927+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_repr_conversion",
+      "repeat": 1,
+      "arm": "baseline",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "fe31c04d-8ee3-4824-adec-a912c4f2f30d",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:4b8e9a616b61ad8df34695bb132ced98b6fae0ba018c31018bbc1059c3260f24",
+        "executed_snapshot_ref": "hmac:dd0e80885df0931626ac1205b995a0831360769669652ee6322ea04a90d3afba",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:00.715168Z",
+        "finished_at": "2026-09-07T12:46:00.988933Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.13839937490411103,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05144541687332094,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.0593645831104368,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 17,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:01.359137+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_repr_conversion",
+      "repeat": 1,
+      "arm": "candidate",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "59c896a5-23af-4bb6-a7dc-b67139b7073d",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:4b8e9a616b61ad8df34695bb132ced98b6fae0ba018c31018bbc1059c3260f24",
+        "executed_snapshot_ref": "hmac:8eebd8122a912653c83c8aa2fb81e2f0ca58886878fda42d7de267bcee71ac8e",
+        "snapshot_unchanged": true,
+        "result": "failed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:00.995352Z",
+        "finished_at": "2026-09-07T12:46:01.356601Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.16400195891037583,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.054849459091201425,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.059673290932551026,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "failed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 1,
+            "duration_s": 0.057970166904851794,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:47145dd813dd880b50c4f1b50b8704a720cfe3152a7cd6c6e078e76809fa0198",
+            "reason": "declared_check_failure"
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 18,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:01.647064+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_indexed_lookup",
+      "repeat": 0,
+      "arm": "baseline",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "5f39376d-983c-4421-9423-3e2b7e8c6f11",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:6ee5a06698ea7c312013511034039f5d75840b791e57b211236a450c503f9d45",
+        "executed_snapshot_ref": "hmac:761d0f8158cd0cf2ce077e2a2fc5f48ec0221dc70f127d818f85c84b852a6de7",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:01.363349Z",
+        "finished_at": "2026-09-07T12:46:01.644374Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.14192441711202264,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05357870785519481,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06111070793122053,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 19,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:01.984679+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_indexed_lookup",
+      "repeat": 0,
+      "arm": "candidate",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "ece4d1c6-8153-4eee-8b38-fc85a1256168",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:6ee5a06698ea7c312013511034039f5d75840b791e57b211236a450c503f9d45",
+        "executed_snapshot_ref": "hmac:999842a8f7d0bce47d57bc3e71c24db92d945e28fec9e2c1a6849385f004c599",
+        "snapshot_unchanged": true,
+        "result": "failed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:01.649284Z",
+        "finished_at": "2026-09-07T12:46:01.981802Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.13783200015313923,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.051053332863375545,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06081995787099004,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:ee079144cf85757179582539b7f77cf8fcde3378c961eb5097f0b69cbdea6138",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "failed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 1,
+            "duration_s": 0.05740962503477931,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:2cca3b47a442c47995bb0d33c8d553245d241adee2ca97ce6706aadff95852d0",
+            "reason": "declared_check_failure"
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 20,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:02.339116+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_indexed_lookup",
+      "repeat": 1,
+      "arm": "candidate",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "2400b4d1-4251-4ac8-b317-58d5f4868a5d",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:6ee5a06698ea7c312013511034039f5d75840b791e57b211236a450c503f9d45",
+        "executed_snapshot_ref": "hmac:999842a8f7d0bce47d57bc3e71c24db92d945e28fec9e2c1a6849385f004c599",
+        "snapshot_unchanged": true,
+        "result": "failed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:01.987116Z",
+        "finished_at": "2026-09-07T12:46:02.336107Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.13586575002409518,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.0569242499768734,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.062288207933306694,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "failed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 1,
+            "duration_s": 0.06590870884247124,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:6039c99e23ce5b1cfe17c9d0af59e84744a42d2d3be63f90791e442f722939f0",
+            "reason": "declared_check_failure"
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 21,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:02.612771+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_indexed_lookup",
+      "repeat": 1,
+      "arm": "baseline",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "c47b0a9a-ebc3-40ea-9bfd-d5f33a4b6aec",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:6ee5a06698ea7c312013511034039f5d75840b791e57b211236a450c503f9d45",
+        "executed_snapshot_ref": "hmac:761d0f8158cd0cf2ce077e2a2fc5f48ec0221dc70f127d818f85c84b852a6de7",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:02.341598Z",
+        "finished_at": "2026-09-07T12:46:02.610193Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.1343604999128729,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05277166701853275,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.057668125024065375,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 22,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:02.957511+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_json_schema",
+      "repeat": 0,
+      "arm": "candidate",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "e2449793-24cd-43af-98a8-cd695a99cf0a",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:c3cf7d664b4a87c50613c0340e5b8e92edeef8060393314e0ec210ccd56b7d0a",
+        "executed_snapshot_ref": "hmac:9880efdafa076b98545bc37bf511db3a1c70bd4aae61ed09106d4b8167166dd0",
+        "snapshot_unchanged": true,
+        "result": "failed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:02.616259Z",
+        "finished_at": "2026-09-07T12:46:02.954105Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.13737104088068008,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05440058303065598,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05854312493465841,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "failed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 1,
+            "duration_s": 0.06152379186823964,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:d20866db5f635307691d18199832ac0e8123adfe4585c22f967e1c0f5f44f053",
+            "reason": "declared_check_failure"
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 23,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:03.248558+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_json_schema",
+      "repeat": 0,
+      "arm": "baseline",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "a8889b07-cde8-4fd9-a972-c6c620f11908",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:c3cf7d664b4a87c50613c0340e5b8e92edeef8060393314e0ec210ccd56b7d0a",
+        "executed_snapshot_ref": "hmac:d1c80c815989b4e6792a0841689f1292ed51d7ace4c99d1ae558592dac28a85c",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:02.960885Z",
+        "finished_at": "2026-09-07T12:46:03.245921Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.14464516704902053,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.053756834007799625,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06191579205915332,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:ee079144cf85757179582539b7f77cf8fcde3378c961eb5097f0b69cbdea6138",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 24,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:03.523867+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_json_schema",
+      "repeat": 1,
+      "arm": "baseline",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "bf98ca90-0179-4d4d-a1c9-f31169e0b248",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:c3cf7d664b4a87c50613c0340e5b8e92edeef8060393314e0ec210ccd56b7d0a",
+        "executed_snapshot_ref": "hmac:d1c80c815989b4e6792a0841689f1292ed51d7ace4c99d1ae558592dac28a85c",
+        "snapshot_unchanged": true,
+        "result": "passed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:03.250757Z",
+        "finished_at": "2026-09-07T12:46:03.521289Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.13466312503442168,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.054554125061258674,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05811308301053941,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 25,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:03.862121+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "defect_json_schema",
+      "repeat": 1,
+      "arm": "candidate",
+      "expected": "failed",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "d3319bfd-4d3b-43eb-aae3-6a5a34eee377",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:c3cf7d664b4a87c50613c0340e5b8e92edeef8060393314e0ec210ccd56b7d0a",
+        "executed_snapshot_ref": "hmac:9880efdafa076b98545bc37bf511db3a1c70bd4aae61ed09106d4b8167166dd0",
+        "snapshot_unchanged": true,
+        "result": "failed",
+        "reason": null,
+        "started_at": "2026-09-07T12:46:03.525996Z",
+        "finished_at": "2026-09-07T12:46:03.859540Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "passed",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.1348719580564648,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:c8312fd749a84b637e84d108ca41be4a2776e8a78f9e9ebe969c5bfecd6bebb5",
+            "reason": null
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05094129196368158,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.061587416799739,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "failed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 1,
+            "duration_s": 0.06232320889830589,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:163cb7ca5eef742775a9ea8b840f5e864cf6ff1be90791565f89570317358104",
+            "reason": "declared_check_failure"
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 26,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:04.136069+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "environment_missing_config",
+      "repeat": 0,
+      "arm": "baseline",
+      "expected": "indeterminate",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "44bbbc42-a1b2-4ab4-9a16-06fafd905456",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:7ceaf2d8aad2e7adbb5746fdb15758755f3cb652e9b5f485a0e1e8496d0a3bbc",
+        "executed_snapshot_ref": "hmac:d9dbb431d33c436ffdd5d9a616bd75206773fb9d05a2c6902f091bebed446268",
+        "snapshot_unchanged": true,
+        "result": "indeterminate",
+        "reason": "check_indeterminate",
+        "started_at": "2026-09-07T12:46:03.865974Z",
+        "finished_at": "2026-09-07T12:46:04.133646Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "indeterminate",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 2,
+            "duration_s": 0.13297987496480346,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:61dcc64b8659dbc0eab1af2a68029c57a10cfe7c05e43142390ffa08737effc7",
+            "reason": "unclassified_exit"
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05126524996012449,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.061437750002369285,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 27,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:04.486535+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "environment_missing_config",
+      "repeat": 0,
+      "arm": "candidate",
+      "expected": "indeterminate",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "db7e6b09-d65e-4db5-9ed4-1fb807ffadba",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:7ceaf2d8aad2e7adbb5746fdb15758755f3cb652e9b5f485a0e1e8496d0a3bbc",
+        "executed_snapshot_ref": "hmac:7e6c359ca3f979c9d00f8608546e8bd57fd35da88ee5e34380fe9a4b3363a752",
+        "snapshot_unchanged": true,
+        "result": "indeterminate",
+        "reason": "check_indeterminate",
+        "started_at": "2026-09-07T12:46:04.138112Z",
+        "finished_at": "2026-09-07T12:46:04.484073Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "indeterminate",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 2,
+            "duration_s": 0.1388776251114905,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:e4156ab6fd473e479a2011abe2f94d46e4d6d21ea826d076e605344581b7a188",
+            "reason": "unclassified_exit"
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.05258324998430908,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06399658299051225,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:ee079144cf85757179582539b7f77cf8fcde3378c961eb5097f0b69cbdea6138",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "passed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.0643228751141578,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:7e7edb1e05ed8cb83f4f334a2dc3cf90ceac75c078cc59c92ba1c9d4cc2e933e",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 28,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:04.827926+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "environment_missing_config",
+      "repeat": 1,
+      "arm": "candidate",
+      "expected": "indeterminate",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "9fb7b23a-a54e-46d6-9cbe-f472c19b9ad1",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "3-proposed"
+        },
+        "plan_ref": "hmac:1e4620b75c8d6cccc9b608fee4f9186807046cdfa6c94ec2a7cc1f460bbef424",
+        "source_snapshot_ref": "hmac:7ceaf2d8aad2e7adbb5746fdb15758755f3cb652e9b5f485a0e1e8496d0a3bbc",
+        "executed_snapshot_ref": "hmac:7e6c359ca3f979c9d00f8608546e8bd57fd35da88ee5e34380fe9a4b3363a752",
+        "snapshot_unchanged": true,
+        "result": "indeterminate",
+        "reason": "check_indeterminate",
+        "started_at": "2026-09-07T12:46:04.488593Z",
+        "finished_at": "2026-09-07T12:46:04.825492Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "indeterminate",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 2,
+            "duration_s": 0.1362484998535365,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:86b1dbb70b2b24ca4932544f445e2cf42c109f6d845d06421824c254f5e3ac71",
+            "reason": "unclassified_exit"
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.051773666171357036,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.0612725829705596,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          },
+          {
+            "name": "test_formatting_requirements",
+            "result": "passed",
+            "command_ref": "hmac:8a18a3d5d600a8672c547c3ff4a527b23b3917db5c6e107e8e1136d16e6c3786",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.06287650018930435,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:79326fdc4a39ed8d67cae6657502dc1e27353bc147789faca40e8f288617c146",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 29,
+    "event_type": "trial",
+    "recorded_at": "2026-09-07T12:46:05.110239+00:00",
+    "payload_state": "available",
+    "record": {
+      "case_id": "environment_missing_config",
+      "repeat": 1,
+      "arm": "baseline",
+      "expected": "indeterminate",
+      "verification": {
+        "schema_version": "session-verification-v1",
+        "sandbox_implementation": {
+          "id": "macos-seatbelt",
+          "version": "sha256:2726fe38e484eaf8402f3bd04e648ebd257dc1f0e47f0cd7d0f2c417ced9714b"
+        },
+        "job_id": "866f2606-edd3-48c5-af16-f0aa49615f37",
+        "task_ref": "p01-template-repair-r2",
+        "authority": "local_operator_verifier",
+        "origin": "pilot",
+        "eligible_for_learning": false,
+        "phase": "finished",
+        "verifier": {
+          "id": "dataset-validator-acceptance",
+          "version": "2"
+        },
+        "plan_ref": "hmac:8d6df28dd9f655b50555626ca91d456130334374e342bb68ce5d8b12a2897bc9",
+        "source_snapshot_ref": "hmac:7ceaf2d8aad2e7adbb5746fdb15758755f3cb652e9b5f485a0e1e8496d0a3bbc",
+        "executed_snapshot_ref": "hmac:d9dbb431d33c436ffdd5d9a616bd75206773fb9d05a2c6902f091bebed446268",
+        "snapshot_unchanged": true,
+        "result": "indeterminate",
+        "reason": "check_indeterminate",
+        "started_at": "2026-09-07T12:46:04.830171Z",
+        "finished_at": "2026-09-07T12:46:05.107337Z",
+        "checks": [
+          {
+            "name": "test_config_loader",
+            "result": "indeterminate",
+            "command_ref": "hmac:c6c310c2ad22a6c7dc240626c188253730a3e595b2ddf04baebabb4ce1e49ddd",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 2,
+            "duration_s": 0.13789162505418062,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:4bfc586cb35997562edd1d7737bd1ba20eabc87b2f7e7c89f120f4db97b37e75",
+            "reason": "unclassified_exit"
+          },
+          {
+            "name": "test_templates",
+            "result": "passed",
+            "command_ref": "hmac:008c5ef8b6a10234934775f72d0be359e2860394dc9200b12d0b8f19032bc073",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.052677375031635165,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:29f876ec71e0a65c9de9e8d820a7e044c971a29509fdc2a65383682e4e944c90",
+            "reason": null
+          },
+          {
+            "name": "test_template_compatibility",
+            "result": "passed",
+            "command_ref": "hmac:7cf0978287e3c19379d883860a83ac40a4109775a3495decdbb6e8e253acfded",
+            "executable_ref": "hmac:eed1812a730716456e8ff19ed965ee37daff7a39e8a897096628f44429ebed3b",
+            "exit_code": 0,
+            "duration_s": 0.060944291995838284,
+            "stdout_ref": "hmac:c9cd290f9da578d9a1e0d6ec214508d9fc8fa36eb37f96df60bd6c0ec5dace53",
+            "stderr_ref": "hmac:958f5a54bd986d23171bc54aee48e287c31ed32ff9ad30b136c6069c09de659c",
+            "reason": null
+          }
+        ]
+      },
+      "input_matches": true
+    }
+  },
+  {
+    "sequence": 30,
+    "event_type": "finished",
+    "recorded_at": "2026-09-07T12:46:05.110997+00:00",
+    "payload_state": "available",
+    "record": {
+      "schema_version": "verifier-experiment-report-v1",
+      "experiment_id": "f5f5c8ae-49af-4227-903c-e78452406c39",
+      "proposal": {
+        "id": "template-verifier-coverage",
+        "version": "1"
+      },
+      "evaluator": {
+        "id": "verifier-comparison",
+        "version": "sha256:21cd27a5d31a66797574e2f02ea3fc4e4ea48b6150343ef301a9289ae8b80c81"
+      },
+      "snapshot_executor": {
+        "id": "snapshot-execution",
+        "version": "sha256:e6f5efbc51107337ea75c4a363c4c520d04da76ae021ddf45dca06c76e96bb9e"
+      },
+      "suite": {
+        "id": "template-verifier-fixtures",
+        "version": "1"
+      },
+      "evidence_family": "curated_synthetic",
+      "eligible_for_learning": false,
+      "review_required": true,
+      "recommendation": "candidate_supported",
+      "distinct_cases": 7,
+      "repeats": 2,
+      "trials_recorded": 28,
+      "commands_recorded": 98,
+      "baseline_correct": 4,
+      "candidate_correct": 7,
+      "candidate_false_passes": 0,
+      "candidate_false_failures": 0,
+      "blockers": [],
+      "check_duration_s": 7.96632733149454,
+      "started_at": "2026-09-07T12:45:56.295940Z",
+      "finished_at": "2026-09-07T12:46:05.110704Z"
+    }
+  }
+]

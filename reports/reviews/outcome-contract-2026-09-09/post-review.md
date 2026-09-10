@@ -1,0 +1,39 @@
+**Verdict: RV-01 is materially repaired, with one conditional blocker and four evidence gaps to close before the review round is marked resolved.** The cascade now emits canonical `outcome` rows, the proxy forwards them verbatim, and the composed test reaches the Closer and readiness without inventing success. The test counts and the before-regression log are author-supplied and I did not run them. The critique below is from reading the diff and supplied source.
+
+## Blockers
+
+- **Conditional: None identity is coerced to the string "None".** In the new `_outcome` helper in `src/adrl/cascade/controller.py`, session and lineage are passed as `str(ctx.session_hmac)` and `str(ctx.lineage_hmac)`. If either field on RequestContext can be None, the payload carries a truthy "None". The Closer's `_session_of` in `src/adrl/ledger/outcomes.py` only falls back to the decisions row when the value is None, so the fallback is defeated, the idle trigger keys off a phantom session, and the human correction detector joins on a literal "None". The composed test asserts equality with the decision row, so the fixture path is fine. Verify the type. If it is optional, guard with `None if x is None else str(x)` and add a test with a None session. If non-optional, record that and this drops to a note.
+
+- **Route attribution on continuations is asserted but not demonstrated.** The continuation test in `tests/integration/e2e/test_outcome_contract.py` asserts the closed_turn lands on the first decision's route. It never asserts that the continuation's own decision row has a different route id. If continuations inherit the route, the old re-keying would also have placed the row correctly, and the test proves producer, sequence and schema only. Add an explicit assertion that the second decision's route id differs from the sticky route, or construct the divergence directly. Until then the dispositions line "retain cascade route" is over-claimed.
+
+## Verification gaps that do not block
+
+- **The forwarded fallback test is a hybrid state, not the fallback.** The test removes the controller ledger after the first turn, so the producer counter was seeded while the ledger existed. A controller composed without a ledger from the start would seed from 1 with no visibility into stored rows. The plan-phase pending row is lost on that path, which is the accepted limitation. Because all states now share the `outcome` event type, sequence reuse after a restart with a missing or failed ledger read collides on the idempotency key and is silently dropped by the pipeline append. Under the old dialect, pending and closed_turn did not collide. The doc note "Observe-phase forwarding is tested" should say it is tested with a pre-seeded counter.
+
+- **The broad exception handler in the proxy finalize makes the new TypeError guard inert.** Any error on the new forwarding lines, including an AttributeError if the pipeline ledger is None or a NameError from a missing import, is logged as finalize_failed and swallowed. The forwarded test passing is the only evidence the names resolve. Consider asserting no finalize_failed log in the forwarded test.
+
+- **The idle-trigger assertion depends on CloseRule defaults and timestamp strictness.** The Closer counts user turns with `ts>` the closed_turn timestamp. Route A's closed_turn is written during the second turn's plan, before that turn's decision row. Whether the second decision counts depends on clock resolution and the default subsequent_turns value. The test asserts the trigger name "idle" without pinning the rule. Pass an explicit CloseRule with subsequent_turns above one to remove the timing dependence.
+
+- **The `_append_event` helper was bypassed, not replaced.** I do not have its source. Confirm it performed no side effect beyond persistence, such as write-ahead ordering or metrics, that the cascade rows now skip.
+
+## Missing acceptance tests
+
+1. **Legacy exclusion from readiness.** The contract doc states old state-valued rows never enter readiness, even as censored. No test seeds a route with only legacy rows and asserts it is absent from readiness routes and from routes_in_state. The restart test adds a canonical pending, so that route does enter.
+2. **Subsequent-turns and episode-boundary triggers.** The session and lineage HMACs were added so these triggers work. Only idle is exercised. Add a composed test with N user turns after closed_turn asserting the subsequent_turns trigger, and one with an episode boundary event.
+3. **Route divergence on continuation** as described above, on both direct and forwarded paths.
+4. **None session or lineage** as described above, if the type permits it.
+5. **Dropped forwarded event.** Force the pipeline append to return False and assert the dropped counter and warning, so a duplicate-key collision is observable rather than silent.
+6. **Before-regression log content.** I cannot see the log. Confirm it fails on the assertion for a persisted `outcome` row with closed_turn state, not on a fixture or import error, or it does not evidence the hypothesis.
+
+## Things that check out
+
+- **Cause retention.** The terminal closed_turn carries a top-level failure_type, the next-turn closed_turn carries none, and label derivation scans all outcome payloads. The parametrised 503 and 400 tests assert this end to end.
+- **Completed 400 is decisive.** If the empty-candidate default were task_capability, the label assertion would fail. The disposition on resolve_primary is corroborated by the test, not just by inspection.
+- **Idempotent closure.** Second scan returns empty because the latest outcome row is closed_final, and the closed_final producer sequence is derived from the rule id. One label row is asserted.
+- **Unknown success stays unknown.** harness_reported_success is None on both transitions, and readiness reports one closed_final with zero capability evidence and the no-capability-evidence blocker.
+- **Sequence seeding across the dialect change.** The legacy seeding test covers 77 to 78 and the seed counts by producer regardless of event type, so post-restart collisions on mixed-dialect routes are avoided when the ledger read succeeds.
+- **Fixture assertion changes** in the controller integration test change only the event-type selection and keep partial-stream and infrastructure evidence checks.
+
+## Scoped verdict
+
+RV-01 can be recorded as repaired once the None coercion is verified or guarded and the continuation route-divergence assertion is added. The legacy-exclusion and subsequent-turns tests should land in the same correction round because they back claims already written into the contract doc. Nothing here promotes maturity or qualifies LRN-001. Readiness after this slice honestly reports a closed count with a blocked window, and that is the correct end state for this scope. Other retrospective findings remain open and are not addressed by this review.

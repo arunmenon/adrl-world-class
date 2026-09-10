@@ -1,0 +1,48 @@
+{
+  "date": "2026-09-07",
+  "status": "prepared_not_run_with_claude",
+  "source_repository": "/Users/arunmenon/projects/dataset-validator",
+  "fixture_root": "/private/tmp/adrl-claude-pilot-9x3n90aj",
+  "baseline": "/private/tmp/adrl-claude-pilot-9x3n90aj/baseline",
+  "first_run_directory": "/private/tmp/adrl-claude-pilot-9x3n90aj/run-01-sonnet",
+  "copied_source_sha256": {
+    "validation/core/config_loader.py": "1b1faae2ffba7b5e3603605b4821e0da69330a414764280a6948286acd30c7a4",
+    "validation/core/templates.py": "ba5066986dd0a00d34b85cefe2ebc92d26ff930f66be2db91bcc90dc744d8af7",
+    "validation/core/rubrics.py": "658b25e57b0356704920e51e2affd6976f927c4710e93578c0b29ada960f7e02",
+    "tests/test_config_loader.py": "14735bc63cae7c558e5bbfccc76d92ec5aa5de68a8e547eea453444ebbfdb1cc",
+    "tests/test_templates.py": "a3604b062ec97ccf3213b85a90eaff48d84e97ed563981b1c35685306441d7fc",
+    "validation/prompts/strict_json_generic.txt": "2c895365ad12826248d950760904c1351e475b128eb18fa8928dccd34f23378d",
+    "validation/prompts/cot_rubric_generic.txt": "ff2add47a75149e9e603f8139890efc9bc5e6b8e0f3a31593df146acffefaab3",
+    "config/datasets.yaml": "8e6a9ad7509daf0de3dfe2b1c7218e2a3d0dc4bc9abc80ebbfd99b615d21280f",
+    "config/rubrics/qa.yaml": "2f8d3666b8fee9a30be13d905779fde646b77c3999281655fd7410d077170bac"
+  },
+  "fixture_sha256": {
+    "run_tests.py": "0a394c15b3e678fd84a5cc2a1a90fb61d3f5d900d8994e4cd1f2ff564d563fea",
+    "TASK.md": "d9284299939fbd608a3b5b7176308a83e695a90f303e1e8cc79965a242faaaad",
+    "CLAUDE.md": "d9fd9aa46b9362aa4d1af6d8403452cb796ac01bad9d919d29170adc7f73817e",
+    "config/datasets.yaml": "8e6a9ad7509daf0de3dfe2b1c7218e2a3d0dc4bc9abc80ebbfd99b615d21280f",
+    "tests/test_config_loader.py": "14735bc63cae7c558e5bbfccc76d92ec5aa5de68a8e547eea453444ebbfdb1cc",
+    "tests/test_templates.py": "a3604b062ec97ccf3213b85a90eaff48d84e97ed563981b1c35685306441d7fc",
+    "validation/core/config_loader.py": "1b1faae2ffba7b5e3603605b4821e0da69330a414764280a6948286acd30c7a4",
+    "validation/core/templates.py": "ba5066986dd0a00d34b85cefe2ebc92d26ff930f66be2db91bcc90dc744d8af7",
+    "validation/core/rubrics.py": "658b25e57b0356704920e51e2affd6976f927c4710e93578c0b29ada960f7e02",
+    "validation/prompts/cot_rubric_generic.txt": "ff2add47a75149e9e603f8139890efc9bc5e6b8e0f3a31593df146acffefaab3",
+    "validation/prompts/strict_json_generic.txt": "2c895365ad12826248d950760904c1351e475b128eb18fa8928dccd34f23378d",
+    "config/rubrics/qa.yaml": "2f8d3666b8fee9a30be13d905779fde646b77c3999281655fd7410d077170bac"
+  },
+  "baseline_tests": {
+    "total": 4,
+    "passed": 2,
+    "errors": 2,
+    "exit_code": 1,
+    "failure": "Both template tests raise KeyError for literal JSON braces"
+  },
+  "claude_version": "2.1.260",
+  "auth_status_in_this_environment": {
+    "loggedIn": false,
+    "authMethod": "none",
+    "apiProvider": "firstParty"
+  },
+  "model_calls": 0,
+  "runtime_implementation_changed": false
+}

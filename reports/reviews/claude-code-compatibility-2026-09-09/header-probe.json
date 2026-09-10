@@ -1,0 +1,13 @@
+{
+  "synthetic_only": true,
+  "input_header_names": [
+    "x-claude-code-session-id",
+    "x-adrl-workload-assertion",
+    "x-adrl-session-id"
+  ],
+  "forwarded_headers": {
+    "x-claude-code-session-id": "SYNTHETIC-SESSION",
+    "accept-encoding": "identity"
+  },
+  "interpretation": "Native x-claude-code-session-id is forwarded; local assertion and x-adrl-session-id are stripped. This establishes forwarding, not that native identity is a credential or prohibited by the current contract."
+}

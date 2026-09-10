@@ -1,0 +1,30 @@
+{
+  "inputs": {
+    "/Users/arunmenon/projects/adrl-world-class/AGENTS.md": {
+      "sha256": "da8e1b91b73598408bb6ef9c4fa58038383715a210cf76f8466c6003a50e454b",
+      "snapshot": "before/0/AGENTS.md"
+    },
+    "/Users/arunmenon/projects/adrl-core/AGENTS.md": {
+      "sha256": "b5fd37e36c52874192a3e87966822cd0d7ea0ef789a3e47e9fc9f9bc3120a490",
+      "snapshot": "before/1/AGENTS.md"
+    },
+    "/Users/arunmenon/projects/adrl-core/tools/check_all.py": {
+      "sha256": "38b2a09a6686ee8923634f9ab25e35d80c0016ef5829e2028590ed1326919280",
+      "snapshot": "before/2/check_all.py"
+    },
+    "/Users/arunmenon/projects/adrl-world-class/adr/FND/ADRL-FND-005.md": {
+      "sha256": "1c7ce24cca5fd0ed81daf260db74d7fe3034fd7fe5e0af241b6432bf9fcfdca7",
+      "snapshot": "before/3/ADRL-FND-005.md"
+    },
+    "/Users/arunmenon/projects/adrl-world-class/adr/EVL/ADRL-EVL-009.md": {
+      "sha256": "dfff5f80f6ecbf0cb3212728090fc1fa180f23d25cfd3ec0f9939dd9875d191e",
+      "snapshot": "before/4/ADRL-EVL-009.md"
+    },
+    "/Users/arunmenon/projects/adrl-world-class/reports/adrl-wave-execution-template.md": {
+      "sha256": "f2fe0d1b54545c8a98c9536e22b801304d33d1e2fdb0758eead4c335c24adbea",
+      "snapshot": "before/5/adrl-wave-execution-template.md"
+    }
+  },
+  "exclusions": "Secrets, runtime payloads, unrelated code; declared source files embedded in full",
+  "scope": "local sync tooling pre-wave"
+}

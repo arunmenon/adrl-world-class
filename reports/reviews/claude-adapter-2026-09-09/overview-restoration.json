@@ -1,0 +1,12 @@
+{
+  "date": "2026-09-09",
+  "restored": [
+    "ADRL-SEM-007",
+    "ADRL-CAS-009"
+  ],
+  "authorization": "overview-owner-disposition.json",
+  "cas009_index_row": "| [ADRL-CAS-009](adr/CAS/ADRL-CAS-009.md) | Action-effect provenance and authorization boundary (Proposed) | PROPOSED (new) | D0 | Q2, Q3 | Proposed 2026-09-03 (external review) |",
+  "cas009_verdict": "PROPOSED (new)",
+  "cas009_maturity": "D0",
+  "scope": "Missing overview entries only. No action-effect implementation, no canonical/index status or maturity change."
+}

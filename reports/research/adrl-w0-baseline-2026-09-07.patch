@@ -1,0 +1,668 @@
+--- a/README.md
++++ b/README.md
+@@ -3,6 +3,11 @@
+ Offline verifier experiments now compare reviewed proposals against a baseline on fixed
+ curated examples, preserve encrypted evidence and recommend review without deployment.
+ See the [experiment guide](docs/verifier-experiments.md). The public API remains preview 4.
++
++W0 execution began on 7 September 2026. Use the [engineering check runner](docs/engineering-checks.md)
++for a repeatable local evidence record and the sibling register's
++[implementation journey](../adrl-world-class/reports/adrl-implementation-journey.md) for progress,
++limitations and the next packet.
+ 
+ Product API preview 4 adds independent session verification: a local operator runs pinned checks
+ on a separate code snapshot and the authenticated timeline shows started/finished receipts.
+@@ -25,7 +30,7 @@
+                    detectors, repo classification (signed), endpoint inventory (signed),
+                    learning contract, fingerprints
+ src/adrl/
+-  api/             product discovery and versioned preview schemas
++  api/             authenticated local sessions, observations, evidence reads and preview schemas
+   core/            shared vocabulary: enums, ids, types, ports, errors
+   config/          settings, config models, loaders, load-time checks
+   wire/      SEM   request parsing, request classes, session and lineage identity, SSE observer, body rewrite
+@@ -41,7 +46,7 @@
+   app.py           composition root
+   cli/             the adrl command
+ tests/             unit, integration, adversarial, e2e; scrubbed wire fixtures under tests/fixtures/wire
+-tools/             CI checks and generators
++tools/             local engineering checks and generators; no hosted CI workflow yet
+ ```
+ 
+ ## Setup
+@@ -108,7 +113,15 @@
+ 
+ ## Status
+ 
+-This is a D1/D2 build: the mechanisms exist and are unit, integration and end-to-end tested against a fake gateway, and nothing here has run against organic traffic. Maturity is claimed per decision in the register, never here, and this implementation inherits no maturity from the prior one (EVL-007 as proposed). On 2026-09-03 an external review of the first build found three P0 and several P1 defects; all were fixed with regression tests, and the register gained 22 Proposed decisions (a TRU bucket, first captures of EVL and OPS, SEM-007, CAS-009) plus six proposed amendments, all pending disposition by the register owner. Code presence is not readiness (FND-005). The adversarial suites under `tests/adversarial` run in CI; their results are published, not required to pass, until the SAF and TRU decisions leave D2. Residual gaps are listed in `docs/known-gaps.md`.
++This build has scoped D1/D2 implementation evidence. Gateway control has been tested with local
++fixtures and a fake gateway; the separate native Claude Code observation pilot recorded one
++task, without ADRL model routing. That pilot does not establish organic routing qualification.
++Maturity belongs to the exact behavior and population recorded in the register and does not
++transfer from the prior implementation. The 2026-09-03 external review and its dated fixes
++remain in the register. Later verification and experiments have their own source manifests.
++The local runner includes all tests, including `tests/adversarial`, and a failure fails its
++engineering result. No hosted CI/release pipeline is installed or claimed. Residual gaps and
++current-scope corrections are listed in [known gaps](docs/known-gaps.md).
+ 
+ ## Product integration boundary
+ 
+@@ -117,12 +130,14 @@
+ Decision records include both component versions. This does not yet add a second harness or make
+ the gates and cascade independent of Messages semantics.
+ 
+-`GET /adrl/v1/capabilities` reports shipped profiles, adapters and implementation limits. Session,
+-event and evidence APIs have a generated OpenAPI preview at `api/adrl-api-v1-preview.json`; their
+-handlers are not implemented and return 501. The product namespace is never forwarded to the
+-model gateway. Other unclassified provider paths retain legacy forwarding without profile
+-coverage guarantees.
++`GET /adrl/v1/capabilities` reports shipped profiles, adapters and implementation limits. Local
++session binding, durable observation intake and scoped evidence reads are implemented in API
++preview 4. Operator verification adds encrypted receipts; hook intake cannot claim verification
++authority. The product namespace is never forwarded to the model gateway. Explicitly bound
++model sessions reject unsupported endpoints; callers omitting all session signals retain the
++legacy forwarding gap. Capabilities describe shipped code, not an attestation of enforcement.
+ 
+ Read `docs/protocol-boundary.md` for the current boundary, contract export command and next work,
+ and `docs/responses-admission.md` for the selected Responses spike scope and remaining admission
+-requirements. No paid provider runs or real harness compatibility are established by this work.
++requirements. The single observation pilot does not establish Messages gateway compatibility,
++a second harness, Responses admission or routing benefit.
+--- a/docs/adr-module-map.md
++++ b/docs/adr-module-map.md
+@@ -2,7 +2,7 @@
+ 
+ Generated from module docstrings. Regenerate with `tools/adr_module_map.py`.
+ 
+-Register: `/Users/arunmenon/projects/adrl-world-class/adr` (77 decisions). Mapped: 74 of 77. Phantom citations: 0. Register decisions with no module: 3.
++Register: ADR files (77 decisions). Mapped: 74 of 77. Phantom citations: 0. Register decisions with no module: 3.
+ 
+ ## By module
+ 
+@@ -35,7 +35,7 @@
+ | `adrl/core/ports.py` | ADRL-FND-002, ADRL-MEM-005, ADRL-MEM-006, ADRL-MEM-010, ADRL-SAF-003, ADRL-SAF-006, ADRL-SAF-007 | Port interfaces every adapter implements. Primary: ADRL-MEM-006. |
+ | `adrl/core/types.py` | ADRL-CAS-004, ADRL-CAS-006, ADRL-RTG-002, ADRL-RTG-009, ADRL-SAF-001, ADRL-SEM-001, ADRL-TRU-002 | Value objects shared across packages. Primary: ADRL-SEM-001. |
+ | `adrl/gates/block.py` | ADRL-SAF-004, ADRL-SAF-005, ADRL-SEM-004 | Fail-loud and block contract. Primary: ADRL-SAF-004. Secondary: ADRL-SAF-005, ADRL-SEM-004. |
+-| `adrl/gates/cli.py` | none |  |
++| `adrl/gates/cli.py` | ADRL-SAF-002, ADRL-SAF-003, ADRL-SAF-007, ADRL-SAF-009 | Operator commands owned by the gates package. Primary: ADRL-SAF-002. |
+ | `adrl/gates/content.py` | ADRL-SAF-003, ADRL-SAF-006, ADRL-SAF-008 | Content extraction for gates: every scannable block with its position. Primary: ADRL-SAF-003. |
+ | `adrl/gates/coverage.py` | ADRL-SAF-003 | Per-lineage scan coverage so only new content is scanned. Primary: ADRL-SAF-003. |
+ | `adrl/gates/deployments.py` | ADRL-FND-002, ADRL-RTG-008, ADRL-SAF-001, ADRL-SAF-008, ADRL-SAF-009, ADRL-TRU-002 | Permitted deployment sets and destination receipts. Primary: ADRL-SAF-008. |
+@@ -170,14 +170,14 @@
+ | ADRL-RTG-008 | `adrl/gates/deployments.py`, `adrl/routing/registry.py`, `adrl/telemetry/semconv.py` |
+ | ADRL-RTG-009 | `adrl/config/models.py`, `adrl/core/types.py`, `adrl/routing/cost.py`, `adrl/routing/router.py`, `adrl/wire/observe.py` |
+ | ADRL-SAF-001 | `adrl/core/types.py`, `adrl/gates/deployments.py`, `adrl/gates/pipeline.py`, `adrl/learning/explore.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/proxy/stages.py`, `adrl/telemetry/metrics.py` |
+-| ADRL-SAF-002 | `adrl/gates/pin.py`, `adrl/gates/pipeline.py`, `adrl/learning/explore.py`, `adrl/learning/pairs.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/facade.py`, `adrl/ledger/state.py` |
+-| ADRL-SAF-003 | `adrl/core/ports.py`, `adrl/gates/content.py`, `adrl/gates/coverage.py`, `adrl/gates/detectors.py`, `adrl/gates/measure.py`, `adrl/gates/pipeline.py`, `adrl/gates/secrets.py`, `adrl/gates/suppression.py` |
++| ADRL-SAF-002 | `adrl/gates/cli.py`, `adrl/gates/pin.py`, `adrl/gates/pipeline.py`, `adrl/learning/explore.py`, `adrl/learning/pairs.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/facade.py`, `adrl/ledger/state.py` |
++| ADRL-SAF-003 | `adrl/core/ports.py`, `adrl/gates/cli.py`, `adrl/gates/content.py`, `adrl/gates/coverage.py`, `adrl/gates/detectors.py`, `adrl/gates/measure.py`, `adrl/gates/pipeline.py`, `adrl/gates/secrets.py`, `adrl/gates/suppression.py` |
+ | ADRL-SAF-004 | `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-005 | `adrl/config/checks.py`, `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py`, `adrl/telemetry/metrics.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-006 | `adrl/core/ports.py`, `adrl/gates/content.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py` |
+-| ADRL-SAF-007 | `adrl/core/ports.py`, `adrl/gates/sandbox.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-SAF-007 | `adrl/core/ports.py`, `adrl/gates/cli.py`, `adrl/gates/sandbox.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-SAF-008 | `adrl/config/loaders.py`, `adrl/config/models.py`, `adrl/gates/content.py`, `adrl/gates/deployments.py`, `adrl/gates/pipeline.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py` |
+-| ADRL-SAF-009 | `adrl/cli/main.py`, `adrl/gates/deployments.py`, `adrl/gates/egress.py`, `adrl/gates/pipeline.py`, `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/telemetry/metrics.py` |
++| ADRL-SAF-009 | `adrl/cli/main.py`, `adrl/gates/cli.py`, `adrl/gates/deployments.py`, `adrl/gates/egress.py`, `adrl/gates/pipeline.py`, `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-SEM-001 | `adrl/core/types.py`, `adrl/gates/feasibility.py`, `adrl/telemetry/metrics.py`, `adrl/wire/classify.py`, `adrl/wire/parse.py` |
+ | ADRL-SEM-002 | `adrl/api/auth.py`, `adrl/core/ids.py`, `adrl/wire/adapters.py`, `adrl/wire/identity.py` |
+ | ADRL-SEM-003 | `adrl/proxy/pipeline.py` |
+@@ -199,6 +199,5 @@
+ 
+ - none
+ 
+-Modules without an ADR ID in their docstring: 1
+-
+-- `adrl/gates/cli.py`
++Modules without an ADR ID in their docstring: 0
++
+--- /dev/null
++++ b/docs/engineering-checks.md
+@@ -0,0 +1,40 @@
++# Local engineering evidence
++
++Primary: ADRL-FND-005. Secondary: ADRL-EVL-009, ADRL-SEM-007.
++
++From the repository, use the existing Python 3.12 environment:
++
++```bash
++.venv/bin/python tools/check_all.py --out /absolute/private/new-run-directory
++```
++
++The output directory must be new and outside the repository. The runner makes it private and
++records each check's exit status, elapsed time and log. `manifest.json` is saved as work proceeds.
++A killed runner may leave `running`; that is incomplete evidence, never a pass. The default
++timeout is ten minutes per command, configurable with `--timeout` (1-1800 seconds). A timed-out
++or cancelled command's process group is killed. No retries or model-service calls are added.
++
++The command runs the six checks in AGENTS.md, the data inventory, learning contract, exact API
++export comparison, ADR map freshness/ownership and register/index coverage. Any failure prevents
++a passing result. Unimplemented register decisions may remain unmapped and are reported by name;
++this is different from a module citing a nonexistent decision or having no ADR ownership.
++
++Source/config/docs/API/artifact hashes are recorded before and after. Added, removed or changed
++declared inputs invalidate the combined result. The Python/platform and installed package
++versions are recorded. Private keys, `.env` files, runtime payloads and caches are excluded.
++The inherited process environment and installed binaries are not fully frozen. This is drift
++detection for a trusted local engineering run, not an atomic workspace snapshot, hostile-code
++sandbox, independent review, reproducible deployment image or release/maturity authorization.
++
++To deliberately refresh generated artifacts, inspect the change and run:
++
++```bash
++.venv/bin/python tools/adr_module_map.py
++.venv/bin/python tools/export_api_contract.py --out api/adrl-api-v1-preview.json
++```
++
++The check runner itself never refreshes either artifact. An API diff needs an explicit compatible
++change or preview revision; regenerating JSON does not establish compatibility. The local
++runner can later be used by CI, but no hosted workflow currently exists. Keep private run logs
++locally; publish scoped summaries and hashes in the register rather than assuming logs are safe
++to publish. Source backups exclude ignored runtime data and are a separate W0 artifact.
+--- a/docs/known-gaps.md
++++ b/docs/known-gaps.md
+@@ -1,10 +1,16 @@
+-# Known gaps (updated 2026-09-03)
++# Known gaps (reconciled 2026-09-07)
++
++W0 reconciliation: the health reader returns unknown for an unlisted group, but the feasibility
++policy still permits a rung when it sees no reported member state. Hook failures are now ingested
++as product observations; this does not make them trusted cascade inputs. The earlier closed
++table retains its date and original counts. New work and owners are tracked in the sibling
++register's [W0 packet](../../adrl-world-class/reports/waves/w0-baseline.md).
+ 
+ Each entry names the decision, what the code does today, and what closes the gap. None of these is hidden behind a passing test; they are places where the register asks for more than the current build delivers. Closed items are kept in the second table so the history of the 2026-09-03 review stays visible.
+ 
+ | ADR | Today | Closes the gap |
+ |---|---|---|
+-| SAF-006 | `LiteLLMHealth` treats a model group the gateway does not list as healthy. | Treat unlisted groups as unknown and remove them from the permitted set until the gateway lists them, with a metric for the unknown case. |
++| SAF-006 | `LiteLLMHealth` returns `None` for unlisted groups; `Feasibility.rung_healthy` retains a rung if none of its members has a reported state. | DQ3/W6: disposition unknown-health eligibility and freshness; make the agreed behavior explicit and test it. |
+ | SEM-004 | A pinned cosmetic utility call is forwarded to the local rung when local is healthy; the empty-but-valid answer fires only when local is unavailable. Both readings satisfy the text. | Decide whether cosmetic calls on a pinned lineage should always be answered empty (cheaper, no local load) and make it a policy field. |
+ | RTG-006 | With no classifier configured, the ambiguous band always takes the configured fallback rung (frontier by default). | Configure `ADRL_CLASSIFIER_BASE_URL` to a local model, then measure the ambiguous-band share before tuning the fallback. |
+ | LRN-008 | Exploration epsilon is read from the manifest's `thresholds.epsilon_by_rung`, a convention chosen here; no exploration manifest exists. | Record the convention in the learning contract when the first exploration artifact is proposed. |
+@@ -12,7 +18,7 @@
+ | SAF-007 | The Seatbelt profile is allow-default with kernel denies (network, writes outside scratch, credential paths). Reads are not limited to the snapshot. | A deny-default profile once the harness's own profile shape is confirmed on the target macOS version. |
+ | SAF-003 | Detector tiers in `config/detectors.yaml` carry provisional precision figures. | Run `adrl gates scan-measure` on a representative labelled corpus and re-tier from the results. |
+ | RTG-009 | Remaining-episode length is the constant estimator `episode-constant-v1`. | Replace with the empirical continuation distribution once a shadow corpus exists; the version is recorded on every decision row. |
+-| CAS-001 | `PostToolUseFailure` hook events and MCP `is_error` are not ingested; wire-shape discrimination only. | A hook sidecar feeding the lineage (open follow-up in the ADR). |
++| CAS-001 | `PostToolUseFailure` is ingested as an authenticated product observation. The cascade still relies on its existing wire/internal evidence; product observations do not have trusted failure authority. | Define and test a lineage-bound authoritative event bridge before using hook observations to trigger escalation. |
+ | SAF-003 | The split-secret tail (last 64 characters of the previous scanned block) is carried across requests on a lineage, so a request that follows a pinning finding can re-pin on a generic detector even after an audited release of the first finding. | Decide whether the tail should reset on a release event; today a release is per finding and a re-pin is the conservative reading of SAF-002. |
+ | CAS-003 | The gateway-side clause "never re-issue after first streamed tool content" is not expressible in LiteLLM configuration and is untested on the gateway. ADRL's own side (one attempt, no re-issue) is tested. | A gateway contract test once the gateway team exposes retry hooks. |
+ | SEM-006 | Agent parent links are persisted as `agent_parent` lineage events on the session root and primed on the first request of a session per process. A grandchild whose parent link was never seen by any process (the parent's own request was lost) still shortens its chain. | Carry the full chain in the harness headers if Anthropic adds it; until then the rescan under the new lineage is the backstop. |
+--- a/docs/protocol-boundary.md
++++ b/docs/protocol-boundary.md
+@@ -20,13 +20,16 @@
+ JSON remains an inspection view beside the original bytes. On the unchanged path, the gateway
+ receives those original bytes. Protocol ports do not imply arbitrary profiles are safe to install.
+ 
+-`GET /adrl/v1/capabilities` describes the shipped implementation. It reports only Messages and
+-the Claude Code correlation adapter, offline fixture validation, no implemented hook ingestion,
+-and no tested live harness version. It does not attest runtime enforcement or provider health.
++`GET /adrl/v1/capabilities` describes the shipped implementation. It reports Messages, the
++Claude Code adapter, authenticated identity binding and implemented tool-event intake. Profile
++validation remains `offline_fixtures`; its tested harness-version list is deliberately empty
++because the observation pilot did not qualify the model profile. It does not attest runtime
++enforcement or provider health.
+ 
+-The other product routes are schema previews in `api/adrl-api-v1-preview.json`. They currently
+-return 501. The entire `/adrl/v1` namespace is reserved locally, so proposed session or event
+-payloads cannot be forwarded to a provider by the legacy catch-all route. Re-export the contract:
++Session binding, event ingestion and evidence reads in `api/adrl-api-v1-preview.json` are
++implemented; see [product services](product-services.md) for the preview-4 contract. The entire
++`/adrl/v1` namespace is reserved locally, so product payloads cannot be forwarded to a provider
++by the legacy catch-all route. Re-export the contract:
+ 
+ ```bash
+ PYTHONPATH=src .venv/bin/python tools/export_api_contract.py --out api/adrl-api-v1-preview.json
+@@ -45,13 +48,13 @@
+ rejection on an enforcing listener is a separate FND/SEM change required before product release.
+ The Responses admission document does not activate that policy on the current listener.
+ 
+-Session issuance, credential refresh/revocation, policy authorization, durable event ingestion,
+-idempotency and scoped evidence reads remain unimplemented. Schemas reject extra fields and
+-separate reported task outcomes from verified outcomes; schema validation cannot establish
+-producer authority. The event service must derive producer identity from authenticated credentials,
+-allow verification events only from authorized verifier producers, bind results to task snapshots,
+-and acknowledge only durable append. Identical retries return the original acknowledgement;
+-reused event IDs with different content are conflicts. Late events and sequence gaps stay visible.
++Binding uses existing signed local launcher assertions; renewal preserves the binding identity.
++Durable event ingestion derives producer identity from the assertion, acknowledges only committed
++appends and handles identical retries and conflicting event IDs. Late events and sequence gaps
++remain visible. Harness credentials cannot submit trusted verification. Operator session checks
++now execute on temporary snapshots, but retained output at a trusted task-close boundary remains
++W3 work. Remote identity issuance/revocation, child binding and automatic credential refresh with
++outbox resume remain unsupported. These limits differ from unimplemented session/event services.
+ 
+ The first API version is a preview. Compatibility can change with explicit preview revision bumps
+ until two harnesses and two protocols validate the boundary. See `responses-admission.md` for the
+--- /dev/null
++++ b/tests/unit/test_engineering_tools.py
+@@ -0,0 +1,108 @@
++"""Engineering evidence must expose missing inputs and failed checks. ADRL-FND-005/EVL-009."""
++
++from __future__ import annotations
++
++import importlib.util
++import json
++import shutil
++import subprocess
++import sys
++from pathlib import Path
++from types import ModuleType
++
++import pytest
++
++ROOT = Path(__file__).resolve().parents[2]
++
++
++def load_runner() -> ModuleType:
++    spec = importlib.util.spec_from_file_location("check_all", ROOT / "tools/check_all.py")
++    assert spec is not None and spec.loader is not None
++    module = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(module)
++    return module
++
++
++def test_manifest_detects_changed_inputs_and_excludes_keys(tmp_path: Path) -> None:
++    runner = load_runner()
++    source = tmp_path / "src/example.py"
++    source.parent.mkdir()
++    source.write_text("first")
++    keys = tmp_path / "config/keys"
++    keys.mkdir(parents=True)
++    (keys / "private.key").write_text("do not archive")
++    before = runner.source_manifest(tmp_path)
++    assert set(before) == {"src/example.py"}
++    source.write_text("second")
++    assert before != runner.source_manifest(tmp_path)
++    source.unlink()
++    source.symlink_to(keys / "private.key")
++    with pytest.raises(ValueError, match="symlinked input"):
++        runner.source_manifest(tmp_path)
++
++
++@pytest.mark.parametrize("exit_code", [0, 7])
++def test_check_records_real_exit_status(tmp_path: Path, exit_code: int) -> None:
++    result = load_runner().run_check(
++        "probe", [sys.executable, "-c", f"raise SystemExit({exit_code})"], tmp_path, tmp_path, 5
++    )
++    assert result["exit_code"] == exit_code
++    assert result["status"] == ("passed" if exit_code == 0 else "failed")
++
++
++def test_timeout_stops_child_process_group(tmp_path: Path) -> None:
++    marker = tmp_path / "escaped"
++    child = f"import pathlib,time; time.sleep(2); pathlib.Path({str(marker)!r}).touch()"
++    parent = (
++        "import subprocess,sys,time; "
++        f"subprocess.Popen([sys.executable, '-c', {child!r}]); time.sleep(20)"
++    )
++    result = load_runner().run_check("probe", [sys.executable, "-c", parent], tmp_path, tmp_path, 1)
++    assert result["status"] == "timed_out"
++    subprocess.run([sys.executable, "-c", "import time; time.sleep(2)"], check=True)
++    assert not marker.exists()
++
++
++def test_register_coverage_refuses_duplicate_rows(tmp_path: Path) -> None:
++    register = tmp_path / "adr/FND"
++    register.mkdir(parents=True)
++    (register / "ADRL-FND-005.md").write_text("decision")
++    row = "| [ADRL-FND-005](adr/FND/ADRL-FND-005.md) |\n"
++    (tmp_path / "INDEX.md").write_text(row + row)
++    result = load_runner().register_coverage(register.parent)
++    assert result["status"] == "failed"
++    assert result["duplicate_index_rows"] == ["ADRL-FND-005"]
++
++
++def test_adr_map_handles_comments_and_rejects_stale_or_missing_inputs(tmp_path: Path) -> None:
++    tools = tmp_path / "core/tools"
++    tools.mkdir(parents=True)
++    shutil.copyfile(ROOT / "tools/adr_module_map.py", tools / "adr_module_map.py")
++    source = tmp_path / "core/src/adrl"
++    source.mkdir(parents=True)
++    module = source / "example.py"
++    module.write_text('# comment\n"""Primary: ADRL-FND-005."""\n')
++    (tmp_path / "core/docs").mkdir()
++    register = tmp_path / "register/FND"
++    register.mkdir(parents=True)
++    (register / "ADRL-FND-005.md").write_text("decision")
++    command = [sys.executable, str(tools / "adr_module_map.py"), "--register", str(register.parent)]
++    assert subprocess.run(command, capture_output=True).returncode == 0
++    assert subprocess.run([*command, "--check"], capture_output=True).returncode == 0
++    saved = (tmp_path / "core/docs/adr-module-map.md").read_bytes()
++    module.write_text('"""Primary: ADRL-FND-999."""\n')
++    assert subprocess.run([*command, "--check"], capture_output=True).returncode == 1
++    assert (tmp_path / "core/docs/adr-module-map.md").read_bytes() == saved
++    assert subprocess.run(command, capture_output=True).returncode == 1
++    shutil.rmtree(register)
++    assert subprocess.run(command, capture_output=True).returncode == 2
++
++
++def test_contract_check_never_rewrites_stale_artifact(tmp_path: Path) -> None:
++    target = tmp_path / "contract.json"
++    target.write_text(json.dumps({"stale": True}))
++    command = [sys.executable, str(ROOT / "tools/export_api_contract.py"), "--out", str(target)]
++    assert subprocess.run([*command, "--check"], capture_output=True).returncode == 1
++    assert json.loads(target.read_text()) == {"stale": True}
++    assert subprocess.run(command, capture_output=True).returncode == 0
++    assert subprocess.run([*command, "--check"], capture_output=True).returncode == 0
+--- a/tools/adr_module_map.py
++++ b/tools/adr_module_map.py
+@@ -8,6 +8,7 @@
+ from __future__ import annotations
+ 
+ import argparse
++import ast
+ import collections
+ import os
+ import pathlib
+@@ -19,7 +20,6 @@
+ # A citation is ADRL-<BUCKET>-NNN optionally followed by /NNN continuations
+ # (ADRL-CAS-001/004/008 cites three decisions).
+ CITE_RE = re.compile(rf"ADRL-({BUCKETS})-(\d{{3}})((?:/\d{{3}})*)")
+-DOC_RE = re.compile(r"\s*(?:\"\"\"|''')(.*?)(?:\"\"\"|''')", re.S)
+ 
+ 
+ def cited_ids(doc: str) -> list[str]:
+@@ -52,22 +52,24 @@
+         default=pathlib.Path(os.environ.get("ADRL_REGISTER", str(DEFAULT_REGISTER))),
+         help="Path to the register's adr/ directory",
+     )
++    parser.add_argument("--check", action="store_true", help="Check without rewriting the map")
+     args = parser.parse_args()
+     known = register_ids(args.register)
++    if not known:
++        parser.error("register is absent or contains no ADR records")
+     rows: list[tuple[str, list[str], str]] = []
+     for path in sorted((ROOT / "src" / "adrl").rglob("*.py")):
+         if path.name == "__init__.py":
+             continue
+-        match = DOC_RE.match(path.read_text(errors="ignore"))
+-        doc = (match.group(1) if match else "").strip()
++        doc = (ast.get_docstring(ast.parse(path.read_text())) or "").strip()
+         first = doc.splitlines()[0] if doc else ""
+         rows.append((str(path.relative_to(ROOT / "src")), cited_ids(doc), first[:110]))
+     by_id: dict[str, list[str]] = collections.defaultdict(list)
+     for module, ids, _ in rows:
+         for decision in ids:
+             by_id[decision].append(module)
+-    mapped = sorted(d for d in by_id if d in known) if known else sorted(by_id)
+-    phantoms = sorted(d for d in by_id if d not in known) if known else []
++    mapped = sorted(d for d in by_id if d in known)
++    phantoms = sorted(d for d in by_id if d not in known)
+     unmapped = sorted(known - set(by_id))
+     missing = [module for module, ids, _ in rows if not ids]
+ 
+@@ -76,7 +78,7 @@
+         "",
+         "Generated from module docstrings. Regenerate with `tools/adr_module_map.py`.",
+         "",
+-        f"Register: `{args.register}` ({len(known)} decisions). "
++        f"Register: ADR files ({len(known)} decisions). "
+         f"Mapped: {len(mapped)} of {len(known)}. Phantom citations: {len(phantoms)}. "
+         f"Register decisions with no module: {len(unmapped)}.",
+         "",
+@@ -99,11 +101,19 @@
+     ] or ["- none"]
+     lines += ["", f"Modules without an ADR ID in their docstring: {len(missing)}", ""]
+     lines += [f"- `{module}`" for module in missing]
+-    (ROOT / "docs" / "adr-module-map.md").write_text("\n".join(lines) + "\n")
++    target = ROOT / "docs" / "adr-module-map.md"
++    content = "\n".join(lines) + "\n"
++    if args.check:
++        if not target.exists() or target.read_text() != content:
++            parser.exit(1, "ADR module map is stale; regenerate tools/adr_module_map.py\n")
++    else:
++        target.write_text(content)
+     print(
+         f"{len(rows)} modules; register {len(known)}; mapped {len(mapped)}; "
+         f"unmapped {unmapped}; phantoms {phantoms}; no id {len(missing)}"
+     )
++    if phantoms or missing:
++        parser.exit(1, "Modules have unknown or missing ADR citations\n")
+ 
+ 
+ if __name__ == "__main__":
+--- /dev/null
++++ b/tools/check_all.py
+@@ -0,0 +1,219 @@
++"""Record bounded local engineering checks. Primary: ADRL-FND-005.
++
++Secondary: ADRL-EVL-009, ADRL-SEM-007. A passing run is evidence, never release authority.
++Only named source directories are hashed. Private keys and runtime data are excluded.
++"""
++
++from __future__ import annotations
++
++import argparse
++import hashlib
++import importlib.metadata
++import json
++import os
++import platform
++import re
++import signal
++import subprocess
++import sys
++import time
++from datetime import UTC, datetime
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[1]
++SOURCE_DIRS = ("src", "tests", "tools", "config", "docs", "api", "artifacts")
++SOURCE_FILES = ("pyproject.toml", "uv.lock", "README.md", "AGENTS.md", "CLAUDE.md", ".gitignore")
++EXCLUDED_PARTS = {"__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache"}
++
++
++def source_manifest(root: Path) -> dict[str, dict[str, str | int]]:
++    """Hash declared inputs without reading private keys, caches or runtime payloads."""
++    paths = [root / name for name in SOURCE_FILES if (root / name).exists()]
++    for name in SOURCE_DIRS:
++        directory = root / name
++        if directory.is_symlink():
++            raise ValueError(f"symlinked input directory: {name}")
++        if directory.exists():
++            paths.extend(directory.rglob("*"))
++    result: dict[str, dict[str, str | int]] = {}
++    for path in sorted(paths):
++        relative = path.relative_to(root)
++        if EXCLUDED_PARTS.intersection(relative.parts) or path.suffix == ".pyc":
++            continue
++        if path.name.startswith(".env") or path.suffix in {".key", ".pem"}:
++            continue
++        if path.is_symlink():
++            raise ValueError(f"symlinked input: {relative}")
++        if path.is_file():
++            data = path.read_bytes()
++            result[str(relative)] = {
++                "sha256": hashlib.sha256(data).hexdigest(),
++                "bytes": len(data),
++                "mode": path.stat().st_mode & 0o777,
++            }
++    return result
++
++
++def stop_group(process: subprocess.Popen[bytes]) -> None:
++    """Kill a timed-out check and its subprocess group on this POSIX runner."""
++    try:
++        os.killpg(process.pid, signal.SIGKILL)
++    except ProcessLookupError:
++        pass
++    process.wait()
++
++
++def run_check(name: str, argv: list[str], root: Path, out: Path, timeout: int) -> dict[str, object]:
++    started = time.monotonic()
++    status = "failed"
++    code: int | None = None
++    with (out / f"{name}.log").open("wb") as log:
++        try:
++            process = subprocess.Popen(
++                argv, cwd=root, stdout=log, stderr=subprocess.STDOUT, start_new_session=True
++            )
++            try:
++                code = process.wait(timeout=timeout)
++                status = "passed" if code == 0 else "failed"
++            except subprocess.TimeoutExpired:
++                stop_group(process)
++                status = "timed_out"
++            except KeyboardInterrupt:
++                stop_group(process)
++                status = "cancelled"
++        except OSError as exc:
++            log.write(f"Cannot start check: {exc}\n".encode())
++            status = "unavailable"
++    return {
++        "name": name,
++        "argv": argv,
++        "status": status,
++        "exit_code": code,
++        "elapsed_seconds": round(time.monotonic() - started, 3),
++        "log": f"{name}.log",
++    }
++
++
++def register_coverage(register: Path) -> dict[str, object]:
++    known = sorted(p.stem for p in register.glob("*/ADRL-*.md"))
++    index = register.parent / "INDEX.md"
++    rows = (
++        re.findall(r"^\| \[(ADRL-[A-Z]{3}-\d{3})\]", index.read_text(), re.M)
++        if index.is_file()
++        else []
++    )
++    passed = bool(known) and len(rows) == len(set(rows)) and sorted(rows) == known
++    return {
++        "name": "register_index",
++        "status": "passed" if passed else "failed",
++        "decision_count": len(known),
++        "missing_from_index": sorted(set(known) - set(rows)),
++        "unknown_index_rows": sorted(set(rows) - set(known)),
++        "duplicate_index_rows": sorted(row for row in set(rows) if rows.count(row) > 1),
++    }
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument(
++        "--out", type=Path, required=True, help="New private directory outside repo"
++    )
++    parser.add_argument("--timeout", type=int, default=600, help="Seconds per subprocess check")
++    parser.add_argument("--register", type=Path, default=ROOT.parent / "adrl-world-class/adr")
++    args = parser.parse_args()
++    if not 1 <= args.timeout <= 1800:
++        parser.error("timeout must be between 1 and 1800 seconds")
++    out = args.out.resolve()
++    if out == ROOT or ROOT in out.parents:
++        parser.error("output must be outside the source repository")
++    os.umask(0o077)
++    out.mkdir(parents=True, mode=0o700, exist_ok=False)
++    report: dict[str, object] = {
++        "schema_version": "adrl-engineering-checks-v1",
++        "started_at": datetime.now(UTC).isoformat(),
++        "status": "running",
++        "source_root": str(ROOT),
++        "python": sys.version,
++        "python_executable": sys.executable,
++        "platform": platform.platform(),
++        "installed_packages": sorted(
++            f"{d.metadata['Name']}=={d.version}" for d in importlib.metadata.distributions()
++        ),
++        "environment_scope": "Inherited environment; secret values and private keys not recorded",
++        "source_scope": {"directories": SOURCE_DIRS, "root_files": SOURCE_FILES},
++        "excluded_scope": "Private keys, .env files, caches, runtime data and Git internals",
++        "per_check_timeout_seconds": args.timeout,
++        "release_authority": False,
++    }
++    manifest = out / "manifest.json"
++
++    def save() -> None:
++        temporary = out / "manifest.pending"
++        temporary.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
++        temporary.replace(manifest)
++
++    save()
++    try:
++        before = source_manifest(ROOT)
++        report["source_before"] = before
++        commands = [
++            ("lint", ["-m", "ruff", "check", "src", "tests", "tools"]),
++            ("format", ["-m", "ruff", "format", "--check", "src", "tests", "tools"]),
++            ("types", ["-m", "mypy"]),
++            ("tests", ["-m", "pytest", "-q"]),
++            ("ledger", ["tools/check_ledger_discipline.py"]),
++            ("config", ["-m", "adrl.cli.main", "config", "check"]),
++            ("inventory", ["tools/check_data_inventory.py"]),
++            ("learning", ["tools/check_learning_contract.py"]),
++            (
++                "api_contract",
++                [
++                    "tools/export_api_contract.py",
++                    "--out",
++                    "api/adrl-api-v1-preview.json",
++                    "--check",
++                ],
++            ),
++            (
++                "adr_map",
++                ["tools/adr_module_map.py", "--register", str(args.register), "--check"],
++            ),
++        ]
++        checks: list[dict[str, object]] = []
++        report["checks"] = checks
++        for name, arguments in commands:
++            report["active_check"] = name
++            save()
++            check = run_check(name, [sys.executable, *arguments], ROOT, out, args.timeout)
++            checks.append(check)
++            save()
++            print(f"{name}: {check['status']}", flush=True)
++            if check["status"] == "cancelled":
++                break
++        checks.append(register_coverage(args.register))
++        after = source_manifest(ROOT)
++        changed = sorted(
++            name for name in before.keys() | after.keys() if before.get(name) != after.get(name)
++        )
++        report["source_after"] = after
++        report["changed_inputs"] = changed
++        report["status"] = (
++            "passed"
++            if not changed and len(checks) == 11 and all(c["status"] == "passed" for c in checks)
++            else "failed"
++        )
++    except (OSError, ValueError) as exc:
++        report["status"] = "failed"
++        report["error"] = str(exc)
++    except KeyboardInterrupt:
++        report["status"] = "cancelled"
++    finally:
++        report["active_check"] = None
++        report["finished_at"] = datetime.now(UTC).isoformat()
++        save()
++    print(f"Engineering checks: {report['status']}; evidence: {manifest}")
++    return 0 if report["status"] == "passed" else 1
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+--- a/tools/export_api_contract.py
++++ b/tools/export_api_contract.py
+@@ -12,9 +12,16 @@
+ def main() -> None:
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument("--out", type=Path, required=True)
++    parser.add_argument("--check", action="store_true", help="Compare without writing")
+     args = parser.parse_args()
+-    args.out.parent.mkdir(parents=True, exist_ok=True)
+-    args.out.write_text(json.dumps(openapi_document(), indent=2, sort_keys=True) + "\n")
++    content = json.dumps(openapi_document(), indent=2, sort_keys=True) + "\n"
++    if args.check:
++        if not args.out.is_file() or args.out.read_text() != content:
++            parser.exit(1, "API contract is stale or missing\n")
++        print("API contract matches")
++    else:
++        args.out.parent.mkdir(parents=True, exist_ok=True)
++        args.out.write_text(content)
+ 
+ 
+ if __name__ == "__main__":

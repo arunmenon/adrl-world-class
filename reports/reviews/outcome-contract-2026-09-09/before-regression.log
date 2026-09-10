@@ -1,0 +1,30 @@
+F
+=================================== FAILURES ===================================
+_________ test_composed_outcomes_close_once_without_inventing_success __________
+
+live = E2E(settings=Settings(listen_host='127.0.0.1', listen_port=8788, gateway_base_url='http://fake-gateway', gateway_timeo...type":"text","text":"Fix another typo in README.md"}]}]}'}]), gateway_client=<httpx.AsyncClient object at 0x109adf230>)
+
+    async def test_composed_outcomes_close_once_without_inventing_success(live: E2E) -> None:
+        await live.send("user_turn", body=user_turn_body("Fix the typo in README.md"))
+        first = RouteId(live.decisions()[0]["route_id"])
+        await live.send("user_turn", body=user_turn_body("Fix another typo in README.md"))
+        second = RouteId(live.decisions()[1]["route_id"])
+>       assert [e.route_id for e in routes_in_state(live.store, OutcomeState.CLOSED_TURN)] == [first]
+E       AssertionError: assert [] == ['01a08251-be...7f61bf8350b7']
+E         
+E         Right contains one more item: '01a08251-beac-7759-88fb-7f61bf8350b7'
+E         Use -v to get more diff
+
+../adrl-core/tests/integration/e2e/test_outcome_contract.py:26: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+2026-09-09 00:09:50 [warning  ] egress_checkpoints_unsigned    detail='no checkpoint_signing_key_path; tamper evidence stops at the hash chain'
+2026-09-09 00:09:50 [info     ] sticky_state_loaded            lineages=0
+2026-09-09 00:09:50 [info     ] adrl_components_built          installed={'ledger.keystore': True, 'ledger.erasure': True, 'ledger.state': True, 'gates': True, 'routing': True, 'cascade': True} modes={'gates': 'enforce', 'routing': 'live', 'fallback': 'live'}
+----------------------------- Captured stdout call -----------------------------
+2026-09-09 00:09:50 [info     ] lineage_classified             allowed=['cheap_cloud', 'frontier', 'local'] class_id=open lineage=7b3a79b393cb3516fe12397723510fe930cb21e0de81425184eb469034e3c235 request_class=user_turn source=assertion verified=True
+2026-09-09 00:09:50 [info     ] gate_outcome                   block=None latency_ms=28.78 lineage=7b3a79b393cb3516fe12397723510fe930cb21e0de81425184eb469034e3c235 permitted=['local', 'cheap_cloud', 'frontier'] pinned=False request_class=user_turn unscanned=False
+2026-09-09 00:09:50 [info     ] gate_outcome                   block=None latency_ms=3.14 lineage=7b3a79b393cb3516fe12397723510fe930cb21e0de81425184eb469034e3c235 permitted=['local', 'cheap_cloud', 'frontier'] pinned=False request_class=user_turn unscanned=False
+=========================== short test summary info ============================
+FAILED ../adrl-core/tests/integration/e2e/test_outcome_contract.py::test_composed_outcomes_close_once_without_inventing_success
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 0.61s

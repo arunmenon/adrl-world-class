@@ -1,0 +1,6 @@
+{
+  "requested_model": "claude-fable-5-1",
+  "exit_code": 0,
+  "scope": "Workflow skill validation only; no repository content or tools; not the two-day review",
+  "stderr": ""
+}

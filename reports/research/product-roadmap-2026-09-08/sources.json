@@ -1,0 +1,371 @@
+{
+  "created_at": "2026-09-08T07:26:33.013690+00:00",
+  "scope": "Focused startup/product and context-routing planning update; not a new exhaustive 77-ADR scientific review; includes focused graph-memory research added after user clarification",
+  "primary_web_sources": [
+    {
+      "id": "C1",
+      "title": "Not Diamond Code",
+      "url": "https://code.notdiamond.ai/docs/",
+      "source_type": "vendor documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Overview, operating model and early-access status",
+      "limitation_or_implication": "Direct competitive overlap; savings statement is unverified vendor claim",
+      "milestone": "P0/P2",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "C2",
+      "title": "Not Diamond Code introduction",
+      "url": "https://code.notdiamond.ai/docs/getting-started/",
+      "source_type": "vendor documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Claude Code integration and local proxy flow",
+      "limitation_or_implication": "Integration description; no hands-on qualification",
+      "milestone": "P0/P4",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "C3",
+      "title": "Not Diamond data dictionary",
+      "url": "https://code.notdiamond.ai/docs/data-privacy/data-dictionary/",
+      "source_type": "vendor documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Always-collected fields and opt-in sensitive streams",
+      "limitation_or_implication": "Data practices are vendor-described; no independent audit",
+      "milestone": "P0/privacy positioning",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "C4",
+      "title": "Not Diamond retention",
+      "url": "https://code.notdiamond.ai/docs/data-privacy/data-retention/",
+      "source_type": "vendor documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Retention and early deletion policy",
+      "limitation_or_implication": "A deployment comparison input, not a legal compliance verdict",
+      "milestone": "P0/privacy positioning",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "C5",
+      "title": "LiteLLM auto routing",
+      "url": "https://docs.litellm.ai/docs/proxy/auto_routing",
+      "source_type": "vendor documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Routing methods, session pinning, decision reasons and reported-savings method",
+      "limitation_or_implication": "Feature overlap and hypothetical request-cost baseline; no ADRL head-to-head result",
+      "milestone": "P0/P2",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "C6",
+      "title": "LiteLLM Ollama",
+      "url": "https://docs.litellm.ai/docs/providers/ollama",
+      "source_type": "vendor documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Local proxy/provider configuration",
+      "limitation_or_implication": "Local endpoints are not an exclusive ADRL capability",
+      "milestone": "P0/P4",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "C7",
+      "title": "Portkey AI Gateway",
+      "url": "https://portkey.ai/docs/product/ai-gateway",
+      "source_type": "vendor documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Routing, budgets, recovery, local/custom hosts",
+      "limitation_or_implication": "Gateway overlap; no claim of missing features beyond documentation reviewed",
+      "milestone": "P0/build-versus-buy",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "C8",
+      "title": "GitHub Copilot Auto",
+      "url": "https://docs.github.com/en/copilot/concepts/models/auto-model-selection",
+      "source_type": "vendor documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Task optimization, policy constraints and served-model visibility",
+      "limitation_or_implication": "Bundled substitute; do not assume hidden served identity",
+      "milestone": "P0/P2",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "H1",
+      "title": "Claude Code gateways",
+      "url": "https://code.claude.com/docs/en/llm-gateway",
+      "source_type": "vendor documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Supported routing scope, subscriptions and credentials",
+      "limitation_or_implication": "Claude-family support and billing distinction; no implication of cross-provider subscription credits",
+      "milestone": "P1/P2",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "H2",
+      "title": "OpenCode providers",
+      "url": "https://opencode.ai/docs/providers/",
+      "source_type": "vendor documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Custom URLs, local providers and protocol-specific SDK configuration",
+      "limitation_or_implication": "Integration feasibility, not ADRL qualification",
+      "milestone": "P4",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "H3",
+      "title": "OpenCode models",
+      "url": "https://opencode.ai/docs/models/",
+      "source_type": "vendor documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Provider and local model support",
+      "limitation_or_implication": "No adoption or market-share inference",
+      "milestone": "P4",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "D1",
+      "title": "DORA: Balancing AI tensions",
+      "url": "https://dora.dev/insights/balancing-ai-tensions/",
+      "source_type": "primary organizational research analysis",
+      "access_date": "2026-09-08",
+      "access_scope": "March 10 2026 findings on verification/review overhead",
+      "limitation_or_implication": "Workflow measurement rationale; no willingness-to-pay evidence",
+      "milestone": "P0/P2",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "id": "D2",
+      "title": "METR experiment design update",
+      "url": "https://metr.org/blog/2026-02-24-uplift-update/",
+      "source_type": "primary research update",
+      "access_date": "2026-09-08",
+      "access_scope": "February 24 2026 study-design and selection limitations",
+      "limitation_or_implication": "Avoid obsolete universal productivity claims and naive time attribution",
+      "milestone": "P2 evaluation",
+      "verification": "Fetched through web tool; documentation not executed or independently audited"
+    },
+    {
+      "title": "RouteLLM",
+      "url": "https://arxiv.org/abs/2406.18665",
+      "version": "v4, 23 February 2025",
+      "access_scope": "Abstract and primary bibliographic record",
+      "used_for": "Preference-trained stronger/weaker routing; benefit is benchmark-specific.",
+      "id": "S1",
+      "source_type": "primary research",
+      "access_date": "2026-09-08",
+      "grounding_record": "reports/research/adaptive-routing-blueprint-2026-09-08/sources.json",
+      "reuse": "Existing primary-source grounding retained; LLMRouterBench and Replay Gap abstracts also rechecked in this planning pass",
+      "limitation": "Benchmark/design evidence does not qualify ADRL or establish customer demand"
+    },
+    {
+      "title": "LLMRouterBench",
+      "url": "https://arxiv.org/abs/2601.07206",
+      "version": "v1, 12 January 2026",
+      "access_scope": "Abstract and primary bibliographic record",
+      "used_for": "Model complementarity does not ensure a router beats a simple baseline.",
+      "id": "S2",
+      "source_type": "primary research",
+      "access_date": "2026-09-08",
+      "grounding_record": "reports/research/adaptive-routing-blueprint-2026-09-08/sources.json",
+      "reuse": "Existing primary-source grounding retained; LLMRouterBench and Replay Gap abstracts also rechecked in this planning pass",
+      "limitation": "Benchmark/design evidence does not qualify ADRL or establish customer demand"
+    },
+    {
+      "title": "LLMRouter",
+      "url": "https://arxiv.org/html/2608.06867v1",
+      "version": "v1, 7 August 2026",
+      "access_scope": "Introduction, sequential formulation, experimental results and primary abstract; HF paper metadata also fetched",
+      "used_for": "Modular state/model/scoring/decision/learning design; no universal winner; multi-round overhead can lose.",
+      "id": "S3",
+      "source_type": "primary research",
+      "access_date": "2026-09-08",
+      "grounding_record": "reports/research/adaptive-routing-blueprint-2026-09-08/sources.json",
+      "reuse": "Existing primary-source grounding retained; LLMRouterBench and Replay Gap abstracts also rechecked in this planning pass",
+      "limitation": "Benchmark/design evidence does not qualify ADRL or establish customer demand"
+    },
+    {
+      "title": "The Replay Gap",
+      "url": "https://arxiv.org/abs/2608.08239",
+      "version": "v1, 8 August 2026",
+      "access_scope": "Abstract and primary bibliographic record",
+      "used_for": "Switching changes future trajectories; stored-output substitution is insufficient causal evidence.",
+      "id": "S4",
+      "source_type": "primary research",
+      "access_date": "2026-09-08",
+      "grounding_record": "reports/research/adaptive-routing-blueprint-2026-09-08/sources.json",
+      "reuse": "Existing primary-source grounding retained; LLMRouterBench and Replay Gap abstracts also rechecked in this planning pass",
+      "limitation": "Benchmark/design evidence does not qualify ADRL or establish customer demand"
+    },
+    {
+      "title": "Darwin Godel Machine",
+      "url": "https://arxiv.org/html/2505.22954v3",
+      "version": "v3, 12 March 2026",
+      "access_scope": "Abstract, safety discussion and objective-hacking discussion",
+      "used_for": "Self-modifying candidate archive with empirical evaluation; evaluation weaknesses and objective hacking matter.",
+      "id": "S5",
+      "source_type": "primary research",
+      "access_date": "2026-09-08",
+      "grounding_record": "reports/research/adaptive-routing-blueprint-2026-09-08/sources.json",
+      "reuse": "Existing primary-source grounding retained; LLMRouterBench and Replay Gap abstracts also rechecked in this planning pass",
+      "limitation": "Benchmark/design evidence does not qualify ADRL or establish customer demand"
+    },
+    {
+      "title": "AlphaEvolve",
+      "url": "https://arxiv.org/abs/2506.13131",
+      "version": "v1, 16 June 2025",
+      "access_scope": "White-paper abstract and primary bibliographic record",
+      "used_for": "Evaluator-driven algorithm improvement; no direct validation of ADRL routing.",
+      "id": "S6",
+      "source_type": "primary research",
+      "access_date": "2026-09-08",
+      "grounding_record": "reports/research/adaptive-routing-blueprint-2026-09-08/sources.json",
+      "reuse": "Existing primary-source grounding retained; LLMRouterBench and Replay Gap abstracts also rechecked in this planning pass",
+      "limitation": "Benchmark/design evidence does not qualify ADRL or establish customer demand"
+    },
+    {
+      "id": "G1",
+      "title": "Context Graph",
+      "url": "https://arxiv.org/abs/2406.11160",
+      "source_type": "primary research",
+      "access_date": "2026-09-08",
+      "access_scope": "Primary abstract and bibliographic record; v3, June 28 2024",
+      "limitation_or_implication": "Temporal/provenance representation; knowledge completion/QA evaluation, not routing",
+      "milestone": "MEM graph candidate: P1/P3/P5/P7"
+    },
+    {
+      "id": "G2",
+      "title": "Zep: A Temporal Knowledge Graph Architecture for Agent Memory",
+      "url": "https://arxiv.org/abs/2501.13956",
+      "source_type": "primary research",
+      "access_date": "2026-09-08",
+      "access_scope": "Primary abstract and bibliographic record; January 20 2025",
+      "limitation_or_implication": "Author-reported memory benchmarks; not independent routing efficacy",
+      "milestone": "MEM graph candidate: P1/P3/P5/P7"
+    },
+    {
+      "id": "G3",
+      "title": "RepoGraph",
+      "url": "https://arxiv.org/abs/2410.14684",
+      "source_type": "primary research",
+      "access_date": "2026-09-08",
+      "access_scope": "Primary abstract and bibliographic record; v2, March 18 2025; ICLR 2025",
+      "limitation_or_implication": "Repository-structure assistance, not graph-based model-selection evaluation",
+      "milestone": "MEM graph candidate: P1/P3/P5/P7"
+    },
+    {
+      "id": "G4",
+      "title": "Microsoft GraphRAG",
+      "url": "https://microsoft.github.io/graphrag/",
+      "source_type": "official project documentation",
+      "access_date": "2026-09-08",
+      "access_scope": "Official documentation overview",
+      "limitation_or_implication": "Context retrieval approach; no ADRL benefit implied",
+      "milestone": "MEM graph candidate: P1/P3/P5/P7"
+    }
+  ],
+  "local_grounding": [
+    {
+      "path": "reports/adrl-product-report-2026-09-03.md",
+      "sha256_at_review": "d02b7d6264919ec55abe5a545846c880b9144db30645fb103b943d161f267065"
+    },
+    {
+      "path": "reports/adrl-independent-research-review-2026-09-07.md",
+      "sha256_at_review": "30096a9cf05ac1468838111d5469bedd1592fbe238d55e717a2b34f0203baa30"
+    },
+    {
+      "path": "reports/adrl-adaptive-routing-rsi-blueprint-2026-09-08.md",
+      "sha256_at_review": "cc558db7ace19fc10f91aa6ce5ce01ae54ba63f99de1d463342fee0ca2347720"
+    },
+    {
+      "path": "reports/adrl-implementation-roadmap-2026-09-07.md",
+      "sha256_at_review": "571533c37e09b53f6cbacb9f4947436f5fb7c5506c8d81e368b11afcb65bb743"
+    },
+    {
+      "path": "reports/adrl-routing-in-action-2026-09-08.md",
+      "sha256_at_review": "8e1ba43b74dbdb1cc5ce5ce3c3d410a96db45fec4b25d799b20697e5612bf0e7"
+    },
+    {
+      "path": "reports/adrl-live-observation-pilot-2026-09-07.md",
+      "sha256_at_review": "b09f2868a98f9d092147a5013b5508c651b3ad86ea062ca10139b955e3772eb2"
+    },
+    {
+      "path": "reports/adrl-improvement-experiment-2026-09-07.md",
+      "sha256_at_review": "c31480b184d155534a207d700c6ab5253af04613a78884c90f411e69747b8d08"
+    },
+    {
+      "path": "reports/research/adrl-w3-transport-receipts-2026-09-08.json",
+      "sha256_at_review": "6004cc81c27846468f5c4b52004cf28174c0decf7970323364366d109fdff05e"
+    },
+    {
+      "path": "reports/research/adaptive-routing-blueprint-2026-09-08/taxonomy-map.json",
+      "sha256_at_review": "61a3f0f3cae795da3cbed868a04f2b75814d1ce6452da16373d909b38fabd0ed"
+    },
+    {
+      "path": "../adrl-core/src/adrl/routing/features.py",
+      "sha256_at_review": "8f164224fa8cd196fa0c681809ab48f36c75867b77aaf7ee29178c13ae494743",
+      "scope": "Read-only current implementation check for context/classifier/LRN distinction"
+    },
+    {
+      "path": "../adrl-core/src/adrl/routing/advisor.py",
+      "sha256_at_review": "cbd31e1919d24546641003bd2b4d232d56986f94c189f0b61729816031443450",
+      "scope": "Read-only current implementation check for context/classifier/LRN distinction"
+    },
+    {
+      "path": "../adrl-core/src/adrl/routing/router.py",
+      "sha256_at_review": "36666f3e9a6944a9974d35b906e0bf231014f96798ba65dbb8670dfa19f24045",
+      "scope": "Read-only current implementation check for context/classifier/LRN distinction"
+    },
+    {
+      "path": "../adrl-core/src/adrl/learning/estimator.py",
+      "sha256_at_review": "40a8c0fb0453cf47c52e96b32d5eaadb3000d2a38e1300e3e9224211360b332c",
+      "scope": "Read-only current implementation check for context/classifier/LRN distinction"
+    },
+    {
+      "path": "../adrl-core/src/adrl/ledger/projections.py",
+      "sha256_at_review": "1d21a9a3921eb0d1fd09e95c2e5db2ee6f24649afc8cc0b8221f6d975c8048ee",
+      "scope": "Read-only recheck of existing MEM implementation after user requested taxonomy grounding"
+    },
+    {
+      "path": "../adrl-core/src/adrl/ledger/shadow_retrieval.py",
+      "sha256_at_review": "03961c21ddafa3d69426280db1fc7122568b6bc0433e1dd2ea45fb8876edae79",
+      "scope": "Read-only recheck of existing MEM implementation after user requested taxonomy grounding"
+    },
+    {
+      "path": "../adrl-core/src/adrl/learning/dataset.py",
+      "sha256_at_review": "9e6ec8fcae5b78b07e1de0e874b338bc0233cab69bb8f39e78c3235bec0fa192",
+      "scope": "Read-only recheck of existing MEM implementation after user requested taxonomy grounding"
+    },
+    {
+      "path": "../adrl-core/src/adrl/ledger/improvement.py",
+      "sha256_at_review": "21e2dc8f8d26af7177a5a5c0cd64102b1154a2368784dd71432861a9aafbdedf",
+      "scope": "Read-only recheck of existing MEM implementation after user requested taxonomy grounding"
+    }
+  ],
+  "historical_research": "The September 3 critique is handled through the September 7 independent review and retained research. It was not re-audited in full this pass.",
+  "customer_evidence_collected": false,
+  "model_calls": 0,
+  "new_paid_usage": false,
+  "runtime_changed": false,
+  "adrs_disposed": [],
+  "maturity_promotions": 0,
+  "planning_assumptions": [
+    "Engineering platform team ICP",
+    "Discovery counts and partner targets",
+    "Time windows and founding-team capacity",
+    "Prices, value hurdle and all economic scenarios",
+    "90-day funding envelope"
+  ],
+  "key_dispositions": [
+    "Do not claim local/session-aware routing is unique",
+    "Measure full tasks and meaningful context against alternatives",
+    "Keep classifier descriptions distinct from learned conditional model benefit",
+    "Resolve time-indexed prior-step feature admission",
+    "Preserve current authority and evidence gates pending explicit disposition",
+    "User clarified a MEM context graph for connected decision memory, not merely repository structure",
+    "Graph remains a derived projection candidate; compare against structured and flat/vector memory on the same evidence",
+    "Preserve event/knowledge time, corrected outcomes, provenance, permissions and erasure through graph views",
+    "Re-read all ten complete MEM decision sections: decision memory and retrieval already exist in the taxonomy and implementation; graph is incremental projection enrichment",
+    "User clarified local laptop execution/experience plus offline learning and distribution of approved policy packages; export and fleet-update contracts are proposed"
+  ]
+}

@@ -1,0 +1,52 @@
+--- a/validation/prompts/strict_json_generic.txt
++++ b/validation/prompts/strict_json_generic.txt
+@@ -7,12 +7,12 @@
+ Score scale: {scale_min} to {scale_max}. Thresholds: keep >= {threshold_keep}, review >= {threshold_review}.
+ 
+ Return JSON ONLY with keys:
+-{
+-  "dimensions": { "<dimension_name>": { "score": float, "justification": str } },
++{{
++  "dimensions": {{ "<dimension_name>": {{ "score": float, "justification": str }} }},
+   "overall_score": float,
+   "verdict": "keep"|"review"|"drop",
+   "notes": str
+-}
++}}
+ 
+ Example:
+ Input prompt: {input_prompt}
+--- a/validation/prompts/cot_rubric_generic.txt
++++ b/validation/prompts/cot_rubric_generic.txt
+@@ -5,12 +5,12 @@
+ - Consider context and annotations.
+ 
+ Now output JSON ONLY with keys:
+-{
+-  "dimensions": { "<dimension_name>": { "score": float, "justification": str } },
++{{
++  "dimensions": {{ "<dimension_name>": {{ "score": float, "justification": str }} }},
+   "overall_score": float,
+   "verdict": "keep"|"review"|"drop",
+   "notes": str
+-}
++}}
+ 
+ Task type: {task_type}
+ Rubric dimensions:
+--- a/validation/core/templates.py
++++ b/validation/core/templates.py
+@@ -3,11 +3,11 @@
+ from __future__ import annotations
+ 
+ from pathlib import Path
+-from typing import Dict, Optional
++from typing import Dict
+ 
+ 
+ class PromptTemplateLoader:
+-    """Loads text templates from a directory and renders with `.format(**vars)`."""
++    """Loads text templates from a directory and renders variable placeholders."""
+ 
+     def __init__(self, base_dir: Path) -> None:
+         self.base_dir = base_dir

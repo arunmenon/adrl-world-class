@@ -1,0 +1,1450 @@
+{
+  "schema_version": "adrl-roadmap-plan-v1",
+  "date": "2026-09-07",
+  "status": "proposed_for_review",
+  "implementation_started": false,
+  "automation_created": false,
+  "existing_wave_1_2_evidence": "Observation and session-verification work exists; no whole-wave general graduation inferred.",
+  "existing_wave_4_increment": "Curated offline verifier comparison implemented; broad W4 remains proposed.",
+  "baseline": {
+    "tests_from_last_record": 549,
+    "test_run_performed_for_plan": false,
+    "product_api": "preview-4",
+    "evidence": "adrl-improvement-experiment-2026-09-07.json"
+  },
+  "planning_assumptions": [
+    "One primary engineer with agent assistance; independent reviewers and owner availability required.",
+    "Local single-user/single-process product first; managed teams are a separate branch.",
+    "Estimates exclude uncertain collection/access/reviewer delays.",
+    "Numeric targets are proposed and must be frozen before relevant assessment.",
+    "Budget null means not established, never unlimited; no model calls are authorized by this file."
+  ],
+  "early_parallel_work": [
+    {
+      "wave": "W6",
+      "scope": "Offline hardening after W0; full live admission still requires W4/W5."
+    },
+    {
+      "wave": "W8A",
+      "scope": "Up to five engineering days of state/transport spike after W0; real calls require an approved packet."
+    }
+  ],
+  "decision_queue": [
+    {
+      "id": "DQ1",
+      "status": "proposed_disposition_not_applied"
+    },
+    {
+      "id": "DQ2",
+      "status": "proposed_disposition_not_applied"
+    },
+    {
+      "id": "DQ3",
+      "status": "proposed_disposition_not_applied"
+    },
+    {
+      "id": "DQ4",
+      "status": "proposed_disposition_not_applied"
+    },
+    {
+      "id": "DQ5",
+      "status": "proposed_disposition_not_applied"
+    },
+    {
+      "id": "DQ6",
+      "status": "proposed_disposition_not_applied"
+    },
+    {
+      "id": "DQ7",
+      "status": "proposed_disposition_not_applied"
+    },
+    {
+      "id": "DQ8",
+      "status": "proposed_disposition_not_applied"
+    }
+  ],
+  "waves": [
+    {
+      "id": "W0",
+      "title": "Establish the execution baseline",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [],
+      "owner_role": "Implementation lead",
+      "reviewer_role": "Product owner and evidence reviewer",
+      "named_owners_assigned": false,
+      "engineering_estimate": "2\u20133 days",
+      "owning_adrs": [
+        "ADRL-EVL-007",
+        "ADRL-EVL-009",
+        "ADRL-FND-005",
+        "ADRL-OPS-001",
+        "ADRL-OPS-003",
+        "ADRL-SEM-007"
+      ],
+      "exit_summary": "A reproducible baseline, reconciled support matrix and frozen W3 packet; no exposure change.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    },
+    {
+      "id": "W3",
+      "title": "Bind verification to exact task-close output",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [
+        "W0"
+      ],
+      "owner_role": "Product/evidence engineer",
+      "reviewer_role": "Verifier owner",
+      "named_owners_assigned": false,
+      "engineering_estimate": "1\u20132 weeks",
+      "owning_adrs": [
+        "ADRL-EVL-008",
+        "ADRL-MEM-001",
+        "ADRL-MEM-002",
+        "ADRL-MEM-003",
+        "ADRL-MEM-005",
+        "ADRL-MEM-010",
+        "ADRL-SAF-007",
+        "ADRL-SEM-002",
+        "ADRL-SEM-003",
+        "ADRL-SEM-006",
+        "ADRL-SEM-007",
+        "ADRL-TRU-001"
+      ],
+      "exit_summary": "Exact captured output, interruption and erasure cases pass; real Claude task demonstrates the declared boundary.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    },
+    {
+      "id": "W4",
+      "title": "Establish trustworthy outcomes",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [
+        "W3"
+      ],
+      "owner_role": "Evaluation lead",
+      "reviewer_role": "Independent evidence reviewer",
+      "named_owners_assigned": false,
+      "engineering_estimate": "2\u20133 weeks plus collection",
+      "owning_adrs": [
+        "ADRL-EVL-002",
+        "ADRL-EVL-004",
+        "ADRL-EVL-005",
+        "ADRL-EVL-006",
+        "ADRL-EVL-009",
+        "ADRL-LRN-001",
+        "ADRL-LRN-004",
+        "ADRL-LRN-005",
+        "ADRL-LRN-007",
+        "ADRL-MEM-002",
+        "ADRL-MEM-003",
+        "ADRL-MEM-004",
+        "ADRL-MEM-010",
+        "ADRL-SAF-007"
+      ],
+      "exit_summary": "Fresh independently reviewed cases, explicit errors/uncertainty and an evidence-eligibility disposition.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    },
+    {
+      "id": "W5",
+      "title": "Prove OpenCode reuse",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [
+        "W3"
+      ],
+      "owner_role": "Integration engineer",
+      "reviewer_role": "Core/API owner and quickstart user",
+      "named_owners_assigned": false,
+      "engineering_estimate": "1\u20132 weeks",
+      "owning_adrs": [
+        "ADRL-FND-001",
+        "ADRL-FND-002",
+        "ADRL-FND-005",
+        "ADRL-MEM-001",
+        "ADRL-MEM-003",
+        "ADRL-MEM-006",
+        "ADRL-MEM-010",
+        "ADRL-OPS-005",
+        "ADRL-SEM-001",
+        "ADRL-SEM-002",
+        "ADRL-SEM-006",
+        "ADRL-SEM-007",
+        "ADRL-TRU-001"
+      ],
+      "exit_summary": "Real Claude and OpenCode task/evidence paths use one engine; delivery, authority and setup conformance demonstrated.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    },
+    {
+      "id": "W6",
+      "title": "Qualify controlled Messages execution",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [
+        "W0",
+        "W4",
+        "W5"
+      ],
+      "owner_role": "Security/runtime engineer",
+      "reviewer_role": "Security and gateway/operator owners",
+      "named_owners_assigned": false,
+      "engineering_estimate": "3\u20135 weeks",
+      "owning_adrs": [
+        "ADRL-CAS-001",
+        "ADRL-CAS-003",
+        "ADRL-CAS-004",
+        "ADRL-CAS-006",
+        "ADRL-CAS-007",
+        "ADRL-CAS-009",
+        "ADRL-FND-001",
+        "ADRL-FND-004",
+        "ADRL-MEM-006",
+        "ADRL-MEM-010",
+        "ADRL-OPS-001",
+        "ADRL-OPS-002",
+        "ADRL-OPS-003",
+        "ADRL-OPS-004",
+        "ADRL-OPS-005",
+        "ADRL-OPS-006",
+        "ADRL-OPS-007",
+        "ADRL-OPS-008",
+        "ADRL-SAF-001",
+        "ADRL-SAF-002",
+        "ADRL-SAF-003",
+        "ADRL-SAF-004",
+        "ADRL-SAF-005",
+        "ADRL-SAF-006",
+        "ADRL-SAF-007",
+        "ADRL-SAF-008",
+        "ADRL-SAF-009",
+        "ADRL-SEM-004",
+        "ADRL-SEM-005",
+        "ADRL-SEM-006",
+        "ADRL-TRU-001",
+        "ADRL-TRU-002",
+        "ADRL-TRU-003"
+      ],
+      "exit_summary": "Named negative-path matrix and real integrations pass, with active probes, custody, receipt uncertainty and recovery evidence.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    },
+    {
+      "id": "W7",
+      "title": "Measure routing and cascade choices",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [
+        "W4",
+        "W5",
+        "W6"
+      ],
+      "owner_role": "Evaluation/routing engineer",
+      "reviewer_role": "Evidence reviewer and product owner",
+      "named_owners_assigned": false,
+      "engineering_estimate": "3\u20135 weeks plus confirmation",
+      "owning_adrs": [
+        "ADRL-CAS-001",
+        "ADRL-CAS-002",
+        "ADRL-CAS-003",
+        "ADRL-CAS-004",
+        "ADRL-CAS-005",
+        "ADRL-CAS-006",
+        "ADRL-CAS-007",
+        "ADRL-CAS-008",
+        "ADRL-CAS-009",
+        "ADRL-EVL-001",
+        "ADRL-EVL-002",
+        "ADRL-EVL-003",
+        "ADRL-EVL-006",
+        "ADRL-EVL-008",
+        "ADRL-EVL-009",
+        "ADRL-LRN-002",
+        "ADRL-LRN-004",
+        "ADRL-LRN-006",
+        "ADRL-LRN-008",
+        "ADRL-MEM-004",
+        "ADRL-MEM-009",
+        "ADRL-OPS-003",
+        "ADRL-OPS-005",
+        "ADRL-OPS-006",
+        "ADRL-RTG-001",
+        "ADRL-RTG-002",
+        "ADRL-RTG-003",
+        "ADRL-RTG-004",
+        "ADRL-RTG-005",
+        "ADRL-RTG-006",
+        "ADRL-RTG-007",
+        "ADRL-RTG-008",
+        "ADRL-RTG-009"
+      ],
+      "exit_summary": "Actual comparable trajectories, fresh report and honest scope disposition; no gain may mean keep a simpler policy.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    },
+    {
+      "id": "W8A",
+      "title": "Admit Codex and Responses",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [
+        "W3",
+        "W5",
+        "W6"
+      ],
+      "owner_role": "Protocol/integration engineer",
+      "reviewer_role": "Security and API owners",
+      "named_owners_assigned": false,
+      "engineering_estimate": "3\u20135 weeks after spike",
+      "owning_adrs": [
+        "ADRL-CAS-004",
+        "ADRL-CAS-006",
+        "ADRL-CAS-007",
+        "ADRL-FND-001",
+        "ADRL-FND-002",
+        "ADRL-FND-003",
+        "ADRL-MEM-003",
+        "ADRL-SAF-001",
+        "ADRL-SAF-002",
+        "ADRL-SAF-005",
+        "ADRL-SAF-007",
+        "ADRL-SEM-001",
+        "ADRL-SEM-002",
+        "ADRL-SEM-003",
+        "ADRL-SEM-004",
+        "ADRL-SEM-005",
+        "ADRL-SEM-006",
+        "ADRL-SEM-007",
+        "ADRL-TRU-001",
+        "ADRL-TRU-002"
+      ],
+      "exit_summary": "Real CLI and native state/transport conformance plus unchanged Messages behavior; support tuple explicitly admitted.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    },
+    {
+      "id": "W8B",
+      "title": "Release supported local product",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [
+        "W3",
+        "W4",
+        "W5",
+        "W6",
+        "W7",
+        "W8A"
+      ],
+      "owner_role": "Product/release engineer",
+      "reviewer_role": "Product owner, independent reviewer and security owner",
+      "named_owners_assigned": false,
+      "engineering_estimate": "2\u20134 weeks plus pilot",
+      "owning_adrs": [
+        "ADRL-EVL-004",
+        "ADRL-EVL-007",
+        "ADRL-EVL-008",
+        "ADRL-EVL-009",
+        "ADRL-FND-001",
+        "ADRL-FND-005",
+        "ADRL-MEM-005",
+        "ADRL-MEM-006",
+        "ADRL-MEM-007",
+        "ADRL-MEM-010",
+        "ADRL-OPS-001",
+        "ADRL-OPS-002",
+        "ADRL-OPS-003",
+        "ADRL-OPS-004",
+        "ADRL-OPS-005",
+        "ADRL-OPS-006",
+        "ADRL-OPS-007",
+        "ADRL-OPS-008",
+        "ADRL-SEM-007",
+        "ADRL-TRU-001",
+        "ADRL-TRU-003"
+      ],
+      "exit_summary": "Supported two-harness/two-protocol matrix, lifecycle/operations qualification and explicit release decision.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    },
+    {
+      "id": "W9",
+      "title": "Let learned routing earn authority",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [
+        "W4",
+        "W6",
+        "W7"
+      ],
+      "owner_role": "Learning engineer",
+      "reviewer_role": "Independent evaluator and separate release authority",
+      "named_owners_assigned": false,
+      "engineering_estimate": "4\u20138 weeks after suitable data",
+      "owning_adrs": [
+        "ADRL-EVL-001",
+        "ADRL-EVL-002",
+        "ADRL-EVL-003",
+        "ADRL-EVL-004",
+        "ADRL-EVL-005",
+        "ADRL-EVL-006",
+        "ADRL-EVL-007",
+        "ADRL-EVL-008",
+        "ADRL-EVL-009",
+        "ADRL-LRN-001",
+        "ADRL-LRN-002",
+        "ADRL-LRN-003",
+        "ADRL-LRN-004",
+        "ADRL-LRN-005",
+        "ADRL-LRN-006",
+        "ADRL-LRN-007",
+        "ADRL-LRN-008",
+        "ADRL-MEM-007",
+        "ADRL-MEM-008",
+        "ADRL-MEM-009",
+        "ADRL-MEM-010",
+        "ADRL-OPS-002",
+        "ADRL-OPS-003",
+        "ADRL-OPS-005",
+        "ADRL-RTG-002",
+        "ADRL-RTG-006",
+        "ADRL-RTG-007"
+      ],
+      "exit_summary": "Pre-build opportunity/data gates, fresh baseline comparison, abstention and separately reviewed staged exposure.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    },
+    {
+      "id": "W10",
+      "title": "Automate bounded improvement proposals",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [
+        "W4",
+        "W8B"
+      ],
+      "owner_role": "Improvement-tools engineer",
+      "reviewer_role": "Independent evaluator and product owner",
+      "named_owners_assigned": false,
+      "engineering_estimate": "3\u20136 weeks",
+      "owning_adrs": [
+        "ADRL-EVL-004",
+        "ADRL-EVL-005",
+        "ADRL-EVL-006",
+        "ADRL-EVL-007",
+        "ADRL-EVL-009",
+        "ADRL-LRN-004",
+        "ADRL-LRN-005",
+        "ADRL-LRN-007",
+        "ADRL-MEM-003",
+        "ADRL-MEM-005",
+        "ADRL-MEM-008",
+        "ADRL-MEM-010",
+        "ADRL-OPS-002",
+        "ADRL-OPS-003",
+        "ADRL-SAF-007",
+        "ADRL-TRU-001"
+      ],
+      "exit_summary": "Budgeted proposer-to-assessment workflow, rejection and recovery tests, retained lineage and independent usefulness evaluation.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    },
+    {
+      "id": "W11",
+      "title": "Expand to teams and further harnesses",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [
+        "W8B"
+      ],
+      "owner_role": "Platform engineer",
+      "reviewer_role": "Security/operations owners and pilot users",
+      "named_owners_assigned": false,
+      "engineering_estimate": "6\u201312 weeks",
+      "owning_adrs": [
+        "ADRL-EVL-007",
+        "ADRL-EVL-009",
+        "ADRL-MEM-005",
+        "ADRL-MEM-006",
+        "ADRL-MEM-007",
+        "ADRL-MEM-010",
+        "ADRL-OPS-001",
+        "ADRL-OPS-002",
+        "ADRL-OPS-003",
+        "ADRL-OPS-004",
+        "ADRL-OPS-007",
+        "ADRL-OPS-008",
+        "ADRL-SAF-002",
+        "ADRL-SAF-008",
+        "ADRL-SAF-009",
+        "ADRL-SEM-007",
+        "ADRL-TRU-001",
+        "ADRL-TRU-002",
+        "ADRL-TRU-003"
+      ],
+      "exit_summary": "Team topology disposition, identity/isolation/failover/erasure qualification and scoped team pilot.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    },
+    {
+      "id": "W12",
+      "title": "Test improvement of the improvement process",
+      "engineering_state": "proposed",
+      "evidence_status": "not_assessed",
+      "entry_gate_status": "not_assessed",
+      "exit_gate_status": "not_assessed",
+      "runtime_exposure_approved": false,
+      "depends_on": [
+        "W10"
+      ],
+      "owner_role": "Research/evaluation lead",
+      "reviewer_role": "Independent evaluator and product owner",
+      "named_owners_assigned": false,
+      "engineering_estimate": "4\u20138 week conditional research tranche",
+      "owning_adrs": [
+        "ADRL-EVL-001",
+        "ADRL-EVL-002",
+        "ADRL-EVL-004",
+        "ADRL-EVL-005",
+        "ADRL-EVL-006",
+        "ADRL-EVL-007",
+        "ADRL-EVL-009",
+        "ADRL-FND-005",
+        "ADRL-LRN-003",
+        "ADRL-LRN-004",
+        "ADRL-LRN-005",
+        "ADRL-LRN-007",
+        "ADRL-RTG-007"
+      ],
+      "exit_summary": "Predeclared equal-budget comparison on fresh problems; accepted durable gains or a documented stop decision.",
+      "normative_details": "../adrl-implementation-roadmap-2026-09-07.md",
+      "budget": {
+        "approved": false,
+        "usd": null,
+        "run_count": null
+      },
+      "evidence_links": []
+    }
+  ],
+  "adr_assignments": [
+    {
+      "adr_id": "ADRL-CAS-001",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W6",
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-CAS-002",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-CAS-003",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W6",
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-CAS-004",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W6",
+        "W7",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-CAS-005",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-CAS-006",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W6",
+        "W7",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-CAS-007",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W6",
+        "W7",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-CAS-008",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-CAS-009",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W6",
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-EVL-001",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7",
+        "W9",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-EVL-002",
+      "primary_review_wave": "W4",
+      "affected_waves": [
+        "W4",
+        "W7",
+        "W9",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-EVL-003",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7",
+        "W9"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-EVL-004",
+      "primary_review_wave": "W4",
+      "affected_waves": [
+        "W4",
+        "W8B",
+        "W9",
+        "W10",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-EVL-005",
+      "primary_review_wave": "W4",
+      "affected_waves": [
+        "W4",
+        "W9",
+        "W10",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-EVL-006",
+      "primary_review_wave": "W4",
+      "affected_waves": [
+        "W4",
+        "W7",
+        "W9",
+        "W10",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-EVL-007",
+      "primary_review_wave": "W0",
+      "affected_waves": [
+        "W0",
+        "W8B",
+        "W9",
+        "W10",
+        "W11",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-EVL-008",
+      "primary_review_wave": "W3",
+      "affected_waves": [
+        "W3",
+        "W7",
+        "W8B",
+        "W9"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-EVL-009",
+      "primary_review_wave": "W0",
+      "affected_waves": [
+        "W0",
+        "W4",
+        "W7",
+        "W8B",
+        "W9",
+        "W10",
+        "W11",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-FND-001",
+      "primary_review_wave": "W5",
+      "affected_waves": [
+        "W5",
+        "W6",
+        "W8A",
+        "W8B"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-FND-002",
+      "primary_review_wave": "W5",
+      "affected_waves": [
+        "W5",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-FND-003",
+      "primary_review_wave": "W8A",
+      "affected_waves": [
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-FND-004",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-FND-005",
+      "primary_review_wave": "W0",
+      "affected_waves": [
+        "W0",
+        "W5",
+        "W8B",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-LRN-001",
+      "primary_review_wave": "W4",
+      "affected_waves": [
+        "W4",
+        "W9"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-LRN-002",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7",
+        "W9"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-LRN-003",
+      "primary_review_wave": "W9",
+      "affected_waves": [
+        "W9",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-LRN-004",
+      "primary_review_wave": "W4",
+      "affected_waves": [
+        "W4",
+        "W7",
+        "W9",
+        "W10",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-LRN-005",
+      "primary_review_wave": "W4",
+      "affected_waves": [
+        "W4",
+        "W9",
+        "W10",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-LRN-006",
+      "primary_review_wave": "W9",
+      "affected_waves": [
+        "W7",
+        "W9"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-LRN-007",
+      "primary_review_wave": "W4",
+      "affected_waves": [
+        "W4",
+        "W9",
+        "W10",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-LRN-008",
+      "primary_review_wave": "W9",
+      "affected_waves": [
+        "W7",
+        "W9"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-MEM-001",
+      "primary_review_wave": "W3",
+      "affected_waves": [
+        "W3",
+        "W5"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-MEM-002",
+      "primary_review_wave": "W3",
+      "affected_waves": [
+        "W3",
+        "W4"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-MEM-003",
+      "primary_review_wave": "W3",
+      "affected_waves": [
+        "W3",
+        "W4",
+        "W5",
+        "W8A",
+        "W10"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-MEM-004",
+      "primary_review_wave": "W4",
+      "affected_waves": [
+        "W4",
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-MEM-005",
+      "primary_review_wave": "W3",
+      "affected_waves": [
+        "W3",
+        "W8B",
+        "W10",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-MEM-006",
+      "primary_review_wave": "W5",
+      "affected_waves": [
+        "W5",
+        "W6",
+        "W8B",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-MEM-007",
+      "primary_review_wave": "W8B",
+      "affected_waves": [
+        "W8B",
+        "W9",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-MEM-008",
+      "primary_review_wave": "W9",
+      "affected_waves": [
+        "W9",
+        "W10"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-MEM-009",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7",
+        "W9"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-MEM-010",
+      "primary_review_wave": "W3",
+      "affected_waves": [
+        "W3",
+        "W4",
+        "W5",
+        "W6",
+        "W8B",
+        "W9",
+        "W10",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-OPS-001",
+      "primary_review_wave": "W0",
+      "affected_waves": [
+        "W0",
+        "W6",
+        "W8B",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-OPS-002",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W8B",
+        "W9",
+        "W10",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-OPS-003",
+      "primary_review_wave": "W0",
+      "affected_waves": [
+        "W0",
+        "W6",
+        "W7",
+        "W8B",
+        "W9",
+        "W10",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-OPS-004",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W8B",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-OPS-005",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W5",
+        "W6",
+        "W7",
+        "W8B",
+        "W9"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-OPS-006",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W7",
+        "W8B"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-OPS-007",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W8B",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-OPS-008",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W8B",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-RTG-001",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-RTG-002",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7",
+        "W9"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-RTG-003",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-RTG-004",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-RTG-005",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-RTG-006",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7",
+        "W9"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-RTG-007",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7",
+        "W9",
+        "W12"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-RTG-008",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-RTG-009",
+      "primary_review_wave": "W7",
+      "affected_waves": [
+        "W7"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SAF-001",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SAF-002",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W8A",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SAF-003",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SAF-004",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SAF-005",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SAF-006",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SAF-007",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W3",
+        "W4",
+        "W6",
+        "W8A",
+        "W10"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SAF-008",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SAF-009",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SEM-001",
+      "primary_review_wave": "W5",
+      "affected_waves": [
+        "W5",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SEM-002",
+      "primary_review_wave": "W3",
+      "affected_waves": [
+        "W3",
+        "W5",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SEM-003",
+      "primary_review_wave": "W3",
+      "affected_waves": [
+        "W3",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SEM-004",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SEM-005",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SEM-006",
+      "primary_review_wave": "W3",
+      "affected_waves": [
+        "W3",
+        "W5",
+        "W6",
+        "W8A"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-SEM-007",
+      "primary_review_wave": "W5",
+      "affected_waves": [
+        "W0",
+        "W3",
+        "W5",
+        "W8A",
+        "W8B",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-TRU-001",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W3",
+        "W5",
+        "W6",
+        "W8A",
+        "W8B",
+        "W10",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-TRU-002",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W8A",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    },
+    {
+      "adr_id": "ADRL-TRU-003",
+      "primary_review_wave": "W6",
+      "affected_waves": [
+        "W6",
+        "W8B",
+        "W11"
+      ],
+      "status": "planning_assignment_only"
+    }
+  ],
+  "sources_checked": [
+    {
+      "url": "https://code.claude.com/docs/en/llm-gateway",
+      "supports": "Subscription-preserving versus gateway-credential mode and unsupported non-Claude routing."
+    },
+    {
+      "url": "https://opencode.ai/docs/providers/",
+      "supports": "Provider endpoint configuration."
+    },
+    {
+      "url": "https://opencode.ai/docs/plugins/",
+      "supports": "Tool/session plugin event entry points."
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/config-file/config-reference",
+      "supports": "Responses wire API and WebSocket support setting."
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/guides/conversation-state",
+      "supports": "Referenced prior state may be absent from the current input."
+    }
+  ],
+  "rsi_progression": {
+    "foundations": [
+      "W0",
+      "W3",
+      "W4",
+      "W5",
+      "W6",
+      "W8A",
+      "W8B"
+    ],
+    "policy_improvement": [
+      "W7",
+      "W9"
+    ],
+    "automated_proposals": "W10",
+    "team_scope_extension": "W11",
+    "recursive_method_comparison": "W12",
+    "automatic_promotion": false,
+    "demonstrated_rsi": false
+  },
+  "maturity_tracking": {
+    "status": "proposed_not_implemented",
+    "unit": "ADR behavior clause + implementation/config/profile/adapter versions + supported population",
+    "automatic_wave_promotion": false,
+    "average_over_adrs": false,
+    "historical_maturity_inherited": false,
+    "non_routing_qualification_dependency": "DQ4 disposition before applicable formal graduation",
+    "fields": [
+      "adr_id",
+      "clause",
+      "versions",
+      "current_level",
+      "population",
+      "evidence_links",
+      "missing_gates",
+      "next_target",
+      "reviewer",
+      "review_date",
+      "invalidation_and_recovery_triggers"
+    ]
+  }
+}

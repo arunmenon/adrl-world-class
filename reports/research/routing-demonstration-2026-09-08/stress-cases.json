@@ -1,0 +1,32 @@
+{
+  "version": "routing-stress-cases-v1",
+  "scope": "Prepared synthetic prompts; task names and review hypotheses are human-readable probes, not verified difficulty labels.",
+  "variants": ["ordinary", "previous_edit_failed", "large_context", "local_only", "local_and_cheap_only"],
+  "repeats": 2,
+  "cases": [
+    {"id":"typo","family":"Mechanical edit","prompt":"Fix the typo in README.md"},
+    {"id":"rename","family":"Mechanical edit","prompt":"Rename the variable in this function in utils.py"},
+    {"id":"format","family":"Mechanical edit","prompt":"Format this file utils.py"},
+    {"id":"explain","family":"Code explanation","prompt":"Explain what this function in utils.py does"},
+    {"id":"flag","family":"Small feature","prompt":"Add a flag in cli.py"},
+    {"id":"tests","family":"Test writing","prompt":"Write unit tests for parser.py"},
+    {"id":"feature","family":"New feature","prompt":"Implement pagination in api.py"},
+    {"id":"bug","family":"Debugging","prompt":"Fix the failing parser in parser.py"},
+    {"id":"race","family":"Concurrency","prompt":"Resolve a race condition in worker.py"},
+    {"id":"security","family":"Security review","prompt":"Audit the security of auth.py"},
+    {"id":"migration","family":"Database change","prompt":"Migrate the database schema in migration.sql"},
+    {"id":"refactor","family":"Architecture","prompt":"Refactor the whole module across api.py service.py models.py store.py"},
+    {"id":"unclear","family":"Ambiguous request","prompt":"hmm can you look at the thing we discussed and sort it"},
+    {"id":"continue","family":"Continuation wording","prompt":"go ahead"},
+    {"id":"security-fix","family":"Security repair","prompt":"Fix a security flaw in auth.py"},
+    {"id":"rename-redesign","family":"Mixed difficulty","prompt":"Rename a variable and redesign the concurrency algorithm in worker.py","review_hypothesis":"A small edit keyword must not establish a clear-local case when the same request explicitly asks for a concurrency redesign.","review_expectation":"not_local"},
+    {"id":"comment","family":"Documentation","prompt":"Add a comment explaining an invariant in auth.py"},
+    {"id":"semantic-hard","family":"Concurrency","prompt":"Make cache.py linearizable under contention"},
+    {"id":"parser-change","family":"Parser change","prompt":"Change parser.py to correctly handle nested escaped delimiters"},
+    {"id":"explain-implement","family":"Mixed difficulty","prompt":"Explain the race condition and implement a fix in worker.py","review_hypothesis":"A read-only explanation keyword must not establish a clear-local case when the same request asks to implement a race-condition fix.","review_expectation":"not_local"},
+    {"id":"dependency","family":"Dependency update","prompt":"Bump the dependency version in pyproject.toml"},
+    {"id":"performance","family":"Performance","prompt":"Optimize latency across cache.py api.py worker.py store.py"},
+    {"id":"payment-typo","family":"Sensitive domain wording","prompt":"Fix the typo in payments.py"},
+    {"id":"typo-paraphrase","family":"Mechanical edit","prompt":"Correct a misspelling in README.md"}
+  ]
+}

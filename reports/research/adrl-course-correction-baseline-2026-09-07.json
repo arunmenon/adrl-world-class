@@ -1,0 +1,128 @@
+{
+  "date": "2026-09-07",
+  "scope": "Read-only source inspection and focused offline baseline for the course-correction plan. No real model or harness deployment.",
+  "config_check": {
+    "exit_code": 0,
+    "checks_passed": 9,
+    "manifest_signature_verified": true,
+    "note": "Unused residency-eu class lacks EU cloud deployment; configuration validity is not endpoint liveness or readiness."
+  },
+  "tests": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 HYPOTHESIS_STORAGE_DIRECTORY=/private/tmp/adrl-course-correction-hypothesis .venv/bin/python -m pytest tests/unit/test_config.py tests/integration/e2e tests/adversarial -q -p no:cacheprovider --basetemp=/private/tmp/adrl-course-correction-tests-20260907 --junitxml=/private/tmp/adrl-course-correction-baseline.xml",
+    "working_directory": "/Users/arunmenon/projects/adrl-core",
+    "passed": 39,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "reported_duration_seconds": 2.75,
+    "junit_sha256": "7a61f4fdc95ff6a4b8396a3abaec56cdac275c39ce0fd49b1e20e79737e7469b",
+    "test_ids": [
+      "tests.unit.test_config::test_default_bundle_loads_and_checks_pass",
+      "tests.unit.test_config::test_cross_rung_fallback_group_fails",
+      "tests.unit.test_config::test_compaction_deadlock_fails",
+      "tests.unit.test_config::test_live_mode_requires_evidence",
+      "tests.unit.test_config::test_tampered_manifest_fails_signature",
+      "tests.unit.test_config::test_unsigned_manifest_allowed_only_when_not_required",
+      "tests.unit.test_config::test_exploration_epsilon_bounded",
+      "tests.integration.e2e.test_composed_system::test_every_real_stage_is_installed",
+      "tests.integration.e2e.test_composed_system::test_user_turn_decides_and_continuation_and_pre_warm_inherit",
+      "tests.integration.e2e.test_composed_system::test_secret_in_tool_result_pins_lineage_and_forces_local",
+      "tests.integration.e2e.test_composed_system::test_pinned_lineage_over_local_ceiling_is_blocked_without_a_gateway_call",
+      "tests.integration.e2e.test_composed_system::test_pinned_count_tokens_and_cosmetic_utility_never_reach_the_cloud",
+      "tests.integration.e2e.test_composed_system::test_pin_survives_a_restart_of_the_composition",
+      "tests.integration.e2e.test_composed_system::test_fork_subagent_under_pinned_parent_is_served_local",
+      "tests.integration.e2e.test_composed_system::test_tripwire_escalates_at_the_next_boundary_with_a_handoff",
+      "tests.integration.e2e.test_composed_system::test_shadow_mode_with_real_stages_is_byte_transparent",
+      "tests.integration.e2e.test_composed_system::test_egress_chain_verifies_after_traffic",
+      "tests.integration.e2e.test_pin_failure::test_detected_secret_stays_local_after_one_transient_ledger_error",
+      "tests.integration.e2e.test_review_defects::test_grandchild_lineage_and_inherited_pin_survive_a_restart",
+      "tests.integration.e2e.test_review_defects::test_events_after_a_restart_are_stored_not_dropped",
+      "tests.integration.e2e.test_review_defects::test_ledger_never_holds_error_wording_or_plain_input_hashes",
+      "tests.integration.e2e.test_review_defects::test_request_racing_the_pinning_request_resolves_its_gate_failure_as_pinned",
+      "tests.integration.e2e.test_tru::test_residency_eu_lineage_never_reaches_a_us_deployment[live]",
+      "tests.integration.e2e.test_tru::test_residency_eu_lineage_never_reaches_a_us_deployment[shadow]",
+      "tests.integration.e2e.test_tru::test_receipt_confirms_destination_and_absence_is_unconfirmed",
+      "tests.integration.e2e.test_trust_wiring::test_listed_server_hint_is_honoured_in_the_feature_snapshot",
+      "tests.integration.e2e.test_trust_wiring::test_unlisted_server_hint_is_ignored_in_the_feature_snapshot",
+      "tests.integration.e2e.test_trust_wiring::test_unlisted_server_is_untrusted_even_when_another_is_listed",
+      "tests.adversarial.test_saf_suite::test_aws_key_in_tool_result_pins_on_that_request",
+      "tests.adversarial.test_saf_suite::test_base64_encoded_key_pins",
+      "tests.adversarial.test_saf_suite::test_key_split_across_two_reads_pins_on_second",
+      "tests.adversarial.test_saf_suite::test_pem_header_inside_document_block_is_unscanned",
+      "tests.adversarial.test_saf_suite::test_uncorroborated_high_entropy_is_shadow_only",
+      "tests.adversarial.test_saf_suite::test_secret_in_subagent_delegation_text_pins_child_only",
+      "tests.adversarial.test_saf_suite::test_count_tokens_on_pinned_lineage_not_forwarded",
+      "tests.adversarial.test_tru_suite::test_local_group_on_a_remote_host_fails_load_and_the_ci_tool",
+      "tests.adversarial.test_tru_suite::test_generator_refuses_a_local_deployment_off_the_host",
+      "tests.adversarial.test_tru_suite::test_pinned_lineage_never_reaches_a_non_local_host_deployment",
+      "tests.adversarial.test_tru_suite::test_residency_class_in_use_without_in_geo_deployment_fails_load"
+    ],
+    "limitations": "Configuration, composed pipeline and adversarial fixture tests with a simulated gateway. Not the full suite, real-provider validation, organic traffic or production certification."
+  },
+  "runtime": {
+    "default_data_directory_exists": false,
+    "real_model_run_started": false,
+    "hardware_verified": false,
+    "budget_selected": false
+  },
+  "source_files": [
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/README.md",
+      "sha256": "461c98eb26f02307182acd664befba8d373e1980508f29ea6830a24d364c5e92"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/AGENTS.md",
+      "sha256": "b5fd37e36c52874192a3e87966822cd0d7ea0ef789a3e47e9fc9f9bc3120a490"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/pyproject.toml",
+      "sha256": "5a124bb958e981557d4a3f62b28843f348ca306e4e31876a7ebc907dd95b4001"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/config/rungs.yaml",
+      "sha256": "39c0b9521d9e8ccbb0b4750bed1fc90a95be9f4427d4d0cb94d7f8d56c79935e"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/config/policy.yaml",
+      "sha256": "fd7522fda0c1d1c9fb1d096e603b8b3df2d981894658012e4ae2fa08439dc9bc"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/config/endpoint-inventory-v1.json",
+      "sha256": "67d18715549c041215deca75f0002bf486ce946b55a593a6e7d815c3e291212e"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/config/repo-classification-v1.json",
+      "sha256": "47d7790c3eb71be692b74332a2e01de3b19011b10609722fdaf413279cf97b42"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/docs/known-gaps.md",
+      "sha256": "2c5cf3237646ad0a5a237fb563c024fb26885ac9d5d478e824ee6d0eb476a48a"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/src/adrl/config/settings.py",
+      "sha256": "4a4daad400b9786e32edead3c7ad41e117e39459f93e915b83651b237a1d98b6"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/src/adrl/cli/main.py",
+      "sha256": "2fc4e7b2e758a22b223fec5d133de1f34b47d673987435d8943e35dd5e891d7c"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/src/adrl/gates/cli.py",
+      "sha256": "aebd8c3eb7a3e53351eb3eb6ba88c0335fbbb27e94de225a6f9c8410bc601ef8"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/src/adrl/learning/pairs.py",
+      "sha256": "73283b6c0af83c409d37d4fecce3d31437de7a65aca66ea1e0ff53efeb276160"
+    },
+    {
+      "path": "/Users/arunmenon/projects/adrl-core/src/adrl/learning/readiness.py",
+      "sha256": "947d22d853c3bed68521ee2d005947696bce404034e5819dfc0f697533e55aea"
+    }
+  ],
+  "current_documentation": [
+    "https://code.claude.com/docs/en/llm-gateway",
+    "https://code.claude.com/docs/en/llm-gateway-connect",
+    "https://docs.litellm.ai/docs/proxy/quick_start",
+    "https://docs.litellm.ai/docs/proxy/response_headers"
+  ]
+}

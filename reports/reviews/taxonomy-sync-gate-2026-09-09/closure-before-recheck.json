@@ -1,0 +1,143 @@
+{
+  "wave": "taxonomy-sync-gate",
+  "date": "2026-09-09",
+  "changes": {
+    "R:adr/FND/ADRL-FND-005.md": {
+      "before": "1c7ce24cca5fd0ed81daf260db74d7fe3034fd7fe5e0af241b6432bf9fcfdca7",
+      "after": "127548195e7efdbedfb6c24ea703cf0ca77f9fcd5edfcc35406b93f1b5778a2a"
+    },
+    "R:reports/adrl-wave-execution-template.md": {
+      "before": "f2fe0d1b54545c8a98c9536e22b801304d33d1e2fdb0758eead4c335c24adbea",
+      "after": "f41c69e2c6c828022e3f119bca5d9ec56304dbf424215f99cf0ad11f2be62eb9"
+    },
+    "R:adr/EVL/ADRL-EVL-009.md": {
+      "before": "dfff5f80f6ecbf0cb3212728090fc1fa180f23d25cfd3ec0f9939dd9875d191e",
+      "after": "99bb3aee35b26a03d2ddb1c4d1680b3f6e49c7e7a57cfe7d9d83d3a6b71c86c0"
+    },
+    "R:adr/FND/README.md": {
+      "before": "ad911297a0416094f57bd7b6de3661a82d9e48cba46187a1d480254d6404022a",
+      "after": "923d0137c307386150dfd63aca5e137d972ca77ea823531963264b6504758e8e"
+    },
+    "R:CHANGELOG.md": {
+      "before": "6ead9fb3c5de2bbba9a0d33ef9a1d62a5bb51e5ec5e1165d0b6b787f8b2431fd",
+      "after": "72b1971ef6da97c9807633d2bfb026dd2247baf3bcdbcd50eeccd5db7f2312d5"
+    },
+    "C:AGENTS.md": {
+      "before": "b5fd37e36c52874192a3e87966822cd0d7ea0ef789a3e47e9fc9f9bc3120a490",
+      "after": "6e7c1dac3fe6db3449d78c27b27d622d99f4e7557acd52e078aafdf927feabbb"
+    },
+    "R:tests/test_taxonomy_sync.py": {
+      "before": null,
+      "after": "bb337632fd70483fb983f5fe0af9a85e1ac7c1b87971e1b199e263e1b2e8c601"
+    },
+    "R:skills/adrl-taxonomy-sync/SKILL.md": {
+      "before": null,
+      "after": "288b44d079cf9e8fc636f1705b05f5e5dede1ddf15d28479a0c78ee1f479513a"
+    },
+    "R:AGENTS.md": {
+      "before": "da8e1b91b73598408bb6ef9c4fa58038383715a210cf76f8466c6003a50e454b",
+      "after": "31ac03ab41a5f37a9de1835885d10c85a718622c25afef647e6880ba639c7c16"
+    },
+    "R:adr/EVL/README.md": {
+      "before": "9dea3252b690eae35b0260909f2fbc2b31a47994d4f5f8609dccc8cb47d9487a",
+      "after": "3e6e9daaa017eaa7abd786392eaed2a51fcc962af284ebe96ee2877e3ba23b5d"
+    },
+    "R:INDEX.md": {
+      "before": "54cf107c505837ba6e4f778827342af31853ec19cc433e850cb2f5f249be59bf",
+      "after": "bc52e3e52ea2458df1583e11f3710656e1c024e75dad181f144c009a1feec60f"
+    },
+    "R:tools/check_taxonomy_sync.py": {
+      "before": null,
+      "after": "ef2f9d13fe7f632688c45695cebda41420a3ac9d89915d5fc52ab846b0bbb205"
+    }
+  },
+  "file_owners": {
+    "C:AGENTS.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:AGENTS.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:reports/adrl-wave-execution-template.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:skills/adrl-taxonomy-sync/SKILL.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:tests/test_taxonomy_sync.py": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:tools/check_taxonomy_sync.py": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ]
+  },
+  "owners": [
+    {
+      "id": "ADRL-FND-005",
+      "kind": "workflow",
+      "summary": "Local checked implementation/register closure",
+      "limitations": "Declared scope; reviewer attestations; not remote CI or full historical maturity reconciliation",
+      "fields": {
+        "Status": "Accepted \u00b7 unchanged",
+        "Maturity": "D3 Shadow, review recommends D3 Shadow with a note: the D-scale measures runtime behaviour and fits a governance commitment poorly; the honest reading is \"the readiness tooling runs against shadow data and its verdicts have so far been respected\"",
+        "Review verdict": "APPROVE"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/report.md",
+          "sha256": "2ed23ee0485036ba8d5d169313d94d545557182b5e1c46bcf8ddaf6cc2a5196e"
+        },
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/tests.log",
+          "sha256": "7b257a590b669c714a9abb3e36a8fd20ca2615030ccc34873341cfb78d6baaff"
+        }
+      ]
+    },
+    {
+      "id": "ADRL-EVL-009",
+      "kind": "workflow",
+      "summary": "Local checked implementation/register closure",
+      "limitations": "Declared scope; reviewer attestations; not remote CI or full historical maturity reconciliation",
+      "fields": {
+        "Status": "Proposed 2026-09-03 (first capture; referenced by the overview, MEM-006, MEM-010, LRN-006 since 2026-08-27)",
+        "Maturity": "D1 Code; adrl-core `learning/readiness.py` and `ledger/readiness.py` list blockers by name and never fold them into a score; the blocker list itself is not yet pre-registered",
+        "Review verdict": "PROPOSED (new)"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/report.md",
+          "sha256": "2ed23ee0485036ba8d5d169313d94d545557182b5e1c46bcf8ddaf6cc2a5196e"
+        },
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/tests.log",
+          "sha256": "7b257a590b669c714a9abb3e36a8fd20ca2615030ccc34873341cfb78d6baaff"
+        }
+      ]
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "reviewer": "Claude Fable 5.1",
+    "covered_adrs": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "blocking_findings": [
+      "post-review pending"
+    ],
+    "record": {
+      "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/pre-review.md",
+      "sha256": "90efa3fd25ca9f00ba1d1351bece4f2a9f82ba1f919ca239af917ff0ce43aea3"
+    },
+    "inputs": {
+      "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/post-source-hashes.json",
+      "sha256": "6bdd58ec1f5ac25d6b478e5b1045fd5e86a37e92249cb64961130d894ea0caae"
+    }
+  }
+}

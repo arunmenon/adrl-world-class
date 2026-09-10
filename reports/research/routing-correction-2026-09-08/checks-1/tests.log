@@ -1,0 +1,73 @@
+...........F............................................................ [  7%]
+........................................................................ [ 15%]
+.........................ssssssss....................................... [ 23%]
+........................................................................ [ 31%]
+........................................................................ [ 39%]
+........................................................................ [ 47%]
+........................................................................ [ 54%]
+........................................................................ [ 62%]
+........................................................................ [ 70%]
+........................................................................ [ 78%]
+........................................................................ [ 86%]
+........................................................................ [ 94%]
+.......................................................                  [100%]
+=================================== FAILURES ===================================
+__________ test_tripwire_then_escalation_only_at_boundary_and_sticky ___________
+
+bundle = ConfigBundle(rungs=RungsConfig(version='rung-membership-v1', rungs={<Rung.LOCAL: 'local'>: RungSpec(members=('adrl-loc...kens=None)), frontier_aliases_to='adrl-frontier', pinned_alias='adrl-pinned-local'), inventory_signature_verified=True)
+controller = <adrl.cascade.controller.CascadeController object at 0x1185bc380>
+ledger_store = <adrl.ledger.store.LedgerStore object at 0x1185bddf0>
+
+    async def test_tripwire_then_escalation_only_at_boundary_and_sticky(
+        bundle, controller, ledger_store
+    ) -> None:  # type: ignore[no-untyped-def]
+        router = Router(bundle)
+        turn = make_ctx(user_body("Fix the typo in README.md"))
+        decision = await router.decide(turn, make_gate(), None)
+        assert decision.rung is Rung.LOCAL
+        plan = await controller.plan(turn, decision, make_gate(), None)
+        assert plan.rung is Rung.LOCAL and plan.is_boundary and not plan.escalated
+        events = await controller.observe(turn, plan, make_obs(rung=Rung.LOCAL))
+        assert not events.fired and events.sticky.served_model == "adrl-local/qwen"
+    
+        # the model loops: continuation with a partial tool_result set is not a boundary
+        partial = make_ctx(_looping_continuation(complete=False), RequestClass.CONTINUATION)
+        sticky = events.sticky
+        plan2 = await controller.plan(partial, decision, make_gate(), sticky)
+        assert not plan2.is_boundary and plan2.rung is Rung.LOCAL
+        events2 = await controller.observe(partial, plan2, make_obs(rung=Rung.LOCAL))
+        assert events2.fired and events2.escalation_pending
+        assert controller.pending_for(LINEAGE) is not None
+    
+        # still not a boundary: passthrough on the served rung, no escalation
+        plan3 = await controller.plan(partial, decision, make_gate(), events2.sticky)
+        assert not plan3.escalated and plan3.rung is Rung.LOCAL
+    
+        # boundary: escalation to the next permitted rung with a handoff
+        full = make_ctx(_looping_continuation(complete=True), RequestClass.CONTINUATION)
+        plan4 = await controller.plan(full, decision, make_gate(), events2.sticky)
+        assert plan4.escalated and plan4.from_rung is Rung.LOCAL and plan4.rung is Rung.CHEAP_CLOUD
+        assert plan4.handoff is not None and plan4.body is not None
+        assert plan4.pair_rule is not None and plan4.pair_rule.source_family == "local"
+        assert plan4.sticky.escalated
+        escalations = _events(ledger_store, ESCALATION_EVENT)
+        assert escalations and escalations[0]["to_rung"] == "cheap_cloud"
+    
+        # CAS-005: a later continuation stays escalated; a new user turn with a local decision stays up
+        events4 = await controller.observe(full, plan4, make_obs(rung=Rung.CHEAP_CLOUD, model="haiku"))
+        plan5 = await controller.plan(full, decision, make_gate(), events4.sticky)
+        assert plan5.rung is Rung.CHEAP_CLOUD and not plan5.escalated
+        next_turn = make_ctx(user_body("Now fix the second typo"))
+        decision2 = await router.decide(next_turn, make_gate(), events4.sticky)
+        plan6 = await controller.plan(next_turn, decision2, make_gate(), events4.sticky)
+>       assert plan6.rung is Rung.CHEAP_CLOUD
+E       AssertionError: assert <Rung.FRONTIER: 'frontier'> is <Rung.CHEAP_CLOUD: 'cheap_cloud'>
+E        +  where <Rung.FRONTIER: 'frontier'> = DispatchPlan(rung=<Rung.FRONTIER: 'frontier'>, is_boundary=True, escalated=False, from_rung=None, handoff=None, pair_r...te_loss=False, policy_constrained=False, pinned=False, thinking_suppressed=False, deployment_id=None, model_alias=None).rung
+E        +  and   <Rung.CHEAP_CLOUD: 'cheap_cloud'> = Rung.CHEAP_CLOUD
+
+tests/integration/cascade/test_controller.py:123: AssertionError
+----------------------------- Captured stdout call -----------------------------
+2026-09-08 14:09:57 [info     ] escalation                     cause=a_repeated_tool_calls from_rung=local to_rung=cheap_cloud
+=========================== short test summary info ============================
+FAILED tests/integration/cascade/test_controller.py::test_tripwire_then_escalation_only_at_boundary_and_sticky
+1 failed, 910 passed, 8 skipped in 58.42s

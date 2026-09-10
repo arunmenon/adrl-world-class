@@ -1,0 +1,135 @@
+--- baseline
++++ candidate
+@@ -26,6 +26,7 @@
+ 
+ import structlog
+ 
++from adrl.config.checks import check_live_rung_has_evidence
+ from adrl.config.loaders import ConfigBundle
+ from adrl.config.settings import Settings
+ from adrl.core.enums import FailureClass, GateMode, RequestClass, RoutingMode, Rung, UtilityKind
+@@ -45,6 +46,7 @@
+ from adrl.gates.deployments import DeploymentPolicy, egress_fields
+ from adrl.ledger.egress import EgressLedger
+ from adrl.ledger.facade import PIN_EVENT, MemoryFacade
++from adrl.proxy.claude_experiment import ClaudeExperimentClient
+ from adrl.proxy.errors import (
+     JSON_HEADERS,
+     block_message,
+@@ -199,6 +201,17 @@
+         self._ledger = ledger
+         self._egress = egress
+         self._gateway = gateway
++        self._claude_experiment = gateway if isinstance(gateway, ClaudeExperimentClient) else None
++        if self._claude_experiment is not None:
++            if (
++                settings.routing_mode is not RoutingMode.LIVE
++                or settings.gate_mode is not GateMode.ENFORCE
++            ):
++                raise ValueError(
++                    "Claude experiment requires explicit LIVE routing and enforcing gates"
++                )
++            if not check_live_rung_has_evidence(bundle, settings).ok:
++                raise ValueError("Claude experiment cannot bypass LIVE admission")
+         self._gate = gate
+         self._router = router
+         self._cascade = cascade
+@@ -227,6 +240,10 @@
+         *,
+         query: str = "",
+     ) -> ProxyResponse:
++        if self._claude_experiment is not None and query:
++            return self._error_response(
++                ErrorCode.CAPABILITY_REJECTED, "experiment query not admitted"
++            )
+         if not self._profile.handles(method, path, headers):
+             return await self._forward_non_api(parse_request(method, path, headers, body, query))
+         parsed = self._profile.parse(method, path, headers, body, query)
+@@ -393,6 +410,37 @@
+         plan = _with_deployment(plan, deployment, forward_original)
+ 
+         body = self._body_for(ctx, plan, target_rung, forward_original, deployment)
++        if self._claude_experiment is not None:
++            # Do not force a cloud model after fallback, pinning or an escalated transform.
++            permitted = getattr(gate, "permitted_deployments", None)
++            if (
++                resolution is not None
++                or pinned
++                or target_rung is not Rung.FRONTIER
++                or not forward_original
++                or permitted is None
++            ):
++                return await self._blocked(ctx, gate, ErrorCode.CAPABILITY_REJECTED)
++            try:
++                body, deployment = self._claude_experiment.selection.prepare(
++                    ctx.body, lineage=str(ctx.lineage_hmac), permitted=permitted, pinned=pinned
++                )
++            except ValueError:
++                return await self._blocked(ctx, gate, ErrorCode.CAPABILITY_REJECTED)
++            if self._deployments.catalog.get(deployment.deployment_id) != deployment:
++                return await self._blocked(ctx, gate, ErrorCode.CAPABILITY_REJECTED)
++            decision = dataclasses.replace(
++                decision,
++                estimator="experiment_forced_claude",
++                estimator_version=self._claude_experiment.config.version,
++                features={
++                    **decision.features,
++                    "experiment_config_hash": self._claude_experiment.config.fingerprint,
++                    "experiment_model": deployment.model,
++                },
++            )
++            forward_original = False
++            plan = _with_deployment(plan, deployment, False)
+         ledger_degraded = await self._record_egress(
+             ctx, gate, target_rung, len(body), deployment=deployment, receipt_source="intended"
+         )
+@@ -425,6 +473,12 @@
+                 "fail_open": resolution.failure_class.value if resolution else None,
+                 "state_loss": state_loss,
+                 "routing_mode": self._settings.routing_mode.value,
++                "experiment_config_hash": (
++                    self._claude_experiment.config.fingerprint if self._claude_experiment else None
++                ),
++                "experiment_selected_model": deployment.model
++                if self._claude_experiment and deployment
++                else None,
+             },
+         )
+         return _Turn(
+@@ -503,6 +557,18 @@
+         self, turn: _Turn, obs: ResponseObservation, headers: Mapping[str, str]
+     ) -> ResponseObservation:
+         """Attach the gateway's destination receipt to the observation (ADRL-RTG-008)."""
++        if self._claude_experiment is not None:
++            served = dataclasses.replace(
++                obs.served,
++                provider="anthropic",
++                api_base_host="api.anthropic.com",
++                deployment_id=None,
++                trust_zone=None,
++                geo=None,
++            )
++            if served.model != self._claude_experiment.config.target_model:
++                self._claude_experiment.stopped = True
++            return dataclasses.replace(obs, served=served)
+         served = self._deployments.served_identity(obs.served, headers, turn.deployment)
+         return dataclasses.replace(obs, served=served)
+ 
+@@ -531,7 +597,7 @@
+         out_headers = response_headers(response.headers)
+         observer = self._profile.stream_observer(
+             status=status,
+-            headers=response.headers,
++            headers={} if self._claude_experiment else response.headers,
+             intended_rung=turn.target_rung,
+             requested_model=ctx.requested_model,
+             rungs=self._bundle.rungs,
+@@ -543,7 +609,7 @@
+             obs = self._profile.observe_response(
+                 raw,
+                 status=status,
+-                headers=response.headers,
++                headers={} if self._claude_experiment else response.headers,
+                 intended_rung=turn.target_rung,
+                 requested_model=ctx.requested_model,
+                 rungs=self._bundle.rungs,

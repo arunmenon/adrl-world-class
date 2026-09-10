@@ -1,0 +1,9 @@
+{
+  "local_links_valid": true,
+  "previous_plan_sha256": "cc665487f92626bcc9661f20fe3fc9957a8444ac9ffa16b8f862e6cd900d1594",
+  "current_plan_sha256": "0e4fe1f7938b9de733e882df772fc4815d10748243d5aa2c3e2af0ac01a9feb5",
+  "runtime_changed": false,
+  "maturity_changes": 0,
+  "new_fable_review": "not invoked; scoped pre-wave review remains next",
+  "expanded_budgets": "proposed only"
+}

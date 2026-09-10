@@ -1,0 +1,49 @@
+{
+  "scenarios": {
+    "simple": "local",
+    "complex": "frontier",
+    "uncertain": "frontier",
+    "private": "local"
+  },
+  "unrestricted_stuck_task": {
+    "rung": "cheap_cloud",
+    "escalated": true,
+    "handoff_created": true,
+    "block": null
+  },
+  "rule_correction": {
+    "before": "local",
+    "after": "frontier"
+  },
+  "stress_summary": {
+    "case_version": "routing-stress-cases-v1",
+    "input_sha256": "5db0dbfcef1cbfa4a3b3f3ce5a823928dff395370451078a7309cc93f563a172",
+    "task_prompts": 24,
+    "variants_per_prompt": 5,
+    "repeats": 2,
+    "decision_evaluations": 240,
+    "ordinary_choice_counts": {
+      "local": 9,
+      "cheap_cloud": 0,
+      "frontier": 15
+    },
+    "invariant_failures": [],
+    "review_hypothesis_failures": [
+      {
+        "case": "rename-redesign",
+        "hypothesis": "A small edit keyword must not establish a clear-local case when the same request explicitly asks for a concurrency redesign.",
+        "observed": "local",
+        "status": "review_hypothesis_failed"
+      },
+      {
+        "case": "explain-implement",
+        "hypothesis": "A read-only explanation keyword must not establish a clear-local case when the same request asks to implement a race-condition fix.",
+        "observed": "local",
+        "status": "review_hypothesis_failed"
+      }
+    ],
+    "scope": "Routing component behavioural probes, not completed coding tasks or full gateway safety tests"
+  },
+  "model_calls": 0,
+  "runtime_inputs_unchanged": 316
+}

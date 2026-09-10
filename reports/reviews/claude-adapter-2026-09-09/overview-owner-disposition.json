@@ -1,0 +1,34 @@
+{
+  "adr": "ADRL-SEM-007",
+  "before": {
+    "Maturity": "D2 for the Messages boundary and local services, plus one bounded live observation pilot (2026-09-07). Full cross-protocol contract remains incomplete, D0 for the second profile; no general D3/D4 graduation or live gateway validation",
+    "Review verdict": "PROPOSED (new)",
+    "Status": "Proposed 2026-09-03 (new, from external review)"
+  },
+  "after": {
+    "Status": "Proposed 2026-09-03 (new, from external review)",
+    "Maturity": "D2 for the Messages boundary and local services, plus one bounded live observation pilot (2026-09-07). Full cross-protocol contract remains incomplete, D0 for the second profile; no general D3/D4 graduation or live gateway validation",
+    "Review verdict": "PROPOSED (new)"
+  },
+  "display_before": {
+    "bucket": null,
+    "index": {
+      "maturity": "D2 Messages boundary and local services; D0 second profile",
+      "verdict": "PROPOSED (new)"
+    }
+  },
+  "display_after": {
+    "index": {
+      "verdict": "PROPOSED (new)",
+      "maturity": "D2 Messages boundary and local services; D0 second profile"
+    },
+    "bucket": {
+      "verdict": "PROPOSED (new)",
+      "maturity": "D2 Messages boundary and local services; D0 second profile"
+    }
+  },
+  "human_name": "Arun Menon",
+  "date": "2026-09-09",
+  "authorization": "After the plain-language question about restoring the two missing summary-table entries without changing readiness/permissions, user replied: try now. Coordinator stated it would restore the existing status values.",
+  "scope": "Missing overview row restored using existing INDEX values only; no formal grade/status/decision promotion."
+}

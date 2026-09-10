@@ -1,0 +1,2930 @@
+--- a/docs/adr-module-map.md
++++ b/docs/adr-module-map.md
+@@ -33,7 +33,10 @@
+ | `adrl/core/container_control.py` | ADRL-MEM-005, ADRL-OPS-001, ADRL-SAF-007, ADRL-TRU-001 | Create-only local container transport. Primary: ADRL-OPS-001. |
+ | `adrl/core/enums.py` | ADRL-CAS-002, ADRL-MEM-001, ADRL-MEM-004 | Versioned enums and state sets shared across buckets. Primary: ADRL-CAS-002. |
+ | `adrl/core/errors.py` | ADRL-CAS-007, ADRL-SAF-004, ADRL-SAF-005 | Error hierarchy and the published error-code table. Primary: ADRL-CAS-007. |
++| `adrl/core/execution_control.py` | ADRL-MEM-005, ADRL-OPS-001, ADRL-SAF-007, ADRL-TRU-001 | Pinned synthetic execution transport. Primary: ADRL-OPS-001. |
+ | `adrl/core/ids.py` | ADRL-MEM-001, ADRL-SEM-002 | Identity minting and hashing. Primary: ADRL-MEM-001. Secondary: ADRL-SEM-002. |
++| `adrl/core/isolated_execution.py` | ADRL-MEM-001, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-005, ADRL-MEM-010, ADRL-OPS-001, ADRL-SAF-007, ADRL-TRU-001 | One-shot isolated fixture execution. Primary: ADRL-OPS-001. |
++| `adrl/core/launch_markers.py` | ADRL-MEM-001, ADRL-MEM-005, ADRL-MEM-010, ADRL-OPS-001, ADRL-TRU-001 | Permanent one-shot denial markers. Primary: ADRL-OPS-001. |
+ | `adrl/core/ports.py` | ADRL-FND-002, ADRL-MEM-005, ADRL-MEM-006, ADRL-MEM-010, ADRL-SAF-003, ADRL-SAF-006, ADRL-SAF-007 | Port interfaces every adapter implements. Primary: ADRL-MEM-006. |
+ | `adrl/core/process_anchor.py` | ADRL-OPS-001, ADRL-SAF-007, ADRL-SEM-006, ADRL-TRU-001 | Private process-group launcher. Primary: ADRL-OPS-001. |
+ | `adrl/core/process_owner.py` | ADRL-MEM-003, ADRL-OPS-001, ADRL-SAF-007, ADRL-SEM-006, ADRL-TRU-001 | Owned process-group execution and cleanup. Primary: ADRL-OPS-001. |
+@@ -150,17 +153,17 @@
+ | ADRL-LRN-006 | `adrl/learning/abstention.py`, `adrl/learning/readiness.py` |
+ | ADRL-LRN-007 | `adrl/app.py`, `adrl/cli/improvement.py`, `adrl/learning/artifacts.py`, `adrl/learning/improvement.py` |
+ | ADRL-LRN-008 | `adrl/learning/explore.py`, `adrl/learning/tiers.py`, `adrl/routing/advisor.py`, `adrl/routing/router.py` |
+-| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/core/resource_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/resource_owner.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/process_owner.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/core/isolated_execution.py`, `adrl/core/launch_markers.py`, `adrl/core/resource_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
++| ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/isolated_execution.py`, `adrl/core/resource_owner.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/isolated_execution.py`, `adrl/core/process_owner.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-004 | `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/learning/artifacts.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/ports.py`, `adrl/core/resource_owner.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/execution_control.py`, `adrl/core/isolated_execution.py`, `adrl/core/launch_markers.py`, `adrl/core/ports.py`, `adrl/core/resource_owner.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-006 | `adrl/core/ports.py`, `adrl/learning/abstention.py`, `adrl/ledger/facade.py`, `adrl/ledger/readiness.py`, `adrl/ledger/state.py`, `adrl/ledger/store.py`, `adrl/proxy/observe_only.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-MEM-007 | `adrl/learning/dataset.py`, `adrl/ledger/erasure.py`, `adrl/ledger/projections.py`, `adrl/ledger/replay.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/store.py` |
+ | ADRL-MEM-008 | `adrl/ledger/shadow_retrieval.py` |
+ | ADRL-MEM-009 | `adrl/learning/pairs.py`, `adrl/ledger/counterfactual.py`, `adrl/ledger/events.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/ports.py`, `adrl/core/resource_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+-| ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/core/resource_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/keystore.py`, `adrl/telemetry/logging.py` |
++| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/isolated_execution.py`, `adrl/core/launch_markers.py`, `adrl/core/ports.py`, `adrl/core/resource_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/execution_control.py`, `adrl/core/isolated_execution.py`, `adrl/core/launch_markers.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/core/resource_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/keystore.py`, `adrl/telemetry/logging.py` |
+ | ADRL-OPS-002 | `adrl/ledger/anchoring.py` |
+ | ADRL-OPS-003 | `adrl/config/checks.py` |
+ | ADRL-OPS-004 | `adrl/ledger/erasure.py` |
+@@ -182,7 +185,7 @@
+ | ADRL-SAF-004 | `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-005 | `adrl/config/checks.py`, `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py`, `adrl/telemetry/metrics.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-006 | `adrl/core/ports.py`, `adrl/gates/content.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py` |
+-| ADRL-SAF-007 | `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/ports.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/core/resource_owner.py`, `adrl/gates/cli.py`, `adrl/gates/sandbox.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-SAF-007 | `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/execution_control.py`, `adrl/core/isolated_execution.py`, `adrl/core/ports.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/core/resource_owner.py`, `adrl/gates/cli.py`, `adrl/gates/sandbox.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-SAF-008 | `adrl/config/loaders.py`, `adrl/config/models.py`, `adrl/gates/content.py`, `adrl/gates/deployments.py`, `adrl/gates/pipeline.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py` |
+ | ADRL-SAF-009 | `adrl/cli/main.py`, `adrl/gates/cli.py`, `adrl/gates/deployments.py`, `adrl/gates/egress.py`, `adrl/gates/pipeline.py`, `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-SEM-001 | `adrl/core/types.py`, `adrl/gates/feasibility.py`, `adrl/telemetry/metrics.py`, `adrl/wire/classify.py`, `adrl/wire/parse.py` |
+@@ -192,7 +195,7 @@
+ | ADRL-SEM-005 | `adrl/cascade/sticky.py` |
+ | ADRL-SEM-006 | `adrl/cascade/controller.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/proxy/observe_only.py`, `adrl/proxy/pipeline.py`, `adrl/wire/identity.py` |
+ | ADRL-SEM-007 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/schema.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/proxy/errors.py`, `adrl/wire/adapters.py`, `adrl/wire/profiles/base.py`, `adrl/wire/profiles/messages.py`, `adrl/wire/profiles/messages_responses.py` |
+-| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/core/resource_owner.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py` |
++| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/execution_control.py`, `adrl/core/isolated_execution.py`, `adrl/core/launch_markers.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/core/resource_owner.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py` |
+ | ADRL-TRU-002 | `adrl/core/types.py`, `adrl/gates/deployments.py`, `adrl/proxy/pipeline.py`, `adrl/wire/observe.py` |
+ | ADRL-TRU-003 | `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py` |
+ 
+--- a/docs/data-inventory.md
++++ b/docs/data-inventory.md
+@@ -486,3 +486,68 @@
+ only: no host repository/credential/socket mounts, payload execution or model calls are enabled.
+ Non-force removal and absence reconciliation do not prove physical block, snapshot or backup
+ erasure. No new retention disposition for real data is implied.
++
++
++## W3.2b2d2 one-shot fixture execution, schema 12
++
++These operational records do not contain task payloads. Keyed references and resource/timestamp
++metadata remain linkable after content-key erasure; they are not anonymous. At most 32 histories,
++eight 4096-byte events each, and 32 permanent <=64-byte denial markers form a logical metadata
++ceiling independent of encrypted attempt-content grants, not preallocated disk capacity.
++Raw inspection, engine/socket profile and image-layer evidence are used in memory and hashed.
++The complete event and policy model fields are checked by the inventory scanner.
++
++| Field | Class | Meaning |
++|---|---|---|
++| `product_launch_events.operation_key` | `keyed_hash` | Existing authenticated resource operation reference |
++| `product_launch_events.event_seq` | `skeleton` | Sequence 0 through 7 |
++| `product_launch_events.event_type` | `skeleton` | Claim, acknowledgement, seal, stopped or discard phase |
++| `product_launch_events.payload_json` | `skeleton` | Validated metadata envelope; nested fields below |
++| `product_launch_events.prev_mac` | `keyed_hash` | Prior launch or original bound-event MAC |
++| `product_launch_events.mac` | `keyed_hash` | Host-keyed launch chain authenticator |
++| `LaunchEvent:schema_version` | `skeleton` | Versioned record discriminator |
++| `LaunchEvent:operation_key` | `keyed_hash` | Existing opaque operation UUID HMAC |
++| `LaunchEvent:workspace_key` | `keyed_hash` | Existing canonical workspace HMAC and permanent fence |
++| `LaunchEvent:host_key_id` | `skeleton` | Detects host HMAC key replacement |
++| `LaunchEvent:resource_id` | `skeleton` | Original exact full Engine ID; no saved host PID |
++| `LaunchEvent:resource_created` | `skeleton` | Exact original daemon creation timestamp |
++| `LaunchEvent:resource_mac` | `keyed_hash` | Original authenticated stopped binding MAC |
++| `LaunchEvent:engine_ref` | `keyed_hash` | HMAC of engine identity, endpoint and capability/version profile |
++| `LaunchEvent:configuration_ref` | `keyed_hash` | HMAC of complete execution projection including Id/Created |
++| `LaunchEvent:fixture_ref` | `keyed_hash` | HMAC of admitted image/layer/binary/argv evidence |
++| `LaunchEvent:policy` | `skeleton` | Nested versioned bounds and pinned public fixture/profile constants |
++| `LaunchEvent:sequence` | `skeleton` | Bounded event sequence |
++| `LaunchEvent:phase` | `skeleton` | Validated launch lifecycle phase |
++| `LaunchEvent:recorded_at` | `skeleton` | Observation time, not task completion |
++| `LaunchEvent:started_at` | `skeleton` | Exact acknowledged first start timestamp; null before acknowledgement |
++| `LaunchEvent:workspace_state` | `skeleton` | Always blocked |
++| `LaunchEvent:exact_close_eligible` | `skeleton` | Always false |
++| `LaunchEvent:eligible_for_learning` | `skeleton` | Always false |
++| `ExecutionPolicy:schema_version` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:max_histories` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:max_events` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:max_event_bytes` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:max_marker_bytes` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:marker_directory` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:marker_contents` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:poll_seconds` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:max_run_seconds` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:stop_seconds` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:ledger_seconds` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:fixture_lifetime_seconds` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:engine_version` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:api_version` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:kernel_version` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:cgroup_driver` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:seccomp_sha256` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:archive_sha256` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:executable_sha256` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:fixture_argv` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `launch_denial:filename` | `keyed_hash` | Existing resource operation HMAC with fixed .denied suffix; permanent denial only |
++| `launch_denial:contents` | `skeleton` | Fixed adrl-launch-denial-v1 line, <=64 bytes; never task content |
++| `launch_denial:directory` | `skeleton` | Fixed launch-denials-v1 subdirectory under private keystore root |
++| `launch_denial:lock` | `skeleton` | Fixed .launch-denial.lock; local nonblocking advisory lock, no payload |
++| `launch_denial:filesystem_metadata` | `skeleton` | Filesystem UID, permissions, link count, size and timestamps; locally linkable |
++| `ExecutionPolicy:recovery_directory` | `skeleton` | Fixed private launch-recovery-locks-v1 directory; separate from marker publication lock |
++| `launch_recovery:filename` | `keyed_hash` | Authenticated operation key with .lock suffix; only existing admitted histories create files |
++| `launch_recovery:metadata` | `skeleton` | Private empty mode-0600 lock and filesystem metadata, bounded by the 32 authenticated histories |
+--- /dev/null
++++ b/docs/isolated-execution.md
+@@ -0,0 +1,92 @@
++# Internal one-shot fixture execution
++
++W3.2b2d2, 8 September 2026. Primary OPS-001; secondary MEM-001/002/003/005/010, SAF-007 and
++TRU-001. This backend is internal, synthetic-only and absent from public API exports. The
++shared API remains preview 4. It creates no successful task outcome or learning label.
++
++`IsolatedExecution` takes an existing authenticated stopped resource from `StoppedResourceOwner`.
++The latter keeps its original raw configuration binding, non-force removal and no-start API.
++The execution transport needs an explicitly selected local socket, pinned seccomp and an HTTP
++I/O budget of at most two seconds. A strict expected-status check requires 204 on start/kill/
++discard. This is separate from arbitrary Docker CLI arguments, pull, exec or restart support.
++
++Admission requires a readable started attempt with intact grant, the exact never-started bound
++resource and a supported engine/capability profile. The fixture command is only `/probe forced_stop`.
++The image's single RootFS diff-ID must equal the retained self-authored tar digest. Policy pins
++that archive, its executable and the explicit seccomp bytes. Supplying an arbitrary image ID
++with a claimed binary hash cannot satisfy the layer check. The current profile is intentionally
++specific to the tested Docker 27.3.1/API 1.47/Linux arm64/kernel/cgroup configuration.
++
++Before starting, the original full configuration binding is checked. The new execution projection
++covers every original Config/HostConfig/mount/image/name/command field plus Id/Created, accepting
++only the observed unsupported OomKillDisable false/null change. Canonical JSON preserves strict
++boolean/numeric distinction in the configuration. Engine/profile and projected configuration are
++host-HMAC references linked to the authenticated original bound-event MAC. Raw commands, socket
++addresses, engine profiles and inspections stay outside the ledger. Changing lifecycle state is
++checked separately, including exact StartedAt, typed PID/restart count and a valid exited state.
++
++## One launch, then seal
++
++A private mode-0700 `launch-denials-v1` directory under the keystore holds a mode-0600 permanent
++`<operation-key>.denied` file. Its fixed version line contains no task content. A nonblocking
++local lock serializes marker capacity and exclusive creation. File and directory fsync precede
++ledger claim and dispatch; the lock is released before any ledger wait. Any existing marker,
++including an empty, malformed or symlink marker, denies new launch. There is no removal/release API.
++
++Only the caller that created the marker and committed a unique launch claim sends start once.
++A lost claim acknowledgement cannot resume dispatch. The append-only schema-12 history permits
++claim -> acknowledged/sealed; acknowledged -> sealed; sealed -> stopped/discard_issued;
++stopped -> discard_issued; discard_issued -> discarded. Identical phase retries read state but
++never grant a second launch. Fields, original binding and chain MACs are checked on every read.
++A maximum 32 histories/markers and eight 4096-byte events per history bound logical metadata,
++independently of encrypted attempt-content quota; this is not preallocated disk space.
++
++After the first start acknowledgement and observed launch timestamp, future admission is sealed.
++The sole worker runs outside the caller event loop, checks identity/authority and observes stop,
++revocation/expiry/closure or deadline. Cancellation repeatedly shields and drains that worker.
++Known startup plus sealing and a matching observed exit can retain the container layer as
++`stopped`; this is not yet an exact task-close or capture receipt. The authority check and daemon
++mutation are not atomic, and erasure may race the final check. Real plaintext remains prohibited.
++
++## Uncertainty and cleanup
++
++`recover(operation_id)` is a trusted local operator operation. It never starts, restarts, adopts
++by name or signals saved PIDs. An authenticated existing launch history permits sealing and
++force-discarding only its original exact owned fixture, followed by exact-ID absence confirmation.
++A marker without a launch history grants no new cleanup authority; the stopped owner may still
++assess a never-started bound object separately.
++
++If an audit append fails, authenticated emergency cleanup can proceed, while `audit_failed`
++remains visible. `resource_state` describes observed stopped/absent/uncertain state and
++`execution_failed` preserves a failed run even if cleanup succeeds. No missing durable phase is
++invented. A separate nonblocking operation lock serializes recovery across callers. An already-issued
++discard can only reconcile exact absence; if the resource remains present, it stays uncertain
++without another DELETE. The recovery lock may span ledger/daemon work; ledger callbacks never
++acquire it, and it is separate from the short marker-publication lock. If auditing fails before
++a durable discard claim, the authenticated emergency-cleanup exception still applies; it makes
++no exactly-once network-delivery promise. Lost discard replies can reconcile exact-ID absence
++without repeating deletion.
++An engine/profile/configuration or known StartedAt mismatch refuses cleanup. A 404 from engine
++info/version is never a resource-absence receipt; the stopped-only path has the same correction.
++
++Every result leaves the original permanent workspace fence and false exact-close/learning flags.
++The fixture has its own seven-second timer, which applies only to that exact program and remains
++subject to OS scheduling. A dead owner does not stop a daemon-owned task: recovery later seals
++and discards its authenticated resource. Bounded I/O and polling are not hard real-time guarantees.
++
++## Compatibility and remaining qualification
++
++Existing schema/data, content keys, attempt grants and stopped histories are preserved. Metadata
++remains linkable after content-key erasure. Removal does not prove physical blocks, snapshots,
++backups, caches or arbitrary active copies erased. Markers prevent a repeated launch after
++ledger-only prefix rollback when the newer marker survives; restoring both data and marker/key
++state, replacing roots or hostile host/daemon administration remains outside qualification.
++No startup process-owner lock or multi-worker production qualification follows from these tests.
++
++The new unit fault cases and opt-in engine cases are in the launch test modules; exact run results
++and hashes belong to the register evidence. Active plaintext leases, safe output extraction,
++stop/capture association, verifier/CLI integration, independent review and a real-harness profile
++remain later gates. Full W3.2 and W3 are open. See the [data inventory](data-inventory.md).
++
++The bundled test seccomp fixture is the pinned public Moby v27.3.1
++[default profile](https://raw.githubusercontent.com/moby/moby/v27.3.1/profiles/seccomp/default.json).
+--- a/src/adrl/core/container_control.py
++++ b/src/adrl/core/container_control.py
+@@ -89,7 +89,14 @@
+         self.profile_sha256 = profile_sha256
+         self.policy = policy
+ 
+-    def _request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
++    def _request(
++        self,
++        method: str,
++        path: str,
++        body: dict[str, Any] | None = None,
++        *,
++        expected_status: int | None = None,
++    ) -> Any:
+         payload = canonical(body) if body is not None else None
+         if payload is not None and len(payload) > 65536:
+             raise ResourceError("engine_request_limit")
+@@ -117,7 +124,9 @@
+                         chunks.extend(chunk)
+                         if len(chunks) > self.policy.response_bytes:
+                             raise ResourceError("engine_response_limit")
+-                    if response.status_code not in {200, 201, 204}:
++                    if response.status_code not in {200, 201, 204} or (
++                        expected_status is not None and response.status_code != expected_status
++                    ):
+                         raise EngineError(response.status_code)
+                     if response.status_code == 204:
+                         return None
+--- /dev/null
++++ b/src/adrl/core/execution_control.py
+@@ -0,0 +1,199 @@
++"""Pinned synthetic execution transport. Primary: ADRL-OPS-001.
++
++Secondary: ADRL-SAF-007, ADRL-TRU-001, ADRL-MEM-005.
++Internal fixture only; callers must supply authenticated ownership and one-shot admission.
++"""
++
++from __future__ import annotations
++
++import json
++from datetime import datetime
++from typing import Any, Literal
++from urllib.parse import quote
++
++from pydantic import BaseModel, ConfigDict, Field
++
++from adrl.core.container_control import ContainerControl, ResourceError, canonical
++
++
++class ExecutionPolicy(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
++    schema_version: Literal["isolated-fixture-execution-v1"] = "isolated-fixture-execution-v1"
++    max_histories: int = Field(default=32, ge=1, le=32)
++    max_events: Literal[8] = 8
++    max_event_bytes: Literal[4096] = 4096
++    max_marker_bytes: Literal[64] = 64
++    marker_directory: Literal["launch-denials-v1"] = "launch-denials-v1"
++    recovery_directory: Literal["launch-recovery-locks-v1"] = "launch-recovery-locks-v1"
++    marker_contents: Literal["adrl-launch-denial-v1\n"] = "adrl-launch-denial-v1\n"
++    poll_seconds: float = Field(default=0.05, ge=0.01, le=0.5)
++    max_run_seconds: float = Field(default=8, ge=0.1, le=8)
++    stop_seconds: float = Field(default=2, ge=0.1, le=2)
++    ledger_seconds: Literal[15] = 15
++    fixture_lifetime_seconds: Literal[7] = 7
++    engine_version: Literal["27.3.1"] = "27.3.1"
++    api_version: Literal["1.47"] = "1.47"
++    kernel_version: Literal["6.10.11-linuxkit"] = "6.10.11-linuxkit"
++    cgroup_driver: Literal["cgroupfs"] = "cgroupfs"
++    seccomp_sha256: Literal["9c1025c88ccaa517b648da571961838744ea2137f176bfe6a48b21294cae9c76"] = (
++        "9c1025c88ccaa517b648da571961838744ea2137f176bfe6a48b21294cae9c76"
++    )
++    archive_sha256: Literal["6e555bb7c8d3457826f87d1146b43a5c8b490490986eba69b82247e467dadd7b"] = (
++        "6e555bb7c8d3457826f87d1146b43a5c8b490490986eba69b82247e467dadd7b"
++    )
++    executable_sha256: Literal[
++        "74085cef493ac7e62755cdcc650ef9f1c3856d05a5b9016e2cc8978eb4949e07"
++    ] = "74085cef493ac7e62755cdcc650ef9f1c3856d05a5b9016e2cc8978eb4949e07"
++    fixture_argv: tuple[Literal["/probe"], Literal["forced_stop"]] = ("/probe", "forced_stop")
++
++
++class ExecutionControl:
++    """No public API export. Stable projection and changing lifecycle are checked separately."""
++
++    def __init__(self, control: ContainerControl, policy: ExecutionPolicy) -> None:
++        self.control = control
++        self.policy = ExecutionPolicy.model_validate(policy.model_dump())
++        if control.profile_sha256 != policy.seccomp_sha256 or control.policy.request_seconds > 2:
++            raise ResourceError("execution_transport_profile_required")
++
++    def profile(self) -> dict[str, Any]:
++        p = self.policy
++        version = self.control._request("GET", "/version")
++        info = self.control._request("GET", "/info")
++        if not isinstance(version, dict) or not isinstance(info, dict):
++            raise ResourceError("execution_engine_profile_invalid")
++        expected = {
++            "Version": p.engine_version,
++            "ApiVersion": p.api_version,
++            "Os": "linux",
++            "Arch": "arm64",
++            "KernelVersion": p.kernel_version,
++        }
++        if any(version.get(k) != v for k, v in expected.items()):
++            raise ResourceError("execution_engine_profile_unsupported")
++        if (
++            info.get("OSType") != "linux"
++            or info.get("Architecture") != "aarch64"
++            or info.get("CgroupVersion") != "2"
++            or info.get("CgroupDriver") != p.cgroup_driver
++            or info.get("KernelVersion") != p.kernel_version
++            or info.get("OomKillDisable") is not False
++            or info.get("SecurityOptions") != ["name=seccomp,profile=unconfined", "name=cgroupns"]
++        ):
++            raise ResourceError("execution_capability_profile_unsupported")
++        for key in ("MemoryLimit", "SwapLimit", "PidsLimit", "CpuCfsPeriod", "CpuCfsQuota"):
++            if info.get(key) is not True:
++                raise ResourceError("execution_required_limit_unsupported")
++        engine = self.control.engine()
++        if info.get("ID") != engine["id"]:
++            raise ResourceError("execution_engine_changed")
++        keys = (
++            "ID",
++            "OSType",
++            "Architecture",
++            "CgroupVersion",
++            "CgroupDriver",
++            "KernelVersion",
++            "OomKillDisable",
++            "MemoryLimit",
++            "SwapLimit",
++            "PidsLimit",
++            "CpuCfsPeriod",
++            "CpuCfsQuota",
++            "SecurityOptions",
++        )
++        return {
++            "engine": engine,
++            "version": expected,
++            "capabilities": {k: info[k] for k in keys},
++            "seccomp": self.control.profile_sha256,
++            "version_id": p.schema_version,
++        }
++
++    def fixture(self, value: dict[str, Any]) -> dict[str, Any]:
++        p = self.policy
++        if value["Path"] != p.fixture_argv[0] or value["Args"] != list(p.fixture_argv[1:]):
++            raise ResourceError("execution_fixture_command_required")
++        image = self.control._request("GET", "/images/" + quote(value["Image"], safe="") + "/json")
++        if (
++            not isinstance(image, dict)
++            or image.get("Id") != value["Image"]
++            or image.get("Os") != "linux"
++            or image.get("Architecture") != "arm64"
++            or image.get("RootFS") != {"Type": "layers", "Layers": ["sha256:" + p.archive_sha256]}
++        ):
++            raise ResourceError("execution_fixture_layer_required")
++        return {
++            "image": image["Id"],
++            "archive": p.archive_sha256,
++            "executable": p.executable_sha256,
++            "argv": p.fixture_argv,
++        }
++
++    def projection(self, value: dict[str, Any], *, original: bool = False) -> dict[str, Any]:
++        config = self.control.configuration(value)
++        host = config.get("HostConfig")
++        if not isinstance(host, dict) or "OomKillDisable" not in host:
++            raise ResourceError("execution_oom_field_required")
++        oom = host["OomKillDisable"]
++        if (original and oom is not False) or (oom is not False and oom is not None):
++            raise ResourceError("execution_oom_field_invalid")
++        result: dict[str, Any] = json.loads(
++            canonical(config | {"Id": value["Id"], "Created": value["Created"]})
++        )
++        result["HostConfig"]["OomKillDisable"] = False
++        return result
++
++    def started(self, value: dict[str, Any], expected: str | None = None) -> str:
++        state = value.get("State")
++        if not isinstance(state, dict):
++            raise ResourceError("execution_state_invalid")
++        stamp = state.get("StartedAt")
++        if (
++            not isinstance(stamp, str)
++            or len(stamp) > 64
++            or stamp.startswith("0001-")
++            or state.get("Status") not in {"running", "exited"}
++            or state.get("Paused") is not False
++            or state.get("Dead") is not False
++            or state.get("Restarting") is not False
++            or type(value.get("RestartCount")) is not int
++            or value.get("RestartCount") != 0
++            or (expected is not None and stamp != expected)
++            or state.get("Running") is not (state.get("Status") == "running")
++        ):
++            raise ResourceError("execution_launch_identity_changed")
++        try:
++            if datetime.fromisoformat(stamp.replace("Z", "+00:00")).tzinfo is None:
++                raise ValueError
++            pid = state.get("Pid")
++            if type(pid) is not int or pid < 0:
++                raise ValueError
++            if state["Status"] == "exited":
++                finished = state.get("FinishedAt")
++                if (
++                    pid != 0
++                    or not isinstance(finished, str)
++                    or len(finished) > 64
++                    or finished.startswith("0001-")
++                    or datetime.fromisoformat(finished.replace("Z", "+00:00")).tzinfo is None
++                ):
++                    raise ValueError
++            elif pid == 0:
++                raise ValueError
++        except ValueError:
++            raise ResourceError("execution_started_time_invalid") from None
++        return stamp
++
++    def start(self, identity: str) -> None:
++        self.control._request("POST", f"/containers/{identity}/start", expected_status=204)
++
++    def kill(self, identity: str) -> None:
++        self.control._request(
++            "POST", f"/containers/{identity}/kill?signal=KILL", expected_status=204
++        )
++
++    def discard(self, identity: str) -> None:
++        self.control._request(
++            "DELETE", f"/containers/{identity}?force=true&v=false", expected_status=204
++        )
+--- /dev/null
++++ b/src/adrl/core/isolated_execution.py
+@@ -0,0 +1,473 @@
++"""One-shot isolated fixture execution. Primary: ADRL-OPS-001.
++
++Secondary: ADRL-MEM-001/002/003/005/010, ADRL-SAF-007, ADRL-TRU-001.
++No public start API, successful close, workspace release or learning eligibility.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import contextvars
++import hmac
++import sqlite3
++import threading
++import time
++from datetime import UTC, datetime
++from typing import Annotated, Any, Literal, cast
++from uuid import UUID
++
++from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
++
++from adrl.api.auth import Principal
++from adrl.core.container_control import EngineError, ResourceError
++from adrl.core.execution_control import ExecutionControl, ExecutionPolicy
++from adrl.core.launch_markers import LaunchMarkers
++from adrl.core.resource_owner import ResourceEvent, StoppedResourceOwner
++
++Ref = Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
++Phase = Literal["claim", "acknowledged", "sealed", "stopped", "discard_issued", "discarded"]
++TRANSITIONS: dict[str, set[str]] = {
++    "claim": {"acknowledged", "sealed"},
++    "acknowledged": {"sealed"},
++    "sealed": {"stopped", "discard_issued"},
++    "stopped": {"discard_issued"},
++    "discard_issued": {"discarded"},
++    "discarded": set(),
++}
++
++
++class LaunchEvent(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    schema_version: Literal["isolated-launch-event-v1"] = "isolated-launch-event-v1"
++    operation_key: Ref
++    workspace_key: Ref
++    host_key_id: str = Field(min_length=1, max_length=128)
++    resource_id: Ref
++    resource_created: str = Field(min_length=1, max_length=64)
++    resource_mac: Ref
++    engine_ref: Ref
++    configuration_ref: Ref
++    fixture_ref: Ref
++    policy: ExecutionPolicy
++    sequence: int = Field(strict=True, ge=0, le=7)
++    phase: Phase
++    recorded_at: AwareDatetime
++    started_at: str | None = Field(default=None, min_length=1, max_length=64)
++    workspace_state: Literal["blocked"] = "blocked"
++    exact_close_eligible: Literal[False] = False
++    eligible_for_learning: Literal[False] = False
++
++    @model_validator(mode="after")
++    def launch(self) -> LaunchEvent:
++        if (self.phase == "claim" and (self.sequence != 0 or self.started_at is not None)) or (
++            self.phase in {"acknowledged", "stopped"} and self.started_at is None
++        ):
++            raise ValueError("launch_phase_fields_invalid")
++        return self
++
++
++class ExecutionReport(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    resource_state: Literal["not_launched", "stopped", "absent", "uncertain"]
++    audit_failed: bool
++    execution_failed: bool = False
++    last_event: LaunchEvent | None
++    workspace_state: Literal["blocked"] = "blocked"
++    exact_close_eligible: Literal[False] = False
++    eligible_for_learning: Literal[False] = False
++
++
++class IsolatedExecution:
++    """Original caller dispatches once; reopened recovery only seals and discards.
++
++    The worker runs outside the caller event loop. Cancellation drains it. The pinned fixture
++    has its own lifetime; owner/host death does not magically stop a daemon-owned workload.
++    """
++
++    def __init__(self, owner: StoppedResourceOwner, policy: ExecutionPolicy | None = None) -> None:
++        self.owner = owner
++        self.policy = ExecutionPolicy.model_validate((policy or ExecutionPolicy()).model_dump())
++        self.control = ExecutionControl(owner.control, self.policy)
++        self.markers = LaunchMarkers(owner.journal.data.keys.root, self.policy)
++        self._active = threading.Lock()
++        self.last_report: ExecutionReport | None = None
++
++    def _ref(self, purpose: str, value: Any) -> str:
++        return self.owner._reference("launch-v1:" + purpose, value)
++
++    def _binding(
++        self, operation: str, conn: sqlite3.Connection | None = None
++    ) -> tuple[ResourceEvent, str]:
++        history = self.owner._history(operation, conn)
++        if len(history) < 3:
++            raise ResourceError("launch_original_binding_required")
++        query = "SELECT mac FROM product_resource_events WHERE operation_key=? AND event_seq=2"
++        rows = (
++            list(conn.execute(query, (operation,)))
++            if conn
++            else self.owner.journal.data.ledger.read(query, (operation,))
++        )
++        return history[2], cast(str, rows[0]["mac"])
++
++    def _history(
++        self, operation: str, conn: sqlite3.Connection | None = None
++    ) -> tuple[LaunchEvent, ...]:
++        bound, bound_mac = self._binding(operation, conn)
++        query = "SELECT * FROM product_launch_events WHERE operation_key=? ORDER BY event_seq"
++        rows = (
++            list(conn.execute(query, (operation,)))
++            if conn
++            else self.owner.journal.data.ledger.read(query, (operation,))
++        )
++        events: list[LaunchEvent] = []
++        previous = bound_mac
++        mutable = {"sequence", "phase", "recorded_at", "started_at"}
++        for sequence, row in enumerate(rows):
++            try:
++                event = LaunchEvent.model_validate_json(row["payload_json"])
++                if (
++                    row["event_seq"] != sequence
++                    or event.sequence != sequence
++                    or row["event_type"] != event.phase
++                    or event.operation_key != operation
++                    or event.workspace_key != bound.workspace_key
++                    or event.resource_id != bound.resource_id
++                    or event.resource_created != bound.resource_created
++                    or event.resource_mac != bound_mac
++                    or event.host_key_id != bound.host_key_id
++                    or row["prev_mac"] != previous
++                    or not hmac.compare_digest(
++                        row["mac"], self._ref("event", [previous, row["payload_json"]])
++                    )
++                    or len(row["payload_json"].encode()) > event.policy.max_event_bytes
++                ):
++                    raise ValueError("launch_record_mismatch")
++                if not events:
++                    if event.phase != "claim":
++                        raise ValueError("launch_claim_missing")
++                else:
++                    last = events[-1]
++                    if (
++                        event.phase not in TRANSITIONS[last.phase]
++                        or event.model_dump(exclude=mutable) != last.model_dump(exclude=mutable)
++                        or (event.phase != "acknowledged" and event.started_at != last.started_at)
++                    ):
++                        raise ValueError("launch_history_changed")
++                events.append(event)
++                previous = row["mac"]
++            except (ValueError, TypeError):
++                raise ResourceError("launch_history_integrity_failure") from None
++        return tuple(events)
++
++    def read(self, operation_id: UUID) -> tuple[LaunchEvent, ...]:
++        return self._history(self.owner._operation(operation_id))
++
++    def _insert(self, conn: sqlite3.Connection, event: LaunchEvent, previous: str) -> None:
++        payload = event.model_dump_json()
++        if len(payload.encode()) > event.policy.max_event_bytes:
++            raise ResourceError("launch_event_limit")
++        conn.execute(
++            "INSERT INTO product_launch_events "
++            "(operation_key,event_seq,event_type,payload_json,prev_mac,mac) VALUES (?,?,?,?,?,?)",
++            (
++                event.operation_key,
++                event.sequence,
++                event.phase,
++                payload,
++                previous,
++                self._ref("event", [previous, payload]),
++            ),
++        )
++
++    def _authority(self, principal: Principal, operation: str) -> None:
++        def check(conn: sqlite3.Connection) -> None:
++            bound, _ = self._binding(operation, conn)
++            self.owner._check_started(conn, principal, bound)
++
++        self.owner.journal.data.ledger.submit(check).result(timeout=self.policy.ledger_seconds)
++
++    def _prepare(self, principal: Principal, operation_id: UUID) -> LaunchEvent:
++        history = self.owner.read(operation_id)
++        bound = history[-1]
++        if bound.phase != "bound":
++            raise ResourceError("launch_stopped_binding_required")
++        self._authority(principal, bound.operation_key)
++        if self._history(bound.operation_key):
++            raise ResourceError("launch_already_claimed")
++        original = self.owner._inspect_bound(bound)
++        engine = self.control.profile()
++        fixture = self.control.fixture(original)
++        projected = self.control.projection(original, original=True)
++        _, bound_mac = self._binding(bound.operation_key)
++        event = LaunchEvent(
++            operation_key=bound.operation_key,
++            workspace_key=bound.workspace_key,
++            host_key_id=bound.host_key_id,
++            resource_id=cast(str, bound.resource_id),
++            resource_created=cast(str, bound.resource_created),
++            resource_mac=bound_mac,
++            engine_ref=self._ref("engine", engine),
++            configuration_ref=self._ref("configuration", projected),
++            fixture_ref=self._ref("fixture", fixture),
++            policy=self.policy,
++            sequence=0,
++            phase="claim",
++            recorded_at=datetime.now(UTC),
++        )
++        largest = LaunchEvent.model_validate(
++            event.model_dump()
++            | {
++                "phase": "stopped",
++                "sequence": 7,
++                "started_at": "9" * 64,
++            }
++        )
++        if len(largest.model_dump_json().encode()) > self.policy.max_event_bytes:
++            raise ResourceError("launch_future_event_limit")
++        return event
++
++    def _claim(self, principal: Principal, event: LaunchEvent) -> LaunchEvent:
++        def write(conn: sqlite3.Connection) -> LaunchEvent:
++            bound, mac = self._binding(event.operation_key, conn)
++            if (
++                self.owner._history(event.operation_key, conn)[-1].phase != "bound"
++                or mac != event.resource_mac
++            ):
++                raise ResourceError("launch_binding_changed")
++            self.owner._check_started(conn, principal, bound)
++            if self._history(event.operation_key, conn):
++                raise ResourceError("launch_already_claimed")
++            count = conn.execute(
++                "SELECT COUNT(*) FROM product_launch_events WHERE event_seq=0"
++            ).fetchone()[0]
++            if count >= event.policy.max_histories:
++                raise ResourceError("launch_history_capacity")
++            self._insert(conn, event, event.resource_mac)
++            return event
++
++        return cast(
++            LaunchEvent,
++            self.owner.journal.data.ledger.submit(write).result(timeout=self.policy.ledger_seconds),
++        )
++
++    def _append(
++        self, operation: str, phase: Phase, *, started_at: str | None = None
++    ) -> LaunchEvent:
++        def write(conn: sqlite3.Connection) -> LaunchEvent:
++            history = self._history(operation, conn)
++            if not history:
++                raise ResourceError("launch_claim_unavailable")
++            last = history[-1]
++            if phase == last.phase and (started_at is None or started_at == last.started_at):
++                return last
++            if phase not in TRANSITIONS[last.phase] or last.sequence + 1 >= last.policy.max_events:
++                raise ResourceError("launch_transition_refused")
++            value = last.model_dump() | {
++                "phase": phase,
++                "sequence": last.sequence + 1,
++                "recorded_at": datetime.now(UTC),
++            }
++            if started_at is not None:
++                if phase != "acknowledged":
++                    raise ResourceError("launch_timestamp_transition_refused")
++                value["started_at"] = started_at
++            event = LaunchEvent.model_validate(value)
++            previous = conn.execute(
++                "SELECT mac FROM product_launch_events WHERE operation_key=? AND event_seq=?",
++                (operation, last.sequence),
++            ).fetchone()[0]
++            self._insert(conn, event, previous)
++            return event
++
++        return cast(
++            LaunchEvent,
++            self.owner.journal.data.ledger.submit(write).result(timeout=self.policy.ledger_seconds),
++        )
++
++    def _engine(self, event: LaunchEvent) -> None:
++        control = ExecutionControl(self.owner.control, event.policy)
++        if self._ref("engine", control.profile()) != event.engine_ref:
++            raise ResourceError("launch_engine_changed")
++
++    def _value(self, event: LaunchEvent, value: dict[str, Any]) -> dict[str, Any]:
++        control = ExecutionControl(self.owner.control, event.policy)
++        if self._ref("configuration", control.projection(value)) != event.configuration_ref:
++            raise ResourceError("launch_configuration_changed")
++        if event.started_at is not None:
++            control.started(value, event.started_at)
++        return value
++
++    def _inspect(self, event: LaunchEvent) -> dict[str, Any]:
++        self._engine(event)
++        return self._value(event, self.owner.control.inspect(event.resource_id))
++
++    def _absent(self, event: LaunchEvent) -> bool:
++        # Only the exact container inspection's 404 can confirm absence, never /info,
++        # /version, image validation, or another intermediate request's error.
++        self._engine(event)
++        try:
++            value = self.owner.control.inspect(event.resource_id)
++        except EngineError as exc:
++            if exc.status == 404:
++                return True
++            raise
++        self._value(event, value)
++        return False
++
++    def _report(
++        self,
++        state: Literal["not_launched", "stopped", "absent", "uncertain"],
++        failed: bool,
++        event: LaunchEvent | None,
++    ) -> ExecutionReport:
++        report = ExecutionReport(resource_state=state, audit_failed=failed, last_event=event)
++        self.last_report = report
++        return report
++
++    def recover(self, operation_id: UUID) -> ExecutionReport:
++        """Trusted local operator cleanup. Never dispatch, adopt or infer a successful task."""
++        self.last_report = None
++        try:
++            # Authenticate before making a bounded, operation-specific cleanup lock file.
++            if not self.read(operation_id):
++                return self._report("not_launched", False, None)
++            with self.markers.recovery(self.owner._operation(operation_id)):
++                return self._recover(operation_id)
++        except Exception:
++            return self._report("uncertain", True, None)
++
++    def _recover(self, operation_id: UUID) -> ExecutionReport:
++        try:
++            history = self.read(operation_id)
++            if not history:
++                return self._report("not_launched", False, None)
++            event = history[-1]
++        except Exception:
++            return self._report("uncertain", True, None)
++        failed = False
++        if event.phase == "discarded":
++            try:
++                return self._report("absent" if self._absent(event) else "uncertain", False, event)
++            except Exception:
++                return self._report("uncertain", False, event)
++        if event.phase == "discard_issued":
++            # A prior caller may have sent a request that is still in flight. Reconcile
++            # only exact absence; never turn an issued history into another DELETE.
++            try:
++                if not self._absent(event):
++                    return self._report("uncertain", False, event)
++                event = self._append(event.operation_key, "discarded")
++                return self._report("absent", False, event)
++            except Exception:
++                return self._report("uncertain", True, event)
++        for phase in ("sealed", "discard_issued"):
++            if phase == "sealed" and event.phase not in {"claim", "acknowledged"}:
++                continue
++            try:
++                event = self._append(event.operation_key, phase)
++            except Exception:
++                # Audit acknowledgement may be lost. Authenticated ownership is independent.
++                failed = True
++        try:
++            if not self._absent(event):
++                try:
++                    self.control.discard(event.resource_id)
++                except Exception:
++                    # No reissue: only exact-ID absence may reconcile a lost deletion reply.
++                    if not self._absent(event):
++                        raise
++            if not self._absent(event):
++                return self._report("uncertain", failed, event)
++        except Exception:
++            return self._report("uncertain", failed, event)
++        if not failed:
++            try:
++                event = self._append(event.operation_key, "discarded")
++            except Exception:
++                failed = True
++        return self._report("absent", failed, event)
++
++    def _stop(self, event: LaunchEvent) -> LaunchEvent:
++        value = self._inspect(event)
++        if value["State"]["Running"]:
++            try:
++                self.control.kill(event.resource_id)
++            except EngineError as exc:
++                if exc.status != 409:
++                    raise
++        deadline = time.monotonic() + event.policy.stop_seconds
++        while time.monotonic() < deadline:
++            value = self._inspect(event)
++            if value["State"]["Status"] == "exited":
++                return self._append(event.operation_key, "stopped")
++            time.sleep(event.policy.poll_seconds)
++        raise ResourceError("launch_stop_unconfirmed")
++
++    def _run(
++        self, principal: Principal, operation_id: UUID, stop: threading.Event
++    ) -> ExecutionReport:
++        event = self._prepare(principal, operation_id)
++        if stop.is_set():
++            raise ResourceError("launch_cancelled_before_admission")
++        # Competing/recovery callers cannot reach the cleanup block by finding a marker.
++        self.markers.publish(event.operation_key)
++        try:
++            event = self._claim(principal, event)
++            self._authority(principal, event.operation_key)
++            self.owner.control.never_started(self._inspect(event))
++            if stop.is_set():
++                return self.recover(operation_id)
++            self.control.start(event.resource_id)
++            value = self._inspect(event)
++            started = self.control.started(value)
++            event = self._append(event.operation_key, "acknowledged", started_at=started)
++            event = self._append(event.operation_key, "sealed")
++            deadline = time.monotonic() + event.policy.max_run_seconds
++            while True:
++                self._authority(principal, event.operation_key)
++                value = self._inspect(event)
++                if (
++                    stop.is_set()
++                    or time.monotonic() >= deadline
++                    or value["State"]["Status"] == "exited"
++                ):
++                    break
++                stop.wait(event.policy.poll_seconds)
++            event = self._stop(event)
++            # Erasure can race the final audit. Recheck before reporting retained output.
++            self._authority(principal, event.operation_key)
++            return self._report("stopped", False, event)
++        except Exception:
++            recovered = self.recover(operation_id)
++            report = recovered.model_copy(update={"execution_failed": True})
++            self.last_report = report
++            return report
++
++    async def run(
++        self, principal: Principal, operation_id: UUID, *, stop: threading.Event | None = None
++    ) -> ExecutionReport:
++        if not self._active.acquire(blocking=False):
++            raise ResourceError("launch_worker_already_active")
++        self.last_report = None
++        stopping = stop if stop is not None else threading.Event()
++        context = contextvars.copy_context()
++        worker = asyncio.get_running_loop().run_in_executor(
++            None, context.run, self._run, principal, operation_id, stopping
++        )
++        try:
++            try:
++                return await asyncio.shield(worker)
++            except asyncio.CancelledError:
++                stopping.set()
++                while not worker.done():
++                    try:
++                        await asyncio.shield(worker)
++                    except asyncio.CancelledError:
++                        stopping.set()
++                    except Exception:
++                        break
++                if not worker.cancelled():
++                    worker.exception()
++                raise
++        finally:
++            self._active.release()
+--- /dev/null
++++ b/src/adrl/core/launch_markers.py
+@@ -0,0 +1,129 @@
++"""Permanent one-shot denial markers. Primary: ADRL-OPS-001.
++
++Secondary: ADRL-MEM-001/005/010, ADRL-TRU-001. Presence denies; never grants cleanup authority.
++"""
++
++from __future__ import annotations
++
++import fcntl
++import os
++import re
++import stat
++from collections.abc import Iterator
++from contextlib import contextmanager
++from pathlib import Path
++
++from adrl.core.container_control import ResourceError
++from adrl.core.execution_control import ExecutionPolicy
++
++
++def _directory(path: Path) -> None:
++    info = path.lstat()
++    if (
++        not stat.S_ISDIR(info.st_mode)
++        or info.st_uid != os.getuid()
++        or stat.S_IMODE(info.st_mode) != 0o700
++    ):
++        raise ResourceError("launch_marker_directory_unsafe")
++
++
++def _sync(path: Path) -> None:
++    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++    try:
++        os.fsync(fd)
++    finally:
++        os.close(fd)
++
++
++class LaunchMarkers:
++    def __init__(self, keystore_root: Path, policy: ExecutionPolicy) -> None:
++        self.parent = keystore_root
++        self.policy = ExecutionPolicy.model_validate(policy.model_dump())
++        self.root = keystore_root / self.policy.marker_directory
++        _directory(keystore_root)
++        try:
++            self.root.mkdir(mode=0o700)
++        except FileExistsError:
++            pass
++        else:
++            _sync(keystore_root)
++        _directory(self.root)
++
++    @contextmanager
++    def recovery(self, operation: str) -> Iterator[None]:
++        """Serialize cleanup callers; ledger callbacks never acquire this separate lock."""
++        if not re.fullmatch(r"[a-f0-9]{64}", operation):
++            raise ResourceError("launch_recovery_operation_invalid")
++        _directory(self.parent)
++        root = self.parent / self.policy.recovery_directory
++        try:
++            root.mkdir(mode=0o700)
++        except FileExistsError:
++            pass
++        else:
++            _sync(self.parent)
++        _directory(root)
++        fd = os.open(
++            root / (operation + ".lock"),
++            os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK,
++            0o600,
++        )
++        try:
++            info = os.fstat(fd)
++            if (
++                not stat.S_ISREG(info.st_mode)
++                or info.st_uid != os.getuid()
++                or info.st_nlink != 1
++                or stat.S_IMODE(info.st_mode) != 0o600
++            ):
++                raise ResourceError("launch_recovery_lock_unsafe")
++            try:
++                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
++            except OSError:
++                raise ResourceError("launch_recovery_busy") from None
++            yield
++        finally:
++            os.close(fd)
++
++    def publish(self, operation: str) -> None:
++        if not re.fullmatch(r"[a-f0-9]{64}", operation):
++            raise ResourceError("launch_marker_operation_invalid")
++        _directory(self.parent)
++        _directory(self.root)
++        lock = os.open(
++            self.root / ".launch-denial.lock",
++            os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK,
++            0o600,
++        )
++        try:
++            info = os.fstat(lock)
++            if (
++                not stat.S_ISREG(info.st_mode)
++                or info.st_uid != os.getuid()
++                or info.st_nlink != 1
++                or stat.S_IMODE(info.st_mode) != 0o600
++            ):
++                raise ResourceError("launch_marker_lock_unsafe")
++            try:
++                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
++            except OSError:
++                raise ResourceError("launch_marker_busy") from None
++            marker = self.root / (operation + ".denied")
++            if os.path.lexists(marker):
++                raise ResourceError("launch_already_denied")
++            entries = [p for p in self.root.iterdir() if p.name != ".launch-denial.lock"]
++            if len(entries) >= self.policy.max_histories:
++                raise ResourceError("launch_marker_capacity")
++            data = self.policy.marker_contents.encode()
++            if len(data) > self.policy.max_marker_bytes:
++                raise ResourceError("launch_marker_size")
++            fd = os.open(marker, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
++            try:
++                if os.write(fd, data) != len(data):
++                    raise OSError("launch_marker_short_write")
++                os.fsync(fd)
++            finally:
++                os.close(fd)
++            _sync(self.root)
++        finally:
++            os.close(lock)
+--- a/src/adrl/core/resource_owner.py
++++ b/src/adrl/core/resource_owner.py
+@@ -93,7 +93,11 @@
+         return self._reference("resource-operation-v1", str(operation_id))
+ 
+     def _engine(self) -> str:
+-        return self._reference("resource-engine-v1", self.control.engine())
++        try:
++            return self._reference("resource-engine-v1", self.control.engine())
++        except EngineError:
++            # A missing /info endpoint is never an exact resource-absence receipt.
++            raise ResourceError("resource_engine_unavailable") from None
+ 
+     def _mac(self, previous: str, payload: str) -> str:
+         return crypto.keyed_hash(
+--- /dev/null
++++ b/src/adrl/ledger/migrations/0012_launch_history.sql
+@@ -0,0 +1,11 @@
++-- One-shot fixture launch history. Primary: ADRL-OPS-001. Secondary: ADRL-MEM-001/002/010.
++CREATE TABLE product_launch_events (
++    operation_key TEXT NOT NULL,
++    event_seq INTEGER NOT NULL CHECK (event_seq BETWEEN 0 AND 7),
++    event_type TEXT NOT NULL CHECK (event_type IN
++        ('claim','acknowledged','sealed','stopped','discard_issued','discarded')),
++    payload_json TEXT NOT NULL CHECK (length(CAST(payload_json AS BLOB)) <= 4096),
++    prev_mac TEXT NOT NULL,
++    mac TEXT NOT NULL,
++    PRIMARY KEY (operation_key,event_seq)
++);
+--- /dev/null
++++ b/tests/fixtures/launch_owner.py
+@@ -0,0 +1,46 @@
++"""Abrupt owner exit fixture. Primary: ADRL-OPS-001, ADRL-SAF-007."""
++
++import asyncio
++import hashlib
++import json
++import os
++import sys
++from pathlib import Path
++from uuid import UUID
++
++from adrl.api.auth import Principal
++from adrl.api.store import ProductStore
++from adrl.core.container_control import ContainerControl, ResourcePolicy
++from adrl.core.isolated_execution import IsolatedExecution
++from adrl.core.resource_owner import StoppedResourceOwner
++from adrl.gates.workload import RepoInventory, WorkloadAssertion
++from adrl.ledger.attempts import AttemptJournal
++from adrl.ledger.keystore import FileKeyStore
++from adrl.ledger.store import LedgerStore
++
++v = json.load(sys.stdin)
++a = v["principal"]["assertion"]
++a["inventory"] = RepoInventory(**a["inventory"])
++v["principal"]["assertion"] = WorkloadAssertion(**a)
++principal = Principal(**v["principal"])
++store = LedgerStore(Path(v["db"]))
++store.open()
++keys = FileKeyStore(Path(v["keys"]), store=store)
++profile = Path(v["profile"]).read_bytes()
++control = ContainerControl(
++    Path(v["socket"]),
++    profile,
++    hashlib.sha256(profile).hexdigest(),
++    ResourcePolicy(request_seconds=1),
++)
++run = IsolatedExecution(StoppedResourceOwner(AttemptJournal(ProductStore(store, keys)), control))
++start = run.control.start
++
++
++def die(identity):
++    start(identity)
++    os._exit(17)
++
++
++run.control.start = die
++asyncio.run(run.run(principal, UUID(v["operation"])))
+--- /dev/null
++++ b/tests/fixtures/seccomp-v27.3.1.json
+@@ -0,0 +1,833 @@
++{
++	"defaultAction": "SCMP_ACT_ERRNO",
++	"defaultErrnoRet": 1,
++	"archMap": [
++		{
++			"architecture": "SCMP_ARCH_X86_64",
++			"subArchitectures": [
++				"SCMP_ARCH_X86",
++				"SCMP_ARCH_X32"
++			]
++		},
++		{
++			"architecture": "SCMP_ARCH_AARCH64",
++			"subArchitectures": [
++				"SCMP_ARCH_ARM"
++			]
++		},
++		{
++			"architecture": "SCMP_ARCH_MIPS64",
++			"subArchitectures": [
++				"SCMP_ARCH_MIPS",
++				"SCMP_ARCH_MIPS64N32"
++			]
++		},
++		{
++			"architecture": "SCMP_ARCH_MIPS64N32",
++			"subArchitectures": [
++				"SCMP_ARCH_MIPS",
++				"SCMP_ARCH_MIPS64"
++			]
++		},
++		{
++			"architecture": "SCMP_ARCH_MIPSEL64",
++			"subArchitectures": [
++				"SCMP_ARCH_MIPSEL",
++				"SCMP_ARCH_MIPSEL64N32"
++			]
++		},
++		{
++			"architecture": "SCMP_ARCH_MIPSEL64N32",
++			"subArchitectures": [
++				"SCMP_ARCH_MIPSEL",
++				"SCMP_ARCH_MIPSEL64"
++			]
++		},
++		{
++			"architecture": "SCMP_ARCH_S390X",
++			"subArchitectures": [
++				"SCMP_ARCH_S390"
++			]
++		},
++		{
++			"architecture": "SCMP_ARCH_RISCV64",
++			"subArchitectures": null
++		}
++	],
++	"syscalls": [
++		{
++			"names": [
++				"accept",
++				"accept4",
++				"access",
++				"adjtimex",
++				"alarm",
++				"bind",
++				"brk",
++				"cachestat",
++				"capget",
++				"capset",
++				"chdir",
++				"chmod",
++				"chown",
++				"chown32",
++				"clock_adjtime",
++				"clock_adjtime64",
++				"clock_getres",
++				"clock_getres_time64",
++				"clock_gettime",
++				"clock_gettime64",
++				"clock_nanosleep",
++				"clock_nanosleep_time64",
++				"close",
++				"close_range",
++				"connect",
++				"copy_file_range",
++				"creat",
++				"dup",
++				"dup2",
++				"dup3",
++				"epoll_create",
++				"epoll_create1",
++				"epoll_ctl",
++				"epoll_ctl_old",
++				"epoll_pwait",
++				"epoll_pwait2",
++				"epoll_wait",
++				"epoll_wait_old",
++				"eventfd",
++				"eventfd2",
++				"execve",
++				"execveat",
++				"exit",
++				"exit_group",
++				"faccessat",
++				"faccessat2",
++				"fadvise64",
++				"fadvise64_64",
++				"fallocate",
++				"fanotify_mark",
++				"fchdir",
++				"fchmod",
++				"fchmodat",
++				"fchmodat2",
++				"fchown",
++				"fchown32",
++				"fchownat",
++				"fcntl",
++				"fcntl64",
++				"fdatasync",
++				"fgetxattr",
++				"flistxattr",
++				"flock",
++				"fork",
++				"fremovexattr",
++				"fsetxattr",
++				"fstat",
++				"fstat64",
++				"fstatat64",
++				"fstatfs",
++				"fstatfs64",
++				"fsync",
++				"ftruncate",
++				"ftruncate64",
++				"futex",
++				"futex_requeue",
++				"futex_time64",
++				"futex_wait",
++				"futex_waitv",
++				"futex_wake",
++				"futimesat",
++				"getcpu",
++				"getcwd",
++				"getdents",
++				"getdents64",
++				"getegid",
++				"getegid32",
++				"geteuid",
++				"geteuid32",
++				"getgid",
++				"getgid32",
++				"getgroups",
++				"getgroups32",
++				"getitimer",
++				"getpeername",
++				"getpgid",
++				"getpgrp",
++				"getpid",
++				"getppid",
++				"getpriority",
++				"getrandom",
++				"getresgid",
++				"getresgid32",
++				"getresuid",
++				"getresuid32",
++				"getrlimit",
++				"get_robust_list",
++				"getrusage",
++				"getsid",
++				"getsockname",
++				"getsockopt",
++				"get_thread_area",
++				"gettid",
++				"gettimeofday",
++				"getuid",
++				"getuid32",
++				"getxattr",
++				"inotify_add_watch",
++				"inotify_init",
++				"inotify_init1",
++				"inotify_rm_watch",
++				"io_cancel",
++				"ioctl",
++				"io_destroy",
++				"io_getevents",
++				"io_pgetevents",
++				"io_pgetevents_time64",
++				"ioprio_get",
++				"ioprio_set",
++				"io_setup",
++				"io_submit",
++				"ipc",
++				"kill",
++				"landlock_add_rule",
++				"landlock_create_ruleset",
++				"landlock_restrict_self",
++				"lchown",
++				"lchown32",
++				"lgetxattr",
++				"link",
++				"linkat",
++				"listen",
++				"listxattr",
++				"llistxattr",
++				"_llseek",
++				"lremovexattr",
++				"lseek",
++				"lsetxattr",
++				"lstat",
++				"lstat64",
++				"madvise",
++				"map_shadow_stack",
++				"membarrier",
++				"memfd_create",
++				"memfd_secret",
++				"mincore",
++				"mkdir",
++				"mkdirat",
++				"mknod",
++				"mknodat",
++				"mlock",
++				"mlock2",
++				"mlockall",
++				"mmap",
++				"mmap2",
++				"mprotect",
++				"mq_getsetattr",
++				"mq_notify",
++				"mq_open",
++				"mq_timedreceive",
++				"mq_timedreceive_time64",
++				"mq_timedsend",
++				"mq_timedsend_time64",
++				"mq_unlink",
++				"mremap",
++				"msgctl",
++				"msgget",
++				"msgrcv",
++				"msgsnd",
++				"msync",
++				"munlock",
++				"munlockall",
++				"munmap",
++				"name_to_handle_at",
++				"nanosleep",
++				"newfstatat",
++				"_newselect",
++				"open",
++				"openat",
++				"openat2",
++				"pause",
++				"pidfd_open",
++				"pidfd_send_signal",
++				"pipe",
++				"pipe2",
++				"pkey_alloc",
++				"pkey_free",
++				"pkey_mprotect",
++				"poll",
++				"ppoll",
++				"ppoll_time64",
++				"prctl",
++				"pread64",
++				"preadv",
++				"preadv2",
++				"prlimit64",
++				"process_mrelease",
++				"pselect6",
++				"pselect6_time64",
++				"pwrite64",
++				"pwritev",
++				"pwritev2",
++				"read",
++				"readahead",
++				"readlink",
++				"readlinkat",
++				"readv",
++				"recv",
++				"recvfrom",
++				"recvmmsg",
++				"recvmmsg_time64",
++				"recvmsg",
++				"remap_file_pages",
++				"removexattr",
++				"rename",
++				"renameat",
++				"renameat2",
++				"restart_syscall",
++				"rmdir",
++				"rseq",
++				"rt_sigaction",
++				"rt_sigpending",
++				"rt_sigprocmask",
++				"rt_sigqueueinfo",
++				"rt_sigreturn",
++				"rt_sigsuspend",
++				"rt_sigtimedwait",
++				"rt_sigtimedwait_time64",
++				"rt_tgsigqueueinfo",
++				"sched_getaffinity",
++				"sched_getattr",
++				"sched_getparam",
++				"sched_get_priority_max",
++				"sched_get_priority_min",
++				"sched_getscheduler",
++				"sched_rr_get_interval",
++				"sched_rr_get_interval_time64",
++				"sched_setaffinity",
++				"sched_setattr",
++				"sched_setparam",
++				"sched_setscheduler",
++				"sched_yield",
++				"seccomp",
++				"select",
++				"semctl",
++				"semget",
++				"semop",
++				"semtimedop",
++				"semtimedop_time64",
++				"send",
++				"sendfile",
++				"sendfile64",
++				"sendmmsg",
++				"sendmsg",
++				"sendto",
++				"setfsgid",
++				"setfsgid32",
++				"setfsuid",
++				"setfsuid32",
++				"setgid",
++				"setgid32",
++				"setgroups",
++				"setgroups32",
++				"setitimer",
++				"setpgid",
++				"setpriority",
++				"setregid",
++				"setregid32",
++				"setresgid",
++				"setresgid32",
++				"setresuid",
++				"setresuid32",
++				"setreuid",
++				"setreuid32",
++				"setrlimit",
++				"set_robust_list",
++				"setsid",
++				"setsockopt",
++				"set_thread_area",
++				"set_tid_address",
++				"setuid",
++				"setuid32",
++				"setxattr",
++				"shmat",
++				"shmctl",
++				"shmdt",
++				"shmget",
++				"shutdown",
++				"sigaltstack",
++				"signalfd",
++				"signalfd4",
++				"sigprocmask",
++				"sigreturn",
++				"socketcall",
++				"socketpair",
++				"splice",
++				"stat",
++				"stat64",
++				"statfs",
++				"statfs64",
++				"statx",
++				"symlink",
++				"symlinkat",
++				"sync",
++				"sync_file_range",
++				"syncfs",
++				"sysinfo",
++				"tee",
++				"tgkill",
++				"time",
++				"timer_create",
++				"timer_delete",
++				"timer_getoverrun",
++				"timer_gettime",
++				"timer_gettime64",
++				"timer_settime",
++				"timer_settime64",
++				"timerfd_create",
++				"timerfd_gettime",
++				"timerfd_gettime64",
++				"timerfd_settime",
++				"timerfd_settime64",
++				"times",
++				"tkill",
++				"truncate",
++				"truncate64",
++				"ugetrlimit",
++				"umask",
++				"uname",
++				"unlink",
++				"unlinkat",
++				"utime",
++				"utimensat",
++				"utimensat_time64",
++				"utimes",
++				"vfork",
++				"vmsplice",
++				"wait4",
++				"waitid",
++				"waitpid",
++				"write",
++				"writev"
++			],
++			"action": "SCMP_ACT_ALLOW"
++		},
++		{
++			"names": [
++				"process_vm_readv",
++				"process_vm_writev",
++				"ptrace"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"minKernel": "4.8"
++			}
++		},
++		{
++			"names": [
++				"socket"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"args": [
++				{
++					"index": 0,
++					"value": 40,
++					"op": "SCMP_CMP_NE"
++				}
++			]
++		},
++		{
++			"names": [
++				"personality"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"args": [
++				{
++					"index": 0,
++					"value": 0,
++					"op": "SCMP_CMP_EQ"
++				}
++			]
++		},
++		{
++			"names": [
++				"personality"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"args": [
++				{
++					"index": 0,
++					"value": 8,
++					"op": "SCMP_CMP_EQ"
++				}
++			]
++		},
++		{
++			"names": [
++				"personality"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"args": [
++				{
++					"index": 0,
++					"value": 131072,
++					"op": "SCMP_CMP_EQ"
++				}
++			]
++		},
++		{
++			"names": [
++				"personality"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"args": [
++				{
++					"index": 0,
++					"value": 131080,
++					"op": "SCMP_CMP_EQ"
++				}
++			]
++		},
++		{
++			"names": [
++				"personality"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"args": [
++				{
++					"index": 0,
++					"value": 4294967295,
++					"op": "SCMP_CMP_EQ"
++				}
++			]
++		},
++		{
++			"names": [
++				"sync_file_range2",
++				"swapcontext"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"arches": [
++					"ppc64le"
++				]
++			}
++		},
++		{
++			"names": [
++				"arm_fadvise64_64",
++				"arm_sync_file_range",
++				"sync_file_range2",
++				"breakpoint",
++				"cacheflush",
++				"set_tls"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"arches": [
++					"arm",
++					"arm64"
++				]
++			}
++		},
++		{
++			"names": [
++				"arch_prctl"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"arches": [
++					"amd64",
++					"x32"
++				]
++			}
++		},
++		{
++			"names": [
++				"modify_ldt"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"arches": [
++					"amd64",
++					"x32",
++					"x86"
++				]
++			}
++		},
++		{
++			"names": [
++				"s390_pci_mmio_read",
++				"s390_pci_mmio_write",
++				"s390_runtime_instr"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"arches": [
++					"s390",
++					"s390x"
++				]
++			}
++		},
++		{
++			"names": [
++				"riscv_flush_icache"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"arches": [
++					"riscv64"
++				]
++			}
++		},
++		{
++			"names": [
++				"open_by_handle_at"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_DAC_READ_SEARCH"
++				]
++			}
++		},
++		{
++			"names": [
++				"bpf",
++				"clone",
++				"clone3",
++				"fanotify_init",
++				"fsconfig",
++				"fsmount",
++				"fsopen",
++				"fspick",
++				"lookup_dcookie",
++				"mount",
++				"mount_setattr",
++				"move_mount",
++				"open_tree",
++				"perf_event_open",
++				"quotactl",
++				"quotactl_fd",
++				"setdomainname",
++				"sethostname",
++				"setns",
++				"syslog",
++				"umount",
++				"umount2",
++				"unshare"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_SYS_ADMIN"
++				]
++			}
++		},
++		{
++			"names": [
++				"clone"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"args": [
++				{
++					"index": 0,
++					"value": 2114060288,
++					"op": "SCMP_CMP_MASKED_EQ"
++				}
++			],
++			"excludes": {
++				"caps": [
++					"CAP_SYS_ADMIN"
++				],
++				"arches": [
++					"s390",
++					"s390x"
++				]
++			}
++		},
++		{
++			"names": [
++				"clone"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"args": [
++				{
++					"index": 1,
++					"value": 2114060288,
++					"op": "SCMP_CMP_MASKED_EQ"
++				}
++			],
++			"comment": "s390 parameter ordering for clone is different",
++			"includes": {
++				"arches": [
++					"s390",
++					"s390x"
++				]
++			},
++			"excludes": {
++				"caps": [
++					"CAP_SYS_ADMIN"
++				]
++			}
++		},
++		{
++			"names": [
++				"clone3"
++			],
++			"action": "SCMP_ACT_ERRNO",
++			"errnoRet": 38,
++			"excludes": {
++				"caps": [
++					"CAP_SYS_ADMIN"
++				]
++			}
++		},
++		{
++			"names": [
++				"reboot"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_SYS_BOOT"
++				]
++			}
++		},
++		{
++			"names": [
++				"chroot"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_SYS_CHROOT"
++				]
++			}
++		},
++		{
++			"names": [
++				"delete_module",
++				"init_module",
++				"finit_module"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_SYS_MODULE"
++				]
++			}
++		},
++		{
++			"names": [
++				"acct"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_SYS_PACCT"
++				]
++			}
++		},
++		{
++			"names": [
++				"kcmp",
++				"pidfd_getfd",
++				"process_madvise",
++				"process_vm_readv",
++				"process_vm_writev",
++				"ptrace"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_SYS_PTRACE"
++				]
++			}
++		},
++		{
++			"names": [
++				"iopl",
++				"ioperm"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_SYS_RAWIO"
++				]
++			}
++		},
++		{
++			"names": [
++				"settimeofday",
++				"stime",
++				"clock_settime",
++				"clock_settime64"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_SYS_TIME"
++				]
++			}
++		},
++		{
++			"names": [
++				"vhangup"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_SYS_TTY_CONFIG"
++				]
++			}
++		},
++		{
++			"names": [
++				"get_mempolicy",
++				"mbind",
++				"set_mempolicy",
++				"set_mempolicy_home_node"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_SYS_NICE"
++				]
++			}
++		},
++		{
++			"names": [
++				"syslog"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_SYSLOG"
++				]
++			}
++		},
++		{
++			"names": [
++				"bpf"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_BPF"
++				]
++			}
++		},
++		{
++			"names": [
++				"perf_event_open"
++			],
++			"action": "SCMP_ACT_ALLOW",
++			"includes": {
++				"caps": [
++					"CAP_PERFMON"
++				]
++			}
++		}
++	]
++}--- /dev/null
++++ b/tests/integration/test_launch_engine.py
+@@ -0,0 +1,129 @@
++"""Opt-in one-shot fixture engine acceptance. Primary: ADRL-OPS-001.
++
++Secondary: ADRL-SAF-007, ADRL-MEM-002/005/010, ADRL-TRU-001.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import json
++import os
++import subprocess
++import sys
++from dataclasses import asdict
++from pathlib import Path
++from uuid import uuid4
++
++import pytest
++
++from adrl.core.container_control import (
++    ContainerControl,
++    ContainerRequest,
++    ResourceError,
++    ResourcePolicy,
++)
++from adrl.core.errors import LedgerAppendFailure
++from adrl.core.execution_control import ExecutionPolicy
++from adrl.core.isolated_execution import IsolatedExecution
++from adrl.core.resource_owner import StoppedResourceOwner
++from adrl.ledger.attempts import AttemptJournal
++from tests.unit.test_attempts import start
++from tests.unit.test_capture import Fixture
++from tests.unit.test_capture import capture as capture
++
++from .test_resource_engine import engine as engine
++
++
++@pytest.mark.parametrize("fault", ["none", "start_ack", "erasure", "owner_death"])
++async def test_real_one_shot_launch(
++    capture: Fixture,
++    engine: tuple[ContainerControl, str],
++    monkeypatch: pytest.MonkeyPatch,
++    fault: str,
++) -> None:
++    control, image = engine
++    control.policy = ResourcePolicy(request_seconds=2)
++    journal = AttemptJournal(capture.data)
++    task = start()
++    operation = uuid4()
++    await journal.start(capture.principal, capture.workspace, task)
++    owner = StoppedResourceOwner(journal, control)
++    await owner.create(
++        capture.principal,
++        operation,
++        task.attempt_id,
++        ContainerRequest(image_id=image, argv=("/probe", "forced_stop")),
++    )
++    run = IsolatedExecution(owner, ExecutionPolicy(max_run_seconds=0.1))
++    try:
++        if fault == "owner_death":
++            data = {
++                "principal": asdict(capture.principal),
++                "db": str(capture.workspace.parent / "ledger.db"),
++                "keys": str(capture.keys.root),
++                "profile": str(Path(__file__).parents[1] / "fixtures/seccomp-v27.3.1.json"),
++                "socket": str(control.socket),
++                "operation": str(operation),
++            }
++            result = await asyncio.to_thread(
++                subprocess.run,
++                [sys.executable, str(Path(__file__).parents[1] / "fixtures/launch_owner.py")],
++                input=json.dumps(data),
++                text=True,
++                capture_output=True,
++                timeout=5,
++                check=False,
++            )
++            assert result.returncode == 17, result.stderr
++            assert run.read(operation)[-1].phase == "claim"
++            assert control.inspect(owner.read(operation)[-1].resource_id)["State"]["Running"]
++            assert run.recover(operation).resource_state == "absent"
++        else:
++            original = run.control.start
++
++            def launch(identity: str) -> None:
++                original(identity)
++                if fault == "start_ack":
++                    raise ResourceError("fixture_lost_start_ack")
++                if fault == "erasure":
++                    capture.keys.shred_session_key(
++                        capture.principal.session_hmac, "fixture_active_erasure"
++                    )
++
++            monkeypatch.setattr(run.control, "start", launch)
++            report = await run.run(capture.principal, operation)
++            assert report.resource_state == ("stopped" if fault == "none" else "absent"), report
++            assert not report.exact_close_eligible and not report.eligible_for_learning
++            assert report.execution_failed == (fault != "none")
++        assert run.recover(operation).resource_state == "absent"
++        with pytest.raises((ValueError, LedgerAppendFailure)):
++            await run.run(capture.principal, operation)
++        assert len(list(run.markers.root.glob("*.denied"))) == 1
++        assert capture.store.read("SELECT * FROM product_execution_fences")
++
++        def persist() -> None:
++            with Path(os.environ["ADRL_RESOURCE_ACCEPTANCE_LOG"]).open("a") as out:
++                out.write(
++                    json.dumps(
++                        {
++                            "event": "runtime_assertions_completed",
++                            "fault": fault,
++                            "operation": str(operation),
++                            "history": [
++                                event.model_dump(mode="json") for event in run.read(operation)
++                            ],
++                        }
++                    )
++                    + "\n"
++                )
++                out.flush()
++                os.fsync(out.fileno())
++
++        await asyncio.to_thread(persist)
++    finally:
++        history = run.read(operation)
++        if history:
++            assert run.recover(operation).resource_state == "absent"
++        else:
++            # A rejected fixture has never received runtime start authority.
++            owner.remove(operation)
+--- a/tests/integration/test_resource_engine.py
++++ b/tests/integration/test_resource_engine.py
+@@ -6,7 +6,9 @@
+ import hashlib
+ import json
+ import os
++import re
+ from collections.abc import Iterator
++from datetime import UTC, datetime
+ from pathlib import Path
+ from typing import Any
+ from uuid import uuid4
+@@ -48,11 +50,14 @@
+     log = Path(log_path)
+     assert log.is_absolute() and log.parent.is_dir()
+     created: list[tuple[str, str]] = []
++    uncertain: list[dict[str, str]] = []
+     create = control.create
+ 
+-    def record(value: dict[str, str]) -> None:
++    def record(value: dict[str, Any]) -> None:
+         with log.open("a") as output:
+-            output.write(json.dumps(value, sort_keys=True) + "\n")
++            output.write(
++                json.dumps({"at": datetime.now(UTC).isoformat()} | value, sort_keys=True) + "\n"
++            )
+             output.flush()
+             os.fsync(output.fileno())
+ 
+@@ -60,9 +65,22 @@
+         records = (
+             [json.loads(line) for line in log.read_text().splitlines()] if log.exists() else []
+         )
+-        assert sum(r["event"] == "create_receipt" for r in records) < 16
++        assert sum(r["event"] == "create_issued" for r in records) < 16
+         assert body["Image"] == identity
+-        result = create(name, body)
++        record({"event": "create_issued", "name": name, "image": identity, "body": body})
++        try:
++            result = create(name, body)
++        except Exception as exc:
++            code = str(exc)
++            failure = {
++                "event": "create_uncertain",
++                "name": name,
++                "error_type": type(exc).__name__,
++                "safe_code": code if re.fullmatch(r"[a-z0-9_]{1,80}", code) else "unavailable",
++            }
++            uncertain.append(failure)
++            record(failure)
++            raise
+         created.append((result, name))
+         record({"event": "create_receipt", "id": result, "name": name, "image": identity})
+         return result
+@@ -86,6 +104,10 @@
+                     control.inspect(resource)
+                 assert missing.value.status == 404
+             record({"event": "absent", "id": resource})
++        if uncertain:
++            # Exit from fixture teardown, outside the runtime's exception wrapper. A failed
++            # case must not allow another daemon mutation after an unreceipted create.
++            pytest.exit("unreceipted synthetic create: engine batch halted", returncode=1)
+ 
+ 
+ @pytest.mark.parametrize("fault", ["none", "create_ack", "bind_ack", "remove_ack"])
+--- a/tests/unit/test_attempt_capacity.py
++++ b/tests/unit/test_attempt_capacity.py
+@@ -325,7 +325,7 @@
+     try:
+         data = ProductStore(store, FileKeyStore(capture.keys.root, store=store))
+         journal = AttemptJournal(data, policy)
+-        assert store.schema_user_version() == 11
++        assert store.schema_user_version() == 12
+         row = store.read("SELECT nonce,ciphertext,capacity_version FROM product_attempt_events")[0]
+         assert (row["nonce"], row["ciphertext"]) == before and row["capacity_version"] == 0
+         assert journal.read(capture.principal, request.attempt_id) == (event,)
+--- a/tests/unit/test_attempt_coordinator.py
++++ b/tests/unit/test_attempt_coordinator.py
+@@ -377,7 +377,7 @@
+     store = LedgerStore(path)
+     store.open()
+     try:
+-        assert store.schema_user_version() == 11
++        assert store.schema_user_version() == 12
+         for table in tables:
+             assert [dict(row) for row in store.read(f"SELECT * FROM {table}")] == [
+                 dict(row) for row in capture.store.read(f"SELECT * FROM {table}")
+--- a/tests/unit/test_attempts.py
++++ b/tests/unit/test_attempts.py
+@@ -406,7 +406,7 @@
+     store.open()
+     try:
+         archive = CaptureArchive(ProductStore(store, FileKeyStore(capture.keys.root, store=store)))
+-        assert store.schema_user_version() == 11
++        assert store.schema_user_version() == 12
+         assert archive.read(capture.principal, request.capture_id) == snapshot
+         assert not store.read("SELECT * FROM product_attempt_events")
+     finally:
+--- /dev/null
++++ b/tests/unit/test_isolated_execution.py
+@@ -0,0 +1,673 @@
++"""One-shot launch and recovery faults. Primary: ADRL-OPS-001.
++
++Secondary: ADRL-MEM-001/002/003/005/010, ADRL-SAF-007, ADRL-TRU-001.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import copy
++import hashlib
++import json
++import os
++import socketserver
++import subprocess
++import sys
++import tempfile
++import threading
++import time
++from collections.abc import Iterator
++from dataclasses import asdict, dataclass, field, replace
++from http.server import BaseHTTPRequestHandler
++from pathlib import Path
++from typing import Any
++from urllib.parse import parse_qs, urlsplit
++from uuid import UUID, uuid4
++
++import pytest
++
++from adrl.core.container_control import (
++    ContainerControl,
++    ContainerRequest,
++    ResourceError,
++    ResourcePolicy,
++)
++from adrl.core.errors import LedgerAppendFailure
++from adrl.core.execution_control import ExecutionPolicy
++from adrl.core.isolated_execution import IsolatedExecution, LaunchEvent
++from adrl.core.launch_markers import LaunchMarkers
++from adrl.core.resource_owner import StoppedResourceOwner
++from adrl.ledger.attempts import AttemptJournal
++
++from .test_attempts import start, transition
++from .test_capture import Fixture, bind
++from .test_capture import capture as capture
++
++IMAGE = "sha256:" + "a" * 64
++PROFILE = (Path(__file__).parents[1] / "fixtures/seccomp-v27.3.1.json").read_bytes()
++
++
++@dataclass
++class Engine:
++    path: Path
++    resources: dict[str, Any] = field(default_factory=dict)
++    calls: list[tuple[str, str]] = field(default_factory=list)
++    drop_start: bool = False
++    drop_remove: bool = False
++    start_status: int = 204
++    pause_start: threading.Event | None = None
++    start_entered: threading.Event = field(default_factory=threading.Event)
++    changed: dict[str, Any] = field(default_factory=dict)
++    image_layer: str = ExecutionPolicy().archive_sha256
++    engine_id: str = "launch-fixture-engine-id"
++    info_status: int = 200
++
++    def control(self) -> ContainerControl:
++        return ContainerControl(
++            self.path,
++            PROFILE,
++            hashlib.sha256(PROFILE).hexdigest(),
++            ResourcePolicy(request_seconds=1),
++        )
++
++    def starts(self) -> int:
++        return sum(method == "POST" and path.endswith("/start") for method, path in self.calls)
++
++
++@pytest.fixture
++def engine() -> Iterator[Engine]:
++    with tempfile.TemporaryDirectory(prefix="adrl-launch-test-", dir="/tmp") as directory:
++        state = Engine(Path(directory) / "socket")
++
++        class Handler(BaseHTTPRequestHandler):
++            def log_message(self, format: str, *args: Any) -> None:
++                pass
++
++            def send(self, status: int, value: Any = None) -> None:
++                data = json.dumps(value).encode() if status != 204 else b""
++                self.send_response(status)
++                self.send_header("Content-Length", str(len(data)))
++                self.end_headers()
++                try:
++                    self.wfile.write(data)
++                except (BrokenPipeError, ConnectionResetError):
++                    pass
++
++            def do_GET(self) -> None:
++                state.calls.append(("GET", self.path))
++                if self.path == "/v1.47/version":
++                    self.send(
++                        200,
++                        {
++                            "Version": "27.3.1",
++                            "ApiVersion": "1.47",
++                            "Os": "linux",
++                            "Arch": "arm64",
++                            "KernelVersion": "6.10.11-linuxkit",
++                        },
++                    )
++                elif self.path == "/v1.47/info":
++                    self.send(
++                        state.info_status,
++                        {
++                            "ID": state.engine_id,
++                            "OSType": "linux",
++                            "Architecture": "aarch64",
++                            "CgroupVersion": "2",
++                            "CgroupDriver": "cgroupfs",
++                            "KernelVersion": "6.10.11-linuxkit",
++                            "OomKillDisable": False,
++                            "MemoryLimit": True,
++                            "SwapLimit": True,
++                            "PidsLimit": True,
++                            "CpuCfsPeriod": True,
++                            "CpuCfsQuota": True,
++                            "SecurityOptions": ["name=seccomp,profile=unconfined", "name=cgroupns"],
++                        }
++                        | state.changed,
++                    )
++                elif "/images/" in self.path:
++                    self.send(
++                        200,
++                        {
++                            "Id": IMAGE,
++                            "Os": "linux",
++                            "Architecture": "arm64",
++                            "Config": {},
++                            "RootFS": {"Type": "layers", "Layers": ["sha256:" + state.image_layer]},
++                        },
++                    )
++                else:
++                    identity = self.path.split("/")[-2]
++                    if identity in state.resources:
++                        self.send(200, copy.deepcopy(state.resources[identity]))
++                    else:
++                        self.send(404, {"message": "absent"})
++
++            def do_POST(self) -> None:
++                state.calls.append(("POST", self.path))
++                if "/create?" in self.path:
++                    body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
++                    name = parse_qs(urlsplit(self.path).query)["name"][0]
++                    identity = uuid4().hex + uuid4().hex
++                    state.resources[identity] = {
++                        "Id": identity,
++                        "Name": "/" + name,
++                        "Image": body["Image"],
++                        "Platform": "linux",
++                        "Path": body["Cmd"][0],
++                        "Args": body["Cmd"][1:],
++                        "Created": "2026-09-08T00:00:00.000000000Z",
++                        "RestartCount": 0,
++                        "Config": {k: v for k, v in body.items() if k != "HostConfig"},
++                        "HostConfig": body["HostConfig"] | {"OomKillDisable": False},
++                        "Mounts": [],
++                        "State": {
++                            "Status": "created",
++                            "Running": False,
++                            "Restarting": False,
++                            "Paused": False,
++                            "Dead": False,
++                            "Pid": 0,
++                            "StartedAt": "0001-01-01T00:00:00Z",
++                            "FinishedAt": "0001-01-01T00:00:00Z",
++                        },
++                    }
++                    self.send(201, {"Id": identity})
++                    return
++                identity = self.path.split("/")[-2]
++                if self.path.endswith("/start"):
++                    state.start_entered.set()
++                    if state.pause_start is not None:
++                        assert state.pause_start.wait(2)
++                    if identity not in state.resources:
++                        self.send(404)
++                        return
++                    item = state.resources[identity]
++                    item["State"].update(
++                        Status="running",
++                        Running=True,
++                        Pid=42,
++                        StartedAt="2026-09-08T01:00:00.000000000Z",
++                    )
++                    item["HostConfig"]["OomKillDisable"] = None
++                    if state.drop_start:
++                        self.connection.close()
++                        return
++                    self.send(state.start_status)
++                    return
++                if identity not in state.resources:
++                    self.send(404)
++                    return
++                state.resources[identity]["State"].update(
++                    Status="exited", Running=False, Pid=0, FinishedAt="2026-09-08T01:00:01Z"
++                )
++                self.send(204)
++
++            def do_DELETE(self) -> None:
++                state.calls.append(("DELETE", self.path))
++                identity = self.path.split("/")[-1].split("?")[0]
++                if identity not in state.resources:
++                    self.send(404)
++                    return
++                del state.resources[identity]
++                if state.drop_remove:
++                    self.connection.close()
++                    return
++                self.send(204)
++
++        server = socketserver.ThreadingUnixStreamServer(str(state.path), Handler)
++        thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.01})
++        thread.start()
++        try:
++            yield state
++        finally:
++            server.shutdown()
++            server.server_close()
++            thread.join(timeout=3)
++
++
++async def prepared(
++    capture: Fixture, engine: Engine, **policy: Any
++) -> tuple[IsolatedExecution, UUID]:
++    journal = AttemptJournal(capture.data)
++    task = start()
++    operation = uuid4()
++    await journal.start(capture.principal, capture.workspace, task)
++    owner = StoppedResourceOwner(journal, engine.control())
++    await owner.create(
++        capture.principal,
++        operation,
++        task.attempt_id,
++        ContainerRequest(image_id=IMAGE, argv=("/probe", "forced_stop")),
++    )
++    return IsolatedExecution(owner, ExecutionPolicy(max_run_seconds=0.1, **policy)), operation
++
++
++async def test_known_stop_reopen_discard_and_no_relaunch(capture: Fixture, engine: Engine) -> None:
++    run, op = await prepared(capture, engine)
++    report = await run.run(capture.principal, op)
++    assert (
++        report.resource_state == "stopped"
++        and not report.audit_failed
++        and not report.execution_failed
++    )
++    assert [x.phase for x in run.read(op)] == ["claim", "acknowledged", "sealed", "stopped"]
++    assert not report.exact_close_eligible and not report.eligible_for_learning
++    assert len(engine.resources) == 1 and engine.starts() == 1
++    capture.store.close()
++    capture.store.open()
++    reopened = IsolatedExecution(run.owner)
++    assert reopened.recover(op).resource_state == "absent"
++    with pytest.raises(ResourceError):
++        await reopened.run(capture.principal, op)
++    assert engine.starts() == 1 and not engine.resources
++    assert capture.store.read("SELECT * FROM product_execution_fences")
++
++
++@pytest.mark.parametrize(
++    "phase", ["claim", "acknowledged", "sealed", "stopped", "discard_issued", "discarded"]
++)
++async def test_lost_event_ack(
++    capture: Fixture, engine: Engine, monkeypatch: pytest.MonkeyPatch, phase: str
++) -> None:
++    run, op = await prepared(capture, engine)
++    lost = False
++
++    # Inject above the committed submit boundary, not inside the transaction.
++    if phase == "claim":
++        claim = run._claim
++
++        def dropped(*args: Any, **kwargs: Any) -> LaunchEvent:
++            nonlocal lost
++            result = claim(*args, **kwargs)
++            if not lost:
++                lost = True
++                raise OSError("lost_claim_ack")
++            return result
++
++        monkeypatch.setattr(run, "_claim", dropped)
++    else:
++        append = run._append
++
++        def missing(operation: str, value: Any, **kwargs: Any) -> LaunchEvent:
++            nonlocal lost
++            result = append(operation, value, **kwargs)
++            if value == phase and not lost:
++                lost = True
++                raise OSError("lost_append_ack")
++            return result
++
++        monkeypatch.setattr(run, "_append", missing)
++    if phase.startswith("discard"):
++        engine.drop_start = True
++    report = await run.run(capture.principal, op)
++    assert report.resource_state == "absent" and not engine.resources
++    assert engine.starts() <= 1
++    assert lost and not report.exact_close_eligible
++    assert run.recover(op).resource_state == "absent"
++    with pytest.raises(ResourceError):
++        await run.run(capture.principal, op)
++
++
++@pytest.mark.parametrize("fault", ["start_reply", "remove_reply", "start_http_200"])
++async def test_transport_uncertainty(capture: Fixture, engine: Engine, fault: str) -> None:
++    run, op = await prepared(capture, engine)
++    engine.drop_start = fault != "start_http_200"
++    engine.drop_remove = fault == "remove_reply"
++    if fault == "start_http_200":
++        engine.start_status = 200
++    report = await run.run(capture.principal, op)
++    assert report.resource_state == "absent" and report.execution_failed and engine.starts() == 1
++    assert [x.phase for x in run.read(op)] == ["claim", "sealed", "discard_issued", "discarded"]
++
++
++async def test_competing_instances_do_not_abort_winner(capture: Fixture, engine: Engine) -> None:
++    run, op = await prepared(capture, engine)
++    other = IsolatedExecution(run.owner, run.policy)
++    results = await asyncio.gather(
++        run.run(capture.principal, op), other.run(capture.principal, op), return_exceptions=True
++    )
++    assert sum(isinstance(x, ResourceError) for x in results) == 1
++    assert engine.starts() == 1 and len(engine.resources) == 1
++    assert run.recover(op).resource_state == "absent"
++
++
++@pytest.mark.parametrize(
++    "fault", ["marker_only", "claim_only", "prefix_rollback", "corrupt", "host_key"]
++)
++async def test_recovery_never_resumes_launch(capture: Fixture, engine: Engine, fault: str) -> None:
++    run, op = await prepared(capture, engine)
++    event = await asyncio.to_thread(run._prepare, capture.principal, op)
++    run.markers.publish(event.operation_key)
++    if fault != "marker_only":
++        await asyncio.to_thread(run._claim, capture.principal, event)
++    if fault == "prefix_rollback":
++        await asyncio.to_thread(
++            capture.store.submit(lambda c: c.execute("DELETE FROM product_launch_events")).result
++        )
++    elif fault == "corrupt":
++        await asyncio.to_thread(
++            capture.store.submit(
++                lambda c: c.execute("UPDATE product_launch_events SET mac='bad'")
++            ).result
++        )
++    elif fault == "host_key":
++        capture.keys.rotate_hmac_key()
++    with pytest.raises((ResourceError, ValueError)):
++        await run.run(capture.principal, op)
++    result = await asyncio.to_thread(run.recover, op)
++    assert engine.starts() == 0
++    if fault in {"marker_only", "prefix_rollback"}:
++        assert result.resource_state == "not_launched" and engine.resources
++    elif fault in {"corrupt", "host_key"}:
++        assert result.resource_state == "uncertain" and engine.resources
++    else:
++        assert result.resource_state == "absent"
++
++
++@pytest.mark.parametrize("fault", ["engine", "configuration", "started_at", "missing_oom"])
++async def test_changed_identity_blocks_cleanup(
++    capture: Fixture, engine: Engine, fault: str
++) -> None:
++    run, op = await prepared(capture, engine)
++    assert (await run.run(capture.principal, op)).resource_state == "stopped"
++    item = next(iter(engine.resources.values()))
++    if fault == "engine":
++        engine.engine_id = "changed-engine-id"
++    elif fault == "configuration":
++        item["HostConfig"]["Privileged"] = True
++    elif fault == "started_at":
++        item["State"]["StartedAt"] = "2026-09-08T02:00:00Z"
++    else:
++        del item["HostConfig"]["OomKillDisable"]
++    assert run.recover(op).resource_state == "uncertain" and engine.resources
++    assert not any(m == "DELETE" for m, p in engine.calls)
++
++
++@pytest.mark.parametrize("fault", ["erased", "expired", "wrong_session", "closed", "grant"])
++async def test_authority_before_marker(capture: Fixture, engine: Engine, fault: str) -> None:
++    run, op = await prepared(capture, engine)
++    principal = capture.principal
++    if fault == "erased":
++        capture.keys.shred_session_key(principal.session_hmac, "test")
++    elif fault == "expired":
++        principal = replace(
++            principal, assertion=replace(principal.assertion, expires_at=time.time() - 1)
++        )
++    elif fault == "wrong_session":
++        principal = await bind(capture.data, capture.workspace, str(uuid4()))
++    elif fault == "closed":
++        rows = [
++            dict(r)
++            for r in capture.store.read("SELECT * FROM product_attempt_events ORDER BY attempt_seq")
++        ]
++        key = run.owner.journal.captures._key(principal)
++        history = run.owner.journal._history(principal, key, rows)
++        spec = start(**history[0].command.model_dump())
++        await run.owner.journal.transition(principal, transition(spec, "mark_incomplete"))
++    else:
++        await asyncio.to_thread(
++            capture.store.submit(lambda c: c.execute("DELETE FROM product_attempt_capacity")).result
++        )
++    with pytest.raises((ValueError, LedgerAppendFailure)):
++        await run.run(principal, op)
++    assert engine.starts() == 0 and not list(run.markers.root.glob("*.denied"))
++
++
++async def test_repeated_cancel_drains_delayed_dispatch(capture: Fixture, engine: Engine) -> None:
++    run, op = await prepared(capture, engine)
++    engine.pause_start = threading.Event()
++    task = asyncio.create_task(run.run(capture.principal, op))
++    assert await asyncio.to_thread(engine.start_entered.wait, 2)
++    task.cancel()
++    await asyncio.sleep(0.02)
++    task.cancel()
++    engine.pause_start.set()
++    with pytest.raises(asyncio.CancelledError):
++        await task
++    assert run.last_report is not None and run.last_report.resource_state in {"stopped", "absent"}
++    assert engine.starts() == 1
++    assert run.recover(op).resource_state == "absent"
++
++
++async def test_erasure_during_start_then_host_cleanup(capture: Fixture, engine: Engine) -> None:
++    run, op = await prepared(capture, engine)
++    engine.pause_start = threading.Event()
++    task = asyncio.create_task(run.run(capture.principal, op))
++    assert await asyncio.to_thread(engine.start_entered.wait, 2)
++    capture.keys.shred_session_key(capture.principal.session_hmac, "active_test")
++    engine.pause_start.set()
++    report = await task
++    assert report.resource_state == "absent" and engine.starts() == 1
++    assert not capture.keys.has_session_key(capture.principal.session_hmac)
++
++
++async def test_audit_failure_does_not_prevent_owned_discard(
++    capture: Fixture, engine: Engine, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    run, op = await prepared(capture, engine)
++    engine.drop_start = True
++    original = run._append
++
++    def fail(operation: str, phase: Any, **kwargs: Any) -> LaunchEvent:
++        raise OSError("audit_unavailable")
++
++    monkeypatch.setattr(run, "_append", fail)
++    report = await run.run(capture.principal, op)
++    assert report.resource_state == "absent" and report.audit_failed and report.execution_failed
++    assert run.read(op)[-1].phase == "claim" and engine.starts() == 1
++    monkeypatch.setattr(run, "_append", original)
++    assert run.recover(op).resource_state == "absent"
++
++
++@pytest.mark.parametrize(
++    "fault", ["layer", "oom_supported", "memory_unsupported", "oom_numeric", "command"]
++)
++async def test_fixture_and_capability_refusals(
++    capture: Fixture, engine: Engine, fault: str
++) -> None:
++    run, op = await prepared(capture, engine)
++    if fault == "layer":
++        engine.image_layer = "f" * 64
++    elif fault == "oom_supported":
++        engine.changed = {"OomKillDisable": True}
++    elif fault == "memory_unsupported":
++        engine.changed = {"MemoryLimit": False}
++    elif fault == "oom_numeric":
++        engine.changed = {"OomKillDisable": 0}
++    else:
++        next(iter(engine.resources.values()))["Args"] = ["other"]
++    with pytest.raises(ResourceError):
++        await run.run(capture.principal, op)
++    assert engine.starts() == 0 and not list(run.markers.root.glob("*.denied"))
++
++
++@pytest.mark.parametrize(
++    "fault", ["partial", "malformed", "symlink", "capacity", "fsync", "root_mode"]
++)
++def test_marker_denial(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, fault: str) -> None:
++    root = tmp_path / "keys"
++    root.mkdir(mode=0o700)
++    markers = LaunchMarkers(root, ExecutionPolicy(max_histories=1))
++    op = "a" * 64
++    target = markers.root / (op + ".denied")
++    if fault == "partial":
++        target.touch()
++    elif fault == "malformed":
++        target.write_bytes(b"bad")
++    elif fault == "symlink":
++        target.symlink_to(root / "missing")
++    elif fault == "capacity":
++        (markers.root / ("b" * 64 + ".denied")).touch()
++    elif fault == "root_mode":
++        markers.root.chmod(0o755)
++    else:
++
++        def fail(fd: int) -> None:
++            raise OSError("fsync_failed")
++
++        monkeypatch.setattr(os, "fsync", fail)
++    with pytest.raises((ResourceError, OSError)):
++        markers.publish(op)
++    if fault == "fsync":
++        assert target.exists()
++
++
++async def test_projection_no_other_normalization(capture: Fixture, engine: Engine) -> None:
++    run, _op = await prepared(capture, engine)
++    item = next(iter(engine.resources.values()))
++    original = copy.deepcopy(item)
++    before = run.control.projection(item, original=True)
++    item["HostConfig"]["OomKillDisable"] = None
++    assert run.control.projection(item) == before
++    item["HostConfig"]["Privileged"] = 0
++    assert json.dumps(run.control.projection(item), sort_keys=True) != json.dumps(
++        before, sort_keys=True
++    )
++    assert original["HostConfig"]["OomKillDisable"] is False
++
++
++async def test_engine_404_is_not_a_resource_absence_receipt(
++    capture: Fixture, engine: Engine
++) -> None:
++    run, op = await prepared(capture, engine)
++    assert (await run.run(capture.principal, op)).resource_state == "stopped"
++    engine.info_status = 404
++    assert run.recover(op).resource_state == "uncertain" and engine.resources
++    assert run.read(op)[-1].phase != "discarded"
++    assert not any(m == "DELETE" for m, p in engine.calls)
++
++
++async def test_stopped_owner_engine_404_preserves_binding(capture: Fixture, engine: Engine) -> None:
++    run, op = await prepared(capture, engine)
++    engine.info_status = 404
++    with pytest.raises(ResourceError):
++        run.owner.remove(op)
++    assert run.owner.read(op)[-1].phase == "bound" and engine.resources
++
++
++@pytest.mark.parametrize(
++    "field,value",
++    [("Pid", 1), ("Pid", False), ("FinishedAt", "0001-01-01T00:00:00Z"), ("FinishedAt", None)],
++)
++async def test_malformed_exit_is_not_stopped(
++    capture: Fixture, engine: Engine, field: str, value: Any
++) -> None:
++    run, op = await prepared(capture, engine)
++    assert (await run.run(capture.principal, op)).resource_state == "stopped"
++    next(iter(engine.resources.values()))["State"][field] = value
++    assert run.recover(op).resource_state == "uncertain" and engine.resources
++
++
++async def test_owner_process_death_leaves_claim_and_recovery_discards(
++    capture: Fixture, engine: Engine
++) -> None:
++    run, op = await prepared(capture, engine)
++    child = (Path(__file__).parents[1] / "fixtures/launch_owner.py").read_text()
++    data = {
++        "principal": asdict(capture.principal),
++        "db": str(capture.workspace.parent / "ledger.db"),
++        "keys": str(capture.keys.root),
++        "profile": str(Path(__file__).parents[1] / "fixtures/seccomp-v27.3.1.json"),
++        "socket": str(engine.path),
++        "operation": str(op),
++    }
++    result = await asyncio.to_thread(
++        subprocess.run,
++        [sys.executable, "-c", child],
++        input=json.dumps(data),
++        text=True,
++        capture_output=True,
++        timeout=5,
++        check=False,
++    )
++    assert result.returncode == 17, result.stderr
++    assert engine.starts() == 1 and next(iter(engine.resources.values()))["State"]["Running"]
++    assert run.read(op)[-1].phase == "claim"
++    assert run.recover(op).resource_state == "absent"
++    with pytest.raises(ResourceError):
++        await run.run(capture.principal, op)
++    assert engine.starts() == 1
++
++
++@pytest.mark.parametrize("change", [{"max_histories": 100}, {"fixture_argv": ("/bin/sh", "other")}])
++async def test_policy_revalidated_before_admission(
++    capture: Fixture, engine: Engine, change: dict[str, Any]
++) -> None:
++    run, _op = await prepared(capture, engine)
++    policy = ExecutionPolicy.model_construct(**(run.policy.model_dump() | change))
++    with pytest.raises(ValueError):
++        IsolatedExecution(run.owner, policy)
++    assert engine.starts() == 0
++
++
++def test_marker_policy_revalidated_before_filesystem_mutation(tmp_path: Path) -> None:
++    root = tmp_path / "keys"
++    root.mkdir(mode=0o700)
++    policy = ExecutionPolicy.model_construct(marker_directory="../outside")
++    with pytest.raises(ValueError):
++        LaunchMarkers(root, policy)
++    assert not (tmp_path / "outside").exists()
++
++
++async def test_issued_discard_is_not_reissued(
++    capture: Fixture, engine: Engine, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    run, op = await prepared(capture, engine)
++    engine.drop_start = True
++    calls = []
++
++    def uncertain(identity: str) -> None:
++        calls.append(identity)
++        raise ResourceError("discard_uncertain")
++
++    monkeypatch.setattr(run.control, "discard", uncertain)
++    assert (await run.run(capture.principal, op)).resource_state == "uncertain"
++    assert run.read(op)[-1].phase == "discard_issued"
++    assert run.recover(op).resource_state == "uncertain"
++    assert len(calls) == 1 and engine.starts() == 1 and engine.resources
++
++
++async def test_competing_recovery_cannot_send_second_discard(
++    capture: Fixture, engine: Engine
++) -> None:
++    run, op = await prepared(capture, engine)
++    assert (await run.run(capture.principal, op)).resource_state == "stopped"
++    with run.markers.recovery(run.owner._operation(op)):
++        other = IsolatedExecution(run.owner, run.policy)
++        assert (await asyncio.to_thread(other.recover, op)).resource_state == "uncertain"
++    assert engine.resources and not any(m == "DELETE" for m, p in engine.calls)
++    assert run.recover(op).resource_state == "absent"
++
++
++def test_engine_fixture_halts_after_unreceipted_create(
++    engine: Engine, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    from tests.integration.test_resource_engine import engine as fixture
++
++    log = tmp_path / "receipts.jsonl"
++    for key, value in {
++        "ADRL_RESOURCE_DOCKER_SOCKET": str(engine.path),
++        "ADRL_RESOURCE_FIXTURE_IMAGE": IMAGE,
++        "ADRL_RESOURCE_SECCOMP_PATH": str(
++            Path(__file__).parents[1] / "fixtures/seccomp-v27.3.1.json"
++        ),
++        "ADRL_RESOURCE_ACCEPTANCE_LOG": str(log),
++    }.items():
++        monkeypatch.setenv(key, value)
++    context = fixture.__wrapped__(monkeypatch)
++    control, _image = next(context)
++
++    def missing(*args: Any, **kwargs: Any) -> Any:
++        raise ResourceError("synthetic_no_receipt")
++
++    monkeypatch.setattr(control, "_request", missing)
++    with pytest.raises(ResourceError):
++        control.create("specific-test-intent", {"Image": IMAGE})
++    with pytest.raises(pytest.exit.Exception):
++        next(context)
++    events = [json.loads(line) for line in log.read_text().splitlines()]
++    assert [e["event"] for e in events] == ["create_issued", "create_uncertain"]
++    assert events[-1]["safe_code"] == "synthetic_no_receipt" and events[0]["at"]
++    assert engine.starts() == 0
+--- a/tests/unit/test_product_migration.py
++++ b/tests/unit/test_product_migration.py
+@@ -48,7 +48,7 @@
+         assert row["session_hmac"] == "session"
+         assert row["config_digest"] == "digest"
+         assert row["ts"] == "ts"
+-        assert store.schema_user_version() == 11
++        assert store.schema_user_version() == 12
+         assert not store.read("SELECT * FROM product_verifications")
+         assert not store.read("SELECT * FROM product_captures")
+     finally:
+@@ -94,7 +94,7 @@
+     try:
+         data = ProductStore(store, FileKeyStore(keys.root, store=store))
+         row = dict(store.read("SELECT * FROM product_verifications")[0])
+-        assert store.schema_user_version() == 11
++        assert store.schema_user_version() == 12
+         assert row["ciphertext"] == ciphertext and row["ts"] == "old-time"
+         assert data.verification(row) == receipt
+         assert not store.read("SELECT * FROM product_captures")
+--- a/tests/unit/test_resource_owner.py
++++ b/tests/unit/test_resource_owner.py
+@@ -564,7 +564,7 @@
+     store = LedgerStore(path)
+     store.open()
+     try:
+-        assert store.schema_user_version() == 11
++        assert store.schema_user_version() == 12
+         for table in tables:
+             assert [dict(row) for row in store.read(f"SELECT * FROM {table}")] == expected[table]
+         assert not store.read("SELECT * FROM product_resource_events")
+--- a/tools/check_data_inventory.py
++++ b/tools/check_data_inventory.py
+@@ -37,6 +37,8 @@
+ STRUCTURED_MODELS = {
+     "src/adrl/core/resource_owner.py": {"ResourceEvent"},
+     "src/adrl/core/container_control.py": {"ResourcePolicy"},
++    "src/adrl/core/isolated_execution.py": {"LaunchEvent"},
++    "src/adrl/core/execution_control.py": {"ExecutionPolicy"},
+ }
+ CREATE_TABLE = re.compile(r"CREATE TABLE (?:IF NOT EXISTS )?(\w+)\s*\((.*?)\);", re.S)
+ ADDED_COLUMN = re.compile(
+@@ -105,7 +107,7 @@
+ 
+ 
+ def structured_fields() -> set[str]:
+-    """Inventory every annotated field of the persisted stopped-resource metadata models."""
++    """Inventory every annotated field of the persisted ownership and launch metadata models."""
+     found: set[str] = set()
+     for relative, names in STRUCTURED_MODELS.items():
+         tree = ast.parse((ROOT / relative).read_text(encoding="utf-8"))

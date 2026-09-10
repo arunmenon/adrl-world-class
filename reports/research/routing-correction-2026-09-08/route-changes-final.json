@@ -1,0 +1,202 @@
+[
+  {
+    "matrix": "original",
+    "case": "rename-redesign",
+    "prompt": "Rename a variable and redesign the concurrency algorithm in worker.py",
+    "condition": "ordinary",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "original",
+    "case": "rename-redesign",
+    "prompt": "Rename a variable and redesign the concurrency algorithm in worker.py",
+    "condition": "local_and_cheap_only",
+    "before": "local",
+    "after": "cheap_cloud"
+  },
+  {
+    "matrix": "original",
+    "case": "explain-implement",
+    "prompt": "Explain the race condition and implement a fix in worker.py",
+    "condition": "ordinary",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "original",
+    "case": "explain-implement",
+    "prompt": "Explain the race condition and implement a fix in worker.py",
+    "condition": "previous_edit_failed",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "original",
+    "case": "explain-implement",
+    "prompt": "Explain the race condition and implement a fix in worker.py",
+    "condition": "local_and_cheap_only",
+    "before": "local",
+    "after": "cheap_cloud"
+  },
+  {
+    "matrix": "original",
+    "case": "typo-paraphrase",
+    "prompt": "Correct a misspelling in README.md",
+    "condition": "ordinary",
+    "before": "frontier",
+    "after": "local"
+  },
+  {
+    "matrix": "original",
+    "case": "typo-paraphrase",
+    "prompt": "Correct a misspelling in README.md",
+    "condition": "local_and_cheap_only",
+    "before": "cheap_cloud",
+    "after": "local"
+  },
+  {
+    "matrix": "fresh",
+    "case": "reverse-order",
+    "prompt": "Redesign the concurrency algorithm in worker.py and rename a variable",
+    "condition": "ordinary",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "fresh",
+    "case": "reverse-order",
+    "prompt": "Redesign the concurrency algorithm in worker.py and rename a variable",
+    "condition": "local_and_cheap_only",
+    "before": "local",
+    "after": "cheap_cloud"
+  },
+  {
+    "matrix": "fresh",
+    "case": "punctuation",
+    "prompt": "Rename a variable in worker.py. Then implement a scheduler.",
+    "condition": "ordinary",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "fresh",
+    "case": "punctuation",
+    "prompt": "Rename a variable in worker.py. Then implement a scheduler.",
+    "condition": "local_and_cheap_only",
+    "before": "local",
+    "after": "cheap_cloud"
+  },
+  {
+    "matrix": "fresh",
+    "case": "mechanical-and-bug",
+    "prompt": "Fix the typo in README.md and debug the parser crash",
+    "condition": "ordinary",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "fresh",
+    "case": "mechanical-and-bug",
+    "prompt": "Fix the typo in README.md and debug the parser crash",
+    "condition": "local_and_cheap_only",
+    "before": "local",
+    "after": "cheap_cloud"
+  },
+  {
+    "matrix": "fresh",
+    "case": "explain-and-write",
+    "prompt": "Explain this function; create a new parser in parser.py",
+    "condition": "ordinary",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "fresh",
+    "case": "explain-and-write",
+    "prompt": "Explain this function; create a new parser in parser.py",
+    "condition": "previous_edit_failed",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "fresh",
+    "case": "explain-and-write",
+    "prompt": "Explain this function; create a new parser in parser.py",
+    "condition": "local_and_cheap_only",
+    "before": "local",
+    "after": "cheap_cloud"
+  },
+  {
+    "matrix": "fresh",
+    "case": "quoted-hard-word",
+    "prompt": "Rename the variable called `redesign` in worker.py",
+    "condition": "ordinary",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "fresh",
+    "case": "quoted-hard-word",
+    "prompt": "Rename the variable called `redesign` in worker.py",
+    "condition": "local_and_cheap_only",
+    "before": "local",
+    "after": "cheap_cloud"
+  },
+  {
+    "matrix": "fresh",
+    "case": "negated-hard-action",
+    "prompt": "Do not redesign anything; only rename this variable in worker.py",
+    "condition": "ordinary",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "fresh",
+    "case": "negated-hard-action",
+    "prompt": "Do not redesign anything; only rename this variable in worker.py",
+    "condition": "local_and_cheap_only",
+    "before": "local",
+    "after": "cheap_cloud"
+  },
+  {
+    "matrix": "fresh",
+    "case": "ambiguous-explanation",
+    "prompt": "Explain how to implement a scheduler",
+    "condition": "ordinary",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "fresh",
+    "case": "ambiguous-explanation",
+    "prompt": "Explain how to implement a scheduler",
+    "condition": "previous_edit_failed",
+    "before": "local",
+    "after": "frontier"
+  },
+  {
+    "matrix": "fresh",
+    "case": "ambiguous-explanation",
+    "prompt": "Explain how to implement a scheduler",
+    "condition": "local_and_cheap_only",
+    "before": "local",
+    "after": "cheap_cloud"
+  },
+  {
+    "matrix": "fresh",
+    "case": "mechanical-spelling",
+    "prompt": "Correct the misspelling in README.md",
+    "condition": "ordinary",
+    "before": "frontier",
+    "after": "local"
+  },
+  {
+    "matrix": "fresh",
+    "case": "mechanical-spelling",
+    "prompt": "Correct the misspelling in README.md",
+    "condition": "local_and_cheap_only",
+    "before": "cheap_cloud",
+    "after": "local"
+  }
+]

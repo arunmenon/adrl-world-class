@@ -1,0 +1,13 @@
+{
+  "at": "2026-09-08T06:40:24.526950+00:00",
+  "local_links_checked": 687,
+  "missing_links": [],
+  "runtime_inputs_unchanged": 316,
+  "adr_coverage": 77,
+  "status_maturity_unchanged": 77,
+  "all_map_decision_hashes_match": true,
+  "runtime_changed": false,
+  "implementation_held": true,
+  "automation_paused_tool_confirmed": true,
+  "scope": "Planning validation; no new model evaluation or maturity promotion"
+}

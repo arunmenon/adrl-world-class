@@ -1,0 +1,82 @@
+{
+  "plan": {
+    "schema_version": "session-verifier-plan-v1",
+    "verifier": {
+      "id": "dataset-validator-acceptance",
+      "version": "2"
+    },
+    "task_ref": "p01-template-repair-r2",
+    "artifacts": {
+      "run.py": {
+        "path": "/private/tmp/adrl-verifier-44glb3h2/work/../operator-verifier-final/run.py",
+        "sha256": "5387d40e618b3ce93332fb2c038193ca032b9fe4180b63a9c7b39ebf0d854ea0"
+      },
+      "test_config_loader.py": {
+        "path": "/private/tmp/adrl-verifier-44glb3h2/work/../operator-verifier-final/test_config_loader.py",
+        "sha256": "14735bc63cae7c558e5bbfccc76d92ec5aa5de68a8e547eea453444ebbfdb1cc"
+      },
+      "test_template_compatibility.py": {
+        "path": "/private/tmp/adrl-verifier-44glb3h2/work/../operator-verifier-final/test_template_compatibility.py",
+        "sha256": "8e49445a81b2e71a8ead3b5fa08411fb6916636ecc011d88ae06887fbd714334"
+      },
+      "test_templates.py": {
+        "path": "/private/tmp/adrl-verifier-44glb3h2/work/../operator-verifier-final/test_templates.py",
+        "sha256": "a3604b062ec97ccf3213b85a90eaff48d84e97ed563981b1c35685306441d7fc"
+      }
+    },
+    "checks": [
+      {
+        "name": "test_config_loader",
+        "argv": [
+          "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+          "-I",
+          "-B",
+          ".adrl-verifier/run.py",
+          "test_config_loader.py",
+          "2"
+        ],
+        "timeout_s": 30,
+        "failure_exit_codes": [
+          1
+        ]
+      },
+      {
+        "name": "test_templates",
+        "argv": [
+          "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+          "-I",
+          "-B",
+          ".adrl-verifier/run.py",
+          "test_templates.py",
+          "2"
+        ],
+        "timeout_s": 30,
+        "failure_exit_codes": [
+          1
+        ]
+      },
+      {
+        "name": "test_template_compatibility",
+        "argv": [
+          "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+          "-I",
+          "-B",
+          ".adrl-verifier/run.py",
+          "test_template_compatibility.py",
+          "4"
+        ],
+        "timeout_s": 30,
+        "failure_exit_codes": [
+          1
+        ]
+      }
+    ]
+  },
+  "artifact_contents": {
+    "run.py": "import importlib.util, os, sys, unittest\nfrom pathlib import Path\nsys.path.insert(0, os.getcwd())\nname = sys.argv[1]\nexpected = int(sys.argv[2])\npath = Path(__file__).parent / name\nspec = importlib.util.spec_from_file_location(\"operator_checks\", path)\ntry:\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    suite = unittest.TestLoader().loadTestsFromModule(module)\n    if suite.countTestCases() != expected:\n        raise RuntimeError(\"Unexpected check count\")\n    result = unittest.TextTestRunner(verbosity=2).run(suite)\nexcept Exception:\n    raise SystemExit(2)\nif result.errors or result.skipped or result.expectedFailures or result.unexpectedSuccesses:\n    raise SystemExit(2)\nraise SystemExit(1 if result.failures else 0)\n",
+    "test_config_loader.py": "import unittest\nfrom pathlib import Path\n\nfrom validation.core.config_loader import ConfigLoader\n\n\nclass TestConfigLoader(unittest.TestCase):\n    def setUp(self) -> None:\n        self.datasets_path = Path(\"config/datasets.yaml\")\n        self.rubrics_dir = Path(\"config/rubrics\")\n        self.loader = ConfigLoader(self.datasets_path, self.rubrics_dir)\n\n    def test_load_dataset(self) -> None:\n        cfg = self.loader.get_dataset(\"intent_v1\")\n        self.assertEqual(cfg.task_type, \"intent\")\n        self.assertIn(\"rubric_llm\", cfg.validators)\n        self.assertEqual(cfg.judge_persona, \"strict_intent\")\n\n    def test_load_rubric(self) -> None:\n        rubric = self.loader.get_rubric(\"qa\")\n        self.assertEqual(rubric.task_type, \"qa\")\n        self.assertIn(\"correctness\", rubric.dimensions)\n        self.assertGreater(rubric.thresholds.keep_min, rubric.thresholds.review_min)\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n",
+    "test_template_compatibility.py": "import tempfile\nimport unittest\nfrom pathlib import Path\nfrom validation.core.templates import PromptTemplateLoader\n\nclass TestTemplateCompatibility(unittest.TestCase):\n    def render(self, text, values):\n        with tempfile.TemporaryDirectory() as directory:\n            root = Path(directory)\n            (root / 'fixture.txt').write_text(text)\n            return PromptTemplateLoader(root).render('fixture.txt', values)\n\n    def test_escaped_braces_stay_literal(self):\n        self.assertEqual(self.render('Literal {{task_type}}', {'task_type': 'intent'}), 'Literal {task_type}')\n\n    def test_format_specifier_is_honored(self):\n        self.assertEqual(self.render('Score: {score:.1f}', {'score': 3.14}), 'Score: 3.1')\n\n    def test_missing_formatted_variable_raises(self):\n        with self.assertRaises(KeyError):\n            self.render('Score: {absent:.1f}', {})\n\n    def test_simple_missing_variable_raises(self):\n        with self.assertRaises(KeyError):\n            self.render('{absent}', {})\n",
+    "test_templates.py": "import unittest\nfrom pathlib import Path\n\nfrom validation.core.templates import PromptTemplateLoader\n\n\nclass TestTemplates(unittest.TestCase):\n    def setUp(self) -> None:\n        self.loader = PromptTemplateLoader(Path(\"validation/prompts\"))\n        self.vars = {\n            \"task_type\": \"intent\",\n            \"dimensions_block\": \"- correctness (weight 0.5): match\\n- clarity (weight 0.5): clear\",\n            \"scale_min\": 0,\n            \"scale_max\": 5,\n            \"threshold_keep\": 3.8,\n            \"threshold_review\": 3.0,\n            \"input_prompt\": \"Book me a flight\",\n            \"context_json\": \"{}\",\n            \"output_text\": \"intent=book_flight\",\n            \"annotations_json\": \"{}\",\n        }\n\n    def test_strict_template_renders(self) -> None:\n        out = self.loader.render(\"strict_json_generic.txt\", self.vars)\n        self.assertIn(\"Task type: intent\", out)\n        self.assertIn(\"Respond with JSON ONLY\", out)\n        self.assertIn(\"Book me a flight\", out)\n        self.assertIn(\"intent=book_flight\", out)\n\n    def test_cot_template_renders(self) -> None:\n        out = self.loader.render(\"cot_rubric_generic.txt\", self.vars)\n        self.assertIn(\"[Hidden reasoning\", out)\n        self.assertIn(\"overall_score\", out)\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n"
+  },
+  "reproduction": "Recreate these files outside the task workspace, update absolute paths, verify each unchanged SHA-256, and use a bound local session. Paths are local provenance, not portable configuration."
+}

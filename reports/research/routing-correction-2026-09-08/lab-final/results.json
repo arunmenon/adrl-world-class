@@ -1,0 +1,1709 @@
+{
+  "experiment_id": "d5651e66-519f-46ee-a012-290817e285e8",
+  "execution_mode": "simulation",
+  "source": "synthetic",
+  "evidence_tier": "T4",
+  "evidence_origin": "curated_synthetic",
+  "eligible_for_learning": false,
+  "planned": 16,
+  "counts": {
+    "responded": 13,
+    "blocked": 1,
+    "upstream_error": 1,
+    "unsupported": 1
+  },
+  "truncated_tail": false,
+  "rows": [
+    {
+      "case_id": "small-edit",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "cc5ea16de8c9b87c18306a44b71941969e61207b6b9b0afeedd7811417098755",
+      "response_sha256": "6b1b3a14d443d1b2a4d5af18ed327f96b088745f064c69514fa71ec5d8844780",
+      "decisions": [
+        {
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "ts": "2026-09-08T08:41:46.360183+00:00",
+          "session_hmac": "ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079",
+          "lineage_hmac": "ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "local",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 1,
+          "cascade_reason": null,
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 77, \"context_tokens_estimate\": 19, \"destructive_intent\": false, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"idempotent\", \"features_version\": \"features-v2\", \"files_mentioned\": 1, \"harness_id\": \"claude-code\", \"heuristic_score\": 0.0, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 25, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"narrow\", \"task_classes\": [\"small_context\", \"mechanical_edit\", \"small_diff\"], \"terse_continue\": false, \"verb_base_score\": 0.1, \"verb_class\": \"trivial\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 1,
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "event_type": "pending",
+          "producer": "cascade",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.359607+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "local",
+            "rung": "local",
+            "state_loss": false
+          }
+        },
+        {
+          "seq": 2,
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.363839+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "local",
+            "deployment_id": "local-qwen-7b",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": false,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "user_turn",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "local",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 3,
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:46.364440+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 777,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "local-qwen-7b",
+            "intended_rung": "local",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "local-qwen-7b",
+            "served_geo": "local",
+            "served_model": "openai/qwen2.5-coder-7b-instruct",
+            "served_provider": "openai_compatible",
+            "served_rung": "local",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "local_host",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "bda1b0dca4c97ec7df872624ba56ffbf49b6232b6abdcb58abc6ae46dbbf8a1a",
+          "model": "local-qwen-7b",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "bug-repair",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "d79fa29d714552bb9d773b57360b63fb8e4c953fadc3a9009197a10eede9fecf",
+      "response_sha256": "52bab581ffeadc08f791447e1ed99cec5bb1212e9399074dc3138027c85acc39",
+      "decisions": [
+        {
+          "route_id": "01a0802e-3281-7072-9afd-ca88feb070ca",
+          "ts": "2026-09-08T08:41:46.370354+00:00",
+          "session_hmac": "888f8df0361f6fb3178a09b66d1f80d8379de59e305ab1d828c574657a9ba971",
+          "lineage_hmac": "888f8df0361f6fb3178a09b66d1f80d8379de59e305ab1d828c574657a9ba971",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "frontier",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 1,
+          "cascade_reason": null,
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 100, \"context_tokens_estimate\": 25, \"destructive_intent\": false, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"idempotent\", \"features_version\": \"features-v2\", \"files_mentioned\": 0, \"harness_id\": \"claude-code\", \"heuristic_score\": 0.55, \"interaction_mode\": \"interactive\", \"is_stream\": false, \"is_subagent\": false, \"last_user_text_len\": 48, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"none\", \"task_classes\": [\"small_context\", \"medium_diff\"], \"terse_continue\": false, \"verb_base_score\": 0.55, \"verb_class\": \"fix\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"888f8df0361f6fb3178a09b66d1f80d8379de59e305ab1d828c574657a9ba971\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"888f8df0361f6fb3178a09b66d1f80d8379de59e305ab1d828c574657a9ba971\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 4,
+          "route_id": "01a0802e-3281-7072-9afd-ca88feb070ca",
+          "event_type": "pending",
+          "producer": "cascade",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.369993+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "rung": "frontier",
+            "state_loss": false
+          }
+        },
+        {
+          "seq": 5,
+          "route_id": "01a0802e-3281-7072-9afd-ca88feb070ca",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.371273+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "deployment_id": "frontier-fable-us",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": true,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "user_turn",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "frontier",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 6,
+          "route_id": "01a0802e-3281-7072-9afd-ca88feb070ca",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:46.371598+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 245,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "frontier-fable-us",
+            "intended_rung": "frontier",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "frontier-fable-us",
+            "served_geo": "us",
+            "served_model": "claude-fable-5-1",
+            "served_provider": "anthropic",
+            "served_rung": "frontier",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "public_cloud",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "d79fa29d714552bb9d773b57360b63fb8e4c953fadc3a9009197a10eede9fecf",
+          "model": "claude-fable-5-1",
+          "stream": false,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "test-work",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "21b90af3a00840cfe27e3161132b07e90e0a5a09c628c94c4a93c9987d8b4546",
+      "response_sha256": "6a91f4f98a32c088eca9eefb8b01a7593e1339e439a184f2ce48a241f0804f27",
+      "decisions": [
+        {
+          "route_id": "01a0802e-3288-78e5-a6d0-c38b72dd692b",
+          "ts": "2026-09-08T08:41:46.377443+00:00",
+          "session_hmac": "ccc9564ef723c39e71f932bb717e5370ef596f3310b1dca1afdee3cbbd1f83ed",
+          "lineage_hmac": "ccc9564ef723c39e71f932bb717e5370ef596f3310b1dca1afdee3cbbd1f83ed",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "frontier",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 1,
+          "cascade_reason": null,
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 111, \"context_tokens_estimate\": 27, \"destructive_intent\": false, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"idempotent\", \"features_version\": \"features-v2\", \"files_mentioned\": 1, \"harness_id\": \"claude-code\", \"heuristic_score\": 0.35, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 59, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"narrow\", \"task_classes\": [\"small_context\", \"medium_diff\"], \"terse_continue\": false, \"verb_base_score\": 0.45, \"verb_class\": \"write\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"ccc9564ef723c39e71f932bb717e5370ef596f3310b1dca1afdee3cbbd1f83ed\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"ccc9564ef723c39e71f932bb717e5370ef596f3310b1dca1afdee3cbbd1f83ed\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 7,
+          "route_id": "01a0802e-3288-78e5-a6d0-c38b72dd692b",
+          "event_type": "pending",
+          "producer": "cascade",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.377071+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "rung": "frontier",
+            "state_loss": false
+          }
+        },
+        {
+          "seq": 8,
+          "route_id": "01a0802e-3288-78e5-a6d0-c38b72dd692b",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.378344+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "deployment_id": "frontier-fable-us",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": true,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "user_turn",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "frontier",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 9,
+          "route_id": "01a0802e-3288-78e5-a6d0-c38b72dd692b",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:46.378836+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 780,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "frontier-fable-us",
+            "intended_rung": "frontier",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "frontier-fable-us",
+            "served_geo": "us",
+            "served_model": "claude-fable-5-1",
+            "served_provider": "anthropic",
+            "served_rung": "frontier",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "public_cloud",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "21b90af3a00840cfe27e3161132b07e90e0a5a09c628c94c4a93c9987d8b4546",
+          "model": "claude-fable-5-1",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "refactor",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "40388d6ab8f75c9555d4a9f2bf0ea6051fee8d8237c5be9840dba864ae046335",
+      "response_sha256": "6a91f4f98a32c088eca9eefb8b01a7593e1339e439a184f2ce48a241f0804f27",
+      "decisions": [
+        {
+          "route_id": "01a0802e-328f-7405-a2ae-1d8589ba18e6",
+          "ts": "2026-09-08T08:41:46.384095+00:00",
+          "session_hmac": "a583b276f95e3cbbd01abd58dce82064efb5c6094b8b8dc5f29120bef34fb380",
+          "lineage_hmac": "a583b276f95e3cbbd01abd58dce82064efb5c6094b8b8dc5f29120bef34fb380",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "frontier",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 0,
+          "cascade_reason": "destructive_first_action",
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 86, \"context_tokens_estimate\": 21, \"destructive_intent\": true, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"destructive\", \"features_version\": \"features-v2\", \"files_mentioned\": 0, \"harness_id\": \"claude-code\", \"heuristic_score\": 1.0, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 34, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"broad\", \"task_classes\": [\"small_context\"], \"terse_continue\": false, \"verb_base_score\": 0.85, \"verb_class\": \"hard\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"a583b276f95e3cbbd01abd58dce82064efb5c6094b8b8dc5f29120bef34fb380\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"a583b276f95e3cbbd01abd58dce82064efb5c6094b8b8dc5f29120bef34fb380\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 10,
+          "route_id": "01a0802e-328f-7405-a2ae-1d8589ba18e6",
+          "event_type": "pending",
+          "producer": "cascade",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.383709+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "rung": "frontier",
+            "state_loss": false
+          }
+        },
+        {
+          "seq": 11,
+          "route_id": "01a0802e-328f-7405-a2ae-1d8589ba18e6",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.384874+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "deployment_id": "frontier-fable-us",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": true,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "user_turn",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "frontier",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 12,
+          "route_id": "01a0802e-328f-7405-a2ae-1d8589ba18e6",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:46.385453+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 780,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "frontier-fable-us",
+            "intended_rung": "frontier",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "frontier-fable-us",
+            "served_geo": "us",
+            "served_model": "claude-fable-5-1",
+            "served_provider": "anthropic",
+            "served_rung": "frontier",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "public_cloud",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "40388d6ab8f75c9555d4a9f2bf0ea6051fee8d8237c5be9840dba864ae046335",
+          "model": "claude-fable-5-1",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "mixed-rename",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "e5f39f06adfd599495caa5beb654e19203d206881dbaa302733ce556f2f0485a",
+      "response_sha256": "6a91f4f98a32c088eca9eefb8b01a7593e1339e439a184f2ce48a241f0804f27",
+      "decisions": [
+        {
+          "route_id": "01a0802e-3296-7450-826e-d8c39c85ee2f",
+          "ts": "2026-09-08T08:41:46.390699+00:00",
+          "session_hmac": "29c44b6be38c44505790f30bdd69a3971ca2e11a7010b24eb484d0427d70c8ce",
+          "lineage_hmac": "29c44b6be38c44505790f30bdd69a3971ca2e11a7010b24eb484d0427d70c8ce",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "frontier",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 1,
+          "cascade_reason": null,
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 121, \"context_tokens_estimate\": 30, \"destructive_intent\": false, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"idempotent\", \"features_version\": \"features-v2\", \"files_mentioned\": 1, \"harness_id\": \"claude-code\", \"heuristic_score\": 0.75, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 69, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"narrow\", \"task_classes\": [\"small_context\"], \"terse_continue\": false, \"verb_base_score\": 0.85, \"verb_class\": \"hard\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"29c44b6be38c44505790f30bdd69a3971ca2e11a7010b24eb484d0427d70c8ce\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"29c44b6be38c44505790f30bdd69a3971ca2e11a7010b24eb484d0427d70c8ce\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 13,
+          "route_id": "01a0802e-3296-7450-826e-d8c39c85ee2f",
+          "event_type": "pending",
+          "producer": "cascade",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.390372+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "rung": "frontier",
+            "state_loss": false
+          }
+        },
+        {
+          "seq": 14,
+          "route_id": "01a0802e-3296-7450-826e-d8c39c85ee2f",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.391456+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "deployment_id": "frontier-fable-us",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": true,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "user_turn",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "frontier",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 15,
+          "route_id": "01a0802e-3296-7450-826e-d8c39c85ee2f",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:46.391948+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 780,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "frontier-fable-us",
+            "intended_rung": "frontier",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "frontier-fable-us",
+            "served_geo": "us",
+            "served_model": "claude-fable-5-1",
+            "served_provider": "anthropic",
+            "served_rung": "frontier",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "public_cloud",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "e5f39f06adfd599495caa5beb654e19203d206881dbaa302733ce556f2f0485a",
+          "model": "claude-fable-5-1",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "mixed-explain",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "9d8add36b6d651fa31584c41e82d57001184e83ec77b697a963278627be9e321",
+      "response_sha256": "6a91f4f98a32c088eca9eefb8b01a7593e1339e439a184f2ce48a241f0804f27",
+      "decisions": [
+        {
+          "route_id": "01a0802e-329c-7150-8a74-515f6fb003f3",
+          "ts": "2026-09-08T08:41:46.397274+00:00",
+          "session_hmac": "db14e7e014e857745911b83533161a16c48a93195e7162e9ff18084904de86e6",
+          "lineage_hmac": "db14e7e014e857745911b83533161a16c48a93195e7162e9ff18084904de86e6",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "frontier",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 1,
+          "cascade_reason": null,
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 111, \"context_tokens_estimate\": 27, \"destructive_intent\": false, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"idempotent\", \"features_version\": \"features-v2\", \"files_mentioned\": 1, \"harness_id\": \"claude-code\", \"heuristic_score\": 0.75, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 59, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"narrow\", \"task_classes\": [\"small_context\"], \"terse_continue\": false, \"verb_base_score\": 0.85, \"verb_class\": \"hard\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"db14e7e014e857745911b83533161a16c48a93195e7162e9ff18084904de86e6\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"db14e7e014e857745911b83533161a16c48a93195e7162e9ff18084904de86e6\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 16,
+          "route_id": "01a0802e-329c-7150-8a74-515f6fb003f3",
+          "event_type": "pending",
+          "producer": "cascade",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.396947+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "rung": "frontier",
+            "state_loss": false
+          }
+        },
+        {
+          "seq": 17,
+          "route_id": "01a0802e-329c-7150-8a74-515f6fb003f3",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.397986+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "deployment_id": "frontier-fable-us",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": true,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "user_turn",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "frontier",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 18,
+          "route_id": "01a0802e-329c-7150-8a74-515f6fb003f3",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:46.398425+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 780,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "frontier-fable-us",
+            "intended_rung": "frontier",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "frontier-fable-us",
+            "served_geo": "us",
+            "served_model": "claude-fable-5-1",
+            "served_provider": "anthropic",
+            "served_rung": "frontier",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "public_cloud",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "9d8add36b6d651fa31584c41e82d57001184e83ec77b697a963278627be9e321",
+          "model": "claude-fable-5-1",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "long-context",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "477de16935653dae4adf358a3f3ac3a52d9859858ea4d794b3aac27c55381dee",
+      "response_sha256": "6a91f4f98a32c088eca9eefb8b01a7593e1339e439a184f2ce48a241f0804f27",
+      "decisions": [
+        {
+          "route_id": "01a0802e-32ff-7b2d-b65b-eb6ea876054a",
+          "ts": "2026-09-08T08:41:46.496076+00:00",
+          "session_hmac": "dc46ebd15c2f11ad3a9e487dba970019ac654b778c9e7bde739c02fa06d826dc",
+          "lineage_hmac": "dc46ebd15c2f11ad3a9e487dba970019ac654b778c9e7bde739c02fa06d826dc",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "frontier",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 1,
+          "cascade_reason": null,
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 120078, \"context_tokens_estimate\": 30019, \"destructive_intent\": false, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"idempotent\", \"features_version\": \"features-v2\", \"files_mentioned\": 1, \"harness_id\": \"claude-code\", \"heuristic_score\": 0.1, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 25, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"narrow\", \"task_classes\": [\"mechanical_edit\", \"small_diff\"], \"terse_continue\": false, \"verb_base_score\": 0.1, \"verb_class\": \"trivial\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"dc46ebd15c2f11ad3a9e487dba970019ac654b778c9e7bde739c02fa06d826dc\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"dc46ebd15c2f11ad3a9e487dba970019ac654b778c9e7bde739c02fa06d826dc\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 19,
+          "route_id": "01a0802e-32ff-7b2d-b65b-eb6ea876054a",
+          "event_type": "pending",
+          "producer": "cascade",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.495658+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "rung": "frontier",
+            "state_loss": false
+          }
+        },
+        {
+          "seq": 20,
+          "route_id": "01a0802e-32ff-7b2d-b65b-eb6ea876054a",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.497314+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "deployment_id": "frontier-fable-us",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": true,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "user_turn",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "frontier",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 21,
+          "route_id": "01a0802e-32ff-7b2d-b65b-eb6ea876054a",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:46.497845+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 780,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "frontier-fable-us",
+            "intended_rung": "frontier",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "frontier-fable-us",
+            "served_geo": "us",
+            "served_model": "claude-fable-5-1",
+            "served_provider": "anthropic",
+            "served_rung": "frontier",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "public_cloud",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "477de16935653dae4adf358a3f3ac3a52d9859858ea4d794b3aac27c55381dee",
+          "model": "claude-fable-5-1",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "loop-detected",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "8bcfe5417049d11bbfd93a80e857eef0ac2fff59d1a47b7297812d3f0ac57c6c",
+      "response_sha256": "6b1b3a14d443d1b2a4d5af18ed327f96b088745f064c69514fa71ec5d8844780",
+      "decisions": [
+        {
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "ts": "2026-09-08T08:41:46.360183+00:00",
+          "session_hmac": "ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079",
+          "lineage_hmac": "ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "local",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 1,
+          "cascade_reason": null,
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 77, \"context_tokens_estimate\": 19, \"destructive_intent\": false, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"idempotent\", \"features_version\": \"features-v2\", \"files_mentioned\": 1, \"harness_id\": \"claude-code\", \"heuristic_score\": 0.0, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 25, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"narrow\", \"task_classes\": [\"small_context\", \"mechanical_edit\", \"small_diff\"], \"terse_continue\": false, \"verb_base_score\": 0.1, \"verb_class\": \"trivial\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 22,
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 3,
+          "ts": "2026-09-08T08:41:46.508477+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "local",
+            "deployment_id": "local-qwen-7b",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": false,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "continuation",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "local",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 23,
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "event_type": "tripwire_fired",
+          "producer": "cascade",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:46.508895+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "detail": "identical consecutive tool calls",
+            "failure_type": "task_capability",
+            "observed": 3,
+            "rung": "local",
+            "threshold": 3,
+            "tripwires_version": "tripwires-v1",
+            "wire": "a_repeated_tool_calls"
+          }
+        },
+        {
+          "seq": 24,
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 4,
+          "ts": "2026-09-08T08:41:46.509319+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 777,
+            "completed": true,
+            "fired_wires": [
+              "a_repeated_tool_calls"
+            ],
+            "intended_deployment_id": "local-qwen-7b",
+            "intended_rung": "local",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "local-qwen-7b",
+            "served_geo": "local",
+            "served_model": "openai/qwen2.5-coder-7b-instruct",
+            "served_provider": "openai_compatible",
+            "served_rung": "local",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "local_host",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "b861ea77aa1643056ee82746249fef75f48b66595e6d5c86956e5d00271927e8",
+          "model": "local-qwen-7b",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "loop-escalated",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "d17f9759f46f91e3778a2a7218b017f981eadbec76e28931ceec49b81e71f4d0",
+      "response_sha256": "8e67fba12f1026df44d0a191d2f1fdb0412cd887f663e248fc92a5be13cd2d1d",
+      "decisions": [
+        {
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "ts": "2026-09-08T08:41:46.360183+00:00",
+          "session_hmac": "ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079",
+          "lineage_hmac": "ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "local",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 1,
+          "cascade_reason": null,
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 77, \"context_tokens_estimate\": 19, \"destructive_intent\": false, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"idempotent\", \"features_version\": \"features-v2\", \"files_mentioned\": 1, \"harness_id\": \"claude-code\", \"heuristic_score\": 0.0, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 25, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"narrow\", \"task_classes\": [\"small_context\", \"mechanical_edit\", \"small_diff\"], \"terse_continue\": false, \"verb_base_score\": 0.1, \"verb_class\": \"trivial\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"ab8c6f2208d65b726bb874c0c39c2fbb4b6f51bc6a910844656333d90de46079\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 25,
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "event_type": "escalation",
+          "producer": "cascade",
+          "producer_seq": 3,
+          "ts": "2026-09-08T08:41:46.514485+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "cause": "a_repeated_tool_calls",
+            "downgraded_blocks": 0,
+            "from_rung": "local",
+            "handoff_schema": "handoff-note-v1",
+            "note_applied": true,
+            "pair_rule": {
+              "action": "strip_and_disable",
+              "map_tool_ids": false,
+              "note": "",
+              "source_family": "local",
+              "source_has_thinking": null,
+              "target_family": "anthropic",
+              "thinking_enabled": true
+            },
+            "side_effects_before_escalation": true,
+            "source_has_thinking": false,
+            "stripped_blocks": 0,
+            "thinking_disabled": true,
+            "thinking_disabled_for_handoff": true,
+            "to_rung": "cheap_cloud",
+            "tool_id_mapping": {}
+          }
+        },
+        {
+          "seq": 26,
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 5,
+          "ts": "2026-09-08T08:41:46.515556+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "local",
+            "deployment_id": "cheap-haiku-us",
+            "escalated": true,
+            "fail_open": null,
+            "forward_original": false,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "continuation",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "cheap_cloud",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 27,
+          "route_id": "01a0802e-3277-7d0b-bc31-744546e1aa06",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 6,
+          "ts": "2026-09-08T08:41:46.516050+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 778,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "cheap-haiku-us",
+            "intended_rung": "cheap_cloud",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "cheap-haiku-us",
+            "served_geo": "us",
+            "served_model": "anthropic/claude-haiku-4-5-20251001",
+            "served_provider": "anthropic",
+            "served_rung": "cheap_cloud",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "public_cloud",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "eecd0f80536f11b948fac07674e656001d39117a8225c302c7d678556d077c05",
+          "model": "cheap-haiku-us",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "before-secret",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "40388d6ab8f75c9555d4a9f2bf0ea6051fee8d8237c5be9840dba864ae046335",
+      "response_sha256": "6a91f4f98a32c088eca9eefb8b01a7593e1339e439a184f2ce48a241f0804f27",
+      "decisions": [
+        {
+          "route_id": "01a0802e-3318-76a0-a1f8-feb32e0e354f",
+          "ts": "2026-09-08T08:41:46.521323+00:00",
+          "session_hmac": "65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4",
+          "lineage_hmac": "65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "frontier",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 0,
+          "cascade_reason": "destructive_first_action",
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 86, \"context_tokens_estimate\": 21, \"destructive_intent\": true, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"destructive\", \"features_version\": \"features-v2\", \"files_mentioned\": 0, \"harness_id\": \"claude-code\", \"heuristic_score\": 1.0, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 34, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"broad\", \"task_classes\": [\"small_context\"], \"terse_continue\": false, \"verb_base_score\": 0.85, \"verb_class\": \"hard\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 28,
+          "route_id": "01a0802e-3318-76a0-a1f8-feb32e0e354f",
+          "event_type": "pending",
+          "producer": "cascade",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.520972+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "rung": "frontier",
+            "state_loss": false
+          }
+        },
+        {
+          "seq": 29,
+          "route_id": "01a0802e-3318-76a0-a1f8-feb32e0e354f",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:46.522101+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "deployment_id": "frontier-fable-us",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": true,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "user_turn",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "frontier",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 30,
+          "route_id": "01a0802e-3318-76a0-a1f8-feb32e0e354f",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:46.522581+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 780,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "frontier-fable-us",
+            "intended_rung": "frontier",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "frontier-fable-us",
+            "served_geo": "us",
+            "served_model": "claude-fable-5-1",
+            "served_provider": "anthropic",
+            "served_rung": "frontier",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "public_cloud",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "40388d6ab8f75c9555d4a9f2bf0ea6051fee8d8237c5be9840dba864ae046335",
+          "model": "claude-fable-5-1",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "secret-pin",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "2e5f421cbdb27dec5b50c4f91bf9946b2d81d86487f55399987774f48ea17c0e",
+      "response_sha256": "6b1b3a14d443d1b2a4d5af18ed327f96b088745f064c69514fa71ec5d8844780",
+      "decisions": [
+        {
+          "route_id": "01a0802e-3318-76a0-a1f8-feb32e0e354f",
+          "ts": "2026-09-08T08:41:46.521323+00:00",
+          "session_hmac": "65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4",
+          "lineage_hmac": "65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "frontier",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 0,
+          "cascade_reason": "destructive_first_action",
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 86, \"context_tokens_estimate\": 21, \"destructive_intent\": true, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"destructive\", \"features_version\": \"features-v2\", \"files_mentioned\": 0, \"harness_id\": \"claude-code\", \"heuristic_score\": 1.0, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 34, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"broad\", \"task_classes\": [\"small_context\"], \"terse_continue\": false, \"verb_base_score\": 0.85, \"verb_class\": \"hard\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 31,
+          "route_id": "01a0802e-3318-76a0-a1f8-feb32e0e354f",
+          "event_type": "policy_constraint",
+          "producer": "cascade",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:46.528798+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "reason": "gate_precedes_stickiness",
+            "requested_rung": "frontier",
+            "served_rung": "local"
+          }
+        },
+        {
+          "seq": 32,
+          "route_id": "01a0802e-3318-76a0-a1f8-feb32e0e354f",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 3,
+          "ts": "2026-09-08T08:41:46.529854+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "local",
+            "deployment_id": "local-qwen-7b",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": false,
+            "is_boundary": true,
+            "pinned": true,
+            "request_class": "continuation",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "local",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 33,
+          "route_id": "01a0802e-3318-76a0-a1f8-feb32e0e354f",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 4,
+          "ts": "2026-09-08T08:41:46.530380+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 777,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "local-qwen-7b",
+            "intended_rung": "local",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "local-qwen-7b",
+            "served_geo": "local",
+            "served_model": "openai/qwen2.5-coder-7b-instruct",
+            "served_provider": "openai_compatible",
+            "served_rung": "local",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "local_host",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "682b78811179699d4ef405c44cc10056393378ebc41e303b42dd025ba6b26bb5",
+          "model": "local-qwen-7b",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "pin-persists",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "bb5fc6e9d856c9471d48d6420a0dc6cc677d1ace7d10485ea379215e310b063c",
+      "response_sha256": "6b1b3a14d443d1b2a4d5af18ed327f96b088745f064c69514fa71ec5d8844780",
+      "decisions": [
+        {
+          "route_id": "01a0802e-3318-76a0-a1f8-feb32e0e354f",
+          "ts": "2026-09-08T08:41:46.521323+00:00",
+          "session_hmac": "65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4",
+          "lineage_hmac": "65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "frontier",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 0,
+          "cascade_reason": "destructive_first_action",
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 86, \"context_tokens_estimate\": 21, \"destructive_intent\": true, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"destructive\", \"features_version\": \"features-v2\", \"files_mentioned\": 0, \"harness_id\": \"claude-code\", \"heuristic_score\": 1.0, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 34, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"broad\", \"task_classes\": [\"small_context\"], \"terse_continue\": false, \"verb_base_score\": 0.85, \"verb_class\": \"hard\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"65b80fea27ffc2dcf37196e482483b06fe630861751f98d98fbe72114b7865b4\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 34,
+          "route_id": "01a0802e-3318-76a0-a1f8-feb32e0e354f",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 5,
+          "ts": "2026-09-08T08:41:46.534824+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "local",
+            "deployment_id": "local-qwen-7b",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": false,
+            "is_boundary": true,
+            "pinned": true,
+            "request_class": "continuation",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "local",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 35,
+          "route_id": "01a0802e-3318-76a0-a1f8-feb32e0e354f",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 6,
+          "ts": "2026-09-08T08:41:46.535335+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 777,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "local-qwen-7b",
+            "intended_rung": "local",
+            "malformed_tool_json": false,
+            "receipt_confirmed": true,
+            "served_deployment_id": "local-qwen-7b",
+            "served_geo": "local",
+            "served_model": "openai/qwen2.5-coder-7b-instruct",
+            "served_provider": "openai_compatible",
+            "served_rung": "local",
+            "served_source": "gateway_reported",
+            "served_trust_zone": "local_host",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "f28660960c966534b40822d7c17070fa31b548c0a804b1cf1796a17594e5d673",
+          "model": "local-qwen-7b",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "pinned-overflow",
+      "state": "blocked",
+      "http_status": 400,
+      "input_sha256": "2550b267f85523e4824e8dec4b60abafd1ba05f7ada6c8d9eb1cb9035892e743",
+      "response_sha256": "35b4104357b9a7be142b65f683f3a2e45383243abea35bea7b3120af399e8c02",
+      "decisions": [],
+      "events": [],
+      "dispatched": [],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "missing-identity",
+      "state": "responded",
+      "http_status": 200,
+      "input_sha256": "cc5ea16de8c9b87c18306a44b71941969e61207b6b9b0afeedd7811417098755",
+      "response_sha256": "80233bb8937a125b27635782c77b7f913e8c07ea014882dd83675603bc8e1af3",
+      "decisions": [
+        {
+          "route_id": "01a0802e-371c-7243-81d9-bb8b04f09791",
+          "ts": "2026-09-08T08:41:47.548701+00:00",
+          "session_hmac": "ba7f85b9889855ad7867a20d9e40e30dee2c63e99c8494e00ec79d547086f244",
+          "lineage_hmac": "ba7f85b9889855ad7867a20d9e40e30dee2c63e99c8494e00ec79d547086f244",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "local",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 1,
+          "cascade_reason": null,
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 77, \"context_tokens_estimate\": 19, \"destructive_intent\": false, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"idempotent\", \"features_version\": \"features-v2\", \"files_mentioned\": 1, \"harness_id\": \"claude-code\", \"heuristic_score\": 0.0, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 25, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"narrow\", \"task_classes\": [\"small_context\", \"mechanical_edit\", \"small_diff\"], \"terse_continue\": false, \"verb_base_score\": 0.1, \"verb_class\": \"trivial\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"ba7f85b9889855ad7867a20d9e40e30dee2c63e99c8494e00ec79d547086f244\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"ba7f85b9889855ad7867a20d9e40e30dee2c63e99c8494e00ec79d547086f244\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 36,
+          "route_id": "01a0802e-371c-7243-81d9-bb8b04f09791",
+          "event_type": "pending",
+          "producer": "cascade",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:47.548382+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "local",
+            "rung": "local",
+            "state_loss": false
+          }
+        },
+        {
+          "seq": 37,
+          "route_id": "01a0802e-371c-7243-81d9-bb8b04f09791",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:47.549449+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "local",
+            "deployment_id": "local-qwen-7b",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": false,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "user_turn",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "local",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 38,
+          "route_id": "01a0802e-371c-7243-81d9-bb8b04f09791",
+          "event_type": "served",
+          "producer": "proxy",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:47.549828+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 751,
+            "completed": true,
+            "fired_wires": [],
+            "intended_deployment_id": "local-qwen-7b",
+            "intended_rung": "local",
+            "malformed_tool_json": false,
+            "receipt_confirmed": false,
+            "served_deployment_id": "local-qwen-7b",
+            "served_geo": "local",
+            "served_model": "claude-fable-5-1",
+            "served_provider": "openai_compatible",
+            "served_rung": "local",
+            "served_source": "assumed_intended",
+            "served_trust_zone": "local_host",
+            "status": 200,
+            "stop_reason": "end_turn",
+            "streamed_tool_content": false,
+            "tool_uses": [],
+            "usage": {
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0
+            }
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "bda1b0dca4c97ec7df872624ba56ffbf49b6232b6abdcb58abc6ae46dbbf8a1a",
+          "model": "local-qwen-7b",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "upstream-error",
+      "state": "upstream_error",
+      "http_status": 503,
+      "input_sha256": "40388d6ab8f75c9555d4a9f2bf0ea6051fee8d8237c5be9840dba864ae046335",
+      "response_sha256": "71c73e29213966ace11dbdac4363bc5e06e1e482da51882eff8dfd937b438603",
+      "decisions": [
+        {
+          "route_id": "01a0802e-3722-7af2-b5d0-5f419b778ee4",
+          "ts": "2026-09-08T08:41:47.554769+00:00",
+          "session_hmac": "627e61972e5aad5e6be01152da3be681f0b65df1e395c3aa83154636f4bed3ee",
+          "lineage_hmac": "627e61972e5aad5e6be01152da3be681f0b65df1e395c3aa83154636f4bed3ee",
+          "request_class": "user_turn",
+          "content_bearing": 1,
+          "permitted_set": "[\"local\", \"cheap_cloud\", \"frontier\"]",
+          "decided_rung": "frontier",
+          "estimator": "band-heuristic",
+          "estimator_version": "band-heuristic-v1",
+          "policy_version": "policy-v1",
+          "objective_version": "objective-v1",
+          "cascade_feasible": 0,
+          "cascade_reason": "destructive_first_action",
+          "features_json": "{\"available_side_effect_max\": \"destructive\", \"context_chars\": 86, \"context_tokens_estimate\": 21, \"destructive_intent\": true, \"embedding_missing\": true, \"embedding_missing_reason\": \"not_computed_at_decision_time\", \"expected_first_action_side_effect\": \"destructive\", \"features_version\": \"features-v2\", \"files_mentioned\": 0, \"harness_id\": \"claude-code\", \"heuristic_score\": 1.0, \"interaction_mode\": \"interactive\", \"is_stream\": true, \"is_subagent\": false, \"last_user_text_len\": 34, \"max_tokens\": 64000, \"n_messages\": 1, \"n_tools\": 3, \"parallel_tool_calls_last_assistant\": 0, \"prev_turn_interrupted\": false, \"recent_edit_failures\": 0, \"recent_error_results\": 0, \"recent_tool_results\": 0, \"request_class\": \"user_turn\", \"scope_hint\": \"broad\", \"task_classes\": [\"small_context\"], \"terse_continue\": false, \"verb_base_score\": 0.85, \"verb_class\": \"hard\"}",
+          "features_version": "features-v2",
+          "propensity": 1.0,
+          "explore_version": null,
+          "no_rung_met_threshold": 0,
+          "classifier_provenance_json": "null",
+          "context_json": "{\"config_versions\": {\"endpoint_inventory\": \"endpoint-inventory-v1\", \"learning_contract\": \"learning-contract-v1\", \"policy\": \"policy-v1\", \"prices\": \"prices-v1\", \"provider_pairs\": \"provider-pairs-v1\", \"repo_classification\": \"repo-classification-v1\", \"rungs\": \"rung-membership-v1\", \"tripwires\": \"tripwires-v1\", \"utility_fingerprints\": \"utility-fingerprints-v1\"}, \"content_bearing\": true, \"fingerprint_id\": null, \"gate_mode\": \"enforce\", \"gate_verdicts\": [{\"findings\": [], \"gate\": \"repo_class\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": \"open:assertion\", \"unscanned\": false}, {\"findings\": [], \"gate\": \"secret_scan\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}, {\"findings\": [], \"gate\": \"feasibility\", \"permitted_after\": [\"local\", \"cheap_cloud\", \"frontier\"], \"pinned\": false, \"reason\": null, \"unscanned\": false}], \"harness_adapter_id\": \"claude-code\", \"harness_adapter_version\": \"1\", \"interaction_mode\": \"interactive\", \"is_subagent\": false, \"lineage_hmac\": \"627e61972e5aad5e6be01152da3be681f0b65df1e395c3aa83154636f4bed3ee\", \"permitted_deployment_ids\": [\"cheap-haiku-us\", \"frontier-fable-us\", \"local-qwen-32b\", \"local-qwen-7b\"], \"pinned\": false, \"protocol_operation_supported\": true, \"protocol_profile_id\": \"anthropic-messages-v1\", \"protocol_profile_version\": \"1\", \"repo_class\": \"open\", \"request_class\": \"user_turn\", \"requested_model\": \"claude-fable-5-1\", \"residency\": null, \"routing_mode\": \"live\", \"session_hmac\": \"627e61972e5aad5e6be01152da3be681f0b65df1e395c3aa83154636f4bed3ee\", \"session_key_source\": \"header\", \"state_loss\": false, \"unscanned\": false}",
+          "schema_version": "ledger-v1"
+        }
+      ],
+      "events": [
+        {
+          "seq": 39,
+          "route_id": "01a0802e-3722-7af2-b5d0-5f419b778ee4",
+          "event_type": "pending",
+          "producer": "cascade",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:47.554452+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "rung": "frontier",
+            "state_loss": false
+          }
+        },
+        {
+          "seq": 40,
+          "route_id": "01a0802e-3722-7af2-b5d0-5f419b778ee4",
+          "event_type": "closed_turn",
+          "producer": "cascade",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:47.555412+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "failure_type": "infrastructure",
+            "gateway_attempts_observed": 1,
+            "partial_stream": false,
+            "reason": "terminal_failure",
+            "rung": "frontier",
+            "secondary_type": null,
+            "served_source": "assumed_intended",
+            "status": 503,
+            "surfaced": true
+          }
+        },
+        {
+          "seq": 41,
+          "route_id": "01a0802e-3722-7af2-b5d0-5f419b778ee4",
+          "event_type": "request",
+          "producer": "proxy",
+          "producer_seq": 1,
+          "ts": "2026-09-08T08:41:47.555543+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "decided_rung": "frontier",
+            "deployment_id": "frontier-fable-us",
+            "escalated": false,
+            "fail_open": null,
+            "forward_original": true,
+            "is_boundary": true,
+            "pinned": false,
+            "request_class": "user_turn",
+            "routing_mode": "live",
+            "state_loss": false,
+            "target_rung": "frontier",
+            "unscanned": false
+          }
+        },
+        {
+          "seq": 42,
+          "route_id": "01a0802e-3722-7af2-b5d0-5f419b778ee4",
+          "event_type": "upstream_error",
+          "producer": "proxy",
+          "producer_seq": 2,
+          "ts": "2026-09-08T08:41:47.555830+00:00",
+          "schema_version": "events-v1",
+          "payload": {
+            "bytes_relayed": 84,
+            "completed": false,
+            "error": {
+              "message_hmac": "646272d61284fa55fdeaed112da12914",
+              "message_length": 26,
+              "phrase": null,
+              "status": 503,
+              "type": "api_error"
+            },
+            "fired_wires": [],
+            "intended_deployment_id": "frontier-fable-us",
+            "intended_rung": "frontier",
+            "malformed_tool_json": false,
+            "receipt_confirmed": false,
+            "served_deployment_id": "frontier-fable-us",
+            "served_geo": "us",
+            "served_model": "claude-fable-5-1",
+            "served_provider": "anthropic",
+            "served_rung": "frontier",
+            "served_source": "assumed_intended",
+            "served_trust_zone": "public_cloud",
+            "status": 503,
+            "stop_reason": null,
+            "streamed_tool_content": false,
+            "tool_uses": []
+          }
+        }
+      ],
+      "dispatched": [
+        {
+          "body_sha256": "40388d6ab8f75c9555d4a9f2bf0ea6051fee8d8237c5be9840dba864ae046335",
+          "model": "claude-fable-5-1",
+          "stream": true,
+          "path": "/v1/messages"
+        }
+      ],
+      "synthetic_receipt": true,
+      "eligible_for_learning": false
+    },
+    {
+      "case_id": "responses-unqualified",
+      "state": "unsupported",
+      "reason": "Responses and a real Codex harness are unqualified here"
+    }
+  ],
+  "model_calls": 0,
+  "task_success": null,
+  "measured_provider_cost": null,
+  "source_unchanged_during_run": true,
+  "run_completed": true
+}

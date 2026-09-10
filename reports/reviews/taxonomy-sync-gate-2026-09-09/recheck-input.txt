@@ -1,0 +1,1331 @@
+Recheck the material fixes to your taxonomy-sync post-review. Return at most 450 words with remaining blockers or explicit scoped acceptance. Do not use tools. Full corrected checker/tests/skill are embedded, with relevant ADR sections and before/after display/provenance facts. Both original reviews retained. No automatic CI or grade normalization claimed. The exact inline capture command is in conversation history, not a saved historical script; provenance describes this honestly. Original baseline JSON never contained parsed fields; derivative metadata is from byte-verified original snapshot, not edited sources. Judge whether this resolves B1 evidence. Freeze of all declared source hashes is separate; original full files preserved. If accepted, condition final closure on tests and source hashes matching this recheck.
+
+FILE post-review.md
+**Disposition: not yet accepted.** The mechanism is sound and B2, B3, B5 and B7 are resolved as written, but four items block recording this review as accepted. Nothing here changes maturity, status or verdict.
+
+## Blocking findings, in priority order
+
+- **1. Both ADR changelog rows sit outside their tables.** In FND-005 and EVL-009 the new dated row follows a blank line after the table, so it renders as a stray fragment, and in EVL-009 it also breaks the newest-first order. The checker accepts any line beginning with a pipe, so the mechanical gate passed on a defective register edit. Move each row into the table, then tighten the check so the marker row must be adjacent to other table rows.
+
+- **2. The maturity guard covers ADR tables only.** Status, Maturity and Verdict cells in INDEX and bucket rows can change with no human record, because those files are only hash-pinned and marker-scanned. The B6 resolution promised exact-value protection. Either diff the owning rows' cells against the baseline, or state this limit explicitly in the skill, both ADR sections and the report. I saw only post-change rows. Supply the pre-change INDEX and bucket rows for FND-005 and EVL-009 so I can confirm no grade cell moved.
+
+- **3. B1 needs one verifiable fact.** The pending check got past the schema, scope, roots and fields comparisons. That means bootstrap-baseline.json carries a scope dictionary identical to the final constant and a fields map produced by the same parser. Either the scope and parser were frozen before the first edit, which is fine, or the baseline was regenerated later, which contradicts the preserved-bytes claim. Provide the baseline-source script hash, its location outside both scanned trees, and its capture time against the first edit. Missing material, not a defect yet.
+
+- **4. Report wording overstates three things.** "Core runtime unchanged" is true only relative to this wave's baseline; say so. The B4 promise to compare runtime inputs against the recorded manifest is not evidenced, and that manifest was already superseded by the 2026-09-08 W7.0a run. The report says a receipt lives "in this directory", but a receipt cannot be inside the repository; call it a copy. Installed-mirror parity has never been exercised in a real run because the check fails before reaching it, so "installed identically" is currently an assertion. Fix the report, re-pin its hash, rerun.
+
+## Non-blocking findings
+
+- **Fragile links.** Both ADR sections link the checker and tests through the parent directory by name. Use the two-level relative path to the register's own tools directory.
+- **Test gaps.** The field-change test passes on a KeyError, not on validation logic. Add a positive test with a valid human record, a test for baseline scope mismatch, and a CLI test for the receipt-outside-repository and existing-output rules.
+- **Register rendering.** The two CHANGELOG lines run together as one paragraph; add list markers or blank lines.
+- **Ownership wording.** The two ADR sections are byte-identical boilerplate. EVL-009's section should say concretely what blocker-style behavior the checker exhibits, namely named nonzero failures that are never aggregated.
+- **Coverage never fully exercised.** Global INDEX coverage and the FND/EVL bucket checks did run, since the pending failure is late in the sequence. The CAS-009 gap stays open and disclosed, which is correct.
+
+## Accepted as resolved
+
+B2 closure schema, B3 outside-repository receipt with excluded evidence directory, B5 register-hosted stdlib harness, and B7 stray-ADR rejection all match the code and tests. The scoped B6 disclaimer is acceptable subject to finding 2.
+
+## Required sequence before acceptance
+
+Fix items 1, 2 and 4, supply the material for 2 and 3, refresh the pinned evidence and source hashes, then request a material-fix recheck from me. Only that recheck can move the closure to accepted with this record pinned. Do not set accepted on the basis of an authored resolution of these findings. Pending remains pending.
+
+FILE report.md
+# Taxonomy synchronization workflow
+
+Local completion tooling for ADRL-FND-005 and ADRL-EVL-009. Before/after declared input snapshots, explicit changed-file ownership, dated ADR/index/bucket/changelog evidence mapping, field-change disposition references, pinned semantic review, source drift and installed-skill parity are checked. Global INDEX ID coverage and affected bucket IDs are checked; historical unrelated bucket/status/maturity conflicts are not normalized. Initial actual scan found CAS-009 missing from its bucket table; this preexisting hygiene issue remains open and does not get silently fixed or treated as passing full-register reconciliation.
+
+The canonical skill is installed identically for Codex and Claude and required by both repositories' AGENTS.md plus the wave template. The CLI fails nonzero on missing/stale closure requirements and writes successful receipts outside the repositories. A receipt must be rerun after relevant changes. No automatic CI hook or remote branch protection was installed. A caller can skip a local command; semantic review and human identity assertions are not authenticated by the script. Source scope and excluded reports/history/private data are explicit. Markers and hashes do not prove prose correctness.
+
+Validation: focused stdlib tests exercise valid closure, already-dirty baseline, missing ownership, additions/deletions, evidence drift, register mapping gaps, duplicate INDEX, changed maturity, pending review, post-review drift, mirror drift, symlinks and path escape. [Raw test results](tests.log). Core runtime code/config/tests/tools are unchanged relative to this wave baseline; core AGENTS changed, so the old full-source runtime receipt is not represented as matching every current input. No runtime suite rerun, model task, experiment-budget consumption, automation restart or maturity change.
+
+Fable pre-review and recorded resolutions are in [packet](packet.md) and [original critique](pre-review.md). Post-review disposition and a copy of the final outside-repository self-application receipt are separate artifacts in this directory. A pending review is not a passed gate.
+
+Material-fix evidence: [provenance and protected display comparison](provenance-recheck.json) verifies the preserved 422-input pre-edit capture, unchanged owning summary grade/verdict cells, and identical installed skill hashes. Compared with the actual latest RV-01 checks-2 manifest (324 inputs), only core AGENTS.md differs; all other 323 inputs match. This is not a claim that the old complete source receipt still applies. Scope/parser fields were reconstructed from preserved bytes; no stand-alone baseline script existed at capture time, and no script hash is invented.
+
+The checker now requires the dated ADR changelog marker to be inside its table and protects owning INDEX/bucket verdict and maturity cells against unrecorded changes. Historical discrepancies remain open. Focused tests include a valid human-record case, standalone changelog rejection, display-grade rejection, scope mismatch and CLI output rules. Installed parity was independently measured before the final check; final closure will also exercise its own mirror check after review acceptance.
+
+
+FILE tests.log
+test_added_input_not_hidden (test_taxonomy_sync.SyncTests.test_added_input_not_hidden) ... ok
+test_cli_rejects_inside_receipt_and_existing_output (test_taxonomy_sync.SyncTests.test_cli_rejects_inside_receipt_and_existing_output) ... ok
+test_complete_dirty_baseline_passes (test_taxonomy_sync.SyncTests.test_complete_dirty_baseline_passes) ... ok
+test_deleted_input_requires_mapping (test_taxonomy_sync.SyncTests.test_deleted_input_requires_mapping) ... ok
+test_deleted_mapped_input_passes (test_taxonomy_sync.SyncTests.test_deleted_mapped_input_passes) ... ok
+test_duplicate_index (test_taxonomy_sync.SyncTests.test_duplicate_index) ... ok
+test_field_change_needs_human_record (test_taxonomy_sync.SyncTests.test_field_change_needs_human_record) ... ok
+test_mirror_drift (test_taxonomy_sync.SyncTests.test_mirror_drift) ... ok
+test_missing_each_register_mapping (test_taxonomy_sync.SyncTests.test_missing_each_register_mapping) ... ok
+test_missing_owner (test_taxonomy_sync.SyncTests.test_missing_owner) ... ok
+test_pending_review (test_taxonomy_sync.SyncTests.test_pending_review) ... ok
+test_post_review_source_drift (test_taxonomy_sync.SyncTests.test_post_review_source_drift) ... ok
+test_scope_mismatch (test_taxonomy_sync.SyncTests.test_scope_mismatch) ... ok
+test_stale_evidence (test_taxonomy_sync.SyncTests.test_stale_evidence) ... ok
+test_standalone_changelog_row_rejected (test_taxonomy_sync.SyncTests.test_standalone_changelog_row_rejected) ... ok
+test_summary_maturity_change_requires_record (test_taxonomy_sync.SyncTests.test_summary_maturity_change_requires_record) ... ok
+test_symlink_input (test_taxonomy_sync.SyncTests.test_symlink_input) ... ok
+test_unsafe_evidence_path (test_taxonomy_sync.SyncTests.test_unsafe_evidence_path) ... ok
+test_valid_explicit_field_disposition (test_taxonomy_sync.SyncTests.test_valid_explicit_field_disposition) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.298s
+
+OK
+
+
+FILE provenance-recheck.json
+{
+  "bootstrap_original_sha256": "afdd883cbc4c20df051b73a1cd0c9325ab900cafb27608242a4ad95d2f06d105",
+  "bootstrap_original_keys": [
+    "schema",
+    "created_at",
+    "roots",
+    "scope",
+    "files",
+    "note"
+  ],
+  "original_capture_timestamp": "2026-09-09T06:46:06.774708+00:00",
+  "first_tool_file_birth_utc": "2026-09-09T06:49:23.004486+00:00",
+  "preserved_inputs": 422,
+  "preserved_bytes_mismatches": [],
+  "baseline_derivation": "Original bootstrap JSON has hashes/scope but no fields. baseline.json adds fields and display_fields from preserved pre-edit bytes using the later parser. It does not re-snapshot the edited repositories. No stand-alone script existed at capture time: the stdlib walk ran inline through the retained conversation exec tool call; no historical script hash is available or asserted. Both artifacts live under reports/reviews outside scanned scope. Timestamps are host evidence, not independent attestation.",
+  "protected_display_before_after": {
+    "ADRL-FND-005": {
+      "before": {
+        "index": {
+          "verdict": "APPROVE",
+          "maturity": "Historical D3 governance; product release gate unmet"
+        },
+        "bucket": {
+          "verdict": "APPROVE",
+          "maturity": "D3 \u2192 D3 (governance note)"
+        }
+      },
+      "after": {
+        "index": {
+          "verdict": "APPROVE",
+          "maturity": "Historical D3 governance; product release gate unmet"
+        },
+        "bucket": {
+          "verdict": "APPROVE",
+          "maturity": "D3 \u2192 D3 (governance note)"
+        }
+      }
+    },
+    "ADRL-EVL-009": {
+      "before": {
+        "index": {
+          "verdict": "PROPOSED (new)",
+          "maturity": "D1"
+        },
+        "bucket": {
+          "verdict": "PROPOSED (new)",
+          "maturity": "; \u2192 D1"
+        }
+      },
+      "after": {
+        "index": {
+          "verdict": "PROPOSED (new)",
+          "maturity": "D1"
+        },
+        "bucket": {
+          "verdict": "PROPOSED (new)",
+          "maturity": "; \u2192 D1"
+        }
+      }
+    }
+  },
+  "latest_runtime_manifest": "reports/reviews/outcome-contract-2026-09-09/checks-2/manifest.json",
+  "latest_runtime_manifest_sha256": "1aa05cdc42a990c395e2ef00bed2bdb89229b1eb6f755c5a0f9ad323814f6007",
+  "runtime_manifest_input_count": 324,
+  "changed_since_that_manifest": [
+    "AGENTS.md"
+  ],
+  "skill_mirror_sha256": {
+    ".codex": "4f4e92e45638783430779ebc210192e5e259a4f109448ad9c9f7c44aa30fccf0",
+    ".claude": "4f4e92e45638783430779ebc210192e5e259a4f109448ad9c9f7c44aa30fccf0"
+  },
+  "canonical_skill_sha256": "4f4e92e45638783430779ebc210192e5e259a4f109448ad9c9f7c44aa30fccf0"
+}
+
+
+FILE recheck-pending.log
+taxonomy_sync: FAILED: review_pending or incomplete semantic coverage
+
+
+FILE closure.json
+{
+  "wave": "taxonomy-sync-gate",
+  "date": "2026-09-09",
+  "changes": {
+    "R:adr/FND/ADRL-FND-005.md": {
+      "before": "1c7ce24cca5fd0ed81daf260db74d7fe3034fd7fe5e0af241b6432bf9fcfdca7",
+      "after": "75e8a531d87a75a331a819aebf6869d6293cff48f2ed06f28d1830c58c86f220"
+    },
+    "R:tools/check_taxonomy_sync.py": {
+      "before": null,
+      "after": "50c4b2069b0c78b66f2875eb8b3c8c7ed34fa2bbefdacfbecacefebcbc4b1dfc"
+    },
+    "R:tests/test_taxonomy_sync.py": {
+      "before": null,
+      "after": "9a8f311cdfa079cd7c57543c2b68d0885efdc0a806e07c162d427b82d9c35052"
+    },
+    "R:adr/FND/README.md": {
+      "before": "ad911297a0416094f57bd7b6de3661a82d9e48cba46187a1d480254d6404022a",
+      "after": "923d0137c307386150dfd63aca5e137d972ca77ea823531963264b6504758e8e"
+    },
+    "R:adr/EVL/README.md": {
+      "before": "9dea3252b690eae35b0260909f2fbc2b31a47994d4f5f8609dccc8cb47d9487a",
+      "after": "3e6e9daaa017eaa7abd786392eaed2a51fcc962af284ebe96ee2877e3ba23b5d"
+    },
+    "R:skills/adrl-taxonomy-sync/SKILL.md": {
+      "before": null,
+      "after": "4f4e92e45638783430779ebc210192e5e259a4f109448ad9c9f7c44aa30fccf0"
+    },
+    "R:AGENTS.md": {
+      "before": "da8e1b91b73598408bb6ef9c4fa58038383715a210cf76f8466c6003a50e454b",
+      "after": "31ac03ab41a5f37a9de1835885d10c85a718622c25afef647e6880ba639c7c16"
+    },
+    "R:INDEX.md": {
+      "before": "54cf107c505837ba6e4f778827342af31853ec19cc433e850cb2f5f249be59bf",
+      "after": "bc52e3e52ea2458df1583e11f3710656e1c024e75dad181f144c009a1feec60f"
+    },
+    "R:CHANGELOG.md": {
+      "before": "6ead9fb3c5de2bbba9a0d33ef9a1d62a5bb51e5ec5e1165d0b6b787f8b2431fd",
+      "after": "72b1971ef6da97c9807633d2bfb026dd2247baf3bcdbcd50eeccd5db7f2312d5"
+    },
+    "C:AGENTS.md": {
+      "before": "b5fd37e36c52874192a3e87966822cd0d7ea0ef789a3e47e9fc9f9bc3120a490",
+      "after": "6e7c1dac3fe6db3449d78c27b27d622d99f4e7557acd52e078aafdf927feabbb"
+    },
+    "R:adr/EVL/ADRL-EVL-009.md": {
+      "before": "dfff5f80f6ecbf0cb3212728090fc1fa180f23d25cfd3ec0f9939dd9875d191e",
+      "after": "e4ae2bc4352e1569800d1ff148f44e0768e7ec8adc2678d59bf4e7076029b56f"
+    },
+    "R:reports/adrl-wave-execution-template.md": {
+      "before": "f2fe0d1b54545c8a98c9536e22b801304d33d1e2fdb0758eead4c335c24adbea",
+      "after": "f41c69e2c6c828022e3f119bca5d9ec56304dbf424215f99cf0ad11f2be62eb9"
+    }
+  },
+  "file_owners": {
+    "C:AGENTS.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:AGENTS.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:reports/adrl-wave-execution-template.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:skills/adrl-taxonomy-sync/SKILL.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:tests/test_taxonomy_sync.py": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:tools/check_taxonomy_sync.py": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ]
+  },
+  "owners": [
+    {
+      "id": "ADRL-FND-005",
+      "kind": "workflow",
+      "summary": "Local checked implementation/register closure",
+      "limitations": "Declared scope; reviewer attestations; not remote CI or full historical maturity reconciliation",
+      "fields": {
+        "Status": "Accepted \u00b7 unchanged",
+        "Maturity": "D3 Shadow, review recommends D3 Shadow with a note: the D-scale measures runtime behaviour and fits a governance commitment poorly; the honest reading is \"the readiness tooling runs against shadow data and its verdicts have so far been respected\"",
+        "Review verdict": "APPROVE"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/report.md",
+          "sha256": "f7a0730d8f7e7bb96fc1ef4be42cc24ea980354f292ddc6965c5e83b3a56611a"
+        },
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/tests.log",
+          "sha256": "c011a622d79cc19626662f8dbf62148a308506a7a06e0b508aff1eac594c4563"
+        },
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/provenance-recheck.json",
+          "sha256": "1a67e1b11943d001dee0077cf032d21b5296ffa7e1c923e871b357c35184c92a"
+        }
+      ]
+    },
+    {
+      "id": "ADRL-EVL-009",
+      "kind": "workflow",
+      "summary": "Local checked implementation/register closure",
+      "limitations": "Declared scope; reviewer attestations; not remote CI or full historical maturity reconciliation",
+      "fields": {
+        "Status": "Proposed 2026-09-03 (first capture; referenced by the overview, MEM-006, MEM-010, LRN-006 since 2026-08-27)",
+        "Maturity": "D1 Code; adrl-core `learning/readiness.py` and `ledger/readiness.py` list blockers by name and never fold them into a score; the blocker list itself is not yet pre-registered",
+        "Review verdict": "PROPOSED (new)"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/report.md",
+          "sha256": "f7a0730d8f7e7bb96fc1ef4be42cc24ea980354f292ddc6965c5e83b3a56611a"
+        },
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/tests.log",
+          "sha256": "c011a622d79cc19626662f8dbf62148a308506a7a06e0b508aff1eac594c4563"
+        },
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/provenance-recheck.json",
+          "sha256": "1a67e1b11943d001dee0077cf032d21b5296ffa7e1c923e871b357c35184c92a"
+        }
+      ]
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "reviewer": "Claude Fable 5.1",
+    "covered_adrs": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "blocking_findings": [
+      "post-review pending"
+    ],
+    "record": {
+      "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/post-review.md",
+      "sha256": "346288c5abe7d47ac8960ea6c7b14eb1200644a66ff9d2a8c5279729b66144bc"
+    },
+    "inputs": {
+      "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/recheck-source-hashes.json",
+      "sha256": "bc1e3317e9e81053967d15acb230710f66ae8ac12c1935dd7dc63c8d9c8e4011"
+    }
+  }
+}
+
+
+FILE C:AGENTS.md
+# adrl-core engineering rules
+
+These rules apply to every change in this repository. The architecture source of truth is the ADR
+register in `../adrl-world-class/adr/<BUCKET>/ADRL-<BUCKET>-NNN.md` (reviewed 2026-09-02). The stack
+proposal that this repository implements is `../adrl-world-class/design/implementation-stack.md`.
+
+## Ownership
+
+- Every module docstring names its primary ADRL ID on the first line, for example
+  `"""Secret detection on new content. Primary: ADRL-SAF-003."""`. Secondary IDs are listed only for
+  real cross-cutting contracts.
+- Packages map to buckets: `wire` (SEM), `gates` (SAF), `routing` (RTG), `cascade` (CAS), `ledger`
+  (MEM), `learning` (LRN). `core`, `config`, `proxy`, `telemetry` and `cli` are shared plumbing.
+- A task implements an indexed decision. It does not need a new decision merely because it adds a
+  file. If no decision fits, stop and propose one in the register; do not invent behaviour.
+
+## Invariants the code must keep
+
+- Never rewrite a request body on the frontier or passthrough path. The bytes the harness sent are
+  the bytes the gateway receives, and response bytes (SSE `ping` events, upstream error wording)
+  are relayed unmodified. Body rewrites exist only for non-Claude rungs (ADRL-FND-001).
+  One carve-out (ADRL-CAS-004): after an escalation whose source turn carried no thinking
+  blocks, the `thinking` parameter is stripped from frontier-bound requests until the next user
+  turn, and the plan records `thinking_suppressed`.
+- No `UPDATE` or `DELETE` SQL anywhere under `src/`. The evidence ledger and the egress ledger are
+  append-only. Corrections are new events; erasure is key deletion plus an `erased` event
+  (ADRL-MEM-001, ADRL-MEM-010). `tools/check_ledger_discipline.py` enforces this in CI.
+- Every "versioned policy constant" named in an ADR is a field on a versioned config model, and the
+  config version is recorded on the decision row it influenced. Changing a threshold is a config
+  version bump, never a literal in code.
+- Shadow code never imports into live routing. Nothing under `adrl.learning` and no module whose
+  name starts with `shadow_` may be imported by `adrl.routing` or `adrl.proxy` (ADRL-MEM-008).
+- A privacy pin can only be released by the audited human path (ADRL-SAF-002). No code path in
+  routing, cascade, fallback or episode handling may clear pin state.
+- Gate outcomes only tighten the permitted rung set within a lineage. `PermittedSet.tighten`
+  raises on any attempt to widen (ADRL-SAF-001).
+- Terminal failures are rendered as Anthropic Messages API error objects, never as synthetic
+  assistant content (ADRL-CAS-007).
+
+## Code quality
+
+- No mock implementations. Write the real thing, or leave a `TODO(ADRL-XXX-NNN):` comment naming
+  the owning decision and raise `NotImplementedError` with the same text.
+- Type hints on every public function; `mypy --strict` must pass.
+- No em dashes in any file, including docs, docstrings and log messages.
+- Descriptive names. No adjectives in file names.
+- `structlog` for logging, never `print` in `src/`.
+- Pydantic v2 at config and record boundaries; frozen dataclasses for internal value objects.
+
+## Running checks
+
+```bash
+.venv/bin/python -m ruff check src tests tools
+.venv/bin/python -m ruff format --check src tests tools
+.venv/bin/python -m mypy
+.venv/bin/python -m pytest -q
+.venv/bin/python tools/check_ledger_discipline.py
+.venv/bin/python -m adrl.cli.main config check
+```
+
+All six must pass before a change is considered done. Use `uv sync --all-extras` to refresh the
+virtual environment; the lockfile is checked in and only binary wheels are used.
+
+## Taxonomy synchronization completion gate
+
+Before implementation/configuration/adapter/tooling changes, use `adrl-taxonomy-sync` at
+`/Users/arunmenon/projects/adrl-world-class/skills/adrl-taxonomy-sync/SKILL.md`
+(installed in both Codex and Claude). Capture the declared dirty-worktree baseline before edits.
+At closure, map every changed input to owning ADRs, synchronize dated evidence in the ADRs,
+INDEX, affected bucket rows and CHANGELOG, and retain independent semantic review. Run
+`python3 /Users/arunmenon/projects/adrl-world-class/tools/check_taxonomy_sync.py check`
+with its required baseline, packet and new outside-repository receipt arguments.
+A failed or absent receipt means taxonomy synchronization is incomplete: do not claim the
+implementation wave complete. Recheck after any source/evidence/review change. Preserve
+historical grades and unrelated changes; this local gate does not replace runtime tests,
+human graduation, or remote CI/branch protection. Scope exclusions and unresolved historic
+register defects must be explicit. Routine documentation updates need no extra permission.
+
+
+FILE R:AGENTS.md
+# Keeping the ADRL register and implementation aligned
+
+This repository is the architecture decision register for ADRL. Runtime implementation is in
+the sibling `adrl-core` repository. Follow these rules when changing either as part of this work.
+
+- Before completing an implementation change, identify its owning ADRs and record the result in
+  those records. A behavior change updates the decision or its explicitly scoped application;
+  a refactor or bug fix can retain the decision and add implementation evidence.
+- Preserve stable ADR IDs, prior decision wording in the changelog, and dated research findings.
+  Distinguish product direction, implemented behavior, tested behavior and planned work.
+- Update `INDEX.md`, the affected bucket overviews and `CHANGELOG.md` with the same scope. Link
+  the code, test/evidence record, limitations and outstanding follow-ups. Do not mark work done
+  merely because a schema, interface or component exists.
+- Keep architectural status separate from maturity. Offline tests can support D2 for the tested
+  behavior; they do not establish D3, D4, D5, another harness, or the whole decision's promise.
+- `source/` preserves historical input. Add a clearly dated current-context note when necessary;
+  do not rewrite historical observations as if they described the current implementation.
+- Preserve unrelated uncommitted changes. Verify local links, decision-index coverage and the
+  implementation evidence cited by a register update. Documentation-only synchronization does
+  not require rerunning the runtime suite if the tested source hashes still match.
+
+## Independent review checkpoints
+
+For substantive ADRL implementation waves, use the `adrl-critical-review` skill
+(Codex: `/Users/arunmenon/.codex/skills/adrl-critical-review/SKILL.md`; Claude Code:
+`/Users/arunmenon/.claude/skills/adrl-critical-review/SKILL.md`). Require an independent
+pre-wave challenge and post-wave evidence review before claiming the affected wave complete.
+Retain original reviewer findings, Codex dispositions, material-fix rechecks and unresolved
+disagreements. Reviewer absence is pending review, never approval. Model agreement does not
+promote maturity or replace existing graduation authority. Scope reviews to the change; use
+full roadmap/all-ADR coverage for retrospective and milestone reviews. This process does not
+restart automation or authorize additional execution exposure.
+
+## Taxonomy synchronization completion gate
+
+Before implementation/configuration/adapter/tooling changes, use `adrl-taxonomy-sync` at
+`/Users/arunmenon/projects/adrl-world-class/skills/adrl-taxonomy-sync/SKILL.md`
+(installed in both Codex and Claude). Capture the declared dirty-worktree baseline before edits.
+At closure, map every changed input to owning ADRs, synchronize dated evidence in the ADRs,
+INDEX, affected bucket rows and CHANGELOG, and retain independent semantic review. Run
+`python3 /Users/arunmenon/projects/adrl-world-class/tools/check_taxonomy_sync.py check`
+with its required baseline, packet and new outside-repository receipt arguments.
+A failed or absent receipt means taxonomy synchronization is incomplete: do not claim the
+implementation wave complete. Recheck after any source/evidence/review change. Preserve
+historical grades and unrelated changes; this local gate does not replace runtime tests,
+human graduation, or remote CI/branch protection. Scope exclusions and unresolved historic
+register defects must be explicit. Routine documentation updates need no extra permission.
+
+
+FILE R:CHANGELOG.md
+EXCERPT: unchanged history omitted; all changed mapping lines follow.
+2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-FND-005 --> ADRL-FND-005: [checked workflow, evidence and limits](reports/reviews/taxonomy-sync-gate-2026-09-09/report.md). Existing decisions/grades preserved; no remote CI enforcement.
+2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-EVL-009 --> ADRL-EVL-009: [checked workflow, evidence and limits](reports/reviews/taxonomy-sync-gate-2026-09-09/report.md). Existing decisions/grades preserved; no remote CI enforcement.
+
+FILE R:INDEX.md
+EXCERPT: unchanged history omitted; all changed mapping lines follow.
+| [ADRL-FND-005](adr/FND/ADRL-FND-005.md) | Scope expands only through measured gates | APPROVE | Historical D3 governance; product release gate unmet | Q6 | 549 tests and first offline verifier comparison; scoped D2 only, broader product and cross-harness maturity unchanged (2026-09-07) · W0: [baseline checks and limits](reports/waves/w0-baseline.md), no maturity change (2026-09-07)  2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-FND-005 --> [Scoped sync gate](reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); maturity unchanged |
+| [ADRL-EVL-009](adr/EVL/ADRL-EVL-009.md) | Blockers are never averaged away | PROPOSED (new) | D1 | Q6 | Verifier comparison blocks drift, flaky repeats, incomplete/unavailable execution and per-case regressions; no averaging away blockers (2026-09-07) · W0: [baseline checks and limits](reports/waves/w0-baseline.md), no maturity change (2026-09-07)  2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-EVL-009 --> [Scoped sync gate](reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); maturity unchanged |
+
+FILE R:adr/EVL/ADRL-EVL-009.md
+EXCERPT: unchanged history omitted, full file snapshotted.
+# ADRL-EVL-009: Blockers are never averaged away
+
+| Field | Value |
+|---|---|
+| Bucket | EVL; Evaluation, Graduation, Rollout |
+| Status | Proposed 2026-09-03 (first capture; referenced by the overview, MEM-006, MEM-010, LRN-006 since 2026-08-27) |
+| Maturity | D1 Code; adrl-core `learning/readiness.py` and `ledger/readiness.py` list blockers by name and never fold them into a score; the blocker list itself is not yet pre-registered |
+| Review verdict | PROPOSED (new) |
+| Tenets | 2, 8, 9 |
+| Related decisions | FND-005, MEM-006, MEM-010, LRN-006, SAF-001, SAF-002, SAF-003, SAF-007, EVL-004, EVL-007, EVL-008 |
+| Open questions | Q6 |
+
+## Decision
+## Taxonomy synchronization tooling, 2026-09-09
+
+The checker reports named failures with nonzero exit status for missing ownership, stale evidence, incomplete review and invalid register mappings. These blockers cannot be offset by a passing test total. It also protects changed canonical fields and owning summary verdict/maturity cells with explicit human-record checks. This is a scoped application of measured engineering gates; it does not amend runtime graduation blockers or promote maturity. Global INDEX IDs and affected bucket coverage are checked; historical grade/other-bucket reconciliation remains unfinished. Code: [checker](../../tools/check_taxonomy_sync.py), [tests](../../tests/test_taxonomy_sync.py). 2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-EVL-009 --> [Evidence and limits](../../reports/reviews/taxonomy-sync-gate-2026-09-09/report.md).
+
+## Changelog
+
+| Date | Change | Text before change |
+|---|---|---|
+| 2026-09-09 | <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-EVL-009 --> [Local sync-gate evidence](../../reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); no grade change | Prior decision wording and dated evidence preserved |
+| 2026-09-07 | Recorded W0 baseline, repeatable checks and explicit remaining gates | Prior decision wording and evidence preserved; no architecture or maturity change |
+| 2026-09-07 | Recorded applied offline verifier experiment and its limits | Prior decision and evidence preserved; no versioned verifier comparison had been recorded |
+| 2026-09-03 | Proposed (first capture of the EVL bucket) |; |
+
+
+
+FILE R:adr/EVL/README.md
+EXCERPT: unchanged history omitted; all changed mapping lines follow.
+| ADRL-EVL-009 | Blockers are never averaged away | PROPOSED (new) |; → D1 | Eight pre-registered blockers, versioned; a score cannot absorb one  2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-EVL-009 --> [Scoped sync gate](../../reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); maturity unchanged |
+
+FILE R:adr/FND/ADRL-FND-005.md
+EXCERPT: unchanged history omitted, full file snapshotted.
+# ADRL-FND-005 — Scope expands only through measured gates
+
+| Field | Value |
+|---|---|
+| Bucket | FND — System Boundary and Principles |
+| Status | Accepted · unchanged |
+| Maturity | D3 Shadow, review recommends D3 Shadow with a note: the D-scale measures runtime behaviour and fits a governance commitment poorly; the honest reading is "the readiness tooling runs against shadow data and its verdicts have so far been respected" |
+| Review verdict | APPROVE |
+| Tenets | 8, 9 |
+| Related decisions | EVL-004, EVL-005, EVL-006, EVL-007, EVL-009, LRN-007, MEM-008, RTG-006 |
+| Open questions | Q6 |
+
+## Decision
+## Taxonomy synchronization tooling, 2026-09-09
+
+A local development completion gate now requires declared-source change ownership and dated register/evidence mappings, pinned semantic review and final drift checks. This is a scoped application of measured engineering gates; it does not amend runtime graduation blockers or promote maturity. Global INDEX IDs and affected bucket coverage are checked; historical grade/other-bucket reconciliation remains unfinished. Code: [checker](../../tools/check_taxonomy_sync.py), [tests](../../tests/test_taxonomy_sync.py). 2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-FND-005 --> [Evidence and limits](../../reports/reviews/taxonomy-sync-gate-2026-09-09/report.md).
+
+## Changelog
+
+| Date | Change | Text before change |
+|---|---|---|
+| 2026-09-09 | <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-FND-005 --> [Local sync-gate evidence](../../reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); no grade change | Prior decision wording and dated evidence preserved |
+| 2026-09-07 | Recorded W0 baseline, repeatable checks and explicit remaining gates | Prior decision wording and evidence preserved; no architecture or maturity change |
+| 2026-09-07 | Linked proposed implementation roadmap and dependent decision questions | Prior decision and evidence preserved; no runtime or maturity change in this planning pass |
+| 2026-09-07 | Recorded applied offline verifier experiment and its limits | Prior decision and evidence preserved; no versioned verifier comparison had been recorded |
+| 2026-09-07 | Recorded applied session verification and its tested limits | Prior decision and evidence preserved; the observation pilot had no session-scoped verifier receipts |
+| 2026-09-07 | Recorded applied observation mode and the first live subscription pilot | Decision policy and status unchanged; prior evidence was offline or synthetic, with observation-only launch still planned |
+| 2026-09-07 | Recorded native-subscription baseline and separately scoped observation/gateway pilot stages | Decision unchanged; the earlier product application did not distinguish these billing and coverage paths |
+| 2026-09-07 | Recorded applied product services, their scoped D2 evidence and limitations | Decision policy unchanged; the prior foundation did not implement session/event/read services |
+| 2026-09-07 | Applied the measured-scope principle to the first stable multi-harness API; release gate remains unmet | Principle unchanged; this product-specific application was absent |
+| 2026-08-27 | Accepted (Confluence register) | — |
+| 2026-09-02 | Approved unchanged | "Scope expands only through measured phase gates; component presence is not readiness." |
+
+
+
+FILE R:adr/FND/README.md
+EXCERPT: unchanged history omitted; all changed mapping lines follow.
+| ADRL-FND-005 | Scope expands only through measured gates | APPROVE | D3 → D3 (governance note) | Sound and currently honoured; gaps (self-graded, no pre-registration, no de-promotion) belong to EVL follow-ups  2026-09-09 <!-- taxonomy-sync:taxonomy-sync-gate:ADRL-FND-005 --> [Scoped sync gate](../../reports/reviews/taxonomy-sync-gate-2026-09-09/report.md); maturity unchanged |
+
+FILE R:reports/adrl-wave-execution-template.md
+# ADRL wave execution packet
+
+Template v1, 7 September 2026. This is a planning/checklist artifact, not an executable approval or deployment system. Use it for one wave or one bounded slice of the [roadmap](adrl-implementation-roadmap-2026-09-07.md).
+
+## Identity, scope and authority
+
+| Field | Fill before execution |
+|---|---|
+| Packet ID and parent wave | Stable ID, version, predecessor packet |
+| Engineering state | proposed / ready / implementing / validated / closed |
+| Disposition | advance / repeat / narrow / amend / defer / stop; separate from engineering state |
+| Outcome in user language | One behavior a user can now rely on |
+| Owner / reviewer | Named implementation owner, evidence reviewer and relevant security/release authority |
+| Existing authorization | Link the instruction or decision that authorizes the work; do not ask again for the same authority |
+| Scope tuple | Harness/version, profile/version, transport, deployment, repository class, integration mode, task family |
+| Current and target maturity | Per ADR behavior, exact versions and population; current evidence, missing gates and required reviewer. Target is not a promotion |
+| Runtime exposure | offline / observation / shadow / constrained live; never infer live approval from code completion |
+| Owning decisions | Exact ADR IDs, clauses and any proposed amendment |
+| Dependencies | Evidence records for prerequisite gates; missing data stays missing |
+| Explicit exclusions | Unsupported states, untested populations and data not permitted to leave the machine |
+
+## Problem and falsifiable hypothesis
+
+State the problem, a concrete example, current behavior and desired behavior. Name what observation would make us reject the proposed change. Classify the question as implementation defect, parameter choice, architecture assumption, compatibility, measurement or product scope.
+
+Record any decision conflict before coding around it. If no existing ADR owns the behavior, propose ownership rather than inventing a hidden contract. Keep routine restoration of an existing invariant distinct from changing that invariant.
+
+## Inputs frozen before the comparison
+
+- Source snapshot/commit and dirty-worktree manifest; dependency, environment and configuration versions.
+- Native harness/protocol/provider versions and approved credentials, recorded without exposing secrets.
+- Initial task state, task/attempt lineage, output-capture boundary and verifier plan/artifact hashes.
+- Evidence origin, verification quality, eligibility and permitted storage/access/retention.
+- Development, selection and fresh assessment partitions; related-task grouping and holdout access owner.
+- Baseline/candidate identities, primary outcome, minimum worthwhile gain or allowed quality loss.
+- Analysis, uncertainty method, stopping rule, minimum exposure and treatment of multiple candidates/interim looks.
+
+Expected outcomes must be set independently of the candidate where independence is claimed. Freeze numeric thresholds before release assessment; any later change creates a new evaluation version and fresh assessment requirement. A curated fixture may validate mechanics without qualifying an efficacy claim.
+
+## Deliverables and bounded execution
+
+List the smallest implementation slices and their expected files or contracts. Include contract compatibility, migrations, data inventory, documentation and diagnostics in scope where needed. Every module in `adrl-core` names its primary ADR.
+
+| Limit | Approved value / measurement |
+|---|---|
+| Task attempts / repair attempts | Explicit cap, including the stop behavior |
+| Model calls / tokens / turns | Cap across arms, repetitions and in-flight work |
+| Dollar ceiling | Explicit approved amount for paid usage; null means not established, never unlimited |
+| Runtime / per-command timeout | Include cancellation behavior and in-flight ambiguity |
+| Snapshot / evidence storage | File/byte limits, retention and cleanup |
+| Concurrency | Maximum simultaneous tasks and budget reservations |
+| Allowed actions and destinations | Tools, files, repositories and provider destinations permitted by the packet |
+
+For an offline-only coding packet, state that no model-service calls or new infrastructure are included. If exact billing enforcement is unavailable, state the conservative alternative limits and residual uncertainty. Record costs for failed and discarded candidates.
+
+## Acceptance, fault cases and advancement
+
+For each promised behavior, specify an observable case, expected result, artifact and owner. Include negative cases, restart, cancellation, malformed/missing inputs, credential/identity boundaries, ledger/key failure and erasure where applicable.
+
+| Gate | Frozen threshold or expected behavior | Evidence link | Outcome |
+|---|---|---|---|
+| Entry prerequisites | Actual prerequisite evidence | | not assessed |
+| Functional conformance | Named cases and expected results | | not assessed |
+| Critical invariants | No forbidden dispatch/authority leak/duplicate effect/erasure resurrection in required cases | | not assessed |
+| Outcome quality | False accept/reject, uncertainty and repair metrics; declared population | | not assessed |
+| Reliability / budget | All-attempt denominator, limits and failure accounting | | not assessed |
+| Rollback / recovery | Measured recovery within stated target, preserving restrictions | | not assessed |
+| Register and compatibility | Owning ADRs/index/buckets/changelog, schema and client compatibility | | not assessed |
+| Release / maturity authority | Separate human decision and signature where required | | not assessed |
+
+Use passed, failed, insufficient, not assessed or explicitly scoped not applicable. “Not applicable” needs a reason tied to a removed claim; it cannot waive a critical invariant of an advertised feature. Passing a development gate grants no new deployment authority.
+
+## Required implementation checks
+
+Run from `adrl-core` in its recorded environment:
+
+```bash
+.venv/bin/python -m ruff check src tests tools
+.venv/bin/python -m ruff format --check src tests tools
+.venv/bin/python -m mypy
+.venv/bin/python -m pytest -q
+.venv/bin/python tools/check_ledger_discipline.py
+.venv/bin/python -m adrl.cli.main config check
+```
+
+Also run data inventory, learning-contract, contract-export compatibility and ADR module-map checks when affected. Include the relevant adversarial and real-harness cases before claiming those properties. Publish skipped/unsupported cases and failures. Documentation-only synchronization can rely on unchanged verified source hashes under the repository instructions.
+
+## Stop, rollback and continued work
+
+Name immediate stop triggers, who can stop admission, what happens to in-flight work, the compatible recovery version, and how pins, erasure records and evidence survive rollback. Do not use a direct cloud bypass as recovery from a restriction failure. If safe rollback is unavailable, stop the affected path.
+
+After the agreed attempt limit or a material new contradiction, produce a failure packet. Continue useful independent work within existing authorization, while withholding the dependent exposure. A failed hypothesis can close a packet honestly; it must not be turned into a passed gate.
+
+## Closure and decision-ledger update
+
+Record the actual result versus the original hypothesis, all attempts and exclusions, costs, checks, artifact hashes, disagreements and remaining risks. Choose keep, tune, amend, replace or defer, explaining why. Preserve prior ADR wording and stable IDs; synchronize the index, bucket overviews, changelog and support matrix. Verify links and applied source hashes.
+
+End with a user-facing account: what changed, what was proven, what remains unproved, whether maturity or deployment authority changed, and the next concrete action. Capture the reviewer/release decision separately from the implementation author's recommendation.
+
+## Required taxonomy-sync closure receipt
+
+Use the repo-owned `adrl-taxonomy-sync` skill. Capture the before-edit baseline; map changed
+inputs to ADRs; add dated evidence links to the ADRs, INDEX rows, affected bucket rows and
+CHANGELOG. Supply pinned evidence and the independent semantic review, then run the
+register's `tools/check_taxonomy_sync.py check`. Record the receipt path/hash here.
+Missing/failed/stale receipt means synchronization incomplete, not implementation complete.
+A passing receipt is scoped mechanical evidence plus reviewer attestations, never automatic
+maturity or a substitute for runtime validation.
+
+
+FILE R:skills/adrl-taxonomy-sync/SKILL.md
+---
+name: adrl-taxonomy-sync
+description: Keep ADRL implementation changes synchronized with owning architecture decisions and verify the local closure record. Use before editing ADRL runtime, configuration, adapters, tests, tooling or architecture; apply at completion alongside independent review.
+---
+
+# ADRL taxonomy synchronization
+
+Canonical skill: `/Users/arunmenon/projects/adrl-world-class/skills/adrl-taxonomy-sync/SKILL.md`. Identical installed copies belong in Codex and Claude skills. Register is `adrl-world-class`; runtime is sibling `adrl-core`. This is a required local completion workflow under both AGENTS.md files, not remote CI or a tamper-proof control.
+
+## Before changing implementation
+
+Read repository instructions and the owning ADRs. Name primary and secondary owners based on behavior, not merely file location. Adapters normally anchor in SEM-007 with relevant FND/CAS/TRU/MEM/OPS decisions. If ownership is genuinely new, propose an ADR in an existing appropriate bucket; do not silently invent a contract.
+
+Use `python3 tools/check_taxonomy_sync.py begin --out <absolute-new-path-outside-both-repos>` from the register before edits. It includes dirty/untracked declared inputs, so unrelated existing changes are not falsely attributed to this wave. Preserve the baseline with the critical-review source snapshot. Inspect the tool's fixed scope/exclusions: changes outside that scope need a reviewed scope expansion or explicit separate disposition, not an assertion that all files were checked. A missed baseline must be reconstructed from actual saved artifacts and disclosed; never run begin after edits and pretend it was captured before.
+
+## Complete the same change in the register
+
+For every changed/added/deleted input, explicitly map ownership in a closure JSON record. Record whether this is behavior, evidence, refactor or workflow. Preserve decision IDs, previous decision wording in changelogs and dated history. Tests support only their actual scope. Update owning ADRs, their changelog rows, INDEX rows, affected bucket rows and root CHANGELOG with dated evidence links and the same marker `<!-- taxonomy-sync:<wave>:<ADRL-ID> -->` on each mapping line. Include an explanatory dated ADR section, not just a token marker. Markers let a checker locate the update; the semantic reviewer judges whether its content is true and sufficient.
+
+Keep unchanged maturity/status/verdict fields exactly unchanged. A change needs a separately pinned human disposition record with `adr`, `before` and `after` field objects, `human_name`, `date`, and `display_before`/`display_after` for protected INDEX/bucket verdict and maturity cells. These fixed-format display cells are checked against baseline; historical abbreviated values are not normalized. The checker only validates the record's structure; it cannot authenticate the human or decide graduation. Historical grade/index reconciliation remains its own open work and cannot be claimed complete from this forward check.
+
+## Closure record and review
+
+Schema is defined by [the checker](/Users/arunmenon/projects/adrl-world-class/tools/check_taxonomy_sync.py). A worked self-application record is saved in `reports/reviews/taxonomy-sync-gate-2026-09-09/closure.json`; use its shape, never reuse its hashes or review.
+
+Required fields: wave slug, date, `changes` covering every declared changed path with before/after SHA-256 (null for absent), `file_owners` covering non-derived changed inputs, and `owners` with id/kind/summary/limitations/current `fields` and nonempty pinned `evidence` references (`path` relative to register and `sha256`). Derived register files are the named ADRs, their bucket READMEs, INDEX and CHANGELOG; stray ADR edits fail. Include pinned semantic `review.record`, `review.inputs` (all current source hashes), status accepted, named reviewer, covered ADRs and no unresolved blocking findings. These are auditable assertions, not automatic independent verification.
+
+Use adrl-critical-review for substantive work. Reviewer must check omitted owners, actual diff versus ADR wording, code/test links, evidence applicability, unchanged versus amended decisions, maturity limits and unsupported claims. An authored conclusion cannot stand in for the original reviewer response. Missing review means pending, never accepted. Do routine synchronization within existing authority; do not ask the user to approve ordinary evidence updates. Do not treat automated review rejection as waived.
+
+After runtime checks, register edits, installed mirror updates and semantic review, run:
+
+`python3 tools/check_taxonomy_sync.py check --baseline <saved-baseline.json> --packet <closure.json> --out <new-receipt-outside-both-repos.json>`
+
+Exit nonzero means **taxonomy synchronization incomplete**, so do not claim the implementation wave complete. Keep failure output and fix it or report the blocker. The final receipt pins the baseline, closure, source and separately referenced evidence/review; rerun after any of those changes. It must be outside both repos to avoid self-reference. Do not make post-check source edits while citing the old receipt as current.
+
+## Verification and reporting
+
+Run stdlib checker tests with `python3 -m unittest discover -s tests -p 'test_taxonomy_sync.py' -v` from the register. Runtime changes still need core's ordinary checks. Workflow/document-only edits do not justify relabeling archived full-source tests as current when AGENTS/docs hashes changed; state the exact unchanged runtime subset if reusing evidence. Do not restart automation or authorize model runs through this workflow.
+
+End implementation reports with: owning ADRs, synchronization receipt, independent review disposition, maturity change (usually none), and remaining limitations. This gate prevents common omissions when invoked; arbitrary edits or skipped commands remain possible until separately deployed CI/branch protection exists.
+
+
+FILE R:tests/test_taxonomy_sync.py
+"""Negative closure checks. Primary: ADRL-FND-005. Secondary: ADRL-EVL-009."""
+
+import importlib.util
+import json
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+spec = importlib.util.spec_from_file_location(
+    "sync", Path(__file__).parents[1] / "tools/check_taxonomy_sync.py"
+)
+sync = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(sync)
+
+
+class SyncTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.base = Path(self.tmp.name)
+        self.roots = {"R": self.base / "register", "C": self.base / "core"}
+        self.home = self.base / "home"
+        self.patcher = patch.object(Path, "home", return_value=self.home)
+        self.patcher.start()
+        self.addCleanup(self.patcher.stop)
+        self.aid = "ADRL-FND-005"
+        self.write("C:src/changed.py", "already dirty before baseline\n")
+        self.write(
+            "R:adr/FND/ADRL-FND-005.md",
+            "# Decision\n| Status | Accepted |\n| Maturity | D1 |\n| Review verdict | APPROVE |\n",
+        )
+        self.write(
+            "R:INDEX.md",
+            "| [ADRL-FND-005](adr/FND/ADRL-FND-005.md) | title | APPROVE | D1 | initial |\n",
+        )
+        self.write(
+            "R:adr/FND/README.md", "| ADRL-FND-005 | title | APPROVE | D1 | initial |\n"
+        )
+        self.write("R:CHANGELOG.md", "# History\n")
+        self.write("R:skills/adrl-taxonomy-sync/SKILL.md", "canonical skill\n")
+        for tag in [".codex", ".claude"]:
+            q = self.home / tag / "skills/adrl-taxonomy-sync/SKILL.md"
+            q.parent.mkdir(parents=True)
+            q.write_text("canonical skill\n")
+        self.baseline = sync.snapshot(self.roots)
+        self.write("C:src/changed.py", "new behavior\n")
+        self.write("R:reports/reviews/proof.txt", "test evidence\n")
+        self.write("R:reports/reviews/review.md", "semantic review\n")
+        for name, link in [
+            ("adr/FND/ADRL-FND-005.md", "../../reports/reviews/proof.txt"),
+            ("INDEX.md", "reports/reviews/proof.txt"),
+            ("adr/FND/README.md", "../../reports/reviews/proof.txt"),
+            ("CHANGELOG.md", "reports/reviews/proof.txt"),
+        ]:
+            q = self.roots["R"] / name
+            line = f"| {self.aid} | title | APPROVE | D1 | 2026-09-09 <!-- taxonomy-sync:wave:{self.aid} --> [evidence]({link}) |\n"
+            if name == "INDEX.md":
+                line = line.replace(self.aid, f"[{self.aid}](adr/FND/{self.aid}.md)", 1)
+            if name in ["INDEX.md", "adr/FND/README.md"]:
+                q.write_text(line)
+            else:
+                prefix = (
+                    "\n## Changelog\n\n| Date | Change | Before |\n|---|---|---|\n"
+                    if name.endswith(self.aid + ".md")
+                    else ""
+                )
+                q.write_text(q.read_text() + prefix + line)
+        self.packet = {
+            "wave": "wave",
+            "date": "2026-09-09",
+            "owners": [
+                {
+                    "id": self.aid,
+                    "kind": "behavior",
+                    "summary": "real behavior change",
+                    "limitations": "fixture only",
+                    "fields": sync.fields(
+                        (self.roots["R"] / f"adr/FND/{self.aid}.md").read_text()
+                    ),
+                    "evidence": [self.ref("reports/reviews/proof.txt")],
+                }
+            ],
+            "file_owners": {"C:src/changed.py": [self.aid]},
+            "review": {
+                "record": self.ref("reports/reviews/review.md"),
+                "status": "accepted",
+                "reviewer": "independent fixture reviewer",
+                "covered_adrs": [self.aid],
+                "blocking_findings": [],
+            },
+        }
+        self.refresh()
+
+    def write(self, key, text):
+        tag, name = key.split(":", 1)
+        p = self.roots[tag] / name
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(text)
+
+    def ref(self, name):
+        return {"path": name, "sha256": sync.digest(self.roots["R"] / name)}
+
+    def refresh(self):
+        after = sync.snapshot(self.roots)["files"]
+        before = self.baseline["files"]
+        self.packet["changes"] = {
+            k: {"before": before.get(k), "after": after.get(k)}
+            for k in before.keys() | after.keys()
+            if before.get(k) != after.get(k)
+        }
+        self.write("R:reports/reviews/inputs.json", json.dumps(after))
+        self.packet["review"]["inputs"] = self.ref("reports/reviews/inputs.json")
+
+    def run_gate(self):
+        return sync.check(self.roots, self.baseline, self.packet)
+
+    def test_complete_dirty_baseline_passes(self):
+        self.assertEqual(self.run_gate()["status"], "passed")
+
+    def test_missing_owner(self):
+        self.packet["file_owners"] = {}
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_added_input_not_hidden(self):
+        self.write("C:src/new.py", "new")
+        self.refresh()
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_deleted_input_requires_mapping(self):
+        (self.roots["C"] / "src/changed.py").unlink()
+        self.refresh()
+        self.packet["file_owners"] = {}
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_deleted_mapped_input_passes(self):
+        (self.roots["C"] / "src/changed.py").unlink()
+        self.refresh()
+        self.assertEqual(self.run_gate()["status"], "passed")
+
+    def test_stale_evidence(self):
+        self.write("R:reports/reviews/proof.txt", "different")
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_missing_each_register_mapping(self):
+        for name in [
+            "INDEX.md",
+            "CHANGELOG.md",
+            "adr/FND/README.md",
+            "adr/FND/ADRL-FND-005.md",
+        ]:
+            with self.subTest(name=name):
+                p = self.roots["R"] / name
+                old = p.read_text()
+                p.write_text(old.replace("taxonomy-sync:wave", "no-marker"))
+                self.refresh()
+                with self.assertRaises(ValueError):
+                    self.run_gate()
+                p.write_text(old)
+                self.refresh()
+
+    def test_duplicate_index(self):
+        p = self.roots["R"] / "INDEX.md"
+        p.write_text(p.read_text() * 2)
+        self.refresh()
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_field_change_needs_human_record(self):
+        p = self.roots["R"] / f"adr/FND/{self.aid}.md"
+        p.write_text(p.read_text().replace("| D1 |", "| D4 |"))
+        self.refresh()
+        self.packet["owners"][0]["fields"] = sync.fields(p.read_text())
+        with self.assertRaises((KeyError, ValueError)):
+            self.run_gate()
+
+    def test_pending_review(self):
+        self.packet["review"]["status"] = "pending"
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_post_review_source_drift(self):
+        self.write("C:src/changed.py", "later modification")
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_mirror_drift(self):
+        (self.home / ".claude/skills/adrl-taxonomy-sync/SKILL.md").write_text("drift")
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_symlink_input(self):
+        (self.roots["C"] / "src/link.py").symlink_to(self.roots["C"] / "src/changed.py")
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_unsafe_evidence_path(self):
+        self.packet["owners"][0]["evidence"][0]["path"] = "../escape"
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_summary_maturity_change_requires_record(self):
+        p = self.roots["R"] / "INDEX.md"
+        p.write_text(p.read_text().replace("| D1 |", "| D4 |"))
+        self.refresh()
+        with self.assertRaises((KeyError, ValueError)):
+            self.run_gate()
+
+    def test_valid_explicit_field_disposition(self):
+        p = self.roots["R"] / f"adr/FND/{self.aid}.md"
+        p.write_text(p.read_text().replace("| D1 |", "| D2 |"))
+        self.refresh()
+        after = sync.snapshot(self.roots)
+        self.packet["owners"][0]["fields"] = after["fields"][self.aid]
+        auth = {
+            "adr": self.aid,
+            "before": self.baseline["fields"][self.aid],
+            "after": after["fields"][self.aid],
+            "human_name": "fixture human",
+            "date": "2026-09-09",
+            "display_before": self.baseline["display_fields"][self.aid],
+            "display_after": after["display_fields"][self.aid],
+        }
+        self.write("R:reports/reviews/human.json", json.dumps(auth))
+        self.packet["owners"][0]["field_change_record"] = self.ref(
+            "reports/reviews/human.json"
+        )
+        self.assertEqual(self.run_gate()["status"], "passed")
+
+    def test_standalone_changelog_row_rejected(self):
+        p = self.roots["R"] / f"adr/FND/{self.aid}.md"
+        p.write_text(p.read_text().replace("|---|---|---|\n", "|---|---|---|\n\n"))
+        self.refresh()
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_scope_mismatch(self):
+        self.baseline["scope"] = {}
+        with self.assertRaises(ValueError):
+            self.run_gate()
+
+    def test_cli_rejects_inside_receipt_and_existing_output(self):
+        import subprocess
+
+        argv = [
+            "python3",
+            str(Path(__file__).parents[1] / "tools/check_taxonomy_sync.py"),
+            "check",
+            "--register",
+            str(self.roots["R"]),
+            "--core",
+            str(self.roots["C"]),
+        ]
+        x = subprocess.run(
+            argv + ["--out", str(self.roots["R"] / "receipt.json")],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(x.returncode, 1)
+        self.assertIn("outside both", x.stdout)
+        out = self.base / "existing.json"
+        out.write_text("keep")
+        x = subprocess.run(
+            argv + ["--out", str(out)], check=False, capture_output=True, text=True
+        )
+        self.assertEqual(x.returncode, 1)
+        self.assertEqual(out.read_text(), "keep")
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+
+FILE R:tools/check_taxonomy_sync.py
+"""Check scoped implementation/register closure. Primary: ADRL-FND-005.
+
+Secondary: ADRL-EVL-009. Standard-library local gate, not remote branch protection.
+Private-key/cache exclusions follow core's engineering runner. Reports and runtime
+payloads are excluded from the walk; evidence/review references are pinned separately.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+from datetime import date, datetime, timezone
+from pathlib import Path
+
+SCOPE = {
+    "R": {
+        "dirs": ["adr", "tools", "tests", "skills", "design", "profiles"],
+        "files": [
+            "AGENTS.md",
+            "README.md",
+            "INDEX.md",
+            "CHANGELOG.md",
+            "reports/adrl-wave-execution-template.md",
+        ],
+    },
+    "C": {
+        "dirs": ["src", "tests", "tools", "config", "docs", "api", "artifacts"],
+        "files": [
+            "AGENTS.md",
+            "CLAUDE.md",
+            "README.md",
+            "pyproject.toml",
+            "uv.lock",
+            ".gitignore",
+        ],
+    },
+}
+EXCLUSIONS = "reports except wave template; source history; .project; .git; runtime data; .env*, *.key, *.pem, *.pyc and cache directories. Expand the reviewed tool scope before changing excluded engineering inputs."
+FIELDS = ("Status", "Maturity", "Review verdict")
+ADR = re.compile(r"ADRL-[A-Z]{3}-\d{3}")
+
+
+def digest(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def safe(root: Path, name: str) -> Path:
+    part = Path(name)
+    if part.is_absolute() or ".." in part.parts:
+        raise ValueError(f"unsafe relative path: {name}")
+    p = root
+    for item in part.parts:
+        p = p / item
+        if p.is_symlink():
+            raise ValueError(f"symlink not permitted: {p}")
+    return p
+
+
+def fields(text: str) -> dict[str, str]:
+    result = {}
+    for key in FIELDS:
+        rows = re.findall(
+            r"^\| " + re.escape(key) + r" \| (.*?) \|\s*$", text, re.MULTILINE
+        )
+        if len(rows) != 1:
+            raise ValueError(f"expected one {key} field")
+        result[key] = rows[0]
+    return result
+
+
+def display_fields(root: Path, aid: str) -> dict:
+    result = {}
+    for label, name in [
+        ("index", "INDEX.md"),
+        ("bucket", f"adr/{aid.split('-')[1]}/README.md"),
+    ]:
+        rows = [
+            line
+            for line in safe(root, name).read_text().splitlines()
+            if line.startswith("| ") and aid in line.split("|")[1]
+        ]
+        if not rows:
+            result[label] = None  # preexisting missing bucket entry remains visible
+        else:
+            cells = [c.strip() for c in rows[0].split("|")[1:-1]]
+            if len(cells) < 4:
+                raise ValueError(f"invalid protected display row: {name} {aid}")
+            result[label] = {"verdict": cells[2], "maturity": cells[3]}
+    return result
+
+
+def snapshot(roots: dict[str, Path]) -> dict:
+    files, metadata = {}, {}
+    for tag, root in roots.items():
+        if root.is_symlink() or not root.is_dir():
+            raise ValueError(f"invalid root: {root}")
+        paths = [safe(root, n) for n in SCOPE[tag]["files"]]
+        for n in SCOPE[tag]["dirs"]:
+            directory = safe(root, n)
+            if directory.exists():
+                paths.extend(directory.rglob("*"))
+        for p in sorted(set(paths)):
+            rel = p.relative_to(root)
+            if set(rel.parts) & {
+                "__pycache__",
+                ".pytest_cache",
+                ".mypy_cache",
+                ".ruff_cache",
+            }:
+                continue
+            if p.name.startswith(".env") or p.suffix in {".key", ".pem", ".pyc"}:
+                continue
+            safe(root, str(rel))
+            if p.is_file():
+                key = tag + ":" + rel.as_posix()
+                files[key] = digest(p)
+                if tag == "R" and rel.parts[0] == "adr" and ADR.fullmatch(p.stem):
+                    metadata[p.stem] = fields(p.read_text())
+    return {
+        "schema": "adrl-sync-baseline-v1",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "roots": {k: str(v) for k, v in roots.items()},
+        "scope": SCOPE,
+        "exclusions": EXCLUSIONS,
+        "files": files,
+        "fields": metadata,
+        "display_fields": {aid: display_fields(roots["R"], aid) for aid in metadata},
+    }
+
+
+def pin(root: Path, ref: dict) -> Path:
+    p = safe(root, ref["path"])
+    if not p.is_file() or digest(p) != ref["sha256"]:
+        raise ValueError(f"missing/stale pinned reference: {ref['path']}")
+    return p
+
+
+def linked(line: str, doc: Path, target: Path) -> bool:
+    for raw in re.findall(r"\]\(([^)]+)\)", line):
+        path = raw.strip("<>").split("#")[0]
+        if "://" not in path and (doc.parent / path).resolve() == target.resolve():
+            return True
+    return False
+
+
+def coverage(root: Path, known: set[str], buckets: set[str]) -> None:
+    index = (root / "INDEX.md").read_text()
+    rows = re.findall(r"^\| \[(ADRL-[A-Z]{3}-\d{3})\]", index, re.MULTILINE)
+    if len(rows) != len(set(rows)) or set(rows) != known:
+        raise ValueError("INDEX missing/duplicate/unknown ADR rows")
+    for bucket in sorted(buckets):
+        text = (root / "adr" / bucket / "README.md").read_text()
+        rows = re.findall(r"^\| \[?(ADRL-[A-Z]{3}-\d{3})(?:\]| \|)", text, re.MULTILINE)
+        expected = {a for a in known if a.split("-")[1] == bucket}
+        if len(rows) != len(set(rows)) or set(rows) != expected:
+            raise ValueError(f"bucket {bucket} missing/duplicate/unknown ADR rows")
+
+
+def check(roots: dict[str, Path], baseline: dict, packet: dict) -> dict:
+    current = snapshot(roots)
+    if (
+        baseline["schema"] != current["schema"]
+        or baseline["scope"] != SCOPE
+        or baseline["roots"] != current["roots"]
+    ):
+        raise ValueError("baseline schema/scope/roots mismatch")
+    if not baseline.get("fields") or not baseline.get("display_fields"):
+        raise ValueError("baseline lacks preserved ADR fields")
+    before, after = baseline["files"], current["files"]
+    delta = {
+        k: {"before": before.get(k), "after": after.get(k)}
+        for k in before.keys() | after.keys()
+        if before.get(k) != after.get(k)
+    }
+    if not delta or packet["changes"] != delta:
+        raise ValueError(
+            "changed-file manifest incomplete or stale (includes additions/deletions)"
+        )
+    owners = packet["owners"]
+    if not owners or len({o["id"] for o in owners}) != len(owners):
+        raise ValueError("empty/duplicate owner records")
+    ids = {o["id"] for o in owners}
+    known = set(current["fields"])
+    if not ids <= known:
+        raise ValueError("unknown/deleted owning ADR")
+    coverage(roots["R"], known, {a.split("-")[1] for a in ids})
+    derived = {"R:INDEX.md", "R:CHANGELOG.md"}
+    for aid in ids:
+        derived |= {
+            f"R:adr/{aid.split('-')[1]}/{aid}.md",
+            f"R:adr/{aid.split('-')[1]}/README.md",
+        }
+    required = set(delta) - derived
+    if set(packet["file_owners"]) != required:
+        raise ValueError("missing/extra file ownership mapping")
+    used = set()
+    for name, mapped in packet["file_owners"].items():
+        if not mapped or not set(mapped) <= ids:
+            raise ValueError(f"unmapped input: {name}")
+        if name.startswith("R:adr/"):
+            raise ValueError(f"unexplained register edit: {name}")
+        used.update(mapped)
+    if used != ids:
+        raise ValueError("owner has no mapped input")
+    wave = packet["wave"]
+    if not re.fullmatch(r"[a-z0-9-]+", wave):
+        raise ValueError("invalid wave identifier")
+    date.fromisoformat(packet["date"])
+    for owner in owners:
+        aid = owner["id"]
+        if (
+            owner["kind"] not in {"behavior", "evidence", "refactor", "workflow"}
+            or not owner["summary"].strip()
+            or not owner["limitations"].strip()
+        ):
+            raise ValueError("owner requires change kind, summary and limitations")
+        if owner["fields"] != current["fields"][aid]:
+            raise ValueError(f"stale ADR fields: {aid}")
+        if (
+            baseline["fields"].get(aid) != current["fields"][aid]
+            or baseline["display_fields"].get(aid) != current["display_fields"][aid]
+        ):
+            if not owner.get("field_change_record"):
+                raise ValueError(
+                    "changed protected fields require a human disposition record"
+                )
+            auth = json.loads(pin(roots["R"], owner["field_change_record"]).read_text())
+            if (
+                auth["adr"] != aid
+                or auth["before"] != baseline["fields"].get(aid)
+                or auth["after"] != current["fields"][aid]
+                or auth.get("display_before") != baseline["display_fields"].get(aid)
+                or auth.get("display_after") != current["display_fields"][aid]
+                or not auth["human_name"].strip()
+            ):
+                raise ValueError("invalid status/maturity/verdict disposition")
+            date.fromisoformat(auth["date"])
+        if not owner["evidence"]:
+            raise ValueError("evidence required")
+        evidence = [pin(roots["R"], ref) for ref in owner["evidence"]]
+        marker = f"<!-- taxonomy-sync:{wave}:{aid} -->"
+        docs = [
+            f"adr/{aid.split('-')[1]}/{aid}.md",
+            "INDEX.md",
+            f"adr/{aid.split('-')[1]}/README.md",
+            "CHANGELOG.md",
+        ]
+        for name in docs:
+            doc = safe(roots["R"], name)
+            if "R:" + name not in delta:
+                raise ValueError(f"register not updated: {name}")
+            lines = [
+                line
+                for line in doc.read_text().splitlines()
+                if marker in line and packet["date"] in line
+            ]
+            if name == "INDEX.md" or name.endswith("README.md"):
+                lines = [
+                    line
+                    for line in lines
+                    if line.startswith("| ") and aid in line.split("|")[1]
+                ]
+            if not any(linked(line, doc, evidence[0]) for line in lines):
+                raise ValueError(f"missing dated evidence mapping: {name} {aid}")
+            if name.endswith(aid + ".md"):
+                tail = doc.read_text().split("## Changelog", 1)
+                section = (
+                    tail[1].split("\n## ", 1)[0].splitlines() if len(tail) == 2 else []
+                )
+                valid = False
+                for i, line in enumerate(section):
+                    if marker not in line or not line.startswith("| "):
+                        continue
+                    start = i
+                    while start > 0 and section[start - 1].startswith("|"):
+                        start -= 1
+                    table = section[start : i + 1]
+                    valid |= (
+                        len(table) >= 3 and "Date" in table[0] and "---" in table[1]
+                    )
+                if not valid:
+                    raise ValueError(
+                        f"ADR changelog marker must be inside dated table: {aid}"
+                    )
+    review = packet["review"]
+    pin(roots["R"], review["record"])
+    reviewed = json.loads(pin(roots["R"], review["inputs"]).read_text())
+    if reviewed != after:
+        raise ValueError("reviewed source drift")
+    if (
+        review["status"] != "accepted"
+        or not review["reviewer"].strip()
+        or set(review["covered_adrs"]) != ids
+    ):
+        raise ValueError("review_pending or incomplete semantic coverage")
+    if review.get("blocking_findings") != []:
+        raise ValueError("unresolved review blockers")
+    canonical = safe(roots["R"], "skills/adrl-taxonomy-sync/SKILL.md")
+    expected_mirrors = [
+        Path.home() / ".codex/skills/adrl-taxonomy-sync/SKILL.md",
+        Path.home() / ".claude/skills/adrl-taxonomy-sync/SKILL.md",
+    ]
+    for mirror in expected_mirrors:
+        if (
+            mirror.is_symlink()
+            or not mirror.is_file()
+            or mirror.read_bytes() != canonical.read_bytes()
+        ):
+            raise ValueError(f"missing/drifted installed skill: {mirror}")
+    if snapshot(roots)["files"] != after:
+        raise ValueError("source changed during validation")
+    return {
+        "status": "passed",
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+        "changed_files": sorted(delta),
+        "owning_adrs": sorted(ids),
+        "source": after,
+        "exclusions": EXCLUSIONS,
+        "bucket_coverage_scope": "Affected buckets only; global INDEX IDs checked. Historical unrelated bucket defects remain open.",
+        "limitations": "Local declared-scope check plus reviewer attestations; not semantic proof, historical-grade reconciliation or tamper-proof CI enforcement. Rerun after any input/evidence/review change.",
+    }
+
+
+def main() -> int:
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("command", choices=["begin", "check"])
+    p.add_argument("--register", type=Path, default=Path(__file__).resolve().parents[1])
+    p.add_argument("--core", type=Path)
+    p.add_argument("--baseline", type=Path)
+    p.add_argument("--packet", type=Path)
+    p.add_argument("--out", type=Path, required=True)
+    a = p.parse_args()
+    roots = {
+        "R": a.register.absolute(),
+        "C": (a.core or a.register.parent / "adrl-core").absolute(),
+    }
+    try:
+        if a.out.exists():
+            raise ValueError("output exists; preserve old receipts")
+        if a.command == "check" and any(
+            a.out.resolve().is_relative_to(root.resolve()) for root in roots.values()
+        ):
+            raise ValueError("closure receipt must be outside both repositories")
+        if a.command == "begin":
+            # Keep baseline outside scanned inputs to avoid self-reference.
+            if any(
+                a.out.resolve().is_relative_to(root.resolve())
+                for root in roots.values()
+            ):
+                raise ValueError("baseline output must be outside both repositories")
+            result = snapshot(roots)
+        else:
+            if not a.baseline or not a.packet:
+                raise ValueError("check requires --baseline and --packet")
+            result = check(
+                roots,
+                json.loads(a.baseline.read_text()),
+                json.loads(a.packet.read_text()),
+            )
+            result["baseline_sha256"] = digest(a.baseline)
+            result["packet_sha256"] = digest(a.packet)
+        a.out.parent.mkdir(parents=True, exist_ok=True)
+        a.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+        print(result.get("status", "baseline recorded"))
+        return 0
+    except (ValueError, KeyError, TypeError, OSError) as exc:
+        print(f"taxonomy_sync: FAILED: {exc}")
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

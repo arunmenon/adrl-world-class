@@ -1,0 +1,24 @@
+test_added_input_not_hidden (test_taxonomy_sync.SyncTests.test_added_input_not_hidden) ... ok
+test_cli_rejects_inside_receipt_and_existing_output (test_taxonomy_sync.SyncTests.test_cli_rejects_inside_receipt_and_existing_output) ... ok
+test_complete_dirty_baseline_passes (test_taxonomy_sync.SyncTests.test_complete_dirty_baseline_passes) ... ok
+test_deleted_input_requires_mapping (test_taxonomy_sync.SyncTests.test_deleted_input_requires_mapping) ... ok
+test_deleted_mapped_input_passes (test_taxonomy_sync.SyncTests.test_deleted_mapped_input_passes) ... ok
+test_duplicate_index (test_taxonomy_sync.SyncTests.test_duplicate_index) ... ok
+test_field_change_needs_human_record (test_taxonomy_sync.SyncTests.test_field_change_needs_human_record) ... ok
+test_mirror_drift (test_taxonomy_sync.SyncTests.test_mirror_drift) ... ok
+test_missing_each_register_mapping (test_taxonomy_sync.SyncTests.test_missing_each_register_mapping) ... ok
+test_missing_owner (test_taxonomy_sync.SyncTests.test_missing_owner) ... ok
+test_pending_review (test_taxonomy_sync.SyncTests.test_pending_review) ... ok
+test_post_review_source_drift (test_taxonomy_sync.SyncTests.test_post_review_source_drift) ... ok
+test_scope_mismatch (test_taxonomy_sync.SyncTests.test_scope_mismatch) ... ok
+test_stale_evidence (test_taxonomy_sync.SyncTests.test_stale_evidence) ... ok
+test_standalone_changelog_row_rejected (test_taxonomy_sync.SyncTests.test_standalone_changelog_row_rejected) ... ok
+test_summary_maturity_change_requires_record (test_taxonomy_sync.SyncTests.test_summary_maturity_change_requires_record) ... ok
+test_symlink_input (test_taxonomy_sync.SyncTests.test_symlink_input) ... ok
+test_unsafe_evidence_path (test_taxonomy_sync.SyncTests.test_unsafe_evidence_path) ... ok
+test_valid_explicit_field_disposition (test_taxonomy_sync.SyncTests.test_valid_explicit_field_disposition) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.286s
+
+OK

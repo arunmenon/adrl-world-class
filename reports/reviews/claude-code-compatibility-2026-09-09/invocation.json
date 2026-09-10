@@ -1,0 +1,78 @@
+{
+  "argv": [
+    "claude",
+    "--print",
+    "--model",
+    "claude-fable-5-1",
+    "--effort",
+    "high",
+    "--safe-mode",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--permission-mode",
+    "dontAsk",
+    "--output-format",
+    "json",
+    "--no-session-persistence"
+  ],
+  "settings_keys_only": {
+    "/Users/arunmenon/.claude/settings.json": [
+      "env",
+      "permissions",
+      "model",
+      "enabledPlugins",
+      "extraKnownMarketplaces",
+      "effortLevel",
+      "modelSettings",
+      "tui",
+      "voice",
+      "skipDangerousModePermissionPrompt",
+      "skipWorkflowUsageWarning",
+      "theme",
+      "agentPushNotifEnabled",
+      "skipAutoPermissionPrompt",
+      "autoMode",
+      "voiceEnabled"
+    ]
+  },
+  "started_utc": "2026-09-09T09:04:14.004917+00:00",
+  "timeout_seconds": 180,
+  "tools_exposed": [],
+  "returncode": 0,
+  "session_id": "ee26f4d0-61c0-4039-a42b-653edaf55709",
+  "modelUsage": {
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 35747,
+      "outputTokens": 16,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 0,
+      "webSearchRequests": 0,
+      "costUSD": 0.035827,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000,
+      "thinkingTokens": 0,
+      "canonicalModel": "claude-haiku-4-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    },
+    "claude-fable-5-1": {
+      "inputTokens": 2,
+      "outputTokens": 10325,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 50038,
+      "webSearchRequests": 0,
+      "costUSD": 1.51703,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 64000,
+      "thinkingTokens": 8493,
+      "canonicalModel": "claude-fable-5-1",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "is_error": false,
+  "subtype": "success",
+  "num_turns": 1,
+  "finished_utc": "2026-09-09T09:06:37.365231+00:00"
+}

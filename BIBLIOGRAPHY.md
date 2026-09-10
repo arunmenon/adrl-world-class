@@ -1,4 +1,21 @@
-# Bibliography — sources cited in the 2026-09-02 review
+# Bibliography — sources cited in the 2026-09-02 review (addendum 2026-09-03)
+
+## Added 2026-09-03 (external implementation review)
+
+Sources below were named by the 2026-09-03 external review. Those marked "not independently fetched" were not retrieved by the register's authors and are cited as experiment guides only.
+
+- <https://modelcontextprotocol.io/specification/2025-06-18/server/tools>: cited by ADRL-CAS-003, ADRL-CAS-009, ADRL-TRU (README); not independently fetched
+- <https://arxiv.org/abs/2503.18813>: CaMeL; cited by ADRL-CAS-009, ADRL-TRU-001, ADRL-TRU (README); not independently fetched
+- <https://arxiv.org/abs/2608.15888>: Bounded Agents; cited by ADRL-TRU-002, ADRL-TRU (README); not independently fetched; single-author preprint
+- <https://arxiv.org/abs/2607.00053>: SWE-Router; cited by ADRL-RTG-007; not independently fetched
+- <https://arxiv.org/abs/2606.22902>: Agent-as-a-Router; cited by ADRL-RTG-001, ADRL-RTG-007; not independently fetched
+- <https://arxiv.org/abs/2604.23530>: MTRouter; cited by ADRL-RTG-001, ADRL-RTG-007; not independently fetched
+- <https://arxiv.org/abs/2606.07587>: The Routing Plateau; cited by ADRL-RTG-007; not independently fetched
+- <https://arxiv.org/abs/2608.08239>: The Replay Gap; cited by ADRL-RTG-007; not independently fetched (a 2026 replay-gap study was already cited in the 2026-09-02 review under LRN-002)
+- <https://developers.openai.com/api/reference/cli/resources/responses/methods/create>: cited by ADRL-SEM-007; not independently fetched
+- <https://developers.openai.com/api/docs/guides/conversation-state>: cited by ADRL-SEM-007; fetched in the 2026-09-02 review under CAS-004
+- ADRL external implementation review, 2026-09-03 (internal document, findings verified against `adrl-core` the same day): cited by every file amended or proposed on 2026-09-03
+
 
 121 distinct sources across 55 decision records, grouped by host. Each entry lists the decisions that cite it; the one-line reading of each source is in the citing file's **Evidence** section. A sample of the load-bearing citations (vendor behaviour, quoted figures) was re-fetched and checked against the ADR text on 2026-09-02; corrections were applied where wording overstated a source.
 

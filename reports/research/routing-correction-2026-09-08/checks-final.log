@@ -1,0 +1,11 @@
+lint: passed
+format: passed
+types: passed
+tests: passed
+ledger: passed
+config: passed
+inventory: passed
+learning: passed
+api_contract: passed
+adr_map: passed
+Engineering checks: passed; evidence: /Users/arunmenon/projects/.adrl-execution-state/routing-fix-20260908T083657Z/checks-final/manifest.json

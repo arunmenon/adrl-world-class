@@ -1,0 +1,12 @@
+{
+  "status": "reviewed-with-open-items",
+  "scope": "local taxonomy-sync workflow",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "owning-only display protection",
+    "historical root/changelog formatting",
+    "disclosed bootstrap path exception"
+  ],
+  "completion": "passed local closure; not remote enforcement",
+  "receipt": "/Users/arunmenon/projects/.adrl-execution-state/taxonomy-sync-20260909-final.json"
+}

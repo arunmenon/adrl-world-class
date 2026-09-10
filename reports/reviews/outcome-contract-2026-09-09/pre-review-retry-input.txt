@@ -1,0 +1,1857 @@
+Independent pre-wave critique. Previous tool-based attempt timed out; no verdict. Review this minimal RV-01 outcome contract repair plan using the full relevant source below. Return only material blockers, required tests, and a scoped proceed/change verdict, under 900 words. No tools, implementation or delegation. Readiness means closed count, not qualified training or autonomous learning.
+# Outcome contract repair: pre-wave packet
+
+9 September 2026. User authorized proceeding with repair and Claude Fable critique. Scope: RV-01 only, plus immediately necessary failure-label preservation. Product P1/P2 prerequisite; owning MEM-001, MEM-002, MEM-004 and CAS-007 (terminal outcomes). LRN-001 is a downstream limitation, not newly qualified learning.
+
+Problem hypothesis: cascade persists state-valued event types while the existing outcome consumers require event_type=outcome and payload.state. Existing tests fabricate consumer-shaped rows rather than connect producer and consumer.
+
+Proposed minimal repair: make all cascade pending/closed_turn producers use the existing canonical outcome constructor/contract, retaining producer sequence, route attribution, existing diagnostic metadata and failure causes. Verify the proxy forwarding path preserves this contract, including when the cascade writes directly. Do not add a second event dialect or change routing selection. Preserve unknown success as unknown, not failure or success. Terminal infrastructure failures must not become task-capability labels.
+
+Tests before and after: composed offline proxy/cascade/store produces pending and closed_turn on two user turns; existing Closer sees the earlier closed turn and, when explicitly invoked at a time beyond the configured idle window, appends closed_final once; projection, labeler/readiness can see it but no verified success/T1 is invented. Include terminal upstream failure and direct cascade/fallback persistence paths where feasible. Assertions should read persisted rows, not manufacture outcome events. Record a failing before test. Run focused then all eleven engineering checks with no engine allowances.
+
+Compatibility: append-only historical rows are not rewritten or promoted. Old state-valued rows stay unreadable by canonical lifecycle unless a separately reviewed replay/migration is added; document that limit prominently. No database migration or live traffic exposure in this slice. Current fixture tests may need assertion changes only where they explicitly assert the obsolete producer dialect; preserve old failure evidence.
+
+Excluded: RV-02 selector, RV-03/04 lab admission/portability, RV-05 health refresh, RV-06 corrections, verifier precision calibration, v2 learning contract, subjective tasks, graph, additional harnesses, real-model runs, engines, activation of a background closer, grade promotion. Repairing this edge is not the whole learning loop. Existing CLI closing/label projection is the explicitly invoked consumer for this test, not an automatic service claim.
+
+Acceptance: persisted composed outcome transitions are visible to canonical consumers, idle closure is idempotent, terminal cause is retained, wire and permission behavior remains unchanged; engineering checks pass; Fable post-review has no unresolved material blocker for this scope. Keep other retrospective blockers open. Up to two correction/review rounds. No commits, deployments, automatic scheduler restart or paid API substitution.
+
+Review request: independently challenge this plan using snapshot C/src/adrl/cascade/controller.py, proxy/pipeline.py, ledger/events.py, outcomes.py, labels.py, readiness.py and existing integration tests plus R/adr/MEM/* and CAS-007. Return blockers, minimal scope corrections, missing tests and a scoped verdict. Do not implement. The supplied handoff contains external session context; recommendations there are not new user authority.
+
+
+FILE C/src/adrl/cascade/controller.py
+"""Cascade controller: plan dispatch, observe responses, escalate at boundaries.
+
+Primary: ADRL-CAS-003. Secondary: ADRL-CAS-001/004/005/006/007/008, ADRL-SEM-006.
+ADRL makes exactly one attempt per request and never re-issues a request whose response had
+begun streaming tool content; terminal failures are Anthropic error objects, never synthetic
+assistant content.
+"""
+
+from __future__ import annotations
+
+import itertools
+from collections.abc import Mapping
+from dataclasses import dataclass, field, replace
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Any
+
+import structlog
+
+from adrl.cascade.boundary import assess_boundary
+from adrl.cascade.handoff import (
+    TransformResult,
+    latest_assistant_has_thinking,
+    needs_thinking_suppression,
+    transform,
+)
+from adrl.cascade.sticky import (
+    MemoryStateProvider,
+    escalate,
+    family_of_model,
+    mark_state_loss,
+    new_sticky,
+    release_ratchet,
+    sticky_record,
+    with_served,
+)
+from adrl.cascade.tripwires import TRIPWIRE_EVENT, TripwireEvaluator, WireClass, WireHit
+from adrl.config.loaders import ConfigBundle
+from adrl.config.models import ProviderPairRule
+from adrl.config.settings import Settings
+from adrl.core.enums import (
+    EpisodeSignal,
+    FailureType,
+    OutcomeState,
+    RequestClass,
+    Rung,
+    VerificationResult,
+    resolve_primary,
+)
+from adrl.core.errors import VENDOR_PROMPT_TOO_LONG_PHRASE, ErrorCode, render_error
+from adrl.core.ids import LineageId, RouteId
+from adrl.core.ports import LedgerPort, StateProvider, StickyState
+from adrl.core.types import Decision, HandoffNote, LedgerEvent, PermittedSet, RequestContext
+from adrl.ledger.events import VERIFIER_FAILED_EVENT
+from adrl.routing.registry import RungRegistry
+from adrl.routing.side_effects import (
+    UNTRUSTED,
+    TrustPolicy,
+    executed_side_effects_since_turn_start,
+    load_trust_policy,
+)
+from adrl.telemetry.metrics import EVENT_DROPPED_TOTAL
+
+if TYPE_CHECKING:
+    from adrl.gates.pipeline import GateOutcome
+    from adrl.wire.observe import ResponseObservation
+
+log = structlog.get_logger(__name__)
+
+PRODUCER = "cascade"
+ESCALATION_EVENT = "escalation"
+INFRASTRUCTURE_EVENT = "infrastructure"
+POLICY_CONSTRAINT_EVENT = "policy_constraint"
+SUBAGENT_EVENT = "subagent_passthrough"
+BOUNDARY_CANDIDATE_EVENT = "boundary_candidate"
+
+
+@dataclass(frozen=True, slots=True)
+class DispatchPlan:
+    rung: Rung
+    is_boundary: bool
+    escalated: bool
+    from_rung: Rung | None
+    handoff: HandoffNote | None
+    pair_rule: ProviderPairRule | None
+    block: ErrorCode | None
+    sticky: StickyState
+    route_id: RouteId = field(default=RouteId(""))
+    transform: TransformResult | None = None
+    subagent: bool = False
+    state_loss: bool = False
+    policy_constrained: bool = False
+    pinned: bool = False
+    thinking_suppressed: bool = False
+    """The request must go out without the thinking parameter (ADRL-CAS-004 handoff rule)."""
+    deployment_id: str | None = None
+    """Attested deployment chosen for dispatch (ADRL-SAF-008); set by the proxy."""
+    model_alias: str | None = None
+    """Model name sent to the gateway for that deployment; None on the frontier passthrough."""
+
+    @property
+    def body(self) -> dict[str, Any] | None:
+        """Transformed transcript when an escalation handoff applied; None means original bytes."""
+        return self.transform.body if self.transform is not None else None
+
+
+@dataclass(frozen=True, slots=True)
+class CascadeEvents:
+    fired: tuple[WireHit, ...]
+    events: tuple[LedgerEvent, ...]
+    sticky: StickyState
+    infrastructure_event: bool = False
+    escalation_pending: bool = False
+    surfaced_error: dict[str, Any] | None = None
+    failure_type: FailureType | None = None
+    emitted: bool = False
+
+    @property
+    def fired_wires(self) -> tuple[str, ...]:
+        """Wire names, as the proxy's CascadeEventsLike stage protocol reads them."""
+        return tuple(hit.wire.value for hit in self.fired)
+
+    @property
+    def outcome_events(self) -> tuple[LedgerEvent, ...]:
+        """Events the proxy must append; empty when the controller already appended them."""
+        return () if self.emitted else self.events
+
+
+@dataclass(frozen=True, slots=True)
+class PendingEscalation:
+    route_id: RouteId
+    from_rung: Rung
+    hits: tuple[WireHit, ...]
+
+
+class CascadeController:
+    """Process-local pending-escalation map; sticky state through the StateProvider port."""
+
+    def __init__(
+        self,
+        bundle: ConfigBundle,
+        state: StateProvider,
+        *,
+        registry: RungRegistry | None = None,
+        ledger: LedgerPort | None = None,
+        evaluator: TripwireEvaluator | None = None,
+        trust: TrustPolicy | None = None,
+        now: Any = None,
+    ) -> None:
+        self._bundle = bundle
+        self._trust = trust or UNTRUSTED
+        self._state = state
+        self._registry = registry or RungRegistry(bundle.rungs)
+        self._ledger = ledger
+        self._evaluator = evaluator or TripwireEvaluator(bundle.tripwires, bundle.policy)
+        self._now = now or (lambda: datetime.now(UTC))
+        self._pending: dict[LineageId, PendingEscalation] = {}
+        self._seq: dict[RouteId, itertools.count[int]] = {}
+        self._verifier_consumed: dict[LineageId, int] = {}
+
+    @classmethod
+    def from_components(
+        cls,
+        *,
+        bundle: ConfigBundle,
+        settings: Settings,
+        ledger: LedgerPort | None,
+        state: StateProvider | None,
+    ) -> CascadeController:
+        """Build the controller from config; an absent state provider means process-local."""
+        if state is None:
+            log.warning("cascade_state_process_local", detail="sticky state lost on restart")
+            state = MemoryStateProvider()
+        return cls(
+            bundle,
+            state,
+            registry=RungRegistry(bundle.rungs),
+            ledger=ledger,
+            evaluator=TripwireEvaluator(bundle.tripwires, bundle.policy),
+            trust=load_trust_policy(settings.config_dir),
+        )
+
+    # events ----------------------------------------------------------------------------
+
+    async def _seed_seq(self, route_id: RouteId) -> None:
+        """Continue the producer sequence from the ledger so a restart never reuses a key."""
+        if route_id in self._seq or not route_id:
+            return
+        start = 1
+        if self._ledger is not None:
+            try:
+                stored = await self._ledger.read_events(route_id)
+            except Exception as exc:
+                log.warning("seq_seed_failed", error=type(exc).__name__)
+                stored = []
+            highest = max((e.producer_seq for e in stored if e.producer == PRODUCER), default=0)
+            start = highest + 1
+        self._seq[route_id] = itertools.count(start)
+
+    def _event(self, route_id: RouteId, event_type: str, payload: Mapping[str, Any]) -> LedgerEvent:
+        counter = self._seq.setdefault(route_id, itertools.count(1))
+        return LedgerEvent(
+            route_id=route_id,
+            event_type=event_type,
+            producer=PRODUCER,
+            producer_seq=next(counter),
+            payload=dict(payload),
+        )
+
+    async def _emit(self, events: list[LedgerEvent]) -> None:
+        if self._ledger is None:
+            return
+        for event in events:
+            stored = await self._ledger.append_event(event)
+            if not stored:
+                EVENT_DROPPED_TOTAL.labels(producer=PRODUCER).inc()
+                log.warning(
+                    "event_dropped",
+                    route_id=str(event.route_id),
+                    event_type=event.event_type,
+                    producer_seq=event.producer_seq,
+                )
+
+    # plan ------------------------------------------------------------------------------
+
+    async def plan(
+        self, ctx: RequestContext, decision: Decision, gate: GateOutcome, sticky: StickyState | None
+    ) -> DispatchPlan:
+        events: list[LedgerEvent] = []
+        boundary = assess_boundary(ctx.json)
+        permitted = gate.permitted
+        if sticky is not None:
+            await self._seed_seq(sticky.route_id)
+        await self._seed_seq(decision.route_id)
+        if gate.block is not None or permitted.is_empty:
+            block = gate.block or ErrorCode.PINNED_CLOUD_DENIED
+            base = sticky or new_sticky(
+                ctx.lineage_hmac, decision.route_id, decision.rung, previous=None
+            )
+            return DispatchPlan(
+                base.rung,
+                boundary.is_boundary,
+                False,
+                None,
+                None,
+                None,
+                block,
+                base,
+                decision.route_id,
+            )
+
+        if ctx.is_subagent:
+            plan = await self._plan_subagent(
+                ctx, decision, gate, sticky, boundary.is_boundary, events
+            )
+            return replace(plan, pinned=gate.pinned)
+
+        if ctx.request_class is RequestClass.USER_TURN:
+            plan = await self._plan_user_turn(ctx, decision, gate, sticky, boundary, events)
+        else:
+            plan = await self._plan_inherit(ctx, decision, gate, sticky, boundary, events)
+        await self._emit(events)
+        return replace(plan, pinned=gate.pinned)
+
+    async def _plan_user_turn(
+        self,
+        ctx: RequestContext,
+        decision: Decision,
+        gate: GateOutcome,
+        sticky: StickyState | None,
+        boundary: Any,
+        events: list[LedgerEvent],
+    ) -> DispatchPlan:
+        permitted = gate.permitted
+        if sticky is not None:
+            events.append(
+                self._event(
+                    sticky.route_id,
+                    OutcomeState.CLOSED_TURN.value,
+                    {
+                        "reason": "next_user_turn",
+                        "rung": sticky.rung.value,
+                        "escalated": sticky.escalated,
+                        "served_model": sticky.served_model,
+                        "served_source": sticky.served_source,
+                    },
+                )
+            )
+            self._pending.pop(ctx.lineage_hmac, None)
+        rung = decision.rung
+        constrained = False
+        if sticky is not None and sticky.escalated and sticky.rung > rung:
+            rung = sticky.rung
+        if rung not in permitted:
+            highest = permitted.highest
+            assert highest is not None
+            constrained = True
+            events.append(
+                self._event(
+                    decision.route_id,
+                    POLICY_CONSTRAINT_EVENT,
+                    {
+                        "reason": "gate_precedes_stickiness",
+                        "requested_rung": rung.value,
+                        "served_rung": highest.value,
+                    },
+                )
+            )
+            rung = highest
+        new = new_sticky(
+            ctx.lineage_hmac,
+            decision.route_id,
+            rung,
+            previous=sticky,
+            escalated=bool(sticky and sticky.escalated and rung > decision.rung),
+        )
+        await self._state.set_sticky(new)
+        events.append(
+            self._event(
+                decision.route_id,
+                OutcomeState.PENDING.value,
+                {"rung": rung.value, "decided_rung": decision.rung.value, "state_loss": False},
+            )
+        )
+        return DispatchPlan(
+            rung,
+            True,
+            False,
+            None,
+            None,
+            None,
+            None,
+            new,
+            decision.route_id,
+            policy_constrained=constrained,
+        )
+
+    async def _plan_inherit(
+        self,
+        ctx: RequestContext,
+        decision: Decision,
+        gate: GateOutcome,
+        sticky: StickyState | None,
+        boundary: Any,
+        events: list[LedgerEvent],
+    ) -> DispatchPlan:
+        permitted = gate.permitted
+        state_loss = False
+        if sticky is None:
+            state_loss = ctx.request_class is RequestClass.CONTINUATION
+            sticky = (
+                mark_state_loss(
+                    new_sticky(ctx.lineage_hmac, decision.route_id, decision.rung, previous=None)
+                )
+                if state_loss
+                else new_sticky(ctx.lineage_hmac, decision.route_id, decision.rung, previous=None)
+            )
+            await self._state.set_sticky(sticky)
+            events.append(
+                self._event(
+                    decision.route_id,
+                    OutcomeState.PENDING.value,
+                    {
+                        "rung": sticky.rung.value,
+                        "decided_rung": decision.rung.value,
+                        "state_loss": state_loss,
+                        "request_class": ctx.request_class.value,
+                    },
+                )
+            )
+        rung = sticky.rung
+        constrained = False
+        if rung not in permitted:
+            highest = permitted.highest
+            assert highest is not None
+            constrained = True
+            events.append(
+                self._event(
+                    sticky.route_id,
+                    POLICY_CONSTRAINT_EVENT,
+                    {
+                        "reason": "gate_precedes_stickiness",
+                        "requested_rung": rung.value,
+                        "served_rung": highest.value,
+                    },
+                )
+            )
+            rung = highest
+            sticky = _retarget(sticky, rung)
+            await self._state.set_sticky(sticky)
+        if boundary.is_boundary and not gate.pinned:
+            await self._ingest_verifier_signal(ctx, sticky, rung, events)
+        pending = self._pending.get(ctx.lineage_hmac)
+        if pending is not None and boundary.is_boundary and not gate.pinned:
+            target = self._registry.next_higher(rung, permitted)
+            if target is not None:
+                return await self._escalate(ctx, sticky, pending, rung, target, events, state_loss)
+        suppressed = (
+            sticky.escalated
+            and self._registry.family_for(rung) == "anthropic"
+            and needs_thinking_suppression(ctx.json)
+        )
+        return DispatchPlan(
+            rung,
+            boundary.is_boundary,
+            False,
+            None,
+            None,
+            None,
+            None,
+            sticky,
+            sticky.route_id,
+            state_loss=state_loss,
+            policy_constrained=constrained,
+            thinking_suppressed=suppressed,
+        )
+
+    async def _ingest_verifier_signal(
+        self, ctx: RequestContext, sticky: StickyState, rung: Rung, events: list[LedgerEvent]
+    ) -> None:
+        """Wire class (e): verifier failures recorded on the lineage arm an escalation."""
+        if self._ledger is None:
+            return
+        try:
+            signals = await self._ledger.read_lineage_events(
+                ctx.lineage_hmac, VERIFIER_FAILED_EVENT
+            )
+        except Exception as exc:
+            log.warning("verifier_signal_read_failed", error=type(exc).__name__)
+            return
+        consumed = self._verifier_consumed.get(ctx.lineage_hmac, 0)
+        fresh = [s for s in signals if (s.seq or 0) > consumed]
+        if not fresh:
+            return
+        self._verifier_consumed[ctx.lineage_hmac] = max((s.seq or 0) for s in fresh)
+        hit = self._evaluator.verifier_failure(rung)
+        if hit is None:
+            return
+        events.append(self._event(sticky.route_id, TRIPWIRE_EVENT, hit.as_record()))
+        if ctx.lineage_hmac not in self._pending:
+            self._pending[ctx.lineage_hmac] = PendingEscalation(sticky.route_id, rung, (hit,))
+
+    async def _escalate(
+        self,
+        ctx: RequestContext,
+        sticky: StickyState,
+        pending: PendingEscalation,
+        from_rung: Rung,
+        to_rung: Rung,
+        events: list[LedgerEvent],
+        state_loss: bool,
+    ) -> DispatchPlan:
+        source_family = family_of_model(
+            sticky.served_model, from_rung, self._registry.family_for(from_rung)
+        )
+        target_family = self._registry.family_for(to_rung)
+        thinking = isinstance(ctx.json.get("thinking"), Mapping)
+        source_has_thinking = latest_assistant_has_thinking(ctx.json)
+        rule = self._bundle.provider_pairs.rule_for(
+            source_family, target_family, thinking, source_has_thinking=source_has_thinking
+        )
+        side_effects = executed_side_effects_since_turn_start(ctx.json, trust=self._trust)
+        verifier_result = None
+        for hit in pending.hits:
+            if hit.wire is WireClass.VERIFIER_FAILURE:
+                verifier_result = VerificationResult.FAIL
+        note = HandoffNote(
+            cause=",".join(h.wire.value for h in pending.hits),
+            from_rung=from_rung,
+            to_rung=to_rung,
+            executed_side_effects=side_effects,
+            verifier_result=verifier_result,
+        )
+        result = transform(ctx.json, rule, note)
+        new = escalate(sticky, to_rung)
+        await self._state.set_sticky(new)
+        self._pending.pop(ctx.lineage_hmac, None)
+        events.append(
+            self._event(
+                sticky.route_id,
+                ESCALATION_EVENT,
+                {
+                    "from_rung": from_rung.value,
+                    "to_rung": to_rung.value,
+                    "cause": note.cause,
+                    "pair_rule": rule.model_dump(),
+                    "handoff_schema": note.schema_version,
+                    "side_effects_before_escalation": bool(side_effects),
+                    "source_has_thinking": source_has_thinking,
+                    "thinking_disabled_for_handoff": bool(thinking and result.thinking_disabled),
+                    **result.as_record(),
+                },
+            )
+        )
+        log.info("escalation", from_rung=from_rung.value, to_rung=to_rung.value, cause=note.cause)
+        return DispatchPlan(
+            to_rung,
+            True,
+            True,
+            from_rung,
+            note,
+            rule,
+            None,
+            new,
+            sticky.route_id,
+            transform=result,
+            state_loss=state_loss,
+            thinking_suppressed=bool(thinking and result.thinking_disabled),
+        )
+
+    async def _plan_subagent(
+        self,
+        ctx: RequestContext,
+        decision: Decision,
+        gate: GateOutcome,
+        sticky: StickyState | None,
+        is_boundary: bool,
+        events: list[LedgerEvent],
+    ) -> DispatchPlan:
+        """SEM-006 interim: constrained passthrough at the requested model, pin inherited."""
+        permitted = gate.permitted
+        requested = self._registry.rung_for_model_name(ctx.requested_model)
+        rung = (
+            requested
+            if requested is not None and requested in permitted
+            else (
+                permitted.highest
+                if requested is None or requested > (permitted.highest or Rung.LOCAL)
+                else permitted.lowest
+            )
+        )
+        assert rung is not None
+        if sticky is None:
+            sticky = new_sticky(ctx.lineage_hmac, decision.route_id, rung, previous=None)
+            await self._state.set_sticky(sticky)
+        elif sticky.rung is not rung:
+            sticky = _retarget(sticky, rung)
+            await self._state.set_sticky(sticky)
+        events.append(
+            self._event(
+                sticky.route_id,
+                SUBAGENT_EVENT,
+                {
+                    "subagent": True,
+                    "requested_model": ctx.requested_model,
+                    "served_rung": rung.value,
+                    "pinned": gate.pinned,
+                    "agent_id_present": ctx.agent_id is not None,
+                },
+            )
+        )
+        await self._emit(events)
+        return DispatchPlan(
+            rung, is_boundary, False, None, None, None, None, sticky, sticky.route_id, subagent=True
+        )
+
+    # observe ---------------------------------------------------------------------------
+
+    async def observe(
+        self, ctx: RequestContext, plan: DispatchPlan, obs: ResponseObservation
+    ) -> CascadeEvents:
+        events: list[LedgerEvent] = []
+        sticky = plan.sticky
+        infra = False
+        now = self._now()
+        await self._seed_seq(sticky.route_id)
+        if obs.status < 400 and obs.served is not None:
+            sticky, changed = with_served(sticky, obs.served, now)
+            if changed:
+                infra = True
+                events.append(
+                    self._event(
+                        sticky.route_id,
+                        INFRASTRUCTURE_EVENT,
+                        {
+                            "reason": "within_rung_model_change",
+                            "served_model": obs.served.model,
+                            "previous_model": plan.sticky.served_model,
+                            "cache_cold": True,
+                        },
+                    )
+                )
+            await self._state.set_sticky(sticky)
+        if plan.subagent:
+            await self._emit(events)
+            return CascadeEvents((), tuple(events), sticky, infra, emitted=self._ledger is not None)
+        if obs.status >= 400 or not obs.completed:
+            return await self._observe_failure(ctx, plan, obs, sticky, events, infra)
+        fired = (
+            () if plan.escalated else self._evaluator.evaluate(ctx.json, plan.rung, observation=obs)
+        )
+        pending = False
+        for hit in fired:
+            events.append(self._event(sticky.route_id, TRIPWIRE_EVENT, hit.as_record()))
+        if fired and not plan.pinned:
+            higher = self._registry.next_higher(plan.rung, PermittedSet.all())
+            if higher is not None:
+                self._pending[ctx.lineage_hmac] = PendingEscalation(
+                    sticky.route_id, plan.rung, fired
+                )
+                pending = True
+        await self._emit(events)
+        return CascadeEvents(
+            fired, tuple(events), sticky, infra, pending, emitted=self._ledger is not None
+        )
+
+    async def _observe_failure(
+        self,
+        ctx: RequestContext,
+        plan: DispatchPlan,
+        obs: ResponseObservation,
+        sticky: StickyState,
+        events: list[LedgerEvent],
+        infra: bool,
+    ) -> CascadeEvents:
+        candidates: list[FailureType] = []
+        message = ""
+        if obs.error and isinstance(obs.error.get("error"), Mapping):
+            message = str(obs.error["error"].get("message", ""))
+        if VENDOR_PROMPT_TOO_LONG_PHRASE in message.lower() or (
+            "context" in message.lower() and "long" in message.lower()
+        ):
+            candidates.append(FailureType.CONTEXT_FEASIBILITY)
+        if obs.status == 429 or obs.status >= 500 or not obs.completed:
+            candidates.append(FailureType.INFRASTRUCTURE)
+        if plan.policy_constrained:
+            candidates.append(FailureType.POLICY_CONSTRAINT)
+        if plan.sticky.served_source == "assumed_intended" and not candidates:
+            candidates = [FailureType.UNVERIFIABLE]
+        primary, secondary = resolve_primary(candidates)
+        partial = obs.streamed_tool_content and not obs.completed
+        code = ErrorCode.PARTIAL_STREAM_FAILURE if partial else ErrorCode.TERMINAL_FAILURE
+        detail = f"failure_type={primary.value} rung={plan.rung.value} status={obs.status}"
+        surfaced = render_error(code, detail)
+        events.append(
+            self._event(
+                sticky.route_id,
+                OutcomeState.CLOSED_TURN.value,
+                {
+                    "reason": "terminal_failure",
+                    "failure_type": primary.value,
+                    "secondary_type": secondary.value if secondary else None,
+                    "rung": plan.rung.value,
+                    "status": obs.status,
+                    "partial_stream": partial,
+                    "surfaced": True,
+                    "gateway_attempts_observed": 1,
+                    "served_source": sticky.served_source,
+                },
+            )
+        )
+        self._pending.pop(ctx.lineage_hmac, None)
+        await self._emit(events)
+        return CascadeEvents(
+            (), tuple(events), sticky, infra, False, surfaced, primary, self._ledger is not None
+        )
+
+    # episode boundaries ----------------------------------------------------------------
+
+    async def episode_boundary(
+        self, lineage: LineageId, signal: EpisodeSignal
+    ) -> StickyState | None:
+        """Release only the escalation ratchet (ADRL-SEM-005); pins are never touched here."""
+        sticky = await self._state.get_sticky(lineage)
+        if sticky is None:
+            return None
+        released = release_ratchet(sticky, signal)
+        await self._state.set_sticky(released)
+        self._pending.pop(lineage, None)
+        await self._emit(
+            [
+                self._event(
+                    sticky.route_id,
+                    BOUNDARY_CANDIDATE_EVENT,
+                    {
+                        "signal": signal.value,
+                        "released": sticky.escalated,
+                        "sticky": sticky_record(released),
+                    },
+                )
+            ]
+        )
+        return released
+
+    def pending_for(self, lineage: LineageId) -> PendingEscalation | None:
+        return self._pending.get(lineage)
+
+
+def _retarget(sticky: StickyState, rung: Rung) -> StickyState:
+    return StickyState(
+        lineage_hmac=sticky.lineage_hmac,
+        route_id=sticky.route_id,
+        rung=rung,
+        escalated=sticky.escalated,
+        served_model=None,
+        served_provider=None,
+        served_source="assumed_intended",
+        turn_index=sticky.turn_index,
+        last_served_at=None,
+        state_loss=sticky.state_loss,
+    )
+
+
+FILE C/src/adrl/ledger/events.py
+"""Typed event constructors and producer sequencing. Primary: ADRL-MEM-001.
+
+Secondary: ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-004, ADRL-MEM-009, ADRL-MEM-010.
+
+Every event is idempotent under (route_id, event_type, producer, producer_seq). Producers with a
+natural order use ProducerSequencer; producers whose events have a logical identity (a closing
+rule, a verification job) derive producer_seq from that identity with producer_seq_for so a
+retried write is a no-op rather than a duplicate.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import sqlite3
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass, field
+from typing import Any
+
+from adrl.core.enums import FAILURE_TYPES_VERSION, FailureType, OutcomeState, VerificationResult
+from adrl.core.ids import RouteId
+from adrl.core.types import LedgerEvent
+from adrl.ledger.store import LedgerStore
+
+EVENTS_SCHEMA_VERSION = "events-v1"
+
+# Route-level event types (events table).
+OUTCOME_EVENT = "outcome"
+LATE_EVIDENCE_EVENT = "late_evidence"
+VERIFICATION_EVENT = "verification"
+COUNTERFACTUAL_EVENT = "counterfactual"
+LABEL_EVENT = "label"
+LABEL_CORRECTION_EVENT = "label_correction"
+SHADOW_RETRIEVAL_EVENT = "shadow_retrieval"
+MEMORY_DEGRADED_EVENT = "memory_degraded"
+
+# Lineage-level event types (lineage_events table).
+ERASED_EVENT = "erased"
+STICKY_EVENT = "sticky"
+VERIFIER_FAILED_EVENT = "verifier_failed"
+PIN_EVENT = "pinned"
+RELEASE_EVENT = "released"
+EPISODE_BOUNDARY_EVENT = "episode_boundary"
+PROJECTION_REBUILD_EVENT = "projection_rebuild"
+
+# Producers.
+PRODUCER_PROXY = "proxy"
+PRODUCER_CASCADE = "cascade"
+PRODUCER_CLOSER = "closer"
+PRODUCER_VERIFIER = "verifier"
+PRODUCER_LABELER = "labeler"
+PRODUCER_COUNTERFACTUAL = "counterfactual_runner"
+PRODUCER_RETRIEVAL = "shadow_retrieval"
+PRODUCER_CORRECTION = "correction_detector"
+PRODUCER_MEMORY = "memory_facade"
+
+
+def producer_seq_for(*parts: str) -> int:
+    """Stable 31-bit producer_seq derived from a logical identity."""
+    digest = hashlib.sha256("\x1f".join(parts).encode("utf-8")).digest()
+    return int.from_bytes(digest[:4], "big") & 0x7FFFFFFF
+
+
+class ProducerSequencer:
+    """Monotonic producer_seq per (producer, route_id) for producers with a natural order."""
+
+    def __init__(self) -> None:
+        self._counters: dict[tuple[str, str], int] = {}
+
+    def next(self, producer: str, route_id: RouteId) -> int:
+        key = (producer, str(route_id))
+        value = self._counters.get(key, 0) + 1
+        self._counters[key] = value
+        return value
+
+    def observe(self, producer: str, route_id: RouteId, seen: int) -> None:
+        """Advance the counter past a value already present in the ledger."""
+        key = (producer, str(route_id))
+        if seen > self._counters.get(key, 0):
+            self._counters[key] = seen
+
+
+@dataclass(frozen=True, slots=True)
+class StoredEvent:
+    """A ledger event as read back, with its global sequence and timestamp."""
+
+    seq: int
+    ts: str
+    event: LedgerEvent
+
+    @property
+    def event_type(self) -> str:
+        return self.event.event_type
+
+    @property
+    def payload(self) -> Mapping[str, Any]:
+        return self.event.payload
+
+    @property
+    def route_id(self) -> RouteId:
+        return self.event.route_id
+
+
+def stored_event_from_row(row: sqlite3.Row) -> StoredEvent:
+    return StoredEvent(
+        seq=int(row["seq"]),
+        ts=str(row["ts"]),
+        event=LedgerEvent(
+            route_id=RouteId(str(row["route_id"])),
+            event_type=str(row["event_type"]),
+            producer=str(row["producer"]),
+            producer_seq=int(row["producer_seq"]),
+            payload=json.loads(str(row["payload_json"])),
+            schema_version=str(row["schema_version"]),
+        ),
+    )
+
+
+def read_stored_events(
+    store: LedgerStore, route_id: RouteId, event_type: str | None = None
+) -> list[StoredEvent]:
+    return [stored_event_from_row(r) for r in store.read_events(str(route_id), event_type)]
+
+
+def read_events_of_type(
+    store: LedgerStore, event_type: str, *, after_seq: int = 0
+) -> list[StoredEvent]:
+    rows = store.read(
+        "SELECT * FROM events WHERE event_type=? AND seq>? ORDER BY seq", (event_type, after_seq)
+    )
+    return [stored_event_from_row(r) for r in rows]
+
+
+# Constructors -----------------------------------------------------------------------------
+
+
+@dataclass(frozen=True, slots=True)
+class CauseCandidate:
+    """One plausible failure cause with its position in the action sequence (ADRL-MEM-004)."""
+
+    failure_type: FailureType
+    action_index: int | None = None
+    source: str = ""
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "failure_type": self.failure_type.value,
+            "action_index": self.action_index,
+            "source": self.source,
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class OutcomeFields:
+    """Optional facts a producer attaches to an outcome transition."""
+
+    served_rung: str | None = None
+    served_model: str | None = None
+    session_hmac: str | None = None
+    lineage_hmac: str | None = None
+    turn_index: int | None = None
+    harness_reported_success: bool | None = None
+    causes: tuple[CauseCandidate, ...] = ()
+    touched_paths: tuple[str, ...] = field(default_factory=tuple)
+    tree_identity: Mapping[str, Any] | None = None
+    escalated_to_route_id: str | None = None
+    extra: Mapping[str, Any] = field(default_factory=dict)
+
+    def as_payload(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {
+            "served_rung": self.served_rung,
+            "served_model": self.served_model,
+            "session_hmac": self.session_hmac,
+            "lineage_hmac": self.lineage_hmac,
+            "turn_index": self.turn_index,
+            "harness_reported_success": self.harness_reported_success,
+            "causes": [c.as_dict() for c in self.causes],
+            "touched_paths": list(self.touched_paths),
+            "tree_identity": dict(self.tree_identity) if self.tree_identity else None,
+            "escalated_to_route_id": self.escalated_to_route_id,
+        }
+        payload.update(dict(self.extra))
+        return payload
+
+
+def outcome_event(
+    route_id: RouteId,
+    state: OutcomeState,
+    producer: str,
+    producer_seq: int,
+    fields: OutcomeFields | None = None,
+    *,
+    rule_id: str | None = None,
+    trigger: str | None = None,
+    label: Mapping[str, Any] | None = None,
+) -> LedgerEvent:
+    payload = (fields or OutcomeFields()).as_payload()
+    payload["state"] = state.value
+    payload["failure_types_version"] = FAILURE_TYPES_VERSION
+    if rule_id is not None:
+        payload["rule_id"] = rule_id
+    if trigger is not None:
+        payload["trigger"] = trigger
+    if label is not None:
+        payload["label"] = dict(label)
+    return LedgerEvent(
+        route_id, OUTCOME_EVENT, producer, producer_seq, payload, EVENTS_SCHEMA_VERSION
+    )
+
+
+def late_evidence_event(
+    route_id: RouteId,
+    source: str,
+    producer: str,
+    producer_seq: int,
+    detail: Mapping[str, Any],
+    *,
+    causes: Sequence[CauseCandidate] = (),
+) -> LedgerEvent:
+    payload: dict[str, Any] = {
+        "source": source,
+        "detail": dict(detail),
+        "causes": [c.as_dict() for c in causes],
+        "failure_types_version": FAILURE_TYPES_VERSION,
+    }
+    return LedgerEvent(
+        route_id, LATE_EVIDENCE_EVENT, producer, producer_seq, payload, EVENTS_SCHEMA_VERSION
+    )
+
+
+def verification_event(
+    route_id: RouteId,
+    producer_seq: int,
+    *,
+    verifier_version: str,
+    argv: Sequence[Sequence[str]],
+    protected_path_policy_version: str,
+    tree_identity: Mapping[str, Any],
+    result: VerificationResult,
+    started_at: str,
+    finished_at: str,
+    tree_drift: bool,
+    checks: Sequence[Mapping[str, Any]],
+    unverifiable_reason: str | None = None,
+    job_id: str | None = None,
+    causes: Sequence[CauseCandidate] = (),
+) -> LedgerEvent:
+    payload: dict[str, Any] = {
+        "verifier_version": verifier_version,
+        "argv": [list(a) for a in argv],
+        "protected_path_policy_version": protected_path_policy_version,
+        "tree_identity": dict(tree_identity),
+        "result": result.value,
+        "started_at": started_at,
+        "finished_at": finished_at,
+        "tree_drift": tree_drift,
+        "checks": [dict(c) for c in checks],
+        "unverifiable_reason": unverifiable_reason,
+        "job_id": job_id,
+        "causes": [c.as_dict() for c in causes],
+        "failure_types_version": FAILURE_TYPES_VERSION,
+    }
+    return LedgerEvent(
+        route_id,
+        VERIFICATION_EVENT,
+        PRODUCER_VERIFIER,
+        producer_seq,
+        payload,
+        EVENTS_SCHEMA_VERSION,
+    )
+
+
+def counterfactual_event(
+    route_id: RouteId, pair_id: str, producer_seq: int, detail: Mapping[str, Any]
+) -> LedgerEvent:
+    payload: dict[str, Any] = {"pair_id": pair_id, "tier": "T5", **dict(detail)}
+    return LedgerEvent(
+        route_id,
+        COUNTERFACTUAL_EVENT,
+        PRODUCER_COUNTERFACTUAL,
+        producer_seq,
+        payload,
+        EVENTS_SCHEMA_VERSION,
+    )
+
+
+def label_event(
+    route_id: RouteId,
+    producer_seq: int,
+    label: Mapping[str, Any],
+    *,
+    supersedes_seq: int | None = None,
+) -> LedgerEvent:
+    payload: dict[str, Any] = dict(label)
+    payload["supersedes_seq"] = supersedes_seq
+    payload["failure_types_version"] = FAILURE_TYPES_VERSION
+    event_type = LABEL_EVENT if supersedes_seq is None else LABEL_CORRECTION_EVENT
+    return LedgerEvent(
+        route_id, event_type, PRODUCER_LABELER, producer_seq, payload, EVENTS_SCHEMA_VERSION
+    )
+
+
+def memory_degraded_event(
+    route_id: RouteId, reason: str, operation: str, producer_seq: int
+) -> LedgerEvent:
+    return LedgerEvent(
+        route_id,
+        MEMORY_DEGRADED_EVENT,
+        PRODUCER_MEMORY,
+        producer_seq,
+        {"reason": reason, "operation": operation},
+        EVENTS_SCHEMA_VERSION,
+    )
+
+
+FILE C/src/adrl/ledger/outcomes.py
+"""Outcome lifecycle: pending, closed_turn, closed_final. Primary: ADRL-MEM-002.
+
+Secondary: ADRL-MEM-004 (label freeze), ADRL-CAS-005 (episode boundary trigger).
+
+The closing window is a parameter, not a promise: close-v1 emits closed_final after N subsequent
+user turns in the same session, T minutes of session inactivity, or an explicit episode boundary,
+whichever comes first. The rule id and trigger are stored on the event so a longer window can be
+applied retroactively by replay. Evidence arriving after closed_final is appended as late_evidence
+and the label is re-derived; the freeze point is recorded, the truth keeps moving.
+"""
+
+from __future__ import annotations
+
+import json
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from statistics import median
+from typing import Any
+
+import structlog
+
+from adrl.config.models import CloseRule
+from adrl.core.enums import FailureType, OutcomeState
+from adrl.core.ids import RouteId
+from adrl.core.types import LedgerEvent
+from adrl.ledger.events import (
+    EPISODE_BOUNDARY_EVENT,
+    LABEL_CORRECTION_EVENT,
+    LABEL_EVENT,
+    LATE_EVIDENCE_EVENT,
+    OUTCOME_EVENT,
+    PRODUCER_CLOSER,
+    PRODUCER_CORRECTION,
+    PRODUCER_LABELER,
+    CauseCandidate,
+    StoredEvent,
+    label_event,
+    late_evidence_event,
+    outcome_event,
+    producer_seq_for,
+    read_stored_events,
+    stored_event_from_row,
+)
+from adrl.ledger.labels import Label, derive_label, outcome_state
+from adrl.ledger.store import LedgerStore, utc_now_iso
+
+log = structlog.get_logger(__name__)
+
+
+def _parse_ts(value: str) -> datetime:
+    parsed = datetime.fromisoformat(value)
+    return parsed if parsed.tzinfo else parsed.replace(tzinfo=UTC)
+
+
+@dataclass(frozen=True, slots=True)
+class OutcomeProjection:
+    """Current state of one route, derived from its events (never a source of truth)."""
+
+    route_id: RouteId
+    state: OutcomeState | None
+    pending_ts: str | None
+    closed_turn_ts: str | None
+    closed_final_ts: str | None
+    closed_final_rule_id: str | None
+    label: Label
+    late_evidence_count: int
+    session_hmac: str | None
+    lineage_hmac: str | None
+
+    @property
+    def countable(self) -> bool:
+        return self.state is OutcomeState.CLOSED_FINAL
+
+
+def project_outcome(route_id: RouteId, events: Sequence[StoredEvent]) -> OutcomeProjection:
+    pending_ts = closed_turn_ts = closed_final_ts = rule_id = None
+    session = lineage = None
+    late = 0
+    for event in events:
+        if event.event_type == OUTCOME_EVENT:
+            state = str(event.payload.get("state"))
+            if state == OutcomeState.PENDING.value and pending_ts is None:
+                pending_ts = event.ts
+            elif state == OutcomeState.CLOSED_TURN.value:
+                closed_turn_ts = event.ts
+            elif state == OutcomeState.CLOSED_FINAL.value:
+                closed_final_ts = event.ts
+                rule_id = event.payload.get("rule_id")
+            session = event.payload.get("session_hmac") or session
+            lineage = event.payload.get("lineage_hmac") or lineage
+        elif event.event_type == LATE_EVIDENCE_EVENT:
+            late += 1
+    return OutcomeProjection(
+        route_id=route_id,
+        state=outcome_state(events),
+        pending_ts=pending_ts,
+        closed_turn_ts=closed_turn_ts,
+        closed_final_ts=closed_final_ts,
+        closed_final_rule_id=str(rule_id) if rule_id else None,
+        label=derive_label(events),
+        late_evidence_count=late,
+        session_hmac=str(session) if session else None,
+        lineage_hmac=str(lineage) if lineage else None,
+    )
+
+
+def read_projection(store: LedgerStore, route_id: RouteId) -> OutcomeProjection:
+    return project_outcome(route_id, read_stored_events(store, route_id))
+
+
+def _latest_outcome_rows(store: LedgerStore) -> list[StoredEvent]:
+    rows = store.read(
+        "SELECT e.* FROM events e JOIN (SELECT route_id, MAX(seq) AS mseq FROM events "
+        "WHERE event_type=? GROUP BY route_id) m ON e.seq = m.mseq ORDER BY e.seq",
+        (OUTCOME_EVENT,),
+    )
+    return [stored_event_from_row(r) for r in rows]
+
+
+def routes_in_state(store: LedgerStore, state: OutcomeState) -> list[StoredEvent]:
+    return [e for e in _latest_outcome_rows(store) if str(e.payload.get("state")) == state.value]
+
+
+class Closer:
+    """Emits closed_final under a named rule; idempotent per (route_id, rule_id)."""
+
+    def __init__(self, store: LedgerStore, rule: CloseRule) -> None:
+        self._store = store
+        self._rule = rule
+
+    @property
+    def rule_id(self) -> str:
+        return self._rule.rule_id
+
+    def _session_of(
+        self, route_id: RouteId, payload: Mapping[str, Any]
+    ) -> tuple[str | None, str | None]:
+        session = payload.get("session_hmac")
+        lineage = payload.get("lineage_hmac")
+        if session is None or lineage is None:
+            row = self._store.read_decision(str(route_id))
+            if row is not None:
+                session = session or row["session_hmac"]
+                lineage = lineage or row["lineage_hmac"]
+        return (str(session) if session else None, str(lineage) if lineage else None)
+
+    def trigger_for(self, closed_turn: StoredEvent, *, now: datetime) -> str | None:
+        """Return the trigger name if the closing window has elapsed, else None."""
+        session, lineage = self._session_of(closed_turn.route_id, closed_turn.payload)
+        if lineage is not None:
+            boundaries = self._store.read(
+                "SELECT seq FROM lineage_events WHERE lineage_hmac=? AND event_type=? AND ts>? "
+                "LIMIT 1",
+                (lineage, EPISODE_BOUNDARY_EVENT, closed_turn.ts),
+            )
+            if boundaries:
+                return "episode_boundary"
+        if session is not None:
+            turns = self._store.read(
+                "SELECT COUNT(*) AS c FROM decisions WHERE session_hmac=? AND "
+                "request_class='user_turn' AND ts>?",
+                (session, closed_turn.ts),
+            )[0]["c"]
+            if int(turns) >= self._rule.subsequent_turns:
+                return "subsequent_turns"
+            last = self._store.read(
+                "SELECT MAX(ts) AS t FROM decisions WHERE session_hmac=?", (session,)
+            )[0]["t"]
+            last_activity = _parse_ts(str(last)) if last else _parse_ts(closed_turn.ts)
+        else:
+            last_activity = _parse_ts(closed_turn.ts)
+        idle = (now - max(last_activity, _parse_ts(closed_turn.ts))).total_seconds() / 60.0
+        if idle >= self._rule.idle_minutes:
+            return "idle"
+        return None
+
+    async def close_route(self, closed_turn: StoredEvent, trigger: str) -> bool:
+        events = read_stored_events(self._store, closed_turn.route_id)
+        label = derive_label(events)
+        session, lineage = self._session_of(closed_turn.route_id, closed_turn.payload)
+        event = outcome_event(
+            closed_turn.route_id,
+            OutcomeState.CLOSED_FINAL,
+            PRODUCER_CLOSER,
+            producer_seq_for(self._rule.rule_id),
+            rule_id=self._rule.rule_id,
+            trigger=trigger,
+            label=label.as_dict(),
+        )
+        payload = dict(event.payload)
+        payload["closed_turn_seq"] = closed_turn.seq
+        payload["session_hmac"] = session
+        payload["lineage_hmac"] = lineage
+        ok = bool(
+            await self._store.write_through(
+                LedgerStore.insert_event(
+                    event.route_id,
+                    event.event_type,
+                    event.producer,
+                    event.producer_seq,
+                    payload,
+                    event.schema_version,
+                )
+            )
+        )
+        if ok:
+            await self._store.write_through(
+                LedgerStore.insert_event(
+                    event.route_id,
+                    LABEL_EVENT,
+                    PRODUCER_LABELER,
+                    producer_seq_for("closed_final", self._rule.rule_id),
+                    {**label.as_dict(), "supersedes_seq": None},
+                    event.schema_version,
+                )
+            )
+        return ok
+
+    async def scan(self, *, now: datetime | None = None) -> list[tuple[RouteId, str]]:
+        """Close every route whose window has elapsed. Returns (route_id, trigger) pairs."""
+        current = now or datetime.now(UTC)
+        closed: list[tuple[RouteId, str]] = []
+        for closed_turn in routes_in_state(self._store, OutcomeState.CLOSED_TURN):
+            trigger = self.trigger_for(closed_turn, now=current)
+            if trigger is None:
+                continue
+            if await self.close_route(closed_turn, trigger):
+                closed.append((closed_turn.route_id, trigger))
+        return closed
+
+
+async def append_late_evidence(
+    store: LedgerStore,
+    route_id: RouteId,
+    *,
+    source: str,
+    detail: Mapping[str, Any],
+    causes: Sequence[CauseCandidate] = (),
+    producer: str = PRODUCER_CORRECTION,
+    evidence_id: str | None = None,
+) -> Label:
+    """Append late evidence and re-derive the label; returns the new label."""
+    ident = evidence_id or json.dumps(dict(detail), sort_keys=True, default=str)
+    event = late_evidence_event(
+        route_id, source, producer, producer_seq_for(source, ident), detail, causes=causes
+    )
+    await store.write_through(
+        LedgerStore.insert_event(
+            event.route_id,
+            event.event_type,
+            event.producer,
+            event.producer_seq,
+            event.payload,
+            event.schema_version,
+        )
+    )
+    events = read_stored_events(store, route_id)
+    label = derive_label(events)
+    previous = [e for e in events if e.event_type in (LABEL_EVENT, LABEL_CORRECTION_EVENT)]
+    supersedes = previous[-1].seq if previous else None
+    if outcome_state(events) is OutcomeState.CLOSED_FINAL or previous:
+        correction = label_event(
+            route_id,
+            producer_seq_for("late", source, ident),
+            label.as_dict(),
+            supersedes_seq=supersedes,
+        )
+        await store.write_through(
+            LedgerStore.insert_event(
+                correction.route_id,
+                correction.event_type,
+                correction.producer,
+                correction.producer_seq,
+                correction.payload,
+                correction.schema_version,
+            )
+        )
+    return label
+
+
+def current_label(store: LedgerStore, route_id: RouteId) -> Label:
+    return derive_label(read_stored_events(store, route_id))
+
+
+class HumanCorrectionDetector:
+    """Late evidence from ledger-visible human corrections (ADRL-MEM-002 follow-up).
+
+    A later route in the same session whose closed_turn reports touched_paths overlapping the
+    routed turn's touched_paths, or a revert_paths entry touching them, within the window is a
+    correction. Paths are keyed hashes supplied by the producer, never raw paths.
+    """
+
+    def __init__(self, store: LedgerStore, window_minutes: int) -> None:
+        self._store = store
+        self._window = window_minutes
+
+    def find(self, route_id: RouteId) -> list[dict[str, Any]]:
+        events = read_stored_events(self._store, route_id)
+        touched: set[str] = set()
+        closed_turn_ts: str | None = None
+        session: str | None = None
+        for event in events:
+            if event.event_type != OUTCOME_EVENT:
+                continue
+            touched.update(str(p) for p in event.payload.get("touched_paths", []) or [])
+            session = event.payload.get("session_hmac") or session
+            if str(event.payload.get("state")) == OutcomeState.CLOSED_TURN.value:
+                closed_turn_ts = event.ts
+        if not touched or closed_turn_ts is None:
+            return []
+        if session is None:
+            row = self._store.read_decision(str(route_id))
+            session = str(row["session_hmac"]) if row else None
+        if session is None:
+            return []
+        rows = self._store.read(
+            "SELECT e.* FROM events e WHERE e.event_type=? AND e.route_id!=? AND e.ts>? "
+            "AND json_extract(e.payload_json,'$.session_hmac')=? ORDER BY e.seq",
+            (OUTCOME_EVENT, str(route_id), closed_turn_ts, session),
+        )
+        limit = _parse_ts(closed_turn_ts).timestamp() + self._window * 60
+        found: list[dict[str, Any]] = []
+        for row in rows:
+            event = stored_event_from_row(row)
+            if _parse_ts(event.ts).timestamp() > limit:
+                break
+            later = set(str(p) for p in event.payload.get("touched_paths", []) or [])
+            reverted = set(str(p) for p in event.payload.get("revert_paths", []) or [])
+            overlap = sorted(touched & (later | reverted))
+            if overlap:
+                found.append(
+                    {
+                        "correcting_route_id": str(event.route_id),
+                        "correcting_seq": event.seq,
+                        "overlap": overlap,
+                        "kind": "revert" if touched & reverted else "re_edit",
+                    }
+                )
+        return found
+
+    async def emit(self, route_id: RouteId) -> int:
+        emitted = 0
+        for hit in self.find(route_id):
+            await append_late_evidence(
+                self._store,
+                route_id,
+                source="human_correction",
+                detail=hit,
+                causes=(CauseCandidate(FailureType.TASK_CAPABILITY, None, "human_correction"),),
+                evidence_id=str(hit["correcting_seq"]),
+            )
+            emitted += 1
+        return emitted
+
+
+@dataclass(frozen=True, slots=True)
+class CloseMeasurements:
+    time_to_close_seconds: tuple[float, ...]
+    label_flip_fraction: float
+    closed_final_count: int
+
+    @property
+    def median_seconds(self) -> float | None:
+        return median(self.time_to_close_seconds) if self.time_to_close_seconds else None
+
+
+def measure_closing(store: LedgerStore) -> CloseMeasurements:
+    """Time-to-close distribution and the fraction of labels that changed after closed_turn."""
+    rows = store.read(
+        "SELECT DISTINCT route_id FROM events WHERE event_type=? AND "
+        "json_extract(payload_json,'$.state')=?",
+        (OUTCOME_EVENT, OutcomeState.CLOSED_FINAL.value),
+    )
+    durations: list[float] = []
+    flips = 0
+    total = 0
+    for row in rows:
+        route_id = RouteId(str(row["route_id"]))
+        events = read_stored_events(store, route_id)
+        projection = project_outcome(route_id, events)
+        if projection.closed_turn_ts is None or projection.closed_final_ts is None:
+            continue
+        total += 1
+        evidence_ts = [e.ts for e in events if e.event_type == LATE_EVIDENCE_EVENT] or [
+            projection.closed_final_ts
+        ]
+        start = _parse_ts(projection.closed_turn_ts)
+        durations.append((_parse_ts(evidence_ts[-1]) - start).total_seconds())
+        frozen = next(
+            (
+                e.payload.get("label")
+                for e in events
+                if e.event_type == OUTCOME_EVENT
+                and str(e.payload.get("state")) == OutcomeState.CLOSED_FINAL.value
+            ),
+            None,
+        )
+        if isinstance(frozen, dict):
+            now = projection.label.as_dict()
+            if (frozen.get("result"), frozen.get("failure_type")) != (
+                now["result"],
+                now["failure_type"],
+            ):
+                flips += 1
+    return CloseMeasurements(tuple(durations), (flips / total) if total else 0.0, total)
+
+
+def ledger_event_to_write(event: LedgerEvent) -> Any:
+    """Convenience: a WriteFn for a typed event."""
+    return LedgerStore.insert_event(
+        event.route_id,
+        event.event_type,
+        event.producer,
+        event.producer_seq,
+        event.payload,
+        event.schema_version,
+    )
+
+
+def now_iso() -> str:
+    return utc_now_iso()
+
+
+FILE C/src/adrl/ledger/labels.py
+"""Cause-typed labels on failure-types-v2. Primary: ADRL-MEM-004.
+
+Secondary: ADRL-MEM-002 (censoring), ADRL-MEM-003 (verification precedence), ADRL-LRN-001.
+
+Label confidence is a documented, coarse scale rather than a probability:
+  1.00 verified by a deterministic verifier, no tree drift
+  0.90 verified failure with no other recorded cause (cause attributed to capability)
+  0.60 deterministic trip-wire or typed cause recorded by the cascade
+  0.30 proxy signal only (harness reported success, no verifier)
+  0.00 nothing determinable (unverifiable)
+"""
+
+from __future__ import annotations
+
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
+from typing import Any
+
+from adrl.core.enums import (
+    FAILURE_TYPES_VERSION,
+    FailureType,
+    OutcomeState,
+    VerificationResult,
+    resolve_primary,
+)
+from adrl.ledger.events import (
+    LATE_EVIDENCE_EVENT,
+    OUTCOME_EVENT,
+    VERIFICATION_EVENT,
+    StoredEvent,
+)
+from adrl.ledger.upcast import upcast_event
+
+LABEL_RULE_VERSION = "label-rule-v1"
+
+EXCLUDED_TYPES: frozenset[FailureType] = frozenset(
+    {
+        FailureType.INFRASTRUCTURE,
+        FailureType.POLICY_CONSTRAINT,
+        FailureType.CONTEXT_FEASIBILITY,
+        FailureType.USER_ABORT,
+        FailureType.UNVERIFIABLE,
+    }
+)
+
+
+@dataclass(frozen=True, slots=True)
+class Label:
+    result: str
+    failure_type: FailureType | None
+    secondary_type: FailureType | None
+    label_confidence: float
+    source_event_id: int | None
+    basis: str
+    label_rule_version: str = LABEL_RULE_VERSION
+    failure_types_version: str = FAILURE_TYPES_VERSION
+
+    @property
+    def is_capability_evidence(self) -> bool:
+        """Only verified successes and task_capability failures speak to a rung's ability."""
+        if self.result == "success":
+            return self.basis == "verifier"
+        return self.failure_type is FailureType.TASK_CAPABILITY
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "result": self.result,
+            "failure_type": self.failure_type.value if self.failure_type else None,
+            "secondary_type": self.secondary_type.value if self.secondary_type else None,
+            "label_confidence": self.label_confidence,
+            "source_event_id": self.source_event_id,
+            "basis": self.basis,
+            "label_rule_version": self.label_rule_version,
+            "failure_types_version": self.failure_types_version,
+        }
+
+
+UNVERIFIABLE_LABEL = Label(
+    result="excluded",
+    failure_type=FailureType.UNVERIFIABLE,
+    secondary_type=None,
+    label_confidence=0.0,
+    source_event_id=None,
+    basis="none",
+)
+
+
+def _candidates(payloads: Iterable[dict[str, Any]]) -> list[tuple[int | None, FailureType]]:
+    found: list[tuple[int | None, FailureType]] = []
+    for payload in payloads:
+        for cause in payload.get("causes", []) or []:
+            if not isinstance(cause, dict):
+                continue
+            try:
+                ft = FailureType(str(cause.get("failure_type")))
+            except ValueError:
+                ft = FailureType.UNVERIFIABLE
+            index = cause.get("action_index")
+            found.append((int(index) if index is not None else None, ft))
+        raw = payload.get("failure_type")
+        if raw is not None:
+            try:
+                found.append((None, FailureType(str(raw))))
+            except ValueError:
+                found.append((None, FailureType.UNVERIFIABLE))
+    return found
+
+
+def _order_causes(
+    candidates: Sequence[tuple[int | None, FailureType]],
+) -> tuple[FailureType, FailureType | None] | None:
+    """Primary is the cause that occurred first in the action sequence (ADRL-MEM-004 clause 2).
+
+    When no action indexes are recorded the CAS-002 precedence rule decides.
+    """
+    real = [(i, ft) for i, ft in candidates if ft is not FailureType.UNVERIFIABLE]
+    if not real:
+        return None
+    indexed = [(i, ft) for i, ft in real if i is not None]
+    if indexed and len(indexed) == len(real):
+        ordered = [ft for _, ft in sorted(indexed, key=lambda item: item[0])]
+        primary = ordered[0]
+        secondary = next((ft for ft in ordered[1:] if ft is not primary), None)
+        return primary, secondary
+    return resolve_primary([ft for _, ft in real])
+
+
+def _latest_verification(events: Sequence[StoredEvent]) -> StoredEvent | None:
+    usable: list[StoredEvent] = []
+    for event in events:
+        if event.event_type != VERIFICATION_EVENT:
+            continue
+        payload = event.payload
+        if payload.get("tree_drift"):
+            continue
+        if str(payload.get("result")) == VerificationResult.INDETERMINATE.value:
+            continue
+        usable.append(event)
+    return usable[-1] if usable else None
+
+
+def derive_label(events: Sequence[StoredEvent]) -> Label:
+    """Derive the current label from a route's events (already in ledger order)."""
+    upcast = [StoredEvent(e.seq, e.ts, upcast_event(e.event)) for e in events]
+    outcome_payloads = [dict(e.payload) for e in upcast if e.event_type == OUTCOME_EVENT]
+    late_payloads = [dict(e.payload) for e in upcast if e.event_type == LATE_EVIDENCE_EVENT]
+    late_events = [e for e in upcast if e.event_type == LATE_EVIDENCE_EVENT]
+
+    verification = _latest_verification(upcast)
+    if verification is not None:
+        result = str(verification.payload.get("result"))
+        if result == VerificationResult.PASS.value:
+            return Label("success", None, None, 1.0, verification.seq, "verifier")
+        causes = _candidates([dict(verification.payload), *outcome_payloads, *late_payloads])
+        ordered = _order_causes(causes)
+        if ordered is None:
+            return Label(
+                "failure", FailureType.TASK_CAPABILITY, None, 0.9, verification.seq, "verifier"
+            )
+        primary, secondary = ordered
+        return Label(
+            "excluded" if primary in EXCLUDED_TYPES else "failure",
+            primary,
+            secondary,
+            1.0,
+            verification.seq,
+            "verifier",
+        )
+
+    causes = _candidates([*outcome_payloads, *late_payloads])
+    ordered = _order_causes(causes)
+    if ordered is not None:
+        primary, secondary = ordered
+        source = late_events[-1].seq if late_events else _last_outcome_seq(upcast)
+        return Label(
+            "excluded" if primary in EXCLUDED_TYPES else "failure",
+            primary,
+            secondary,
+            0.6,
+            source,
+            "tripwire",
+        )
+
+    for payload in reversed(outcome_payloads):
+        if payload.get("harness_reported_success") is True:
+            return Label("success", None, None, 0.3, _last_outcome_seq(upcast), "proxy")
+    return UNVERIFIABLE_LABEL
+
+
+def _last_outcome_seq(events: Sequence[StoredEvent]) -> int | None:
+    for event in reversed(events):
+        if event.event_type == OUTCOME_EVENT:
+            return event.seq
+    return None
+
+
+def outcome_state(events: Sequence[StoredEvent]) -> OutcomeState | None:
+    state: OutcomeState | None = None
+    for event in events:
+        if event.event_type != OUTCOME_EVENT:
+            continue
+        try:
+            state = OutcomeState(str(event.payload.get("state")))
+        except ValueError:
+            continue
+    return state
+
+
+def is_countable(events: Sequence[StoredEvent]) -> bool:
+    """Censoring: only closed_final outcomes may be counted as labels (ADRL-MEM-002)."""
+    return outcome_state(events) is OutcomeState.CLOSED_FINAL
+
+
+FILE C/src/adrl/ledger/readiness.py
+"""Learning readiness counts on censored, cause-clean labels. Primary: ADRL-MEM-004.
+
+Secondary: ADRL-MEM-002 (censoring), ADRL-MEM-006 (degraded windows), ADRL-FND-005,
+ADRL-EVL-004, ADRL-EVL-009.
+Only task_capability evidence at closed_final counts; excluded types are reported next to the
+count, never averaged into it. A non-zero memory_degraded count blocks the window.
+"""
+
+from __future__ import annotations
+
+import json
+from collections import Counter
+from dataclasses import dataclass, field
+from typing import Any
+
+from adrl.core.enums import FailureType, OutcomeState
+from adrl.core.ids import RouteId
+from adrl.ledger.events import MEMORY_DEGRADED_EVENT, OUTCOME_EVENT, read_stored_events
+from adrl.ledger.labels import derive_label
+from adrl.ledger.store import LedgerStore
+
+READINESS_VERSION = "readiness-count-v1"
+
+
+@dataclass(frozen=True, slots=True)
+class ReadinessReport:
+    version: str
+    closed_final_count: int
+    censored_count: int
+    capability_evidence_count: int
+    verified_success_count: int
+    task_capability_failure_count: int
+    excluded_by_type: dict[str, int]
+    excluded_fraction: float
+    distinct_bands: int
+    distinct_repo_classes: int
+    memory_degraded_count: int
+    window_blocked: bool
+    blockers: tuple[str, ...] = field(default_factory=tuple)
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "version": self.version,
+            "closed_final_count": self.closed_final_count,
+            "censored_count": self.censored_count,
+            "capability_evidence_count": self.capability_evidence_count,
+            "verified_success_count": self.verified_success_count,
+            "task_capability_failure_count": self.task_capability_failure_count,
+            "excluded_by_type": dict(self.excluded_by_type),
+            "excluded_fraction": self.excluded_fraction,
+            "distinct_bands": self.distinct_bands,
+            "distinct_repo_classes": self.distinct_repo_classes,
+            "memory_degraded_count": self.memory_degraded_count,
+            "window_blocked": self.window_blocked,
+            "blockers": list(self.blockers),
+        }
+
+
+def learning_readiness(store: LedgerStore) -> ReadinessReport:
+    routes = store.read("SELECT DISTINCT route_id FROM events WHERE event_type=?", (OUTCOME_EVENT,))
+    closed_final = 0
+    censored = 0
+    verified_success = 0
+    capability_failure = 0
+    excluded: Counter[str] = Counter()
+    bands: set[str] = set()
+    repos: set[str] = set()
+    for row in routes:
+        route_id = RouteId(str(row["route_id"]))
+        events = read_stored_events(store, route_id)
+        state = None
+        for event in events:
+            if event.event_type == OUTCOME_EVENT:
+                state = str(event.payload.get("state"))
+        if state != OutcomeState.CLOSED_FINAL.value:
+            censored += 1
+            continue
+        closed_final += 1
+        label = derive_label(events)
+        if label.is_capability_evidence:
+            if label.result == "success":
+                verified_success += 1
+            else:
+                capability_failure += 1
+            decision = store.read_decision(str(route_id))
+            if decision is not None:
+                features = json.loads(str(decision["features_json"]))
+                if features.get("band_id"):
+                    bands.add(str(features["band_id"]))
+                if features.get("repo_class"):
+                    repos.add(str(features["repo_class"]))
+        else:
+            excluded[(label.failure_type or FailureType.UNVERIFIABLE).value] += 1
+    degraded = int(
+        store.read("SELECT COUNT(*) AS c FROM events WHERE event_type=?", (MEMORY_DEGRADED_EVENT,))[
+            0
+        ]["c"]
+    )
+    evidence = verified_success + capability_failure
+    blockers: list[str] = []
+    if degraded:
+        blockers.append("memory_degraded_nonzero")
+    if closed_final and evidence == 0:
+        blockers.append("no_capability_evidence")
+    return ReadinessReport(
+        version=READINESS_VERSION,
+        closed_final_count=closed_final,
+        censored_count=censored,
+        capability_evidence_count=evidence,
+        verified_success_count=verified_success,
+        task_capability_failure_count=capability_failure,
+        excluded_by_type=dict(excluded),
+        excluded_fraction=(sum(excluded.values()) / closed_final) if closed_final else 0.0,
+        distinct_bands=len(bands),
+        distinct_repo_classes=len(repos),
+        memory_degraded_count=degraded,
+        window_blocked=bool(blockers),
+        blockers=tuple(blockers),
+    )
+
+PROXY FINALIZE EXCERPT
+    async def _finalize(self, turn: _Turn, obs: ResponseObservation) -> None:
+        ctx = turn.ctx
+        REQUESTS_TOTAL.labels(
+            request_class=ctx.request_class.value, rung=obs.served.rung.value
+        ).inc()
+        lock = self._locks.get(ctx.lineage_hmac)
+        try:
+            async with lock:
+                events = await self._cascade.observe(ctx, turn.plan, obs)
+                if self._state is not None and events.sticky is not None:
+                    await self._state.set_sticky(events.sticky)
+                payload: dict[str, Any] = {
+                    "status": obs.status,
+                    "served_rung": obs.served.rung.value,
+                    "served_model": obs.served.model,
+                    "served_provider": obs.served.provider,
+                    "served_source": obs.served.source.value,
+                    "served_deployment_id": obs.served.deployment_id,
+                    "served_trust_zone": obs.served.trust_zone,
+                    "served_geo": obs.served.geo,
+                    "receipt_confirmed": obs.served.receipt_confirmed,
+                    "intended_rung": turn.target_rung.value,
+                    "intended_deployment_id": (
+                        turn.deployment.deployment_id if turn.deployment else None
+                    ),
+                    "stop_reason": obs.stop_reason,
+                    "streamed_tool_content": obs.streamed_tool_content,
+                    "completed": obs.completed,
+                    "malformed_tool_json": obs.malformed_tool_json,
+                    "tool_uses": [dataclasses.asdict(t) for t in obs.tool_uses],
+                    "bytes_relayed": obs.bytes_relayed,
+                    "fired_wires": list(events.fired_wires),
+                }
+                if obs.usage is not None:
+                    payload["usage"] = {
+                        "input_tokens": obs.usage.input_tokens,
+                        "output_tokens": obs.usage.output_tokens,
+                        "cache_read_input_tokens": obs.usage.cache_read_input_tokens,
+                        "cache_creation_input_tokens": obs.usage.cache_creation_input_tokens,
+                    }
+                if obs.error is not None:
+                    payload["error"] = _content_free_error(
+                        obs.error, obs.status, self._identity.hmac_key
+                    )
+                event_type = "upstream_error" if obs.status >= 400 else "served"
+                await self._append_event(ctx, turn.decision.route_id, event_type, payload)
+                await self._record_receipt(turn, obs)
+                for outcome_event in events.outcome_events:
+                    await self._append_event(
+                        ctx,
+                        turn.decision.route_id,
+                        str(getattr(outcome_event, "event_type", "outcome")),
+                        dict(getattr(outcome_event, "payload", {})),
+                    )
+        except Exception as exc:
+            log.error("finalize_failed", error=str(exc), route_id=turn.decision.route_id)
+

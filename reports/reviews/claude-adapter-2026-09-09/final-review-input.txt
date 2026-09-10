@@ -1,0 +1,185 @@
+Final DOC-ONLY recheck, correction round two. Prior Fable recheck accepted offline code and verified both material fixes. Verify only the remaining register defects; no code changes since that recheck, confirmed by all C: hashes. No tools, edits or experiments. Return at most 250 words with scoped accepted/remaining blockers. All six required checks passed: logs below. No live admission or grade promotion. The alleged broken SEM heading was caused by excerpt generation; actual frozen and current ADR heading are identical and shown literally. Original reviewer output follows.
+**Outcome: both blocking corrections are verified against source and evidence. The offline candidate is accepted in offline scope. Two small register defects remain before the taxonomy sync receipt. No live admission or maturity change is granted, and the final full suite is still a closure condition.**
+
+**CA-01, egress provenance: verified.** The fallback in `_record_receipt` is now guarded by an experiment-is-None check, so the experiment path passes a null deployment to the egress fields. Host comes from the observation, which the receipt override fixes to the configured destination. Negative evidence is real: egress-before-fix.log fails on the intended deployment id in the served_receipt row. Positive evidence is the focused run, and the 27-test count matches the 21 unit and 6 composition tests in the shown files. The regression asserts null deployment, geo and trust zone, the direct host and proxy_observed source on the actual egress row. The CAS-006 and TRU-002 wording is now accurate for both the served event and the egress ledger. Non-experiment behaviour is untouched by the guard.
+
+**CA-02, stop wording: verified.** The ADR and report now say any response not reporting the target model, including errors and missing identity, stops dispatch. The 429 composition test exercises two requests and asserts one upstream attempt and the stopped flag. Code path checks out: the second request passes selection on the same lineage, then the transport refuses because stopped is set.
+
+**Nonblocking dispositions: recorded.** The report's limits section covers subagent and background refusal, unreleased lineage reservation, the synthetic bundle, forwarded native session identity, CancelledError, value-only JSON preservation and open profile integration. The header fixture now asserts both local headers are stripped and the native session header preserved. The source of forward_headers is not in the packet, so this rests on the passing test only.
+
+**Grades unchanged: verified.** Every owning row and bucket row shows the prior grade with no promotion. The SEM-007 restoration record shows identical before and after fields with the bucket display added.
+
+**Remaining register defects, fix before the receipt**
+
+- **CHANGELOG lags CAS-006.** The CHANGELOG entry still reads "Model mismatch stops further dispatch" while the ADR, bucket text and report carry the corrected wording. One of the four synchronized surfaces is stale.
+- **SEM-007 section heading is broken.** The placement note appears under a heading rendered as ", 2026-09-09" with no title text.
+- **CAS-009 row cites the wrong evidence.** The restored bucket row is labelled "offline candidate evidence" and links the candidate report, but the candidate does not implement action-effect provenance and CAS-009 is not an owner. The row should cite the restoration disposition only. Its INDEX values cannot be confirmed from the packet, since the INDEX excerpt omits CAS-009.
+
+**Scope nuance to record, not blocking.** The stop trigger depends on finalization running. A stream that hits the deadline before reporting identity releases the slot but may never reach the receipt override if the harness does not run the finalizer. The attempt cap still bounds total dispatch.
+
+**Standing conditions.** Closure waits on the three register fixes, the full six-check run, and the sync receipt. Live eligibility remains blocked by the unqualified config, signed inventory and account prerequisites.
+# Fable post-review dispositions
+
+Original post-review.md and source/ are immutable first-review evidence. Reviewer session 4142beb3-97ac-4fcb-a1b8-60fc2fb6cbcf reported Fable 5.1, with an auxiliary Haiku metadata entry. No tools or tests were run by reviewer. IDs below are coordinator-assigned to the original unnumbered findings.
+
+- CA-01, blocking, egress provenance: accepted and reproduced. egress-before-fix.log fails on intended deployment in served_receipt. Experiment mode now skips that legacy fallback. The regression checks null deployment/geo/trust plus direct host and proxy_observed source in the actual egress row. Awaiting recheck.
+- CA-02, blocking, stop wording: accepted. CAS-006/report now state that any response not reporting target identity, including errors, stops the client. A composed 429 test checks that no second HTTP attempt occurs. Awaiting recheck.
+- CA-03, nonblocking, subagent/background restriction: accepted limitation; another lineage or an unlisted model is rejected. No multi-agent harness compatibility claim.
+- CA-04, nonblocking, lineage reservation before dispatch: accepted conservative limitation; a prepared but locally blocked first lineage consumes that process's binding. No automatic reset/reuse.
+- CA-05, nonblocking, header fixture: fixed fixture verifies both local headers are removed, native x-claude-code-session-id and OAuth/beta are preserved. Native session identity is deliberately forwarded under the existing protocol contract, not claimed to be a secret-bearing local assertion.
+- CA-06, nonblocking, synthetic bundle: accepted. The fixture bypasses full configuration loading with synthetic objects, although constructor checks are exercised. Its full inventory/member validity is not established; it must not be used as a live admission artifact.
+- CA-07, nonblocking, deadline cancellation: accepted limitation. Cancellation may reach a slow consumer as CancelledError; no uniform TimeoutError promise for all consumers. Slot release/closure occurs on unwinding. Live stream behavior remains a qualification gate.
+- CA-08, nonblocking, encoding: accepted. Model-only means JSON-value preservation apart from model, not identical whitespace/escaping on rewritten bodies. Normal passthrough bytes are unchanged.
+- CA-09, architecture placement: acknowledged in SEM-007. Candidate collaborator currently lives in proxy; production profile integration remains outstanding and is not called complete.
+- CA-10, overview rows: user asked for a plain explanation, then replied "try now" after the exact no-promotion restoration question. Restored existing INDEX values only and preserved the human disposition. No canonical status/maturity/verdict change.
+
+Code acceptance remains scoped to an offline candidate. Live launch, production contract, meaningful model selection, savings and learning remain unproved. This correction is round one; one further review/correction round remains under the skill cap if a material finding requires it.
+
+## Recheck disposition
+
+CA-01/02 verified fixed by Fable recheck.md. Full six checks passed on corrected runtime: 949 passed, 8 skipped. The recheck requested exact root CHANGELOG stop wording and a CAS-009 restoration-only citation; both are corrected. The reported broken SEM-007 heading was an excerpt-generation defect in recheck-input.txt, not the actual ADR or frozen source; the literal source heading is supplied in final review. No source heading was changed unnecessarily. Stop-on-missing-identity depends on finalization; an abandoned stream may be bounded by the attempt/deadline controls without setting stopped. This is a retained launch qualification limit, not a closed capability.
+
+ACTUAL SEM HEADING
+### Candidate placement limitation, 2026-09-09
+
+The initial-choice implementation is currently a constructor-only proxy experiment collaborator; it does not yet live behind the native protocol profile serialization interface. This scoped candidate placement is not the production adapter contract. Profile integration remains required before making this a consumable harness feature. JSON values are preserved, not original whitespace or Unicode escaping, on the explicit rewrite path. Normal passthrough remains byte-exact.
+
+CORRECTED ROOT CHANGELOG
+2026-09-09 <!-- taxonomy-sync:claude-adapter:ADRL-CAS-006 --> ADRL-CAS-006: Direct experiment observation ignores gateway-specific identity headers and preserves the actual provider model source. Host is the fixed configured HTTPS destination; deployment, geography and trust receipt fields stay unknown. Intended deployment is separate. Any response not reporting the target model, including upstream errors or missing identity, stops further dispatch. No fabricated confirmed receipt. [Evidence](reports/reviews/claude-adapter-2026-09-09/report.md).
+CAS OVERVIEW
+| ADRL-CAS-009 | Action-effect provenance and authorization boundary (Proposed) | PROPOSED (new) | D0 | 2026-09-09 [Overview restoration only](../../reports/reviews/claude-adapter-2026-09-09/overview-restoration.json); existing INDEX scope, no implementation or promotion. |
+CAS INDEX
+| [ADRL-CAS-009](adr/CAS/ADRL-CAS-009.md) | Action-effect provenance and authorization boundary (Proposed) | PROPOSED (new) | D0 | Q2, Q3 | Proposed 2026-09-03 (external review) |
+{
+  "date": "2026-09-09",
+  "restored": [
+    "ADRL-SEM-007",
+    "ADRL-CAS-009"
+  ],
+  "authorization": "overview-owner-disposition.json",
+  "cas009_index_row": "| [ADRL-CAS-009](adr/CAS/ADRL-CAS-009.md) | Action-effect provenance and authorization boundary (Proposed) | PROPOSED (new) | D0 | Q2, Q3 | Proposed 2026-09-03 (external review) |",
+  "cas009_verdict": "PROPOSED (new)",
+  "cas009_maturity": "D0",
+  "scope": "Missing overview entries only. No action-effect implementation, no canonical/index status or maturity change."
+}
+
+{
+  "adr": "ADRL-SEM-007",
+  "before": {
+    "Maturity": "D2 for the Messages boundary and local services, plus one bounded live observation pilot (2026-09-07). Full cross-protocol contract remains incomplete, D0 for the second profile; no general D3/D4 graduation or live gateway validation",
+    "Review verdict": "PROPOSED (new)",
+    "Status": "Proposed 2026-09-03 (new, from external review)"
+  },
+  "after": {
+    "Status": "Proposed 2026-09-03 (new, from external review)",
+    "Maturity": "D2 for the Messages boundary and local services, plus one bounded live observation pilot (2026-09-07). Full cross-protocol contract remains incomplete, D0 for the second profile; no general D3/D4 graduation or live gateway validation",
+    "Review verdict": "PROPOSED (new)"
+  },
+  "display_before": {
+    "bucket": null,
+    "index": {
+      "maturity": "D2 Messages boundary and local services; D0 second profile",
+      "verdict": "PROPOSED (new)"
+    }
+  },
+  "display_after": {
+    "index": {
+      "verdict": "PROPOSED (new)",
+      "maturity": "D2 Messages boundary and local services; D0 second profile"
+    },
+    "bucket": {
+      "verdict": "PROPOSED (new)",
+      "maturity": "D2 Messages boundary and local services; D0 second profile"
+    }
+  },
+  "human_name": "Arun Menon",
+  "date": "2026-09-09",
+  "authorization": "After the plain-language question about restoring the two missing summary-table entries without changing readiness/permissions, user replied: try now. Coordinator stated it would restore the existing status values.",
+  "scope": "Missing overview row restored using existing INDEX values only; no formal grade/status/decision promotion."
+}
+
+[
+  {
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "src",
+      "tests",
+      "tools"
+    ],
+    "exit_code": 0,
+    "log": "1.log"
+  },
+  {
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "ruff",
+      "format",
+      "--check",
+      "src",
+      "tests",
+      "tools"
+    ],
+    "exit_code": 0,
+    "log": "2.log"
+  },
+  {
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "mypy"
+    ],
+    "exit_code": 0,
+    "log": "3.log"
+  },
+  {
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "-q"
+    ],
+    "exit_code": 0,
+    "log": "4.log"
+  },
+  {
+    "argv": [
+      ".venv/bin/python",
+      "tools/check_ledger_discipline.py"
+    ],
+    "exit_code": 0,
+    "log": "5.log"
+  },
+  {
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "adrl.cli.main",
+      "config",
+      "check"
+    ],
+    "exit_code": 0,
+    "log": "6.log"
+  }
+]
+
+........................................................................ [  7%]
+........................................................................ [ 15%]
+..........................................ssssssss...................... [ 22%]
+........................................................................ [ 30%]
+........................................................................ [ 37%]
+........................................................................ [ 45%]
+........................................................................ [ 52%]
+........................................................................ [ 60%]
+........................................................................ [ 67%]
+........................................................................ [ 75%]
+........................................................................ [ 82%]
+........................................................................ [ 90%]
+........................................................................ [ 97%]
+.....................                                                    [100%]
+949 passed, 8 skipped in 60.34s (0:01:00)
+
+Runtime source unchanged: True

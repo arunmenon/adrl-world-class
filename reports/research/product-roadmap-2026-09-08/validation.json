@@ -1,0 +1,83 @@
+{
+  "at": "2026-09-08T07:37:04.597920+00:00",
+  "scope": "Documentation/planning verification; no runtime suite rerun",
+  "backup_files_checked": 89,
+  "backup_errors": [],
+  "adrs_checked": 77,
+  "decision_text_errors": [],
+  "status_maturity_errors": [],
+  "index_coverage_errors": [],
+  "runtime_inputs_checked": 316,
+  "runtime_hash_errors": [],
+  "reused_runtime_tests_passed": 895,
+  "reused_runtime_check_count": 11,
+  "local_markdown_links_checked": 600,
+  "link_errors": [],
+  "changed_backed_up_files": [
+    "INDEX.md",
+    "CHANGELOG.md",
+    "reports/adrl-implementation-journey.md",
+    "reports/adrl-implementation-roadmap-2026-09-07.md",
+    "reports/adrl-adaptive-routing-rsi-blueprint-2026-09-08.md",
+    "reports/research/adrl-execution-state.json",
+    "adr/FND/README.md",
+    "adr/RTG/README.md",
+    "adr/LRN/README.md",
+    "adr/EVL/README.md",
+    "adr/OPS/README.md",
+    "adr/LRN/ADRL-LRN-004.md",
+    "adr/MEM/ADRL-MEM-007.md",
+    "adr/MEM/ADRL-MEM-008.md",
+    "adr/MEM/README.md"
+  ],
+  "new_document_hashes": {
+    "reports/adrl-product-roadmap-2026-09-08.md": "9cb63eaeddc209bdd06486ee1cd77b22e10ec464cd6586ba9e501b80a2204d6d",
+    "reports/adrl-startup-investment-brief-2026-09-08.md": "e40b5c63651fd75084f0e8dad15e679fd08a843ecf345aa055a8adf29e0aaa44",
+    "design/adrl-context-graph-memory-proposal-2026-09-08.md": "dafcf89f79e4c4c09af547238044f5bcf7957ea1b1b8330a3347c3741db5440d"
+  },
+  "current_planning_source_hashes": {
+    "INDEX.md": "5d02e5ea63c4993c084d519ae7c0ef3381342cc01280f982b8605857cf65cb1f",
+    "CHANGELOG.md": "01c6ba49afcfdcd47aab387acc2b956059b22b31adb94bf4a5badc74612949af",
+    "reports/adrl-implementation-journey.md": "a02cf0b6db12da91a76bebab4ec0b0668e2de657974e6d99df1904068e08b912",
+    "reports/adrl-implementation-roadmap-2026-09-07.md": "da3465f9e14120c20d442ccf403de7e3931267cf0720affe50e89766af672d2e",
+    "reports/adrl-adaptive-routing-rsi-blueprint-2026-09-08.md": "c65321a97374e4146388ec1b00e135a4d57e0eef8d434b9ea34550af371b9ae8",
+    "reports/research/adrl-execution-state.json": "c5e6e0731c4202845bef22e06536e70366c6dc80902c979190986e525f3c06a1",
+    "adr/FND/README.md": "9e0cc91ff7d6d3d25e4fdeb97e7da485af7e64f10789a5dcbb19140ae7e438dc",
+    "adr/RTG/README.md": "d5553dc5788099214009b4b63b62b7c561dade73cb6b195b392263558824f84c",
+    "adr/LRN/README.md": "b3f4afc169e16f0adec71beead407d4549aaa8207bff2f9f5cdcbee56e9084e0",
+    "adr/EVL/README.md": "92077868a928d3d997999fc2d686d3a3c16b930ac85ab2fd9c42409b5d56d0f7",
+    "adr/OPS/README.md": "3c6c49ebf692f2370d264c48f1d5dd561fadddba87b84879bb9d8ed17b4fb77f",
+    "adr/LRN/ADRL-LRN-004.md": "fb966706e798caf8218c6d2c53e6f4ca73f6b6339ff1576e60a699bcd6125234",
+    "adr/MEM/ADRL-MEM-007.md": "adec45d184ce9d7958f1b97aa9c50c237b3486efddfe227660cb737868909cb6",
+    "adr/MEM/ADRL-MEM-008.md": "64ce1a98375b3ba4be76f795ca9e120d5177983103f3dbcf11cf11d9f266971c",
+    "adr/MEM/README.md": "b9fc32cb5fe65cc97395f436bbfcbe8e91b08dff5466b2f3666018677c0745be"
+  },
+  "source_ledger_sha256": "022d6c4c85547b33705cbca534d080715521666b61610502d9c38f28bbd82ffd",
+  "automation_status": "PAUSED",
+  "runtime_changed": false,
+  "maturity_promotions": 0,
+  "model_calls": 0,
+  "new_paid_usage": false,
+  "customer_outreach": false,
+  "illustrative_economics_recomputed": [
+    {
+      "coverage": 0.25,
+      "reduction": 0.1,
+      "gross_saving": 1000.0,
+      "net_saving": -1500.0
+    },
+    {
+      "coverage": 0.5,
+      "reduction": 0.2,
+      "gross_saving": 4000.0,
+      "net_saving": 1500.0
+    },
+    {
+      "coverage": 0.75,
+      "reduction": 0.3,
+      "gross_saving": 9000.0,
+      "net_saving": 6500.0
+    }
+  ],
+  "passed": true
+}

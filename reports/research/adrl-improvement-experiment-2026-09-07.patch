@@ -1,0 +1,1281 @@
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,8 @@
+ # adrl-core
++
++Offline verifier experiments now compare reviewed proposals against a baseline on fixed
++curated examples, preserve encrypted evidence and recommend review without deployment.
++See the [experiment guide](docs/verifier-experiments.md). The public API remains preview 4.
+ 
+ Product API preview 4 adds independent session verification: a local operator runs pinned checks
+ on a separate code snapshot and the authenticated timeline shows started/finished receipts.
+--- a/docs/adr-module-map.md
++++ b/docs/adr-module-map.md
+@@ -21,6 +21,7 @@
+ | `adrl/cascade/handoff.py` | ADRL-CAS-003, ADRL-CAS-004 | Cross-model handoff transform. Primary: ADRL-CAS-004. Secondary: ADRL-CAS-003. |
+ | `adrl/cascade/sticky.py` | ADRL-CAS-005, ADRL-CAS-006, ADRL-OPS-006, ADRL-SEM-005 | Sticky state within an episode. Primary: ADRL-CAS-005. Secondary: ADRL-CAS-006, ADRL-SEM-005. |
+ | `adrl/cascade/tripwires.py` | ADRL-CAS-001, ADRL-CAS-002 | Deterministic post-call trip-wires. Primary: ADRL-CAS-001. Secondary: ADRL-CAS-002. |
++| `adrl/cli/improvement.py` | ADRL-EVL-006, ADRL-LRN-007, ADRL-MEM-010 | Local verifier experiments. Primary: ADRL-EVL-006. Secondary: ADRL-LRN-007, ADRL-MEM-010. |
+ | `adrl/cli/ledger_commands.py` | ADRL-MEM-001, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-004, ADRL-MEM-010 | Ledger operator commands: replay, close, readiness, retention, erasure, verification. |
+ | `adrl/cli/main.py` | ADRL-OPS-001, ADRL-SAF-009 | adrl command line. Primary: ADRL-OPS-001 (referenced by gloss). Secondary: ADRL-SAF-009. |
+ | `adrl/cli/product.py` | ADRL-SEM-007, ADRL-TRU-001 | Claude Code connection and evidence commands. Primary: ADRL-SEM-007. Secondary: ADRL-TRU-001. |
+@@ -54,6 +55,7 @@
+ | `adrl/learning/dataset.py` | ADRL-EVL-002, ADRL-LRN-001, ADRL-LRN-004, ADRL-MEM-007 | Pre-decision features, enforced by construction. Primary: ADRL-LRN-004. |
+ | `adrl/learning/estimator.py` | ADRL-LRN-001, ADRL-LRN-003, ADRL-LRN-004 | CATE estimator for the marginal effect of a higher rung. Primary: ADRL-LRN-003. |
+ | `adrl/learning/explore.py` | ADRL-CAS-005, ADRL-LRN-002, ADRL-LRN-005, ADRL-LRN-008, ADRL-SAF-001, ADRL-SAF-002 | Logged exploration in the ambiguous band and off-policy estimation. Primary: ADRL-LRN-008. |
++| `adrl/learning/improvement.py` | ADRL-EVL-005, ADRL-EVL-006, ADRL-EVL-009, ADRL-LRN-005, ADRL-LRN-007, ADRL-MEM-003 | Compare reviewed verifier proposals offline. Primary: ADRL-EVL-006. |
+ | `adrl/learning/pairs.py` | ADRL-EVL-003, ADRL-LRN-001, ADRL-LRN-002, ADRL-MEM-009, ADRL-SAF-002 | Branched counterfactual pairs and their power budget. Primary: ADRL-LRN-002. |
+ | `adrl/learning/readiness.py` | ADRL-EVL-004, ADRL-EVL-009, ADRL-FND-005, ADRL-LRN-001, ADRL-LRN-002, ADRL-LRN-006 | Learning readiness report. Primary: ADRL-LRN-001. Secondary: ADRL-FND-005, ADRL-EVL-004, |
+ | `adrl/learning/tiers.py` | ADRL-EVL-005, ADRL-LRN-001, ADRL-LRN-002, ADRL-LRN-008, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-004 | Evidence tiers and pooling rules. Primary: ADRL-LRN-001. |
+@@ -65,6 +67,7 @@
+ | `adrl/ledger/erasure.py` | ADRL-MEM-005, ADRL-MEM-007, ADRL-MEM-010, ADRL-OPS-004, ADRL-SAF-002 | Crypto-shredding by session and pin-triggered suppression. Primary: ADRL-MEM-010. |
+ | `adrl/ledger/events.py` | ADRL-MEM-001, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-004, ADRL-MEM-009, ADRL-MEM-010 | Typed event constructors and producer sequencing. Primary: ADRL-MEM-001. |
+ | `adrl/ledger/facade.py` | ADRL-MEM-001, ADRL-MEM-006, ADRL-SAF-002 | Fail-safe memory facade. Primary: ADRL-MEM-006. Secondary: ADRL-MEM-001, ADRL-SAF-002. |
++| `adrl/ledger/improvement.py` | ADRL-LRN-005, ADRL-MEM-001, ADRL-MEM-005, ADRL-MEM-010 | Encrypted offline experiment history. Primary: ADRL-MEM-001. |
+ | `adrl/ledger/keystore.py` | ADRL-MEM-005, ADRL-MEM-010 | File keystore for per-session keys and the host HMAC secret. Primary: ADRL-MEM-010. |
+ | `adrl/ledger/labels.py` | ADRL-LRN-001, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-004 | Cause-typed labels on failure-types-v2. Primary: ADRL-MEM-004. |
+ | `adrl/ledger/outcomes.py` | ADRL-CAS-005, ADRL-MEM-002, ADRL-MEM-004 | Outcome lifecycle: pending, closed_turn, closed_final. Primary: ADRL-MEM-002. |
+@@ -72,7 +75,7 @@
+ | `adrl/ledger/readiness.py` | ADRL-EVL-004, ADRL-EVL-009, ADRL-FND-005, ADRL-MEM-002, ADRL-MEM-004, ADRL-MEM-006 | Learning readiness counts on censored, cause-clean labels. Primary: ADRL-MEM-004. |
+ | `adrl/ledger/replay.py` | ADRL-MEM-001, ADRL-MEM-007 | Rebuild every projection from events. Primary: ADRL-MEM-001. Secondary: ADRL-MEM-007. |
+ | `adrl/ledger/retention.py` | ADRL-MEM-010 | Retention sweep over two storage classes. Primary: ADRL-MEM-010. |
+-| `adrl/ledger/session_verification.py` | ADRL-LRN-001, ADRL-MEM-001, ADRL-MEM-003, ADRL-MEM-010, ADRL-SAF-007, ADRL-SEM-007 | Local operator checks for bound sessions. Primary: ADRL-MEM-003. |
++| `adrl/ledger/session_verification.py` | ADRL-LRN-001, ADRL-MEM-001, ADRL-MEM-003, ADRL-MEM-010, ADRL-SAF-007, ADRL-SEM-007 | Snapshot execution and bound-session operator checks. Primary: ADRL-MEM-003. |
+ | `adrl/ledger/shadow_retrieval.py` | ADRL-MEM-005, ADRL-MEM-007, ADRL-MEM-008 | Advisory retrieval that writes only to the ledger. Primary: ADRL-MEM-008. |
+ | `adrl/ledger/state.py` | ADRL-CAS-006, ADRL-MEM-006, ADRL-SAF-002 | Provider-backed routing state. Primary: ADRL-MEM-006. Secondary: ADRL-SAF-002, ADRL-CAS-006. |
+ | `adrl/ledger/store.py` | ADRL-MEM-001, ADRL-MEM-006, ADRL-MEM-007 | SQLite event store with one writer thread. Primary: ADRL-MEM-001. Secondary: ADRL-MEM-006. |
+@@ -123,10 +126,10 @@
+ | ADRL-EVL-002 | `adrl/learning/dataset.py` |
+ | ADRL-EVL-003 | `adrl/learning/pairs.py` |
+ | ADRL-EVL-004 | `adrl/learning/readiness.py`, `adrl/ledger/readiness.py` |
+-| ADRL-EVL-005 | `adrl/learning/tiers.py` |
+-| ADRL-EVL-006 | `adrl/learning/artifacts.py` |
++| ADRL-EVL-005 | `adrl/learning/improvement.py`, `adrl/learning/tiers.py` |
++| ADRL-EVL-006 | `adrl/cli/improvement.py`, `adrl/learning/artifacts.py`, `adrl/learning/improvement.py` |
+ | ADRL-EVL-007 | `adrl/learning/artifacts.py` |
+-| ADRL-EVL-009 | `adrl/learning/readiness.py`, `adrl/ledger/readiness.py` |
++| ADRL-EVL-009 | `adrl/learning/improvement.py`, `adrl/learning/readiness.py`, `adrl/ledger/readiness.py` |
+ | ADRL-FND-001 | `adrl/api/schema.py`, `adrl/app.py`, `adrl/proxy/asgi.py`, `adrl/proxy/observe_only.py`, `adrl/proxy/pipeline.py`, `adrl/proxy/upstream.py`, `adrl/wire/observe.py`, `adrl/wire/parse.py`, `adrl/wire/profiles/base.py`, `adrl/wire/profiles/messages.py`, `adrl/wire/rewrite.py` |
+ | ADRL-FND-002 | `adrl/app.py`, `adrl/config/checks.py`, `adrl/config/loaders.py`, `adrl/config/models.py`, `adrl/core/ports.py`, `adrl/gates/deployments.py`, `adrl/proxy/stages.py`, `adrl/wire/rewrite.py` |
+ | ADRL-FND-003 | `adrl/proxy/pipeline.py`, `adrl/wire/classify.py` |
+@@ -136,20 +139,20 @@
+ | ADRL-LRN-002 | `adrl/learning/explore.py`, `adrl/learning/pairs.py`, `adrl/learning/readiness.py`, `adrl/learning/tiers.py` |
+ | ADRL-LRN-003 | `adrl/learning/estimator.py` |
+ | ADRL-LRN-004 | `adrl/config/checks.py`, `adrl/config/models.py`, `adrl/learning/abstention.py`, `adrl/learning/artifacts.py`, `adrl/learning/dataset.py`, `adrl/learning/estimator.py`, `adrl/ledger/projections.py`, `adrl/routing/features.py` |
+-| ADRL-LRN-005 | `adrl/config/models.py`, `adrl/learning/artifacts.py`, `adrl/learning/explore.py` |
++| ADRL-LRN-005 | `adrl/config/models.py`, `adrl/learning/artifacts.py`, `adrl/learning/explore.py`, `adrl/learning/improvement.py`, `adrl/ledger/improvement.py` |
+ | ADRL-LRN-006 | `adrl/learning/abstention.py`, `adrl/learning/readiness.py` |
+-| ADRL-LRN-007 | `adrl/app.py`, `adrl/learning/artifacts.py` |
++| ADRL-LRN-007 | `adrl/app.py`, `adrl/cli/improvement.py`, `adrl/learning/artifacts.py`, `adrl/learning/improvement.py` |
+ | ADRL-LRN-008 | `adrl/learning/explore.py`, `adrl/learning/tiers.py`, `adrl/routing/advisor.py`, `adrl/routing/router.py` |
+-| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
++| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
+ | ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-004 | `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/learning/artifacts.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/ports.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/ports.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-006 | `adrl/core/ports.py`, `adrl/learning/abstention.py`, `adrl/ledger/facade.py`, `adrl/ledger/readiness.py`, `adrl/ledger/state.py`, `adrl/ledger/store.py`, `adrl/proxy/observe_only.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-MEM-007 | `adrl/learning/dataset.py`, `adrl/ledger/erasure.py`, `adrl/ledger/projections.py`, `adrl/ledger/replay.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/store.py` |
+ | ADRL-MEM-008 | `adrl/ledger/shadow_retrieval.py` |
+ | ADRL-MEM-009 | `adrl/learning/pairs.py`, `adrl/ledger/counterfactual.py`, `adrl/ledger/events.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/ports.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/ports.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/telemetry/logging.py` |
+ | ADRL-OPS-002 | `adrl/ledger/anchoring.py` |
+ | ADRL-OPS-003 | `adrl/config/checks.py` |
+--- a/docs/data-inventory.md
++++ b/docs/data-inventory.md
+@@ -294,3 +294,20 @@
+ | `product_verifications.nonce` | `skeleton` | AEAD nonce |
+ | `product_verifications.ciphertext` | `encrypted_prompt_class` | Typed session verification receipt |
+ | `product_verifications.ts` | `skeleton` | Record time |
++
++## Offline verifier experiments
++
++Migration 0006 stores the proposal, suite, every trial and final comparison encrypted
++under an experiment-specific key. Its identity uses a separate HMAC namespace and
++creates no product session. The existing key-shredding audit is reused. Exported
++history, plans, fixtures, backups and verifier artifacts have separate retention.
++
++| Field | Class | Note |
++|---|---|---|
++| `improvement_records.seq` | `skeleton` | Append order |
++| `improvement_records.experiment_hmac` | `keyed_hash` | HMAC of namespaced experiment ID |
++| `improvement_records.event_type` | `skeleton` | started, trial or finished |
++| `improvement_records.record_key` | `keyed_hash` | Unique HMAC of record identity |
++| `improvement_records.nonce` | `skeleton` | AEAD nonce |
++| `improvement_records.ciphertext` | `encrypted_prompt_class` | Full versioned evidence envelope |
++| `improvement_records.ts` | `skeleton` | Record time |
+--- /dev/null
++++ b/docs/verifier-experiments.md
+@@ -0,0 +1,101 @@
++# Offline verifier experiments
++
++ADRL can compare an operator-reviewed candidate verifier against a baseline on fixed
++curated code examples. It records the proposal, both plans, input fingerprints, every
++trial and the final assessment. This is an offline library and local CLI, with no
++remote API, proposal-generation agent, deployment operation or learning admission.
++
++Use reviewed code and an explicit private state directory separate from live state.
++The existing OS sandbox denies network and limits writes to scratch, but does not
++provide general read isolation. This workflow is not qualified for hostile code or
++secret holdouts. The same local operator owns fixtures, expected answers and plans.
++
++## Prepare and execute
++
++1. Create separate working copies for correct implementations, known defects and a
++   broken environment. Record why each should pass, fail or be indeterminate before
++   running the comparison. Distinct content fingerprints are required, but do not
++   prove statistical independence or semantic diversity.
++2. Prepare two `session-verifier-plan-v1` plans with different verifier versions and
++   the same task reference. Commands use absolute executables; operator test files
++   live outside case workspaces and are pinned by SHA-256. Define assertion failures
++   as exit 1 and setup errors as exit 2; declare only 1 in `failure_exit_codes`.
++3. Build a `verifier-assessment-v1` JSON suite, then a `verifier-proposal-v1` JSON
++   proposal pinning its canonical digest. Set the hypothesis, proposer version,
++   affected ADRs, optional parent reference, repeats and budget before executing.
++4. Run and read the complete history. Review any recommendation before changing a
++   verifier used for real tasks. This command cannot apply that change.
++
++```bash
++.venv/bin/adrl improve fingerprint --workspace /absolute/path/to/case
++.venv/bin/adrl improve suite-digest --suite /absolute/path/to/suite.json
++.venv/bin/adrl improve evaluate --proposal /absolute/path/to/proposal.json \
++  --suite /absolute/path/to/suite.json --state /absolute/path/to/private-experiment-state
++.venv/bin/adrl improve show --state /absolute/path/to/private-experiment-state \
++  --experiment-id ID_FROM_REPORT
++```
++
++The Python contracts in `adrl.learning.improvement` expose `model_json_schema()` for
++exact fields. The dated experiment in the sibling register archives a complete suite,
++proposal and verifier artifacts; its reproduction tool rebuilds temporary local paths.
++Fingerprinting includes files, executable flags and directory entries. Git metadata,
++virtual environments, caches and bytecode are excluded. Symlinks, special files and
++`.adrl-verifier` in the source tree are rejected. Default fingerprint limits match the
++suite defaults; custom limits require the Python helper with those same limits.
++
++## How the result is decided
++
++Baseline and candidate run on separate captures of the same pinned code example.
++Their order alternates across cases and repeats. Each distinct case is counted once;
++all its repetitions must match the expected outcome to count as correct. The report
++records command executions separately from case counts.
++
++`candidate_supported` requires the predeclared minimum additional correct cases, no
++lost baseline-correct case, no candidate false pass or false failure, and no blockers.
++`regression` reports a per-case regression or a candidate false pass/failure;
++`no_improvement` means no sufficient demonstrated gain. `indeterminate` covers drift,
++incomplete trials, repeat disagreement or execution/integrity failures. It cannot be
++averaged away by a higher score. A test environment error can be an expected
++indeterminate outcome; a missing sandbox, timeout or unavailable executor is a blocker.
++
++All results remain `curated_synthetic`, `eligible_for_learning=false` and
++`review_required=true`. This is not the complete EVL-006 routing evaluation protocol,
++an EVL-007 graduation decision or a claim about organic task accuracy. Expected answers
++are operator assertions. Hashes bind reviewed content; they do not establish its truth.
++
++The budget bounds admitted command count and the sum of declared timeout ceilings.
++It is not an overall elapsed-time, CPU or memory limit. Dependencies and OS state are
++not frozen. The records pin evaluator and snapshot-executor source, sandbox source,
++executable and operator artifacts; these hashes are not a hermetic build attestation.
++
++`evaluate` exits 0 for completed comparisons, including regression/no improvement;
++inspect `recommendation`. Invalid or indeterminate execution exits 2. The separate
++`product verify` command returns 0 for passed, 1 for failed checks, and 2 for invalid
++setup or indeterminate verification.
++
++## Evidence lifecycle and limits
++
++Migration 0006 adds append-only encrypted `improvement_records`. Experiments reuse the
++keystore through a separate identity namespace; they fabricate no product session,
++routing decision, outcome or label. The start record contains full versioned inputs,
++trial records contain individual receipts, and the final record contains the assessment.
++Missing master/HMAC keys are never recreated for an existing CLI archive.
++
++```bash
++.venv/bin/adrl improve erase --state /absolute/path/to/private-experiment-state \
++  --experiment-id ID_TO_ERASE
++```
++
++Erasure shreds the experiment key and appends the existing key-erasure audit. Ledger
++skeletons remain; later writes cannot resurrect that key. Exported CLI output, backups,
++case copies and plans require separate removal. Losing the host HMAC key prevents
++mapping experiment IDs back to their records. Store the private directory accordingly.
++
++A process interruption can leave a started record or partial trial history. There is no
++resume or idempotent retry API; rerunning starts a new experiment, and interrupted runs
++must be disclosed during review. A key may be created before a started append fails.
++The local operator can alter underlying storage; this is not remote attestation.
++
++Next steps are fresh independently reviewed examples, exact task-close output binding,
++and another harness using the same verification contracts. Automatic proposal creation,
++protected held-out evaluation and any recursive improvement of the proposer come later.
+--- /dev/null
++++ b/src/adrl/cli/improvement.py
+@@ -0,0 +1,114 @@
++"""Local verifier experiments. Primary: ADRL-EVL-006. Secondary: ADRL-LRN-007, ADRL-MEM-010."""
++
++from __future__ import annotations
++
++import asyncio
++import json
++from pathlib import Path
++
++import typer
++
++from adrl.gates.sandbox import detect_runner
++from adrl.learning.improvement import AssessmentSuite, VerifierProposal, evaluate, suite_digest
++from adrl.ledger.improvement import ExperimentArchive
++from adrl.ledger.keystore import FileKeyStore
++from adrl.ledger.session_verification import SnapshotLimits, _file_bytes, snapshot_digest
++from adrl.ledger.store import LedgerStore
++
++improve_app = typer.Typer(no_args_is_help=True, help="Offline verifier experiments; never deploys")
++
++
++def _open(state: Path, *, create: bool = False) -> tuple[LedgerStore, ExperimentArchive]:
++    if not create and (not (state / "experiments.db").is_file() or not (state / "keys").is_dir()):
++        raise ValueError("An existing experiment archive is required.")
++    if (state / "experiments.db").exists() or not create:
++        if any(not (state / "keys" / name).is_file() for name in ("master.key", "hmac.key")):
++            raise ValueError("Existing experiment keys must not be recreated.")
++    state.mkdir(parents=True, exist_ok=True, mode=0o700)
++    state.chmod(0o700)
++    store = LedgerStore(state / "experiments.db")
++    store.open()
++    return store, ExperimentArchive(store, FileKeyStore(state / "keys", store=store))
++
++
++@improve_app.command("fingerprint")
++def fingerprint(workspace: Path = typer.Option(...)) -> None:
++    """Compute the fixed-input fingerprint with the default snapshot limits."""
++    try:
++        typer.echo(snapshot_digest(workspace, SnapshotLimits()))
++    except (OSError, ValueError):
++        typer.echo("Cannot capture a valid working-copy fingerprint.", err=True)
++        raise typer.Exit(2) from None
++
++
++@improve_app.command("suite-digest")
++def digest(suite: Path = typer.Option(...)) -> None:
++    """Compute the canonical assessment digest to pin in the proposal."""
++    try:
++        typer.echo(suite_digest(AssessmentSuite.model_validate_json(_file_bytes(suite, 2_000_000))))
++    except (OSError, ValueError):
++        typer.echo("Invalid assessment suite.", err=True)
++        raise typer.Exit(2) from None
++
++
++@improve_app.command("evaluate")
++def run(
++    proposal: Path = typer.Option(...),
++    suite: Path = typer.Option(...),
++    state: Path = typer.Option(..., help="Private local experiment state outside case workspaces"),
++) -> None:
++    """Execute reviewed pinned verifier plans, archive all trials, and recommend review only."""
++    store = None
++    try:
++        specification = VerifierProposal.model_validate_json(_file_bytes(proposal, 2_000_000))
++        assessment = AssessmentSuite.model_validate_json(_file_bytes(suite, 2_000_000))
++        specification.admit(assessment)
++        for case in assessment.cases:
++            root = case.workspace.resolve(strict=True)
++            if any(path.resolve().is_relative_to(root) for path in (state, proposal, suite)):
++                raise ValueError("Control files and state must remain outside case workspaces.")
++        store, archive = _open(state, create=True)
++        report = asyncio.run(evaluate(specification, assessment, archive, detect_runner()))
++        typer.echo(report.model_dump_json(indent=2))
++        if report.recommendation == "indeterminate":
++            raise typer.Exit(2)
++    except (OSError, ValueError):
++        typer.echo("Invalid or unavailable local verifier experiment.", err=True)
++        raise typer.Exit(2) from None
++    finally:
++        if store is not None:
++            store.close()
++
++
++@improve_app.command("show")
++def show(state: Path = typer.Option(...), experiment_id: str = typer.Option(...)) -> None:
++    """Read experiment history. Exported copies have separate retention."""
++    store = None
++    try:
++        store, archive = _open(state)
++        records = archive.read(experiment_id)
++        if not records:
++            raise ValueError("Unknown experiment.")
++        typer.echo(json.dumps(records, indent=2))
++    except (OSError, ValueError):
++        typer.echo("Experiment history is unavailable.", err=True)
++        raise typer.Exit(2) from None
++    finally:
++        if store is not None:
++            store.close()
++
++
++@improve_app.command("erase")
++def erase(state: Path = typer.Option(...), experiment_id: str = typer.Option(...)) -> None:
++    """Shred this experiment's evidence key; keep its ledger skeleton and erasure audit."""
++    store = None
++    try:
++        store, archive = _open(state)
++        erased = archive.erase(experiment_id)
++        typer.echo(json.dumps({"experiment_id": experiment_id, "key_removed": erased}))
++    except (OSError, ValueError):
++        typer.echo("Experiment erasure is unavailable.", err=True)
++        raise typer.Exit(2) from None
++    finally:
++        if store is not None:
++            store.close()
+--- a/src/adrl/cli/main.py
++++ b/src/adrl/cli/main.py
+@@ -31,6 +31,10 @@
+ 
+ app.add_typer(connect_app, name="connect")
+ app.add_typer(product_app, name="product")
++
++from adrl.cli.improvement import improve_app  # noqa: E402
++
++app.add_typer(improve_app, name="improve")
+ 
+ 
+ @config_app.command("check")
+--- a/src/adrl/cli/product.py
++++ b/src/adrl/cli/product.py
+@@ -267,7 +267,8 @@
+         if result.result != "passed":
+             raise typer.Exit(2 if result.result == "indeterminate" else 1)
+     except (OSError, ValueError, httpx.HTTPError, AdrlError, ApiError):
+-        _failure()
++        typer.echo("Local verification setup is invalid or unavailable.", err=True)
++        raise typer.Exit(2) from None
+     finally:
+         if store is not None:
+             store.close()
+--- /dev/null
++++ b/src/adrl/learning/improvement.py
+@@ -0,0 +1,321 @@
++"""Compare reviewed verifier proposals offline. Primary: ADRL-EVL-006.
++
++Secondary: ADRL-LRN-005, ADRL-LRN-007, ADRL-MEM-003, ADRL-EVL-005, ADRL-EVL-009.
++This is a curated synthetic mechanism check, not a routing graduation report. It executes
++frozen plans on fixed inputs, preserves every result and never deploys or produces labels.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import hashlib
++from datetime import UTC, datetime
++from pathlib import Path
++from typing import Annotated, Literal
++
++from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
++
++from adrl.api.contracts import OpaqueId, SessionVerification, VersionRef
++from adrl.config.loaders import canonical_json
++from adrl.core.ports import SandboxRunner
++from adrl.ledger import session_verification
++from adrl.ledger.improvement import ExperimentArchive
++from adrl.ledger.session_verification import (
++    SessionPlan,
++    SnapshotLimits,
++    SnapshotVerifier,
++    snapshot_digest,
++    snapshot_fingerprint,
++)
++
++Sha256 = Annotated[str, StringConstraints(pattern=r"^[a-f0-9]{64}$")]
++AdrId = Annotated[
++    str, StringConstraints(pattern=r"^ADRL-(FND|SEM|SAF|RTG|CAS|MEM|LRN|TRU|EVL|OPS)-[0-9]{3}$")
++]
++Outcome = Literal["passed", "failed", "indeterminate"]
++
++
++class Record(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++
++
++class AssessmentCase(Record):
++    case_id: OpaqueId
++    workspace: Path
++    snapshot_sha256: Sha256
++    expected: Outcome
++
++    @model_validator(mode="after")
++    def absolute_workspace(self) -> AssessmentCase:
++        if not self.workspace.is_absolute():
++            raise ValueError("Assessment working copies need absolute paths.")
++        return self
++
++
++class AssessmentSuite(Record):
++    schema_version: Literal["verifier-assessment-v1"] = "verifier-assessment-v1"
++    suite: VersionRef
++    evidence_family: Literal["curated_synthetic"] = "curated_synthetic"
++    limits: SnapshotLimits = SnapshotLimits()
++    cases: tuple[AssessmentCase, ...] = Field(min_length=3, max_length=30)
++
++    @model_validator(mode="after")
++    def distinct_and_complete(self) -> AssessmentSuite:
++        if len({case.case_id for case in self.cases}) != len(self.cases):
++            raise ValueError("Case IDs must be unique.")
++        if len({case.snapshot_sha256 for case in self.cases}) != len(self.cases):
++            raise ValueError("Repeated copies of one snapshot are not distinct cases.")
++        if {case.expected for case in self.cases} != {"passed", "failed", "indeterminate"}:
++            raise ValueError("Include correct, incorrect and environment-failed examples.")
++        return self
++
++
++def suite_digest(suite: AssessmentSuite) -> str:
++    return hashlib.sha256(canonical_json(suite.model_dump(mode="json"))).hexdigest()
++
++
++class Budget(Record):
++    max_commands: int = Field(ge=1, le=1000)
++    max_declared_timeout_s: float = Field(gt=0, le=3600, allow_inf_nan=False)
++
++
++class VerifierProposal(Record):
++    schema_version: Literal["verifier-proposal-v1"] = "verifier-proposal-v1"
++    proposal: VersionRef
++    parent_ref: OpaqueId | None = None
++    proposer: VersionRef
++    hypothesis: str = Field(min_length=1, max_length=2000)
++    affected_adrs: tuple[AdrId, ...] = Field(min_length=1)
++    change_scope: Literal["verifier"] = "verifier"
++    suite_sha256: Sha256
++    baseline: SessionPlan
++    candidate: SessionPlan
++    repeats: int = Field(default=2, ge=1, le=5)
++    min_additional_correct: int = Field(default=1, ge=1)
++    budget: Budget
++
++    @model_validator(mode="after")
++    def comparable_plans(self) -> VerifierProposal:
++        if self.baseline.verifier == self.candidate.verifier:
++            raise ValueError("Baseline and candidate need distinct verifier versions.")
++        if self.baseline.task_ref != self.candidate.task_ref:
++            raise ValueError("Baseline and candidate must refer to the same task family.")
++        return self
++
++    def admit(self, suite: AssessmentSuite) -> None:
++        if suite_digest(suite) != self.suite_sha256:
++            raise ValueError("The assessment suite differs from the pinned suite.")
++        plans = (self.baseline, self.candidate)
++        commands = len(suite.cases) * self.repeats * sum(len(p.checks) for p in plans)
++        timeout = (
++            len(suite.cases)
++            * self.repeats
++            * sum(check.timeout_s for plan in plans for check in plan.checks)
++        )
++        if commands > self.budget.max_commands or timeout > self.budget.max_declared_timeout_s:
++            raise ValueError("The declared experiment exceeds its command or timeout budget.")
++
++
++class Trial(Record):
++    case_id: OpaqueId
++    repeat: int = Field(ge=0)
++    arm: Literal["baseline", "candidate"]
++    expected: Outcome
++    verification: SessionVerification
++    input_matches: bool
++
++
++def implementation_refs() -> tuple[VersionRef, VersionRef]:
++    def version(name: str, path: Path) -> VersionRef:
++        return VersionRef(
++            id=name, version="sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
++        )
++
++    return (
++        version("verifier-comparison", Path(__file__)),
++        version("snapshot-execution", Path(session_verification.__file__)),
++    )
++
++
++class ExperimentStart(Record):
++    schema_version: Literal["verifier-experiment-start-v1"] = "verifier-experiment-start-v1"
++    experiment_id: OpaqueId
++    evaluator: VersionRef
++    snapshot_executor: VersionRef
++    started_at: datetime
++    proposal: VerifierProposal
++    suite: AssessmentSuite
++
++
++class ExperimentReport(Record):
++    schema_version: Literal["verifier-experiment-report-v1"] = "verifier-experiment-report-v1"
++    experiment_id: OpaqueId
++    proposal: VersionRef
++    evaluator: VersionRef
++    snapshot_executor: VersionRef
++    suite: VersionRef
++    evidence_family: Literal["curated_synthetic"] = "curated_synthetic"
++    eligible_for_learning: Literal[False] = False
++    review_required: Literal[True] = True
++    recommendation: Literal["candidate_supported", "no_improvement", "regression", "indeterminate"]
++    distinct_cases: int
++    repeats: int
++    trials_recorded: int
++    commands_recorded: int
++    baseline_correct: int
++    candidate_correct: int
++    candidate_false_passes: int
++    candidate_false_failures: int
++    blockers: tuple[OpaqueId, ...]
++    check_duration_s: float
++    started_at: datetime
++    finished_at: datetime
++
++
++def assess(
++    experiment_id: str,
++    proposal: VerifierProposal,
++    suite: AssessmentSuite,
++    trials: list[Trial],
++    started_at: datetime,
++    blockers: list[str],
++    implementations: tuple[VersionRef, VersionRef],
++) -> ExperimentReport:
++    """Compare each distinct case conservatively; repetition does not multiply sample size."""
++    groups = {
++        (case.case_id, arm): [t for t in trials if t.case_id == case.case_id and t.arm == arm]
++        for case in suite.cases
++        for arm in ("baseline", "candidate")
++    }
++    if len(trials) != len(suite.cases) * 2 * proposal.repeats:
++        blockers.append("incomplete_experiment")
++    for members in groups.values():
++        if len({t.verification.result for t in members}) > 1:
++            blockers.append("repeat_disagreement")
++        if any(not t.input_matches for t in members):
++            blockers.append("input_changed")
++    correct = {
++        key: len(members) == proposal.repeats
++        and all(t.verification.result == t.expected for t in members)
++        for key, members in groups.items()
++    }
++    baseline = sum(correct[case.case_id, "baseline"] for case in suite.cases)
++    candidate = sum(correct[case.case_id, "candidate"] for case in suite.cases)
++    regressions = any(
++        correct[case.case_id, "baseline"] and not correct[case.case_id, "candidate"]
++        for case in suite.cases
++    )
++    false_passes = sum(
++        any(t.verification.result == "passed" for t in groups[case.case_id, "candidate"])
++        for case in suite.cases
++        if case.expected != "passed"
++    )
++    false_failures = sum(
++        any(t.verification.result == "failed" for t in groups[case.case_id, "candidate"])
++        for case in suite.cases
++        if case.expected == "passed"
++    )
++    recommendation = "no_improvement"
++    if blockers:
++        recommendation = "indeterminate"
++    elif regressions or false_passes or false_failures:
++        recommendation = "regression"
++    elif candidate - baseline >= proposal.min_additional_correct:
++        recommendation = "candidate_supported"
++    return ExperimentReport.model_validate(
++        dict(
++            experiment_id=experiment_id,
++            proposal=proposal.proposal,
++            evaluator=implementations[0],
++            snapshot_executor=implementations[1],
++            suite=suite.suite,
++            recommendation=recommendation,
++            distinct_cases=len(suite.cases),
++            repeats=proposal.repeats,
++            trials_recorded=len(trials),
++            commands_recorded=sum(len(t.verification.checks) for t in trials),
++            baseline_correct=baseline,
++            candidate_correct=candidate,
++            candidate_false_passes=false_passes,
++            candidate_false_failures=false_failures,
++            blockers=tuple(sorted(set(blockers))),
++            check_duration_s=sum(c.duration_s for t in trials for c in t.verification.checks),
++            started_at=started_at,
++            finished_at=datetime.now(UTC),
++        )
++    )
++
++
++async def evaluate(
++    proposal: VerifierProposal,
++    suite: AssessmentSuite,
++    archive: ExperimentArchive,
++    runner: SandboxRunner,
++) -> ExperimentReport:
++    proposal.admit(suite)
++    implementations = implementation_refs()
++    executor = SnapshotVerifier(archive.keys.hmac_key(), runner)
++    experiment_id = archive.begin()
++    started = datetime.now(UTC)
++    await archive.append(
++        experiment_id,
++        "started",
++        ExperimentStart(
++            experiment_id=experiment_id,
++            evaluator=implementations[0],
++            snapshot_executor=implementations[1],
++            started_at=started,
++            proposal=proposal,
++            suite=suite,
++        ),
++    )
++    trials: list[Trial] = []
++    blockers: list[str] = []
++    try:
++        for case_index, case in enumerate(suite.cases):
++            for repetition in range(proposal.repeats):
++                arms: tuple[Literal["baseline", "candidate"], ...] = ("baseline", "candidate")
++                if (case_index + repetition) % 2:
++                    arms = tuple(reversed(arms))
++                for arm in arms:
++                    digest, source_ref = await asyncio.to_thread(
++                        snapshot_fingerprint, case.workspace, suite.limits, executor.secret
++                    )
++                    if digest != case.snapshot_sha256:
++                        blockers.append("input_changed")
++                        raise ValueError("Fixed experiment input changed.")
++                    plan = proposal.baseline if arm == "baseline" else proposal.candidate
++                    receipt = await executor.evaluate(case.workspace, plan, executor.start(plan))
++                    after = await asyncio.to_thread(snapshot_digest, case.workspace, suite.limits)
++                    trial = Trial(
++                        case_id=case.case_id,
++                        repeat=repetition,
++                        arm=arm,
++                        expected=case.expected,
++                        verification=receipt,
++                        input_matches=(
++                            after == digest
++                            and receipt.snapshot_unchanged is True
++                            and receipt.source_snapshot_ref == source_ref
++                        ),
++                    )
++                    await archive.append(experiment_id, "trial", trial)
++                    trials.append(trial)
++                    if receipt.reason not in {None, "check_indeterminate"}:
++                        blockers.append("execution_integrity")
++                    if any(
++                        c.reason
++                        in {"sandbox_unavailable", "execution_unavailable", "check_timeout"}
++                        for c in receipt.checks
++                    ):
++                        blockers.append("execution_unavailable")
++    except (OSError, ValueError):
++        blockers.append("experiment_interrupted")
++    try:
++        if implementation_refs() != implementations:
++            blockers.append("implementation_changed")
++    except OSError:
++        blockers.append("implementation_unavailable")
++    report = assess(experiment_id, proposal, suite, trials, started, blockers, implementations)
++    await archive.append(experiment_id, "finished", report)
++    return report
+--- /dev/null
++++ b/src/adrl/ledger/improvement.py
+@@ -0,0 +1,94 @@
++"""Encrypted offline experiment history. Primary: ADRL-MEM-001.
++
++Secondary: ADRL-MEM-005, ADRL-MEM-010, ADRL-LRN-005. Experiment keys have their own
++namespace and lifecycle. They are not harness sessions, routing decisions or learning labels.
++"""
++
++from __future__ import annotations
++
++import json
++import sqlite3
++from typing import Any
++from uuid import uuid4
++
++from pydantic import BaseModel
++
++from adrl.core.ids import SessionId
++from adrl.ledger import crypto
++from adrl.ledger.keystore import FileKeyStore
++from adrl.ledger.store import LedgerStore, utc_now_iso
++
++
++class ExperimentArchive:
++    def __init__(self, store: LedgerStore, keys: FileKeyStore) -> None:
++        self.store = store
++        self.keys = keys
++
++    def identity(self, experiment_id: str) -> SessionId:
++        return SessionId(crypto.keyed_hash(self.keys.hmac_key(), "improvement:" + experiment_id))
++
++    def _erased(self, identity: SessionId) -> bool:
++        return bool(
++            self.store.read(
++                "SELECT 1 FROM session_keys WHERE session_hmac=? AND action='shredded'",
++                (identity,),
++            )
++        )
++
++    def begin(self) -> str:
++        experiment_id = str(uuid4())
++        identity = self.identity(experiment_id)
++        if self._erased(identity) or self.keys.get_session_key(identity) is not None:
++            raise ValueError("Experiment identity already exists.")
++        self.keys.create_session_key(identity)
++        return experiment_id
++
++    async def append(self, experiment_id: str, event_type: str, payload: BaseModel) -> None:
++        identity = self.identity(experiment_id)
++        key = self.keys.get_session_key(identity)
++        if key is None or self._erased(identity):
++            raise ValueError("Experiment evidence key is unavailable.")
++        record_key = crypto.keyed_hash(key, str(uuid4()))
++        aad = f"improvement:{identity}:{record_key}:{event_type}".encode()
++        nonce, ciphertext = crypto.encrypt(key, payload.model_dump_json().encode(), aad=aad)
++
++        def write(conn: sqlite3.Connection) -> None:
++            if conn.execute(
++                "SELECT 1 FROM session_keys WHERE session_hmac=? AND action='shredded'",
++                (identity,),
++            ).fetchone():
++                raise ValueError("Experiment evidence was erased.")
++            conn.execute(
++                "INSERT INTO improvement_records "
++                "(experiment_hmac,event_type,record_key,nonce,ciphertext,ts) VALUES (?,?,?,?,?,?)",
++                (identity, event_type, record_key, nonce, ciphertext, utc_now_iso()),
++            )
++
++        await self.store.write_through(write)
++
++    def read(self, experiment_id: str) -> list[dict[str, Any]]:
++        identity = self.identity(experiment_id)
++        key = None if self._erased(identity) else self.keys.get_session_key(identity)
++        records = []
++        for row in self.store.read(
++            "SELECT * FROM improvement_records WHERE experiment_hmac=? ORDER BY seq", (identity,)
++        ):
++            payload = None
++            if key is not None:
++                aad = f"improvement:{identity}:{row['record_key']}:{row['event_type']}".encode()
++                payload = json.loads(crypto.decrypt(key, row["nonce"], row["ciphertext"], aad=aad))
++            records.append(
++                {
++                    "sequence": row["seq"],
++                    "event_type": row["event_type"],
++                    "recorded_at": row["ts"],
++                    "payload_state": "available" if payload is not None else "erased",
++                    "record": payload,
++                }
++            )
++        return records
++
++    def erase(self, experiment_id: str) -> bool:
++        return self.keys.shred_session_key(
++            self.identity(experiment_id), "operator_experiment_erasure"
++        )
+--- /dev/null
++++ b/src/adrl/ledger/migrations/0006_improvement.sql
+@@ -0,0 +1,11 @@
++-- Offline experiment history. Primary: ADRL-MEM-001. Secondary: ADRL-MEM-010.
++CREATE TABLE improvement_records (
++    seq INTEGER PRIMARY KEY AUTOINCREMENT,
++    experiment_hmac TEXT NOT NULL,
++    event_type TEXT NOT NULL CHECK (event_type IN ('started','trial','finished')),
++    record_key TEXT NOT NULL UNIQUE,
++    nonce BLOB NOT NULL,
++    ciphertext BLOB NOT NULL,
++    ts TEXT NOT NULL
++);
++CREATE INDEX improvement_records_experiment_idx ON improvement_records(experiment_hmac,seq);
+--- a/src/adrl/ledger/session_verification.py
++++ b/src/adrl/ledger/session_verification.py
+@@ -1,9 +1,11 @@
+-"""Local operator checks for bound sessions. Primary: ADRL-MEM-003.
++"""Snapshot execution and bound-session operator checks. Primary: ADRL-MEM-003.
+ 
+ Secondary: ADRL-SEM-007, ADRL-SAF-007, ADRL-MEM-001/010, ADRL-LRN-001.
+ No routing decision is fabricated. Plans and check artifacts come from the operator outside
+ harness workspaces. Only declared failure exit codes mean failure; other nonzero exits,
+ unavailable sandboxes, timeouts and drift are indeterminate. No result enters learning.
++SnapshotVerifier also supports offline experiments; its execution envelope alone asserts no
++session binding. SessionVerifier supplies that binding and persists session receipts.
+ """
+ 
+ from __future__ import annotations
+@@ -54,15 +56,18 @@
+         return self
+ 
+ 
+-class SessionPlan(BaseModel):
++class SnapshotLimits(BaseModel):
+     model_config = ConfigDict(extra="forbid", frozen=True)
++    max_files: int = Field(default=10000, ge=1, le=100000)
++    max_bytes: int = Field(default=100_000_000, ge=1, le=1_000_000_000)
++
++
++class SessionPlan(SnapshotLimits):
+     schema_version: Literal["session-verifier-plan-v1"] = "session-verifier-plan-v1"
+     verifier: VersionRef
+     task_ref: OpaqueId
+     checks: tuple[SessionCheck, ...] = Field(min_length=1, max_length=20)
+     artifacts: dict[str, Artifact] = Field(min_length=1)
+-    max_files: int = Field(default=10000, ge=1, le=100000)
+-    max_bytes: int = Field(default=100_000_000, ge=1, le=1_000_000_000)
+ 
+     @model_validator(mode="after")
+     def names_are_unambiguous(self) -> SessionPlan:
+@@ -95,7 +100,7 @@
+         os.close(fd)
+ 
+ 
+-def _tree(root: Path, plan: SessionPlan, target: Path | None = None) -> dict[str, str]:
++def _tree(root: Path, plan: SnapshotLimits, target: Path | None = None) -> dict[str, str]:
+     hashes: dict[str, str] = {}
+     total = 0
+     if not root.is_dir():
+@@ -135,6 +140,20 @@
+     return hashes
+ 
+ 
++def snapshot_digest(workspace: Path, limits: SnapshotLimits) -> str:
++    """Pin a curated experiment input using the same exclusions as execution."""
++    manifest = _tree(workspace.resolve(strict=True), limits)
++    canonical = json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()
++    return hashlib.sha256(canonical).hexdigest()
++
++
++def snapshot_fingerprint(workspace: Path, limits: SnapshotLimits, secret: bytes) -> tuple[str, str]:
++    """Return a digest and keyed execution identity from the same input scan."""
++    manifest = _tree(workspace.resolve(strict=True), limits)
++    canonical = json.dumps(manifest, sort_keys=True, separators=(",", ":"))
++    return hashlib.sha256(canonical.encode()).hexdigest(), _tree_ref(secret, manifest)
++
++
+ def _tree_ref(secret: bytes, hashes: dict[str, str]) -> str:
+     canonical = json.dumps(hashes, sort_keys=True, separators=(",", ":"))
+     return "hmac:" + crypto.keyed_hash(secret, canonical)
+@@ -156,13 +175,12 @@
+     return content
+ 
+ 
+-class SessionVerifier:
+-    """Operator-only execution. Public API callers cannot supply verification receipts."""
+-
+-    def __init__(self, data: ProductStore, runner: SandboxRunner) -> None:
+-        self.data = data
++class SnapshotVerifier:
++    """Execute an operator plan without claiming a bound session or learning authority."""
++
++    def __init__(self, secret: bytes, runner: SandboxRunner) -> None:
+         self.runner = runner
+-        self.secret = data.keys.hmac_key()
++        self.secret = secret
+         module_path = getsourcefile(type(runner))
+         if module_path is None:
+             raise ValueError("The sandbox implementation needs an auditable source version.")
+@@ -213,13 +231,8 @@
+             outcome, reason = "indeterminate", "unclassified_exit"
+         return VerifierCheck.model_validate(details | {"result": outcome, "reason": reason})
+ 
+-    async def verify(
+-        self, session: SessionId, workspace: Path, plan: SessionPlan
+-    ) -> SessionVerification:
+-        if self.data.binding(session) is None:
+-            raise ValueError("A bound product session is required.")
+-        workspace = await asyncio.to_thread(workspace.resolve, strict=True)
+-        receipt = SessionVerification(
++    def start(self, plan: SessionPlan) -> SessionVerification:
++        return SessionVerification(
+             sandbox_implementation=self.sandbox,
+             job_id=str(uuid4()),
+             task_ref=plan.task_ref,
+@@ -228,7 +241,18 @@
+             plan_ref=self._ref(plan.model_dump_json()),
+             started_at=datetime.now(UTC),
+         )
+-        await self.data.append_verification(session, receipt)
++
++    async def evaluate(
++        self, workspace: Path, plan: SessionPlan, receipt: SessionVerification
++    ) -> SessionVerification:
++        if (
++            receipt.phase != "started"
++            or receipt.plan_ref != self._ref(plan.model_dump_json())
++            or receipt.verifier != plan.verifier
++            or receipt.task_ref != plan.task_ref
++            or receipt.sandbox_implementation != self.sandbox
++        ):
++            raise ValueError("The started receipt does not match this execution plan.")
+         checks: tuple[VerifierCheck, ...] = ()
+         source_ref = None
+         executed_ref = None
+@@ -236,6 +260,7 @@
+         reason: str | None = None
+         result = "indeterminate"
+         try:
++            workspace = await asyncio.to_thread(workspace.resolve, strict=True)
+             if (workspace / RESERVED).exists() or (workspace / RESERVED).is_symlink():
+                 raise SnapshotInvalidError("reserved_verifier_path")
+             artifact_bytes = await asyncio.to_thread(_artifacts, plan, workspace)
+@@ -286,5 +311,23 @@
+                 "finished_at": datetime.now(UTC),
+             }
+         )
++        return finished
++
++
++class SessionVerifier:
++    """Bound-session wrapper; public event intake cannot submit verifier receipts."""
++
++    def __init__(self, data: ProductStore, runner: SandboxRunner) -> None:
++        self.data = data
++        self.executor = SnapshotVerifier(data.keys.hmac_key(), runner)
++
++    async def verify(
++        self, session: SessionId, workspace: Path, plan: SessionPlan
++    ) -> SessionVerification:
++        if self.data.binding(session) is None:
++            raise ValueError("A bound product session is required.")
++        receipt = self.executor.start(plan)
++        await self.data.append_verification(session, receipt)
++        finished = await self.executor.evaluate(workspace, plan, receipt)
+         await self.data.append_verification(session, finished)
+         return finished
+--- /dev/null
++++ b/tests/unit/learning/test_improvement.py
+@@ -0,0 +1,322 @@
++"""Independent comparison and archive failure cases. Primary: ADRL-EVL-006, ADRL-MEM-010."""
++
++from __future__ import annotations
++
++import hashlib
++from collections.abc import Iterator, Sequence
++from pathlib import Path
++
++import pytest
++from pydantic import ValidationError
++from typer.testing import CliRunner
++
++from adrl.api.contracts import VersionRef
++from adrl.cli.main import app
++from adrl.core.ports import SandboxResult
++from adrl.learning.improvement import (
++    AssessmentCase,
++    AssessmentSuite,
++    Budget,
++    VerifierProposal,
++    evaluate,
++    suite_digest,
++)
++from adrl.ledger.improvement import ExperimentArchive
++from adrl.ledger.keystore import FileKeyStore
++from adrl.ledger.session_verification import (
++    Artifact,
++    SessionCheck,
++    SessionPlan,
++    SnapshotLimits,
++    snapshot_digest,
++)
++from adrl.ledger.store import LedgerStore
++
++
++@pytest.fixture
++def archive(tmp_path: Path) -> Iterator[ExperimentArchive]:
++    store = LedgerStore(tmp_path / "archive.db")
++    store.open()
++    try:
++        yield ExperimentArchive(store, FileKeyStore(tmp_path / "keys", store=store))
++    finally:
++        store.close()
++
++
++@pytest.fixture
++def inputs(tmp_path: Path) -> tuple[VerifierProposal, AssessmentSuite]:
++    artifact = tmp_path / "checks.py"
++    artifact.write_text("PINNED_OPERATOR_TEST")
++    plans = []
++    for arm in ("baseline", "candidate"):
++        plans.append(
++            SessionPlan(
++                verifier=VersionRef(id="checks", version=arm),
++                task_ref="fixture-task",
++                artifacts={
++                    "checks.py": Artifact(
++                        path=artifact, sha256=hashlib.sha256(artifact.read_bytes()).hexdigest()
++                    )
++                },
++                checks=(
++                    SessionCheck(name="checks", argv=("/bin/echo", arm), failure_exit_codes=(1,)),
++                ),
++            )
++        )
++    cases = []
++    for index, (contents, expected) in enumerate(
++        [("good", "passed"), ("bad", "failed"), ("environment", "indeterminate")]
++    ):
++        workspace = tmp_path / f"case-{index}"
++        workspace.mkdir()
++        (workspace / "fixture").write_text(contents)
++        cases.append(
++            AssessmentCase.model_validate(
++                dict(
++                    case_id=f"case-{index}",
++                    workspace=workspace,
++                    snapshot_sha256=snapshot_digest(workspace, SnapshotLimits()),
++                    expected=expected,
++                )
++            )
++        )
++    suite = AssessmentSuite(suite=VersionRef(id="fixtures", version="1"), cases=tuple(cases))
++    proposal = VerifierProposal(
++        proposal=VersionRef(id="proposal", version="1"),
++        proposer=VersionRef(id="reviewed", version="1"),
++        hypothesis="PRIVATE_HYPOTHESIS",
++        affected_adrs=("ADRL-MEM-003",),
++        suite_sha256=suite_digest(suite),
++        baseline=plans[0],
++        candidate=plans[1],
++        repeats=2,
++        budget=Budget(max_commands=12, max_declared_timeout_s=720),
++    )
++    return proposal, suite
++
++
++class FixtureRunner:
++    def __init__(self, mode: str = "normal") -> None:
++        self.mode = mode
++        self.calls: list[tuple[str, str]] = []
++
++    @property
++    def platform_id(self) -> str:
++        return "test-fixture-runner"
++
++    def run(
++        self, argv: Sequence[str], snapshot_dir: str, allow_list: Sequence[str], *, timeout_s: float
++    ) -> SandboxResult:
++        root = Path(snapshot_dir)
++        assert (root / ".adrl-verifier/checks.py").read_text() == "PINNED_OPERATOR_TEST"
++        contents = (root / "fixture").read_text()
++        arm = argv[1]
++        self.calls.append((contents, arm))
++        code = (
++            2 if contents == "environment" else 1 if contents == "bad" and arm == "candidate" else 0
++        )
++        if self.mode == "all_pass":
++            code = 0
++        if self.mode == "regression" and arm == "candidate" and contents == "good":
++            code = 1
++        if (
++            self.mode == "flaky"
++            and arm == "candidate"
++            and contents == "bad"
++            and self.calls.count((contents, arm)) == 2
++        ):
++            code = 0
++        if self.mode == "snapshot_drift":
++            (root / "fixture").chmod(0o600)
++            (root / "fixture").write_text("mutated")
++        return SandboxResult(
++            available=self.mode != "unavailable",
++            exit_code=None if self.mode == "timeout" else code,
++            duration_s=0.01,
++            stdout_tail="PRIVATE_PROGRAM_OUTPUT",
++        )
++
++
++async def test_complete_comparison_records_every_trial_without_promoting(
++    archive: ExperimentArchive, inputs: tuple[VerifierProposal, AssessmentSuite]
++) -> None:
++    proposal, suite = inputs
++    runner = FixtureRunner()
++    report = await evaluate(proposal, suite, archive, runner)
++    assert report.recommendation == "candidate_supported"
++    assert (report.baseline_correct, report.candidate_correct, report.distinct_cases) == (2, 3, 3)
++    assert report.trials_recorded == report.commands_recorded == 12
++    assert report.review_required and not report.eligible_for_learning
++    assert runner.calls[:4] == [
++        ("good", "baseline"),
++        ("good", "candidate"),
++        ("good", "candidate"),
++        ("good", "baseline"),
++    ]
++    records = archive.read(report.experiment_id)
++    assert len(records) == 14
++    assert records[0]["event_type"] == "started" and records[-1]["event_type"] == "finished"
++    assert records[0]["record"]["proposal"]["hypothesis"] == "PRIVATE_HYPOTHESIS"
++    for table in ("decisions", "events", "product_sessions", "product_verifications"):
++        assert not archive.store.read(f"SELECT * FROM {table}")
++    for row in archive.store.read("SELECT * FROM improvement_records"):
++        assert b"PRIVATE_HYPOTHESIS" not in row["ciphertext"]
++        assert b"PRIVATE_PROGRAM_OUTPUT" not in row["ciphertext"]
++    reconstructed = ExperimentArchive(archive.store, archive.keys)
++    assert reconstructed.read(report.experiment_id) == records
++    assert reconstructed.erase(report.experiment_id)
++    assert all(row["payload_state"] == "erased" for row in reconstructed.read(report.experiment_id))
++    with pytest.raises(ValueError, match="key is unavailable"):
++        await reconstructed.append(report.experiment_id, "finished", report)
++    assert len(reconstructed.read(report.experiment_id)) == 14
++
++
++@pytest.mark.parametrize(
++    ("mode", "recommendation"),
++    [
++        ("all_pass", "regression"),
++        ("regression", "regression"),
++        ("flaky", "indeterminate"),
++        ("unavailable", "indeterminate"),
++        ("timeout", "indeterminate"),
++        ("snapshot_drift", "indeterminate"),
++    ],
++)
++async def test_bad_or_uncertain_candidates_never_qualify(
++    archive: ExperimentArchive,
++    inputs: tuple[VerifierProposal, AssessmentSuite],
++    mode: str,
++    recommendation: str,
++) -> None:
++    proposal, suite = inputs
++    report = await evaluate(proposal, suite, archive, FixtureRunner(mode))
++    assert report.recommendation == recommendation
++    assert not report.eligible_for_learning and report.review_required
++
++
++async def test_no_improvement_is_a_valid_preserved_result(
++    archive: ExperimentArchive, inputs: tuple[VerifierProposal, AssessmentSuite]
++) -> None:
++    proposal, suite = inputs
++    proposal = VerifierProposal.model_validate(
++        proposal.model_dump() | {"min_additional_correct": 2}
++    )
++    report = await evaluate(proposal, suite, archive, FixtureRunner())
++    assert report.recommendation == "no_improvement"
++    assert archive.read(report.experiment_id)[-1]["record"]["candidate_correct"] == 3
++
++
++async def test_changed_case_stops_before_execution(
++    archive: ExperimentArchive, inputs: tuple[VerifierProposal, AssessmentSuite]
++) -> None:
++    proposal, suite = inputs
++    (suite.cases[0].workspace / "fixture").write_text("changed after freezing")
++    runner = FixtureRunner()
++    report = await evaluate(proposal, suite, archive, runner)
++    assert report.recommendation == "indeterminate"
++    assert report.trials_recorded == 0 and not runner.calls
++    assert "input_changed" in report.blockers
++    assert len(archive.read(report.experiment_id)) == 2
++
++
++@pytest.mark.parametrize("invalid", ["suite", "command_budget", "timeout_budget"])
++async def test_admission_refuses_changes_or_excess_budget_before_recording(
++    archive: ExperimentArchive, inputs: tuple[VerifierProposal, AssessmentSuite], invalid: str
++) -> None:
++    proposal, suite = inputs
++    update = (
++        {"suite_sha256": "0" * 64}
++        if invalid == "suite"
++        else {
++            "budget": {
++                "max_commands": 1 if invalid == "command_budget" else 100,
++                "max_declared_timeout_s": 1 if invalid == "timeout_budget" else 720,
++            }
++        }
++    )
++    proposal = VerifierProposal.model_validate(proposal.model_dump() | update)
++    runner = FixtureRunner()
++    with pytest.raises(ValueError):
++        await evaluate(proposal, suite, archive, runner)
++    assert not runner.calls and not archive.store.read("SELECT * FROM improvement_records")
++
++
++def test_duplicate_snapshots_cannot_inflate_case_count(
++    inputs: tuple[VerifierProposal, AssessmentSuite],
++) -> None:
++    _, suite = inputs
++    with pytest.raises(ValidationError, match="not distinct cases"):
++        AssessmentSuite.model_validate(
++            suite.model_dump()
++            | {"cases": (*suite.cases, suite.cases[0].model_copy(update={"case_id": "duplicate"}))}
++        )
++
++
++async def test_execution_identity_must_match_the_frozen_input(
++    archive: ExperimentArchive,
++    inputs: tuple[VerifierProposal, AssessmentSuite],
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    from adrl.learning import improvement
++
++    real = improvement.snapshot_fingerprint
++
++    def different_identity(*args: object) -> tuple[str, str]:
++        digest, _ = real(*args)  # type: ignore[arg-type]
++        return digest, "wrong-source-identity"
++
++    monkeypatch.setattr(improvement, "snapshot_fingerprint", different_identity)
++    report = await evaluate(*inputs, archive, FixtureRunner())
++    assert report.recommendation == "indeterminate"
++    assert "input_changed" in report.blockers
++
++
++def test_invalid_session_verification_cli_is_not_reported_as_a_failed_test(tmp_path: Path) -> None:
++    result = CliRunner().invoke(
++        app,
++        [
++            "product",
++            "verify",
++            "--connection",
++            str(tmp_path / "missing"),
++            "--workspace",
++            str(tmp_path),
++            "--plan",
++            str(tmp_path / "missing-plan"),
++        ],
++        env={
++            "ADRL_LEDGER_PATH": str(tmp_path / "missing.db"),
++            "ADRL_KEYSTORE_PATH": str(tmp_path / "missing-keys"),
++        },
++    )
++    assert result.exit_code == 2
++    assert "setup is invalid or unavailable" in result.output
++
++
++def test_show_does_not_recreate_missing_archive_keys(tmp_path: Path) -> None:
++    state = tmp_path / "state"
++    state.mkdir()
++    (state / "keys").mkdir()
++    (state / "experiments.db").touch()
++    result = CliRunner().invoke(
++        app, ["improve", "show", "--state", str(state), "--experiment-id", "missing"]
++    )
++    assert result.exit_code == 2
++    assert not list((state / "keys").iterdir())
++
++
++async def test_changed_evaluator_keeps_start_identity_and_blocks_recommendation(
++    archive: ExperimentArchive,
++    inputs: tuple[VerifierProposal, AssessmentSuite],
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    from adrl.learning import improvement
++
++    original = improvement.implementation_refs()
++    changed = (VersionRef(id=original[0].id, version="changed"), original[1])
++    versions = iter((original, changed))
++    monkeypatch.setattr(improvement, "implementation_refs", lambda: next(versions))
++    report = await evaluate(*inputs, archive, FixtureRunner())
++    assert report.recommendation == "indeterminate"
++    assert "implementation_changed" in report.blockers
++    assert (report.evaluator, report.snapshot_executor) == original
+--- a/tests/unit/test_product_migration.py
++++ b/tests/unit/test_product_migration.py
+@@ -42,7 +42,7 @@
+         assert row["session_hmac"] == "session"
+         assert row["config_digest"] == "digest"
+         assert row["ts"] == "ts"
+-        assert store.schema_user_version() == 5
++        assert store.schema_user_version() == 6
+         assert not store.read("SELECT * FROM product_verifications")
+     finally:
+         store.close()

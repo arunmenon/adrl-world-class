@@ -1,0 +1,9 @@
+# Claude adapter: bounded offline implementation
+
+2026-09-09. P1 implementation slice 1 of the six-slice ceiling. Pre-wave challenge: ../claude-code-compatibility-2026-09-09/pre-review.md and dispositions.md. User authorized the next adapter implementation; no model experiment, paid access, signed inventory creation or runtime activation.
+
+Implement initial-choice Claude model selection as an explicit opt-in to the existing LIVE pipeline, never SHADOW/OFF. Keep all existing LIVE admission checks. No startup setting enables the candidate yet. Only a fresh session can acquire the fixed selection; requests with pre-existing assistant history cannot start it. Continuations preserve their original non-model fields. Target must belong to the actual post-gate deployment set, with no fallback widening, and use direct Anthropic. Record forced-experiment identity and version separately from estimator merit. No mid-session switching or automatic learning.
+
+Also implement a bounded direct transport: exact provider endpoint, paths, methods, allowed model IDs, request bytes/output cap, separate Messages/count limits, single active request, deadline and no retries/redirects. All outbound methods must share enforcement; no hidden health call. Test with in-process HTTP transports only. This does not establish signed production inventory, real OAuth, quota handling or harness confinement.
+
+FND-001 receives a scoped application for the disabled-by-default offline candidate; unchanged passthrough and non-Claude behavior remain. SEM-007 owns native model serialization; TRU-002/CAS-006 own allowed destination and observed identity; FND-005 owns finite control. Review exact diff, tests and taxonomy synchronization before closure. Live eligibility remains blocked by the actual existing config and account/access prerequisites. Do not waive these using synthetic evidence.

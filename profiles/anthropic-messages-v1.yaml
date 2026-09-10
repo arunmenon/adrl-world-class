@@ -1,0 +1,50 @@
+# Primary: ADRL-SEM-007. Descriptive profile record, not loaded runtime configuration.
+profile_id: anthropic-messages-v1
+profile_version: "1"
+status: implemented_extraction
+evidence_scope: offline_fixtures_and_synthetic_local_http
+implementation: adrl.wire.profiles.messages.MessagesProfile
+adapter:
+  id: claude-code
+  version: "1"
+  implementation: adrl.wire.adapters.ClaudeCodeAdapter
+  identity_authority: correlation_only_workload_authority_remains_in_gates
+  tested_live_harness_versions: []
+transport: http
+operations:
+  - method: POST
+    path: /v1/messages
+  - method: POST
+    path: /v1/messages/count_tokens
+request_classes:
+  - user_turn
+  - continuation
+  - subagent
+  - pre_warm
+  - utility
+  - passthrough
+semantics:
+  request_classification: ADRL-SEM-001
+  session_and_lineage: ADRL-SEM-002
+  continuation: ADRL-SEM-003
+  utility_calls: ADRL-SEM-004
+  child_inheritance: ADRL-SEM-006
+  action_boundaries: ADRL-CAS-003
+  rewrite_and_handoff: ADRL-CAS-004
+  native_errors: ADRL-CAS-007
+preservation:
+  original_body_authoritative: true
+  unchanged_path_reserializes_body: false
+  streamed_bytes_rewritten: false
+  profile_and_adapter_versions_in_decision_context: true
+limitations:
+  - Gates, feature extraction and cascade still inspect Messages JSON.
+  - Utility fingerprints need another harness corpus before reuse is claimed.
+  - Unbound unknown provider paths retain legacy forwarding without profile guarantees.
+  - Bound product sessions reject unknown suffixes; legacy unbound behavior remains.
+  - No runtime Responses profile or second harness adapter is registered.
+  - Local binding and two tool-event hooks exist; live harness validation and automatic outcome integration remain pending.
+  - Credentials reuse the trusted local launcher assertion; remote issuance is not implemented.
+evidence_record: reports/adrl-product-services-implementation-2026-09-07.md
+foundation_record: reports/adrl-product-foundation-implementation-2026-09-07.md
+product_api_schema: adrl-api-v1-preview.2

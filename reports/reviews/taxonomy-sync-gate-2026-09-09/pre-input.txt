@@ -1,0 +1,675 @@
+# Taxonomy synchronization completion gate
+
+User explicitly requests enforceable implementation-to-ADRL synchronization, optionally a skill. Scope: local development workflow only, no runtime behavior, model task, maturity promotion, automation, CI/remote setup or release change. Owners FND-005 and EVL-009 (scoped engineering gate, not changing runtime graduation blockers).
+
+Implement a repo-owned adrl-taxonomy-sync skill mirrored to Codex and Claude, required by both repos AGENTS and wave closure template. Add a standard-library local CLI in register tools with begin and check: begin snapshots declared nonsecret engineering inputs in both dirty repos; check detects changes/additions/deletions since baseline, requires every changed implementation/tool/skill file mapped to owning existing ADR(s), requires dated evidence and links in each owning ADR plus matching INDEX, bucket and CHANGELOG entries, verifies pinned evidence hashes and reviewed semantic disposition, disallows maturity changes without separate referenced human record. Baselines include untracked inputs and preserve unrelated preexisting dirt. Register-wide historical stale grade audit is not silently claimed fixed. Output nonzero on missing/invalid/stale records. A check does not prove semantic correctness or become tamper-proof; source snapshot, review and required invocation provide layered discipline, not branch protection. Avoid altering runtime check_all; require a separate final closure command after ordinary checks so register updates can happen after runtime tests.
+
+Minimum tests: complete fixture passes; unmapped changed/new/deleted input, stale evidence, missing ADR/index/bucket/changelog link, duplicate or missing index IDs and changed maturity without authority fail. Test already dirty baseline and current changes distinctly. Source scope/exclusions explicit; symlink escapes rejected. Non-runtime docs need no forced runtime rerun. Run against current repository for actual ownership evidence of this workflow. Source changes after check invalidate receipt. Human/reviewer statement remains attestational not cryptographic.
+
+The skill must require snapshot before edits and map changes at close; missed baseline must be reported and reconstructed from real saved evidence, never fabricated after edits. A separate semantic reviewer judges ownership completeness, claim accuracy and maturity. Shared skill copies byte-identical. No approval requests for routine sync. No auto-editing decision wording or grades by checker. Preserve existing records and changes.
+
+Challenge this bounded plan before implementation. Return blocking findings and a scoped disposition. Do not edit, execute tests, delegate or launch tools. You receive the full declared relevant instructions, engineering runner and owning ADRs below. This is not an all-ADR retrospective.
+
+
+FILE /Users/arunmenon/projects/adrl-world-class/AGENTS.md
+# Keeping the ADRL register and implementation aligned
+
+This repository is the architecture decision register for ADRL. Runtime implementation is in
+the sibling `adrl-core` repository. Follow these rules when changing either as part of this work.
+
+- Before completing an implementation change, identify its owning ADRs and record the result in
+  those records. A behavior change updates the decision or its explicitly scoped application;
+  a refactor or bug fix can retain the decision and add implementation evidence.
+- Preserve stable ADR IDs, prior decision wording in the changelog, and dated research findings.
+  Distinguish product direction, implemented behavior, tested behavior and planned work.
+- Update `INDEX.md`, the affected bucket overviews and `CHANGELOG.md` with the same scope. Link
+  the code, test/evidence record, limitations and outstanding follow-ups. Do not mark work done
+  merely because a schema, interface or component exists.
+- Keep architectural status separate from maturity. Offline tests can support D2 for the tested
+  behavior; they do not establish D3, D4, D5, another harness, or the whole decision's promise.
+- `source/` preserves historical input. Add a clearly dated current-context note when necessary;
+  do not rewrite historical observations as if they described the current implementation.
+- Preserve unrelated uncommitted changes. Verify local links, decision-index coverage and the
+  implementation evidence cited by a register update. Documentation-only synchronization does
+  not require rerunning the runtime suite if the tested source hashes still match.
+
+## Independent review checkpoints
+
+For substantive ADRL implementation waves, use the `adrl-critical-review` skill
+(Codex: `/Users/arunmenon/.codex/skills/adrl-critical-review/SKILL.md`; Claude Code:
+`/Users/arunmenon/.claude/skills/adrl-critical-review/SKILL.md`). Require an independent
+pre-wave challenge and post-wave evidence review before claiming the affected wave complete.
+Retain original reviewer findings, Codex dispositions, material-fix rechecks and unresolved
+disagreements. Reviewer absence is pending review, never approval. Model agreement does not
+promote maturity or replace existing graduation authority. Scope reviews to the change; use
+full roadmap/all-ADR coverage for retrospective and milestone reviews. This process does not
+restart automation or authorize additional execution exposure.
+
+
+FILE /Users/arunmenon/projects/adrl-core/AGENTS.md
+# adrl-core engineering rules
+
+These rules apply to every change in this repository. The architecture source of truth is the ADR
+register in `../adrl-world-class/adr/<BUCKET>/ADRL-<BUCKET>-NNN.md` (reviewed 2026-09-02). The stack
+proposal that this repository implements is `../adrl-world-class/design/implementation-stack.md`.
+
+## Ownership
+
+- Every module docstring names its primary ADRL ID on the first line, for example
+  `"""Secret detection on new content. Primary: ADRL-SAF-003."""`. Secondary IDs are listed only for
+  real cross-cutting contracts.
+- Packages map to buckets: `wire` (SEM), `gates` (SAF), `routing` (RTG), `cascade` (CAS), `ledger`
+  (MEM), `learning` (LRN). `core`, `config`, `proxy`, `telemetry` and `cli` are shared plumbing.
+- A task implements an indexed decision. It does not need a new decision merely because it adds a
+  file. If no decision fits, stop and propose one in the register; do not invent behaviour.
+
+## Invariants the code must keep
+
+- Never rewrite a request body on the frontier or passthrough path. The bytes the harness sent are
+  the bytes the gateway receives, and response bytes (SSE `ping` events, upstream error wording)
+  are relayed unmodified. Body rewrites exist only for non-Claude rungs (ADRL-FND-001).
+  One carve-out (ADRL-CAS-004): after an escalation whose source turn carried no thinking
+  blocks, the `thinking` parameter is stripped from frontier-bound requests until the next user
+  turn, and the plan records `thinking_suppressed`.
+- No `UPDATE` or `DELETE` SQL anywhere under `src/`. The evidence ledger and the egress ledger are
+  append-only. Corrections are new events; erasure is key deletion plus an `erased` event
+  (ADRL-MEM-001, ADRL-MEM-010). `tools/check_ledger_discipline.py` enforces this in CI.
+- Every "versioned policy constant" named in an ADR is a field on a versioned config model, and the
+  config version is recorded on the decision row it influenced. Changing a threshold is a config
+  version bump, never a literal in code.
+- Shadow code never imports into live routing. Nothing under `adrl.learning` and no module whose
+  name starts with `shadow_` may be imported by `adrl.routing` or `adrl.proxy` (ADRL-MEM-008).
+- A privacy pin can only be released by the audited human path (ADRL-SAF-002). No code path in
+  routing, cascade, fallback or episode handling may clear pin state.
+- Gate outcomes only tighten the permitted rung set within a lineage. `PermittedSet.tighten`
+  raises on any attempt to widen (ADRL-SAF-001).
+- Terminal failures are rendered as Anthropic Messages API error objects, never as synthetic
+  assistant content (ADRL-CAS-007).
+
+## Code quality
+
+- No mock implementations. Write the real thing, or leave a `TODO(ADRL-XXX-NNN):` comment naming
+  the owning decision and raise `NotImplementedError` with the same text.
+- Type hints on every public function; `mypy --strict` must pass.
+- No em dashes in any file, including docs, docstrings and log messages.
+- Descriptive names. No adjectives in file names.
+- `structlog` for logging, never `print` in `src/`.
+- Pydantic v2 at config and record boundaries; frozen dataclasses for internal value objects.
+
+## Running checks
+
+```bash
+.venv/bin/python -m ruff check src tests tools
+.venv/bin/python -m ruff format --check src tests tools
+.venv/bin/python -m mypy
+.venv/bin/python -m pytest -q
+.venv/bin/python tools/check_ledger_discipline.py
+.venv/bin/python -m adrl.cli.main config check
+```
+
+All six must pass before a change is considered done. Use `uv sync --all-extras` to refresh the
+virtual environment; the lockfile is checked in and only binary wheels are used.
+
+
+FILE /Users/arunmenon/projects/adrl-core/tools/check_all.py
+"""Record bounded local engineering checks. Primary: ADRL-FND-005.
+
+Secondary: ADRL-EVL-009, ADRL-SEM-007. A passing run is evidence, never release authority.
+Only named source directories are hashed. Private keys and runtime data are excluded.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import importlib.metadata
+import json
+import os
+import platform
+import re
+import signal
+import subprocess
+import sys
+import time
+from datetime import UTC, datetime
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE_DIRS = ("src", "tests", "tools", "config", "docs", "api", "artifacts")
+SOURCE_FILES = ("pyproject.toml", "uv.lock", "README.md", "AGENTS.md", "CLAUDE.md", ".gitignore")
+EXCLUDED_PARTS = {"__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache"}
+
+
+def source_manifest(root: Path) -> dict[str, dict[str, str | int]]:
+    """Hash declared inputs without reading private keys, caches or runtime payloads."""
+    paths = [root / name for name in SOURCE_FILES if (root / name).exists()]
+    for name in SOURCE_DIRS:
+        directory = root / name
+        if directory.is_symlink():
+            raise ValueError(f"symlinked input directory: {name}")
+        if directory.exists():
+            paths.extend(directory.rglob("*"))
+    result: dict[str, dict[str, str | int]] = {}
+    for path in sorted(paths):
+        relative = path.relative_to(root)
+        if EXCLUDED_PARTS.intersection(relative.parts) or path.suffix == ".pyc":
+            continue
+        if path.name.startswith(".env") or path.suffix in {".key", ".pem"}:
+            continue
+        if path.is_symlink():
+            raise ValueError(f"symlinked input: {relative}")
+        if path.is_file():
+            data = path.read_bytes()
+            result[str(relative)] = {
+                "sha256": hashlib.sha256(data).hexdigest(),
+                "bytes": len(data),
+                "mode": path.stat().st_mode & 0o777,
+            }
+    return result
+
+
+def stop_group(process: subprocess.Popen[bytes]) -> None:
+    """Kill a timed-out check and its subprocess group on this POSIX runner."""
+    try:
+        os.killpg(process.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
+    process.wait()
+
+
+def run_check(name: str, argv: list[str], root: Path, out: Path, timeout: int) -> dict[str, object]:
+    started = time.monotonic()
+    status = "failed"
+    code: int | None = None
+    with (out / f"{name}.log").open("wb") as log:
+        try:
+            process = subprocess.Popen(
+                argv, cwd=root, stdout=log, stderr=subprocess.STDOUT, start_new_session=True
+            )
+            try:
+                code = process.wait(timeout=timeout)
+                status = "passed" if code == 0 else "failed"
+            except subprocess.TimeoutExpired:
+                stop_group(process)
+                status = "timed_out"
+            except KeyboardInterrupt:
+                stop_group(process)
+                status = "cancelled"
+        except OSError as exc:
+            log.write(f"Cannot start check: {exc}\n".encode())
+            status = "unavailable"
+    return {
+        "name": name,
+        "argv": argv,
+        "status": status,
+        "exit_code": code,
+        "elapsed_seconds": round(time.monotonic() - started, 3),
+        "log": f"{name}.log",
+    }
+
+
+def register_coverage(register: Path) -> dict[str, object]:
+    known = sorted(p.stem for p in register.glob("*/ADRL-*.md"))
+    index = register.parent / "INDEX.md"
+    rows = (
+        re.findall(r"^\| \[(ADRL-[A-Z]{3}-\d{3})\]", index.read_text(), re.M)
+        if index.is_file()
+        else []
+    )
+    passed = bool(known) and len(rows) == len(set(rows)) and sorted(rows) == known
+    return {
+        "name": "register_index",
+        "status": "passed" if passed else "failed",
+        "decision_count": len(known),
+        "missing_from_index": sorted(set(known) - set(rows)),
+        "unknown_index_rows": sorted(set(rows) - set(known)),
+        "duplicate_index_rows": sorted(row for row in set(rows) if rows.count(row) > 1),
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--out", type=Path, required=True, help="New private directory outside repo"
+    )
+    parser.add_argument("--timeout", type=int, default=600, help="Seconds per subprocess check")
+    parser.add_argument("--register", type=Path, default=ROOT.parent / "adrl-world-class/adr")
+    args = parser.parse_args()
+    if not 1 <= args.timeout <= 1800:
+        parser.error("timeout must be between 1 and 1800 seconds")
+    out = args.out.resolve()
+    if out == ROOT or ROOT in out.parents:
+        parser.error("output must be outside the source repository")
+    os.umask(0o077)
+    out.mkdir(parents=True, mode=0o700, exist_ok=False)
+    report: dict[str, object] = {
+        "schema_version": "adrl-engineering-checks-v1",
+        "started_at": datetime.now(UTC).isoformat(),
+        "status": "running",
+        "source_root": str(ROOT),
+        "python": sys.version,
+        "python_executable": sys.executable,
+        "platform": platform.platform(),
+        "installed_packages": sorted(
+            f"{d.metadata['Name']}=={d.version}" for d in importlib.metadata.distributions()
+        ),
+        "environment_scope": "Inherited environment; secret values and private keys not recorded",
+        "source_scope": {"directories": SOURCE_DIRS, "root_files": SOURCE_FILES},
+        "excluded_scope": "Private keys, .env files, caches, runtime data and Git internals",
+        "per_check_timeout_seconds": args.timeout,
+        "release_authority": False,
+    }
+    manifest = out / "manifest.json"
+
+    def save() -> None:
+        temporary = out / "manifest.pending"
+        temporary.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+        temporary.replace(manifest)
+
+    save()
+    try:
+        before = source_manifest(ROOT)
+        report["source_before"] = before
+        commands = [
+            ("lint", ["-m", "ruff", "check", "src", "tests", "tools"]),
+            ("format", ["-m", "ruff", "format", "--check", "src", "tests", "tools"]),
+            ("types", ["-m", "mypy"]),
+            ("tests", ["-m", "pytest", "-q"]),
+            ("ledger", ["tools/check_ledger_discipline.py"]),
+            ("config", ["-m", "adrl.cli.main", "config", "check"]),
+            ("inventory", ["tools/check_data_inventory.py"]),
+            ("learning", ["tools/check_learning_contract.py"]),
+            (
+                "api_contract",
+                [
+                    "tools/export_api_contract.py",
+                    "--out",
+                    "api/adrl-api-v1-preview.json",
+                    "--check",
+                ],
+            ),
+            (
+                "adr_map",
+                ["tools/adr_module_map.py", "--register", str(args.register), "--check"],
+            ),
+        ]
+        checks: list[dict[str, object]] = []
+        report["checks"] = checks
+        for name, arguments in commands:
+            report["active_check"] = name
+            save()
+            check = run_check(name, [sys.executable, *arguments], ROOT, out, args.timeout)
+            checks.append(check)
+            save()
+            print(f"{name}: {check['status']}", flush=True)
+            if check["status"] == "cancelled":
+                break
+        checks.append(register_coverage(args.register))
+        after = source_manifest(ROOT)
+        changed = sorted(
+            name for name in before.keys() | after.keys() if before.get(name) != after.get(name)
+        )
+        report["source_after"] = after
+        report["changed_inputs"] = changed
+        report["status"] = (
+            "passed"
+            if not changed and len(checks) == 11 and all(c["status"] == "passed" for c in checks)
+            else "failed"
+        )
+    except (OSError, ValueError) as exc:
+        report["status"] = "failed"
+        report["error"] = str(exc)
+    except KeyboardInterrupt:
+        report["status"] = "cancelled"
+    finally:
+        report["active_check"] = None
+        report["finished_at"] = datetime.now(UTC).isoformat()
+        save()
+    print(f"Engineering checks: {report['status']}; evidence: {manifest}")
+    return 0 if report["status"] == "passed" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
+
+FILE /Users/arunmenon/projects/adrl-world-class/adr/FND/ADRL-FND-005.md
+# ADRL-FND-005 — Scope expands only through measured gates
+
+| Field | Value |
+|---|---|
+| Bucket | FND — System Boundary and Principles |
+| Status | Accepted · unchanged |
+| Maturity | D3 Shadow, review recommends D3 Shadow with a note: the D-scale measures runtime behaviour and fits a governance commitment poorly; the honest reading is "the readiness tooling runs against shadow data and its verdicts have so far been respected" |
+| Review verdict | APPROVE |
+| Tenets | 8, 9 |
+| Related decisions | EVL-004, EVL-005, EVL-006, EVL-007, EVL-009, LRN-007, MEM-008, RTG-006 |
+| Open questions | Q6 |
+
+## Decision
+
+Scope expands only through measured phase gates; component presence is not readiness.
+
+### Product application, 2026-09-07
+
+For the current product workstream, keep the public API in preview until real integrations have
+validated at least two harnesses and two protocols. Claude Code is the first path, OpenCode tests
+reuse of the Messages profile, and Codex tests a separately admitted Responses profile. Passing
+offline tests for the first extraction does not satisfy that release gate. Changes to the contract
+during preview are versioned and recorded with their compatibility impact. See the
+[product contract](/Users/arunmenon/projects/adrl-world-class/design/adrl-multi-harness-product-contract-2026-09-07.md)
+and [implementation evidence](/Users/arunmenon/projects/adrl-world-class/reports/adrl-product-foundation-implementation-2026-09-07.md).
+
+## Product service evidence, 2026-09-07
+
+The local product-service package passed 506 tests and a real loopback HTTP smoke check using synthetic observations. This adds D2 evidence for the tested services. No real Claude Code task, second harness or second protocol was validated; the first stable product-interface gate remains unmet.
+
+The [implementation report](../../reports/adrl-product-services-implementation-2026-09-07.md)
+links the 506-test result, loopback smoke check, source hashes and remaining limitations.
+Architectural status is unchanged by this evidence update; historical maturity statements
+below retain their dated review scope.
+
+## Earlier subscription pilot plan, 2026-09-07
+
+Use the existing Claude Code subscription for a native task baseline before a planned
+observation-only integration. Neither establishes that ADRL intercepted model requests,
+enforced egress policy or saved model cost. The later gateway pilot needs separate provider
+access and a budget. The [pilot brief](../../reports/adrl-claude-subscription-pilot-2026-09-07.md)
+records a prepared independent repository fixture and its existing test failures. No real
+harness run or maturity promotion occurred; the two-harness/two-protocol release gate stands.
+
+## Live observation pilot, 2026-09-07
+
+A native subscription baseline and one instrumented repair session now exist. The repair passed eight independently checked tests; 18 real tool events reconciled with ADRL. This is one bounded observation pilot. No gateway privacy, local routing, organic quality or savings claim follows, and the two-harness/two-protocol release gate remains unmet.
+
+The [pilot report](../../reports/adrl-live-observation-pilot-2026-09-07.md) links the applied 15-file package, 511 passing tests,
+all required checks, reviewed outcomes and remaining blockers. Architectural status is unchanged;
+this evidence does not promote the full decision to D3 or D4. Earlier dated sections preserve
+their original implementation and planning scope.
+
+## Session verification implementation, 2026-09-07
+
+The product now has an applied local operator verification path whose receipts can be read beside one live pilot session's observations. The implementation suite passes 532 tests; the final live check used two repeated verifier jobs on the same prior task and copied state. This supports scoped D2 for the receipt contract plus concrete local execution evidence. It does not graduate routing, privacy controls or the overall product. The two-harness/two-protocol stable-release gate remains unmet.
+
+See the [implementation and maturity report](../../reports/adrl-session-verification-2026-09-07.md),
+[validation/source manifest](../../reports/research/adrl-session-verification-2026-09-07.json), and
+[operator command guide](/Users/arunmenon/projects/adrl-core/docs/product-services.md).
+The applied 14-file package passes 532 tests and all required checks. This is scoped evidence;
+architectural status and general D3/D4 maturity remain unchanged.
+
+## Offline verifier improvement implementation, 2026-09-07
+
+The applied 13-file package passes 549 tests and all six required checks; the data inventory covers 256 fields. Source application verified the 274-file baseline and preserved 267 untouched originals. The first offline verifier comparison is concrete scoped implementation evidence: 4/7 baseline and 7/7 candidate classifications on seven curated variants of one earlier task family.
+
+This supports D2 for the tested comparison/archive contract. It does not graduate the whole product, establish a trained router, demonstrate recursive self-improvement, validate another harness or satisfy the two-harness/two-protocol stable-release gate. The next evidence priorities are exact task-close binding and fresh independently reviewed tasks.
+
+See the [plain-language experiment report](../../reports/adrl-improvement-experiment-2026-09-07.md),
+[validation and applied source manifest](../../reports/research/adrl-improvement-experiment-2026-09-07.json),
+and [operator guide](/Users/arunmenon/projects/adrl-core/docs/verifier-experiments.md).
+This is scoped implementation evidence; the architectural status and broader maturity claim
+remain unchanged. Prior decision text and dated research findings are preserved below.
+
+## Forward implementation plan, 2026-09-07 (proposed)
+
+The proposed long-horizon roadmap separates trustworthy evidence, portability, controlled execution, measured routing and stable local release from later learned routing, automated proposals, managed teams and RSI research. Each wave has evidence gates and an explicit recovery path. A completed implementation task does not move maturity or grant deployment authority. Current implementation evidence remains the 549-test package and the scoped curated experiment; the plan adds no runtime capability.
+
+See the [detailed wave roadmap](../../reports/adrl-implementation-roadmap-2026-09-07.md) and
+[wave execution packet](../../reports/adrl-wave-execution-template.md). The roadmap maps all
+77 stable decisions to review waves. This is planning linkage only: prior decision wording,
+architectural status, existing implementation evidence and maturity remain unchanged.
+
+## W0 execution baseline, 2026-09-07
+
+W0 now records bounded local engineering checks and before/after hashes for declared source inputs. A failed check, stale contract or changed input prevents a passing combined result. The source backups preserve the existing dirty repositories. This improves evidence attribution and repeatability; the two-harness/two-protocol product gate remains unmet.
+
+See the [W0 packet](../../reports/waves/w0-baseline.md), [journey](../../reports/adrl-implementation-journey.md),
+[check/source evidence](../../reports/research/adrl-w0-baseline-2026-09-07.json),
+[maturity inventory](../../reports/research/adrl-maturity-baseline-2026-09-07.json) and
+[engineering runner](/Users/arunmenon/projects/adrl-core/tools/check_all.py).
+All 556 implementation tests and eleven engineering checks pass for the recorded build. This is
+scoped local evidence; prior decision wording, status and maturity remain unchanged.
+
+## Context and rationale
+
+"We wrote the code" is not "it is ready". Scope expands only through measured gates. This is a governance commitment rather than a technical one, and it is what licenses the honest D0 entries elsewhere in the register. Without it, the natural pressure is to treat a merged component as a delivered capability — which is precisely how a cost optimisation ends up degrading someone's workflow.
+
+The review leaves the sentence unchanged. Its weakness is not in the text but in what surrounds it: the gates are defined and graded by the same team (`config/readiness-score-v1.json`, `tools/check_readiness_score.py`), there is no stated rule that thresholds are fixed *before* the measurement is taken, and there is no de-promotion trigger — the decision is written as a ratchet upward. Those are follow-ups on EVL and OPS, not changes to the principle. The register's own maturity ordering (FND strongest, LRN weakest, no decision at D5) is evidence the commitment is being honoured today.
+
+## Adversarial review (2026-09-02)
+
+### Steelman
+This is the decision that keeps the register honest. Every other bucket's D0 entries — the learned router, subagent identity, the utility estimator — exist as D0 only because this decision makes it safe to admit them. It maps directly onto NASA's readiness-level discipline (a prototype demonstrated in a relevant environment is not one demonstrated in the operational environment) and onto SRE canary practice (exposure grows with evidence, not with code completeness). A the company engineering review is more likely to be harmed by scope creep in a cost project than by any single routing bug.
+
+### Attacks
+1. **Self-graded gates.** The readiness score is authored, computed and interpreted by the team that wants to pass it. NASA's TRL scale and Google's canary process both assume an assessor or an SLI-based automatic judgment that the deploying team does not control. Nothing in the pack names an independent approver for a phase transition; EVL-007's "explicit human graduation" does not say *whose* human.
+2. **Thresholds are not pre-registered.** A gate whose threshold can be chosen after the measurement is a gate that always passes. The pack says "34 evaluated decisions vs required 300" for similar-task lookup, which is a pre-set number and good practice; it does not say the same for every gate in `readiness-score-v1.json`, and nothing forbids editing the JSON in the same PR that adds the evidence.
+3. **No de-promotion path.** The decision only speaks of expansion. If a D4 pilot produces regressions, the register has no rule that says the decision drops to D3 and what evidence would restore it. Canary practice is symmetric: a failed canary rolls back. A ratchet-up-only governance rule will accumulate optimistic maturity labels — FND-004's D4 claim, which this review lowers, is an instance.
+4. **"Measured" without "representative".** Q6 states representativeness, not volume, is binding; the Phase 0 corpus is single-user and workflow-heavy. A gate can be measured and passed on unrepresentative traffic. Google's canary chapter warns that a canary must span enough diversity and time for behaviour to be attributable; the decision should not be satisfied by any measurement, only by measurements on the population the next phase will expose.
+5. **The D-scale is being used for non-runtime decisions.** FND-005 is "D3 Shadow", but a governance rule does not "run against real traffic". Labelling it D3 is a category error that slightly undermines the scale's credibility for the decisions where it matters.
+
+### Evidence
+- NASA, "Technology Readiness Levels" (nasa.gov) — TRL 5–6 (relevant/lab environment) is distinguished from TRL 7–8 (operational environment demonstration); shows a mature readiness scale separates "works in the lab" from "works in the field", supporting the principle and attack 4 — https://www.nasa.gov/directorates/somd/space-communications-navigation-program/technology-readiness-levels/
+- Google SRE, "Canarying Releases" (SRE Workbook, ch. 16) — canary population and duration must be chosen so observed behaviour is attributable; before/after comparisons are confounded by time; multiple simultaneous canaries contaminate signal; bears on attacks 3, 4 — https://sre.google/workbook/canarying-releases/
+- ADRL evidence pack, `01-overview-tenets-taxonomy.md` — "no decision at D5", "live adaptive routing intentionally blocked", "34 evaluated decisions vs required 300"; internal evidence that the commitment is currently being honoured; bears on the verdict.
+- No direct literature found on pre-registration of engineering readiness thresholds; reasoning from first principles (attack 2) and by analogy to pre-registered study designs.
+
+### Verdict
+**APPROVE.** None of the attacks lands on the sentence itself; each lands on the machinery that enforces it, which belongs to EVL and OPS. Attack 3 (no de-promotion) is the most serious and is recorded as a follow-up for an EVL amendment rather than a change here, because "scope expands only through gates" does not preclude contraction — it simply does not mention it. Attack 5 is a labelling issue noted in the maturity field. The decision stands as written because it is doing its job: this review's own downgrades (FND-004, SAF-002, SAF-007) are only possible because the register separates acceptance from maturity.
+
+## Amendments applied
+
+None — decision stands as written.
+
+## Follow-ups
+
+- [ ] EVL amendment (proposed): phase-gate thresholds are pre-registered — `readiness-score-v1.json` is versioned and a threshold change and the evidence that meets it may not land in the same change.
+- [ ] EVL amendment (proposed): de-promotion triggers — name the regression conditions under which a decision's maturity is lowered, and what restores it.
+- [ ] Name the approver role for each D3→D4 and D4→D5 transition (independent of the ADRL team; candidate: enterprise gateway owner plus security architect for SAF).
+- [ ] Add a representativeness check to every gate: the population measured must be the population the next phase exposes (Q6).
+- [ ] Register housekeeping: mark governance-only decisions (this one) with a maturity note rather than a runtime D-level.
+
+## Changelog
+
+| Date | Change | Text before change |
+|---|---|---|
+| 2026-09-07 | Recorded W0 baseline, repeatable checks and explicit remaining gates | Prior decision wording and evidence preserved; no architecture or maturity change |
+| 2026-09-07 | Linked proposed implementation roadmap and dependent decision questions | Prior decision and evidence preserved; no runtime or maturity change in this planning pass |
+| 2026-09-07 | Recorded applied offline verifier experiment and its limits | Prior decision and evidence preserved; no versioned verifier comparison had been recorded |
+| 2026-09-07 | Recorded applied session verification and its tested limits | Prior decision and evidence preserved; the observation pilot had no session-scoped verifier receipts |
+| 2026-09-07 | Recorded applied observation mode and the first live subscription pilot | Decision policy and status unchanged; prior evidence was offline or synthetic, with observation-only launch still planned |
+| 2026-09-07 | Recorded native-subscription baseline and separately scoped observation/gateway pilot stages | Decision unchanged; the earlier product application did not distinguish these billing and coverage paths |
+| 2026-09-07 | Recorded applied product services, their scoped D2 evidence and limitations | Decision policy unchanged; the prior foundation did not implement session/event/read services |
+| 2026-09-07 | Applied the measured-scope principle to the first stable multi-harness API; release gate remains unmet | Principle unchanged; this product-specific application was absent |
+| 2026-08-27 | Accepted (Confluence register) | — |
+| 2026-09-02 | Approved unchanged | "Scope expands only through measured phase gates; component presence is not readiness." |
+
+
+FILE /Users/arunmenon/projects/adrl-world-class/adr/EVL/ADRL-EVL-009.md
+# ADRL-EVL-009: Blockers are never averaged away
+
+| Field | Value |
+|---|---|
+| Bucket | EVL; Evaluation, Graduation, Rollout |
+| Status | Proposed 2026-09-03 (first capture; referenced by the overview, MEM-006, MEM-010, LRN-006 since 2026-08-27) |
+| Maturity | D1 Code; adrl-core `learning/readiness.py` and `ledger/readiness.py` list blockers by name and never fold them into a score; the blocker list itself is not yet pre-registered |
+| Review verdict | PROPOSED (new) |
+| Tenets | 2, 8, 9 |
+| Related decisions | FND-005, MEM-006, MEM-010, LRN-006, SAF-001, SAF-002, SAF-003, SAF-007, EVL-004, EVL-007, EVL-008 |
+| Open questions | Q6 |
+
+## Decision
+
+A blocker is a named condition that, while open, prevents a decision from moving up the maturity ladder (EVL-007) regardless of any score. Blockers are listed by name in every scorecard (EVL-008) and are never converted into a weight, a penalty or a component of the readiness score. The pre-registered blocker set is:
+
+1. *Safety not attacked.* A SAF or TRU decision whose adversarial suite has not run in the window; blocks that decision above D2.
+2. *Verifier precision unmeasured or below threshold* (LRN-001, EVL-004); blocks any learned or retrieval authority.
+3. *Degraded memory non-zero in the window* (MEM-006); blocks the window's evidence from counting toward any gate.
+4. *Erasure inside the window* (MEM-010); blocks the window.
+5. *Abstention rate outside declared bounds* (LRN-006); blocks the artifact.
+6. *Fail-open rate above threshold in any failure class* (FND-004, OPS-008); blocks any routing decision above D3.
+7. *Excluded fraction above `max_suppressed_fraction`* (EVL-004); blocks retrieval and learned authority.
+8. *Unanchored egress ledger* (SAF-009, OPS-007): no verified checkpoint in the window; blocks any SAF or TRU decision above D2.
+
+Adding or removing a blocker is a new EVL config version with a recorded reason.
+
+## Offline verifier improvement implementation, 2026-09-07
+
+The verifier evaluator records explicit blockers for incomplete trials, input drift, repeat disagreement, changed evaluator files and execution/integrity failures. An unavailable sandbox, timeout or unavailable executor cannot earn an improvement recommendation. A deliberate test-environment error can retain its expected indeterminate classification. Each distinct case must match expectations on every repetition to count as correct.
+
+A higher aggregate score cannot excuse a baseline-correct case becoming incorrect, a candidate false pass or a false failure. Focused tests exercise those failures, including an accept-everything candidate. This scoped blocker logic is implemented; the broader preregistered routing graduation blocker list remains separate.
+
+See the [plain-language experiment report](../../reports/adrl-improvement-experiment-2026-09-07.md),
+[validation and applied source manifest](../../reports/research/adrl-improvement-experiment-2026-09-07.json),
+and [operator guide](/Users/arunmenon/projects/adrl-core/docs/verifier-experiments.md).
+This is scoped implementation evidence; the architectural status and broader maturity claim
+remain unchanged. Prior decision text and dated research findings are preserved below.
+
+## W0 execution baseline, 2026-09-07
+
+The W0 engineering runner reports each failed, unavailable, timed-out or cancelled command rather than hiding it in an aggregate score. Stale contracts, missing ADR ownership/index coverage and changed declared inputs block a passing run. A killed runner may leave an incomplete running record. These engineering checks do not replace or edit the versioned routing graduation blocker set.
+
+See the [W0 packet](../../reports/waves/w0-baseline.md), [journey](../../reports/adrl-implementation-journey.md),
+[check/source evidence](../../reports/research/adrl-w0-baseline-2026-09-07.json),
+[maturity inventory](../../reports/research/adrl-maturity-baseline-2026-09-07.json) and
+[engineering runner](/Users/arunmenon/projects/adrl-core/tools/check_all.py).
+All 556 implementation tests and eleven engineering checks pass for the recorded build. This is
+scoped local evidence; prior decision wording, status and maturity remain unchanged.
+
+## Context and rationale
+
+The overview states the rule and names three blocking gates (organic verifier labels, label precision, learned-router authority); MEM-006, MEM-010 and LRN-006 each added a blocker of their own. The old readiness score of 40.5 was explicitly a comparable series that "never blends" blockers. This decision writes the blocker list down so that a score cannot quietly absorb one, which is the failure mode FND-005's review called self-graded gates.
+
+## Adversarial review (2026-09-03)
+
+### Steelman
+A list of named conditions that a score cannot touch is the simplest possible guard against goal-seeking on the score. Every entry traces to a decision that already declared it.
+
+### Attacks
+1. **Eight blockers will keep everything at D2 forever.** Answered: that is the accurate state of a system with no organic traffic. Blockers close by doing the work they name, and each names it.
+2. **"Adversarial suite has run" is satisfiable by a trivial suite.** Answered: the suite for each SAF decision is enumerated in that decision's follow-ups; the blocker names the enumerated suite, not "a suite".
+3. **Blockers can be removed by a config version change.** Answered: recorded reason, reviewed at graduation, and the scorecard shows the config version so a removal is visible.
+
+### Evidence
+- `source/01-overview-tenets-taxonomy.md`; "Blockers never averaged away (EVL-009)"; the three blocking gates; the readiness series that never blends estimates.
+- ADRL-MEM-006; degraded-memory count as an EVL-009 blocker when non-zero.
+- ADRL-MEM-010; erasure removing evidence from a window is an EVL-009 blocker.
+- ADRL-LRN-006; abstention rate collapse or saturation is an EVL-009 blocker.
+- `REVIEW-LOG.md`, register-wide rules; "Tested, not attacked is a maturity ceiling for SAF."
+
+### Verdict
+**PROPOSED.** The rule was always in force by citation; this makes the list explicit and versioned.
+
+## Follow-ups
+
+- [ ] Pre-register the eight blockers and their thresholds in `evl-config-v1.json`.
+- [ ] Golden test: the readiness score is unchanged when a blocker opens or closes; only the blocker list changes.
+- [ ] Scorecard generator lists every open blocker with the decision IDs it holds at their current level.
+
+## Changelog
+
+| Date | Change | Text before change |
+|---|---|---|
+| 2026-09-07 | Recorded W0 baseline, repeatable checks and explicit remaining gates | Prior decision wording and evidence preserved; no architecture or maturity change |
+| 2026-09-07 | Recorded applied offline verifier experiment and its limits | Prior decision and evidence preserved; no versioned verifier comparison had been recorded |
+| 2026-09-03 | Proposed (first capture of the EVL bucket) |; |
+
+
+FILE /Users/arunmenon/projects/adrl-world-class/reports/adrl-wave-execution-template.md
+# ADRL wave execution packet
+
+Template v1, 7 September 2026. This is a planning/checklist artifact, not an executable approval or deployment system. Use it for one wave or one bounded slice of the [roadmap](adrl-implementation-roadmap-2026-09-07.md).
+
+## Identity, scope and authority
+
+| Field | Fill before execution |
+|---|---|
+| Packet ID and parent wave | Stable ID, version, predecessor packet |
+| Engineering state | proposed / ready / implementing / validated / closed |
+| Disposition | advance / repeat / narrow / amend / defer / stop; separate from engineering state |
+| Outcome in user language | One behavior a user can now rely on |
+| Owner / reviewer | Named implementation owner, evidence reviewer and relevant security/release authority |
+| Existing authorization | Link the instruction or decision that authorizes the work; do not ask again for the same authority |
+| Scope tuple | Harness/version, profile/version, transport, deployment, repository class, integration mode, task family |
+| Current and target maturity | Per ADR behavior, exact versions and population; current evidence, missing gates and required reviewer. Target is not a promotion |
+| Runtime exposure | offline / observation / shadow / constrained live; never infer live approval from code completion |
+| Owning decisions | Exact ADR IDs, clauses and any proposed amendment |
+| Dependencies | Evidence records for prerequisite gates; missing data stays missing |
+| Explicit exclusions | Unsupported states, untested populations and data not permitted to leave the machine |
+
+## Problem and falsifiable hypothesis
+
+State the problem, a concrete example, current behavior and desired behavior. Name what observation would make us reject the proposed change. Classify the question as implementation defect, parameter choice, architecture assumption, compatibility, measurement or product scope.
+
+Record any decision conflict before coding around it. If no existing ADR owns the behavior, propose ownership rather than inventing a hidden contract. Keep routine restoration of an existing invariant distinct from changing that invariant.
+
+## Inputs frozen before the comparison
+
+- Source snapshot/commit and dirty-worktree manifest; dependency, environment and configuration versions.
+- Native harness/protocol/provider versions and approved credentials, recorded without exposing secrets.
+- Initial task state, task/attempt lineage, output-capture boundary and verifier plan/artifact hashes.
+- Evidence origin, verification quality, eligibility and permitted storage/access/retention.
+- Development, selection and fresh assessment partitions; related-task grouping and holdout access owner.
+- Baseline/candidate identities, primary outcome, minimum worthwhile gain or allowed quality loss.
+- Analysis, uncertainty method, stopping rule, minimum exposure and treatment of multiple candidates/interim looks.
+
+Expected outcomes must be set independently of the candidate where independence is claimed. Freeze numeric thresholds before release assessment; any later change creates a new evaluation version and fresh assessment requirement. A curated fixture may validate mechanics without qualifying an efficacy claim.
+
+## Deliverables and bounded execution
+
+List the smallest implementation slices and their expected files or contracts. Include contract compatibility, migrations, data inventory, documentation and diagnostics in scope where needed. Every module in `adrl-core` names its primary ADR.
+
+| Limit | Approved value / measurement |
+|---|---|
+| Task attempts / repair attempts | Explicit cap, including the stop behavior |
+| Model calls / tokens / turns | Cap across arms, repetitions and in-flight work |
+| Dollar ceiling | Explicit approved amount for paid usage; null means not established, never unlimited |
+| Runtime / per-command timeout | Include cancellation behavior and in-flight ambiguity |
+| Snapshot / evidence storage | File/byte limits, retention and cleanup |
+| Concurrency | Maximum simultaneous tasks and budget reservations |
+| Allowed actions and destinations | Tools, files, repositories and provider destinations permitted by the packet |
+
+For an offline-only coding packet, state that no model-service calls or new infrastructure are included. If exact billing enforcement is unavailable, state the conservative alternative limits and residual uncertainty. Record costs for failed and discarded candidates.
+
+## Acceptance, fault cases and advancement
+
+For each promised behavior, specify an observable case, expected result, artifact and owner. Include negative cases, restart, cancellation, malformed/missing inputs, credential/identity boundaries, ledger/key failure and erasure where applicable.
+
+| Gate | Frozen threshold or expected behavior | Evidence link | Outcome |
+|---|---|---|---|
+| Entry prerequisites | Actual prerequisite evidence | | not assessed |
+| Functional conformance | Named cases and expected results | | not assessed |
+| Critical invariants | No forbidden dispatch/authority leak/duplicate effect/erasure resurrection in required cases | | not assessed |
+| Outcome quality | False accept/reject, uncertainty and repair metrics; declared population | | not assessed |
+| Reliability / budget | All-attempt denominator, limits and failure accounting | | not assessed |
+| Rollback / recovery | Measured recovery within stated target, preserving restrictions | | not assessed |
+| Register and compatibility | Owning ADRs/index/buckets/changelog, schema and client compatibility | | not assessed |
+| Release / maturity authority | Separate human decision and signature where required | | not assessed |
+
+Use passed, failed, insufficient, not assessed or explicitly scoped not applicable. “Not applicable” needs a reason tied to a removed claim; it cannot waive a critical invariant of an advertised feature. Passing a development gate grants no new deployment authority.
+
+## Required implementation checks
+
+Run from `adrl-core` in its recorded environment:
+
+```bash
+.venv/bin/python -m ruff check src tests tools
+.venv/bin/python -m ruff format --check src tests tools
+.venv/bin/python -m mypy
+.venv/bin/python -m pytest -q
+.venv/bin/python tools/check_ledger_discipline.py
+.venv/bin/python -m adrl.cli.main config check
+```
+
+Also run data inventory, learning-contract, contract-export compatibility and ADR module-map checks when affected. Include the relevant adversarial and real-harness cases before claiming those properties. Publish skipped/unsupported cases and failures. Documentation-only synchronization can rely on unchanged verified source hashes under the repository instructions.
+
+## Stop, rollback and continued work
+
+Name immediate stop triggers, who can stop admission, what happens to in-flight work, the compatible recovery version, and how pins, erasure records and evidence survive rollback. Do not use a direct cloud bypass as recovery from a restriction failure. If safe rollback is unavailable, stop the affected path.
+
+After the agreed attempt limit or a material new contradiction, produce a failure packet. Continue useful independent work within existing authorization, while withholding the dependent exposure. A failed hypothesis can close a packet honestly; it must not be turned into a passed gate.
+
+## Closure and decision-ledger update
+
+Record the actual result versus the original hypothesis, all attempts and exclusions, costs, checks, artifact hashes, disagreements and remaining risks. Choose keep, tune, amend, replace or defer, explaining why. Preserve prior ADR wording and stable IDs; synchronize the index, bucket overviews, changelog and support matrix. Verify links and applied source hashes.
+
+End with a user-facing account: what changed, what was proven, what remains unproved, whether maturity or deployment authority changed, and the next concrete action. Capture the reviewer/release decision separately from the implementation author's recommendation.

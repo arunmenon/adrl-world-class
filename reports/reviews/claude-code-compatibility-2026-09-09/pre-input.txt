@@ -1,0 +1,2919 @@
+# Claude Code compatibility spike: pre-wave packet
+
+Date: 2026-09-09. Stage P1, direct prerequisite to Claude Code ROI diagnostic. User authorized preparation and Fable critique of the concrete spike packet. No inference task launched, live profile changed, paid API use or expanded task matrix authorized by this preparation. This is not a whole-product review.
+
+## Product question
+
+Can one isolated native Claude Code session, using the existing claude.ai Max login through ADRL, receive a cheaper Claude model chosen by ADRL and continue with tool/thinking history? Produce either actual request/decision/served-model evidence or a precise failing boundary. Forced selection is integration proof only; it is not routing merit, savings, learned admission or production qualification.
+
+## Verified preflight and exact blockers
+
+Claude Code 2.1.265 is installed. Read-only auth status returned loggedIn true, authMethod claude.ai, apiProvider firstParty, subscriptionType max. No ANTHROPIC_API_KEY/AUTH_TOKEN/BASE_URL or alternate-provider environment overrides are present in the coordinator. This does not attest that paid overflow is disabled or that the target deployment is currently available to this account.
+
+Read-only synthetic probes against existing functions, in static-probes.json:
+- Authorization and anthropic-beta pass through forward_headers; local workload assertion is removed upstream. Actual subscription traffic is not yet exercised.
+- strip_for_rung rewrites Opus to Sonnet but drops thinking, output_config, a server-tool declaration and system cache marker. Therefore current cheaper-rung code is not qualified as a model-only Claude rewrite.
+- Loading the actual config with LIVE settings fails: live_rung_has_evidence, local enabled without evidence_ref. No server or ledger created by these probes. All configured Claude model names are listed as frontier; cheap_cloud currently maps an adrl-cheap-cloud gateway group, not a qualified direct Claude destination. No use of SHADOW-loaded bundle with LIVE settings is allowed.
+
+These are concrete implementation/configuration blockers found before spend, not evidence that Anthropic rejects subscription rerouting. Preparation must not imply the live spike is launch-ready.
+
+## Intended smallest profile, for disposition
+
+Source model candidate: claude-opus-5. Cheaper candidate: claude-sonnet-5. Exact IDs are already present in source config and current vendor documentation; account execution availability remains a measured precondition. No alias fallback to another model. Do not begin with Haiku because its thinking/tool behavior would add a second compatibility variable.
+
+Native Claude Code -> isolated loopback ADRL -> https://api.anthropic.com using the original native authorization and anthropic-beta. No LiteLLM deployment is required for this direct compatibility path, but endpoint inventory/identity must explicitly support and label direct Anthropic; do not fabricate a LiteLLM receipt/header or send the adrl-cheap-cloud group name directly to Anthropic. A fixed HTTPS upstream, no redirects, no alternate destination, and no credentials serialized into records are required. The existing HttpxGatewayClient provides a candidate forwarding transport; actual composed support is unqualified.
+
+Use a new generated workspace with one tiny synthetic text file containing two integers; allow only a native Read tool scoped to that workspace. No customer repository, shell, network tool, write tool, plugin, MCP server or arbitrary hook. If a narrowly scoped Read permission cannot be enforced by the launcher, stop. Save the input tree/hash before execution. A hash of private content is not a reason to retain it; inputs here are synthetic.
+
+Normal first response uses Opus and must contain genuine thinking and a tool call. Return its tool result, then exercise one explicit forced Opus-to-Sonnet switch with that original history. Also exercise a Sonnet continuation. Do not edit the thinking blocks, system or tool definitions to force acceptance. If initial selection is proven but switching fails, report the narrower result and assess an initial-choice-only experiment separately. If genuine thinking/tool history is absent, the switch criterion is untested, not passed. The observed model comes from unmodified response JSON/SSE; missing model or fallback attribution means incomplete. Current docs say unreadable prior-model thinking may be dropped; require compatibility and record loss, not impossible retention equivalence.
+
+The diagnostic force must be a versioned, isolated experiment control after existing permission gates; never remap a remote Claude model as local, release a pin, or present forced choice as estimator output. At initial entry and all continuations maintain the permitted destination intersection. No automatic policy learner or automatic health refresh is enabled.
+
+## Required bounded amendments before launch
+
+1. SEM-007/FND-001/CAS-004: explicitly scoped Claude-to-Claude model selection/rewrite behavior, preserving non-model capabilities and native response semantics; test correct thinking handling at a legitimate boundary. Keep old decision wording in changelog. A new model-only rewrite exception cannot be smuggled under the non-Claude rewrite invariant.
+2. RTG-001/FND-002/TRU-002: versioned experiment destination membership and explicit direct-upstream inventory/binding. No fake capability admission or pricing evidence; keep experimental qualification separate from enabled production rungs.
+3. FND-005/EVL-005/EVL-009: determine an explicit permitted route for this finite compatibility experiment that does not bypass existing LIVE admission checks or relabel synthetic evidence as organic qualification. If this requires a scoped exception/new experiment profile, draft it for owner disposition; do not grant it ourselves. Prefer a minimal declared mechanism, not general infrastructure.
+4. OPS-006/MEM-001 and CAS-006: prove model/usage/request lineage capture from the actual stream and no secret-bearing header log. Route decisions, served receipts and failed attempts retained; full learning-reader fixes are not a prerequisite.
+
+These are pre-wave decisions and testable entry gates, not changes applied by this packet. Reviewer should identify whether an existing supported route avoids any amendment. Do not require building learning, fleet management or container orchestration for this spike.
+
+## Proposed finite execution limits
+
+After preparation, at most 60 minutes total execution/diagnosis, one isolated session, at most eight outbound Messages attempts including failures/retries/background calls, max 262144 body bytes per admitted request, max_tokens no greater than 4096, at most four count_tokens requests, max 90 seconds per forwarded request and one active request. These are proposed limits, not existing implemented controls. The launcher/proxy must demonstrate enforcement with offline fixtures before credential-bearing execution. An over-limit request is rejected before forwarding; no post-hoc hope that CLI turn counts cap model calls. Do not rewrite max_tokens silently; use a supported harness setting or stop on mismatch. The ceiling permits at most 32768 requested output tokens, not a total-token/cash guarantee; cumulative request-body bytes are separately bounded. No run until native included-usage/overflow policy has a concrete disposition. No purchased usage credit, paid API or model fallback is allowed by default. Fable review usage is separate and retained in reviewer metadata.
+
+Two total bounded correction rounds for this spike at most; no automatic extension past a failed request/exposure boundary. Shutdown closes the dedicated proxy/session and removes the ephemeral connection settings; other Claude sessions and global config remain unchanged. Do not treat direct cloud bypass as recovery for a blocked/pinned request.
+
+Retain sanitized structural request/response facts and synthetic input/output evidence for seven days in a private experiment directory; keep nonsecret hashes, verdict and review summary thereafter. No authorization headers/cookies/tokens, raw signatures or raw thinking text in retained diagnostics. Record thinking-block presence, provenance and unchanged-handling checks without logging content. No automation cleanup job is created here; cleanup is an explicit closure action with limitations reported.
+
+## Acceptance table
+
+- Subscription forwarding: actual request succeeds through ADRL with native credentials, beta preserved and no provider override; API-equivalent prices are not invoice savings.
+- Control: incoming Opus, emitted target Sonnet, upstream response reports Sonnet, decision/attempt linked. Model metadata is provider-reported evidence, not independent server attestation.
+- Compatibility: original history contains thinking + tool use, switched response and next continuation complete without unexplained request mutation or signature/tool errors. Preserve and report any native dropped-thinking indication.
+- Limits/safety: offline denial tests establish no external dispatch for over-budget or forbidden destination; actual run respects them. Otherwise no live launch.
+- Evidence: every attempt accounted for with failures, response model source, usage when present, output hashes and code/config/profile/harness versions. Missing usage means usage claim incomplete; no invented zeros.
+- Disposition: controlled/compatible, initial-choice-only, explicit blocker, or inconclusive. None is generalized ROI, P1 graduation or production admission.
+
+## Review request and ownership
+
+Independently challenge this packet and the frozen actual source. Prioritize the cheapest valid experiment and exact blockers. Confirm whether the proposed routing path can operate under existing contracts, which changes are essential, and whether any apparent shortcut breaks admission, thinking, identity or accounting. Give go/no-go for the packet and distinguish implementation prerequisites from human access/experimental-policy dispositions. Do not execute, edit, delegate, call model tools, or promote grades. Maximum 700-word review preferred.
+
+Owning decisions to be synchronized if implementation proceeds: SEM-007 anchor; FND-001/002/005, RTG-001, CAS-004/006/007, TRU-001/002, OPS-006, MEM-001, EVL-005/009 as applicable to the actual diff. This planning-only packet preserves existing ADR fields; no implementation closure receipt claimed for an unchanged source tree. Taxonomy pre-edit baseline is /Users/arunmenon/projects/.adrl-execution-state/claude-code-spike-baseline-20260909.json.
+
+## Current primary references checked 2026-09-09
+
+- https://code.claude.com/docs/en/llm-gateway#subscriptions-and-gateways : base-URL-only gateway retains native subscription; credential overrides change billing; OAuth beta must pass through.
+- https://code.claude.com/docs/en/model-config : explicit model IDs and model/effort configuration; base URL does not itself choose the model.
+- https://platform.claude.com/docs/en/build-with-claude/thinking : preserve thinking blocks; model-readability and prefix validity differ. Current page states direction-dependent dropped blocks; do not assume every model switch inherently errors. Account-dependent prefix enforcement means one successful run does not qualify every account.
+
+
+READ-ONLY PROBES
+{
+  "probe": "read-only synthetic function calls; no service, network or config edits",
+  "rewrite_model": "claude-sonnet-5",
+  "removed_top_level": [
+    "output_config",
+    "thinking",
+    "tools"
+  ],
+  "system_cache_marker_preserved": false,
+  "headers_forwarded": {
+    "authorization": "Bearer SYNTHETIC",
+    "anthropic-beta": "oauth-SYNTHETIC",
+    "accept-encoding": "identity"
+  },
+  "live_load": {
+    "type": "ConfigError",
+    "message": "live_rung_has_evidence: rung local is enabled in live mode without an evidence_ref"
+  }
+}
+
+
+FILE C:src/adrl/wire/rewrite.py
+"""Body rewrite for non-Claude rungs. Primary: ADRL-FND-001. Secondary: ADRL-FND-002.
+
+The frontier and passthrough paths forward the original bytes. Only a request bound for a
+non-frontier rung is re-serialised, and only after stripping the fields a non-Claude endpoint
+would reject: thinking, output_config, cache_control markers and server-side beta tools.
+"""
+
+from __future__ import annotations
+
+import copy
+import json
+from collections.abc import Mapping
+from typing import Any
+
+from adrl.config.loaders import ConfigBundle
+from adrl.core.enums import Rung
+
+REWRITE_VERSION = "rewrite-v1"
+STRIPPED_TOP_LEVEL: tuple[str, ...] = ("thinking", "output_config")
+SERVER_TOOL_TYPE_PREFIXES: tuple[str, ...] = (
+    "web_search",
+    "web_fetch",
+    "computer",
+    "bash",
+    "text_editor",
+    "code_execution",
+    "memory",
+)
+
+
+def thinking_requested(body: Mapping[str, Any]) -> bool:
+    thinking = body.get("thinking")
+    if not isinstance(thinking, dict):
+        return False
+    return thinking.get("type") in ("enabled", "adaptive")
+
+
+def _strip_cache_control(node: Any) -> Any:
+    if isinstance(node, dict):
+        return {k: _strip_cache_control(v) for k, v in node.items() if k != "cache_control"}
+    if isinstance(node, list):
+        return [_strip_cache_control(item) for item in node]
+    return node
+
+
+def _is_server_tool(tool: Mapping[str, Any]) -> bool:
+    if "input_schema" in tool:
+        return False
+    tool_type = str(tool.get("type", ""))
+    return tool_type.startswith(SERVER_TOOL_TYPE_PREFIXES)
+
+
+def strip_for_rung(
+    body: Mapping[str, Any], rung: Rung, alias: str, bundle: ConfigBundle
+) -> dict[str, Any]:
+    """Return a new body for a non-frontier rung; the input mapping is never mutated."""
+    if rung is Rung.FRONTIER:
+        raise ValueError("frontier bodies are never rewritten (ADRL-FND-001)")
+    out: dict[str, Any] = copy.deepcopy(dict(body))
+    for key in STRIPPED_TOP_LEVEL:
+        out.pop(key, None)
+    out["model"] = alias
+    if "system" in out:
+        out["system"] = _strip_cache_control(out["system"])
+    if "messages" in out:
+        out["messages"] = _strip_cache_control(out["messages"])
+    tools = out.get("tools")
+    if isinstance(tools, list):
+        kept = [
+            _strip_cache_control(t) for t in tools if isinstance(t, dict) and not _is_server_tool(t)
+        ]
+        if kept:
+            out["tools"] = kept
+        else:
+            out.pop("tools", None)
+            out.pop("tool_choice", None)
+    _ = bundle.rungs.rungs[rung]
+    return out
+
+
+def serialise(body: Mapping[str, Any]) -> bytes:
+    return json.dumps(body, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+
+
+def body_bytes_for(original: bytes, rewritten: Mapping[str, Any] | None) -> bytes:
+    """Original bytes when no rewrite applies; otherwise the serialised rewrite."""
+    if rewritten is None:
+        return original
+    return serialise(rewritten)
+
+
+FILE C:src/adrl/wire/parse.py
+"""Read-only view of an inbound request. Primary: ADRL-SEM-001. Secondary: ADRL-FND-001.
+
+The body bytes are kept verbatim; the JSON view exists for inspection only and is never
+re-serialised on the passthrough path. Hop-by-hop headers are stripped in both directions and
+Accept-Encoding is forced to identity so the relay observes plaintext.
+"""
+
+from __future__ import annotations
+
+import json
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass, field
+from types import MappingProxyType
+from typing import Any
+
+MESSAGES_PATH = "/v1/messages"
+COUNT_TOKENS_PATH = "/v1/messages/count_tokens"
+
+HOP_BY_HOP: frozenset[str] = frozenset(
+    {
+        "connection",
+        "keep-alive",
+        "proxy-authenticate",
+        "proxy-authorization",
+        "te",
+        "trailers",
+        "transfer-encoding",
+        "upgrade",
+        "host",
+        "content-length",
+        "accept-encoding",
+    }
+)
+LOCAL_HEADERS: frozenset[str] = frozenset({"x-adrl-workload-assertion", "x-adrl-session-id"})
+REDACT_HEADERS: frozenset[str] = (
+    frozenset({"authorization", "x-api-key", "cookie", "set-cookie"}) | LOCAL_HEADERS
+)
+
+HEADER_SESSION_ID = "x-claude-code-session-id"
+HEADER_AGENT_ID = "x-claude-code-agent-id"
+HEADER_PARENT_AGENT_ID = "x-claude-code-parent-agent-id"
+
+_EMPTY: Mapping[str, Any] = MappingProxyType({})
+
+
+@dataclass(frozen=True, slots=True)
+class ParsedRequest:
+    """Inbound request as received. `json` is a read-only view; `body` is authoritative."""
+
+    method: str
+    path: str
+    query: str
+    headers: Mapping[str, str]
+    body: bytes
+    json: Mapping[str, Any] = field(default=_EMPTY)
+    parse_ok: bool = True
+
+    @property
+    def is_messages(self) -> bool:
+        return self.path == MESSAGES_PATH
+
+    @property
+    def is_count_tokens(self) -> bool:
+        return self.path == COUNT_TOKENS_PATH
+
+    @property
+    def is_api(self) -> bool:
+        return self.path.startswith(MESSAGES_PATH)
+
+    @property
+    def messages(self) -> list[Any]:
+        raw = self.json.get("messages")
+        return list(raw) if isinstance(raw, list) else []
+
+    @property
+    def tools(self) -> list[Any]:
+        raw = self.json.get("tools")
+        return list(raw) if isinstance(raw, list) else []
+
+    @property
+    def max_tokens(self) -> int | None:
+        raw = self.json.get("max_tokens")
+        return int(raw) if isinstance(raw, int) and not isinstance(raw, bool) else None
+
+    @property
+    def requested_model(self) -> str:
+        raw = self.json.get("model")
+        return str(raw) if isinstance(raw, str) else ""
+
+    @property
+    def is_stream(self) -> bool:
+        return bool(self.json.get("stream", False))
+
+    def header(self, name: str) -> str | None:
+        return self.headers.get(name.lower())
+
+    @property
+    def system_text(self) -> str:
+        return system_text(self.json)
+
+    @property
+    def last_message(self) -> Mapping[str, Any] | None:
+        return last_message(self.json)
+
+
+def parse_request(
+    method: str, path: str, headers: Mapping[str, str], body: bytes, query: str = ""
+) -> ParsedRequest:
+    """Build the read-only view. Invalid JSON yields an empty view with parse_ok False."""
+    lowered = {k.lower(): v for k, v in headers.items()}
+    if not body:
+        return ParsedRequest(method, path, query, MappingProxyType(lowered), body, _EMPTY, True)
+    try:
+        data = json.loads(body)
+    except (ValueError, UnicodeDecodeError):
+        return ParsedRequest(method, path, query, MappingProxyType(lowered), body, _EMPTY, False)
+    if not isinstance(data, dict):
+        return ParsedRequest(method, path, query, MappingProxyType(lowered), body, _EMPTY, False)
+    return ParsedRequest(
+        method, path, query, MappingProxyType(lowered), body, MappingProxyType(data), True
+    )
+
+
+def forward_headers(headers: Mapping[str, str]) -> dict[str, str]:
+    """Headers for the upstream request: hop-by-hop removed, identity encoding forced."""
+    out = {k: v for k, v in headers.items() if k.lower() not in HOP_BY_HOP | LOCAL_HEADERS}
+    out["accept-encoding"] = "identity"
+    return out
+
+
+def response_headers(headers: Iterable[tuple[str, str]] | Mapping[str, str]) -> dict[str, str]:
+    """Headers relayed to the harness: hop-by-hop removed, everything else untouched."""
+    items = headers.items() if isinstance(headers, Mapping) else headers
+    return {k: v for k, v in items if k.lower() not in HOP_BY_HOP}
+
+
+def redact_for_record(headers: Mapping[str, str]) -> dict[str, str]:
+    """Headers safe to persist: credentials replaced, never applied on the wire."""
+    return {k: ("<redacted>" if k.lower() in REDACT_HEADERS else v) for k, v in headers.items()}
+
+
+def system_text(body: Mapping[str, Any]) -> str:
+    system = body.get("system")
+    if isinstance(system, str):
+        return system
+    if isinstance(system, list):
+        parts: list[str] = []
+        for block in system:
+            if isinstance(block, dict) and isinstance(block.get("text"), str):
+                parts.append(block["text"])
+        return "\n".join(parts)
+    return ""
+
+
+def last_message(body: Mapping[str, Any]) -> Mapping[str, Any] | None:
+    messages = body.get("messages")
+    if isinstance(messages, list) and messages and isinstance(messages[-1], dict):
+        return messages[-1]
+    return None
+
+
+def content_blocks(message: Mapping[str, Any] | None) -> list[Mapping[str, Any]]:
+    if message is None:
+        return []
+    content = message.get("content")
+    if isinstance(content, str):
+        return [{"type": "text", "text": content}]
+    if isinstance(content, list):
+        return [b for b in content if isinstance(b, dict)]
+    return []
+
+
+def block_types(message: Mapping[str, Any] | None) -> tuple[str, ...]:
+    return tuple(str(b.get("type", "")) for b in content_blocks(message))
+
+
+def has_tool_result(message: Mapping[str, Any] | None) -> bool:
+    return "tool_result" in block_types(message)
+
+
+def tool_result_ids(message: Mapping[str, Any] | None) -> frozenset[str]:
+    return frozenset(
+        str(b.get("tool_use_id"))
+        for b in content_blocks(message)
+        if b.get("type") == "tool_result" and b.get("tool_use_id") is not None
+    )
+
+
+def tool_use_ids(message: Mapping[str, Any] | None) -> frozenset[str]:
+    return frozenset(
+        str(b.get("id"))
+        for b in content_blocks(message)
+        if b.get("type") == "tool_use" and b.get("id") is not None
+    )
+
+
+def last_assistant_message(body: Mapping[str, Any]) -> Mapping[str, Any] | None:
+    messages = body.get("messages")
+    if not isinstance(messages, list):
+        return None
+    for message in reversed(messages):
+        if isinstance(message, dict) and message.get("role") == "assistant":
+            return message
+    return None
+
+
+def message_text(message: Mapping[str, Any] | None) -> str:
+    return "\n".join(
+        str(b.get("text", "")) for b in content_blocks(message) if b.get("type") == "text"
+    )
+
+
+def estimate_chars(body: Mapping[str, Any]) -> int:
+    """Character count of every text-bearing field, the input to a chars-per-token estimate."""
+    total = len(system_text(body))
+    messages = body.get("messages")
+    if not isinstance(messages, list):
+        return total
+    for message in messages:
+        if not isinstance(message, dict):
+            continue
+        content = message.get("content")
+        if isinstance(content, str):
+            total += len(content)
+            continue
+        for block in content_blocks(message):
+            text = block.get("text")
+            if isinstance(text, str):
+                total += len(text)
+            nested = block.get("content")
+            if isinstance(nested, str):
+                total += len(nested)
+            elif isinstance(nested, list):
+                for inner in nested:
+                    if isinstance(inner, dict) and isinstance(inner.get("text"), str):
+                        total += len(inner["text"])
+            tool_input = block.get("input")
+            if isinstance(tool_input, dict | list):
+                total += len(json.dumps(tool_input))
+    return total
+
+
+FILE C:src/adrl/wire/observe.py
+"""Response observation on the relayed byte stream. Primary: ADRL-CAS-006.
+Also implements: ADRL-OPS-006 (served identity, not intended).
+Also implements: ADRL-TRU-002 (register additions of 2026-09-03).
+
+Secondary: ADRL-CAS-003 (first streamed tool content), ADRL-RTG-009 (cache usage),
+ADRL-FND-001 (bytes are observed, never altered).
+"""
+
+from __future__ import annotations
+
+import hashlib
+import hmac
+import json
+import time
+from collections.abc import Mapping
+from dataclasses import dataclass, field
+from typing import Any
+
+from adrl.config.models import RungsConfig
+from adrl.core.enums import Rung, ServedSource
+from adrl.core.types import ServedIdentity, Usage
+
+
+@dataclass(frozen=True, slots=True)
+class ToolUseSummary:
+    id: str
+    name: str
+    input_hash: str
+    input_size: int
+    input_parse_ok: bool
+
+
+@dataclass(frozen=True, slots=True)
+class ResponseObservation:
+    status: int
+    served: ServedIdentity
+    usage: Usage | None
+    stop_reason: str | None
+    streamed_tool_content: bool
+    tool_uses: tuple[ToolUseSummary, ...]
+    error: dict[str, Any] | None
+    first_byte_at: float | None
+    completed: bool
+    malformed_tool_json: bool
+    model_reported: str | None
+    bytes_relayed: int = 0
+
+
+@dataclass
+class _ToolBlock:
+    id: str
+    name: str
+    parts: list[str] = field(default_factory=list)
+    initial_input: Any = None
+
+
+def _hash_input(value: Any, key: bytes | None) -> str:
+    """Keyed hash of a tool input (ADRL-MEM-005): never a plain digest a dictionary can invert."""
+    canonical = json.dumps(value, sort_keys=True, separators=(",", ":"), default=str).encode(
+        "utf-8"
+    )
+    if key:
+        return hmac.new(key, canonical, hashlib.sha256).hexdigest()[:24]
+    return "unkeyed:" + hashlib.sha256(canonical).hexdigest()[:16]
+
+
+def served_identity(
+    headers: Mapping[str, str],
+    model_reported: str | None,
+    *,
+    intended_rung: Rung,
+    requested_model: str,
+    rungs: RungsConfig,
+) -> ServedIdentity:
+    """Gateway header first, then the model the response reported, else assumed intended."""
+    header_name = rungs.gateway_served_model_header.lower()
+    reported = None
+    for key, value in headers.items():
+        if key.lower() == header_name:
+            reported = value
+            break
+    if reported:
+        group = reported.split("/", 1)[0]
+        model = reported.split("/", 1)[1] if "/" in reported else reported
+        rung = rungs.group_to_rung.get(group, intended_rung)
+        provider = _provider_for(model)
+        return ServedIdentity(rung, model, provider, ServedSource.GATEWAY_REPORTED)
+    if model_reported:
+        return ServedIdentity(
+            intended_rung,
+            model_reported,
+            _provider_for(model_reported),
+            ServedSource.PROXY_OBSERVED,
+        )
+    return ServedIdentity.assumed(intended_rung, requested_model)
+
+
+def _provider_for(model: str) -> str | None:
+    lowered = model.lower()
+    if lowered.startswith("claude"):
+        return "anthropic"
+    if lowered.startswith(("gpt", "o1", "o3", "o4")):
+        return "openai"
+    if "/" in lowered:
+        return lowered.split("/", 1)[0]
+    return None
+
+
+class SseObserver:
+    """Consumes the same chunks the relay forwards and reconstructs what matters.
+
+    Nothing here alters bytes. Partial lines across chunks are buffered. Unknown events are
+    ignored. A tool_use block whose accumulated JSON does not parse is recorded as malformed so a
+    dialect trip-wire can fire (ADRL-CAS-001).
+    """
+
+    def __init__(
+        self,
+        *,
+        status: int,
+        headers: Mapping[str, str],
+        intended_rung: Rung,
+        requested_model: str,
+        rungs: RungsConfig,
+        hash_key: bytes | None = None,
+    ) -> None:
+        self._hash_key = hash_key
+        self._status = status
+        self._headers = dict(headers)
+        self._intended_rung = intended_rung
+        self._requested_model = requested_model
+        self._rungs = rungs
+        self._buffer = b""
+        self._usage: Usage | None = None
+        self._stop_reason: str | None = None
+        self._model: str | None = None
+        self._streamed_tool = False
+        self._tools: dict[int, _ToolBlock] = {}
+        self._summaries: list[ToolUseSummary] = []
+        self._error: dict[str, Any] | None = None
+        self._first_byte_at: float | None = None
+        self._completed = False
+        self._malformed = False
+        self._bytes = 0
+        self._current_event: str | None = None
+
+    def feed(self, chunk: bytes) -> None:
+        if not chunk:
+            return
+        if self._first_byte_at is None:
+            self._first_byte_at = time.monotonic()
+        self._bytes += len(chunk)
+        self._buffer += chunk
+        while True:
+            newline = self._buffer.find(b"\n")
+            if newline < 0:
+                break
+            line = self._buffer[:newline].rstrip(b"\r")
+            self._buffer = self._buffer[newline + 1 :]
+            self._line(line)
+
+    def _line(self, line: bytes) -> None:
+        if line.startswith(b"event:"):
+            self._current_event = line[6:].strip().decode("utf-8", "replace")
+            return
+        if not line.startswith(b"data:"):
+            return
+        payload = line[5:].strip()
+        if not payload or payload == b"[DONE]":
+            return
+        try:
+            event = json.loads(payload)
+        except ValueError:
+            return
+        if isinstance(event, dict):
+            self._event(event)
+
+    def _event(self, event: dict[str, Any]) -> None:
+        kind = event.get("type")
+        if kind == "message_start":
+            message = event.get("message") or {}
+            if isinstance(message.get("model"), str):
+                self._model = message["model"]
+            self._usage = Usage.from_anthropic(message.get("usage"))
+        elif kind == "content_block_start":
+            block = event.get("content_block") or {}
+            index = int(event.get("index", 0))
+            if block.get("type") == "tool_use":
+                self._streamed_tool = True
+                self._tools[index] = _ToolBlock(
+                    id=str(block.get("id", "")),
+                    name=str(block.get("name", "")),
+                    initial_input=block.get("input"),
+                )
+        elif kind == "content_block_delta":
+            delta = event.get("delta") or {}
+            index = int(event.get("index", 0))
+            if delta.get("type") == "input_json_delta" and index in self._tools:
+                self._tools[index].parts.append(str(delta.get("partial_json", "")))
+        elif kind == "content_block_stop":
+            index = int(event.get("index", 0))
+            tool_block = self._tools.pop(index, None)
+            if tool_block is not None:
+                self._summaries.append(self._summarise(tool_block))
+        elif kind == "message_delta":
+            delta = event.get("delta") or {}
+            if isinstance(delta.get("stop_reason"), str):
+                self._stop_reason = delta["stop_reason"]
+            usage = Usage.from_anthropic(event.get("usage"))
+            self._usage = usage if self._usage is None else self._usage.merged(usage)
+        elif kind == "message_stop":
+            self._completed = True
+        elif kind == "error":
+            self._error = event
+
+    def _summarise(self, block: _ToolBlock) -> ToolUseSummary:
+        raw = "".join(block.parts)
+        if raw:
+            try:
+                parsed: Any = json.loads(raw)
+                ok = True
+            except ValueError:
+                parsed = raw
+                ok = False
+                self._malformed = True
+        else:
+            parsed = block.initial_input if block.initial_input is not None else {}
+            ok = isinstance(parsed, dict)
+        return ToolUseSummary(
+            id=block.id,
+            name=block.name,
+            input_hash=_hash_input(parsed, self._hash_key),
+            input_size=len(raw) if raw else len(json.dumps(parsed, default=str)),
+            input_parse_ok=ok,
+        )
+
+    def finish(self) -> ResponseObservation:
+        if self._buffer:
+            self._line(self._buffer.rstrip(b"\r"))
+            self._buffer = b""
+        for block in list(self._tools.values()):
+            self._summaries.append(self._summarise(block))
+        self._tools.clear()
+        return ResponseObservation(
+            status=self._status,
+            served=served_identity(
+                self._headers,
+                self._model,
+                intended_rung=self._intended_rung,
+                requested_model=self._requested_model,
+                rungs=self._rungs,
+            ),
+            usage=self._usage,
+            stop_reason=self._stop_reason,
+            streamed_tool_content=self._streamed_tool,
+            tool_uses=tuple(self._summaries),
+            error=self._error,
+            first_byte_at=self._first_byte_at,
+            completed=self._completed,
+            malformed_tool_json=self._malformed,
+            model_reported=self._model,
+            bytes_relayed=self._bytes,
+        )
+
+
+def observe_json(
+    body: bytes,
+    *,
+    status: int,
+    headers: Mapping[str, str],
+    intended_rung: Rung,
+    requested_model: str,
+    rungs: RungsConfig,
+    first_byte_at: float | None = None,
+    hash_key: bytes | None = None,
+) -> ResponseObservation:
+    """Observation of a non-streaming response body."""
+    try:
+        data = json.loads(body) if body else {}
+    except ValueError:
+        data = {}
+    if not isinstance(data, dict):
+        data = {}
+    error = data if data.get("type") == "error" else None
+    model = data.get("model") if isinstance(data.get("model"), str) else None
+    summaries: list[ToolUseSummary] = []
+    streamed = False
+    malformed = False
+    for block in data.get("content") or []:
+        if isinstance(block, dict) and block.get("type") == "tool_use":
+            streamed = True
+            tool_input = block.get("input")
+            ok = isinstance(tool_input, dict)
+            malformed = malformed or not ok
+            summaries.append(
+                ToolUseSummary(
+                    id=str(block.get("id", "")),
+                    name=str(block.get("name", "")),
+                    input_hash=_hash_input(tool_input, hash_key),
+                    input_size=len(json.dumps(tool_input, default=str)),
+                    input_parse_ok=ok,
+                )
+            )
+    return ResponseObservation(
+        status=status,
+        served=served_identity(
+            headers,
+            model,
+            intended_rung=intended_rung,
+            requested_model=requested_model,
+            rungs=rungs,
+        ),
+        usage=Usage.from_anthropic(data.get("usage")) if "usage" in data else None,
+        stop_reason=data.get("stop_reason") if isinstance(data.get("stop_reason"), str) else None,
+        streamed_tool_content=streamed,
+        tool_uses=tuple(summaries),
+        error=error,
+        first_byte_at=first_byte_at,
+        completed=error is None and bool(data),
+        malformed_tool_json=malformed,
+        model_reported=model,
+        bytes_relayed=len(body),
+    )
+
+
+FILE C:src/adrl/proxy/upstream.py
+"""Gateway client: one attempt, verbatim relay. Primary: ADRL-CAS-007. Secondary: ADRL-FND-001.
+
+httpx performs no retries here. Response bytes are yielded exactly as received while the observer
+reads the same chunks; nothing is buffered or re-encoded.
+"""
+
+from __future__ import annotations
+
+from collections.abc import AsyncIterator, Mapping
+from typing import Any
+
+import httpx
+
+from adrl.core.enums import Rung
+from adrl.core.errors import AdrlError, ErrorCode
+from adrl.wire.profiles.base import StreamObserver
+
+
+class UpstreamUnreachableError(AdrlError):
+    """Transport-level failure before any byte was received (ADRL-CAS-007)."""
+
+    code = ErrorCode.TERMINAL_FAILURE
+
+
+class HttpxStreamingResponse:
+    """StreamingResponse port over an httpx streaming response."""
+
+    def __init__(self, response: httpx.Response) -> None:
+        self._response = response
+
+    @property
+    def status_code(self) -> int:
+        return self._response.status_code
+
+    @property
+    def headers(self) -> Mapping[str, str]:
+        return dict(self._response.headers.items())
+
+    def aiter_raw(self) -> AsyncIterator[bytes]:
+        return self._response.aiter_raw()
+
+    async def aclose(self) -> None:
+        await self._response.aclose()
+
+
+class HttpxGatewayClient:
+    """GatewayClient port. Exactly one HTTP attempt per call; no retries, no fallbacks."""
+
+    def __init__(
+        self,
+        base_url: str,
+        *,
+        client: httpx.AsyncClient | None = None,
+        timeout_s: float = 600.0,
+        health_path: str = "/health",
+    ) -> None:
+        self._base_url = base_url.rstrip("/")
+        self._timeout = timeout_s
+        self._health_path = health_path
+        self._owned = client is None
+        self._client = client or httpx.AsyncClient(
+            base_url=self._base_url,
+            timeout=httpx.Timeout(timeout_s, connect=10.0),
+            transport=httpx.AsyncHTTPTransport(retries=0),
+        )
+
+    @property
+    def client(self) -> httpx.AsyncClient:
+        """The underlying client, shared with the gateway health reader (ADRL-FND-002)."""
+        return self._client
+
+    async def send(
+        self,
+        body: bytes,
+        headers: Mapping[str, str],
+        *,
+        path: str,
+        rung: Rung,
+        timeout_s: float | None = None,
+    ) -> HttpxStreamingResponse:
+        request = self._client.build_request(
+            "POST",
+            path,
+            content=body,
+            headers=dict(headers),
+            timeout=httpx.Timeout(timeout_s or self._timeout, connect=10.0),
+        )
+        try:
+            response = await self._client.send(request, stream=True)
+        except httpx.TransportError as exc:
+            raise UpstreamUnreachableError(
+                f"gateway unreachable for rung {rung.value}: {exc}"
+            ) from exc
+        return HttpxStreamingResponse(response)
+
+    async def forward(
+        self, method: str, path: str, headers: Mapping[str, str], body: bytes
+    ) -> HttpxStreamingResponse:
+        """Non-API passthrough with the original method (ADRL-SEM-001 non_api class)."""
+        request = self._client.build_request(method, path, content=body, headers=dict(headers))
+        try:
+            response = await self._client.send(request, stream=True)
+        except httpx.TransportError as exc:
+            raise UpstreamUnreachableError(f"gateway unreachable: {exc}") from exc
+        return HttpxStreamingResponse(response)
+
+    async def health(self) -> Mapping[str, Any]:
+        try:
+            response = await self._client.get(self._health_path, timeout=5.0)
+        except httpx.TransportError as exc:
+            return {"available": False, "error": str(exc)}
+        try:
+            data = response.json()
+        except ValueError:
+            data = {}
+        return {"available": response.status_code < 500, "status": response.status_code, **data}
+
+    async def aclose(self) -> None:
+        if self._owned:
+            await self._client.aclose()
+
+
+async def relay(response: HttpxStreamingResponse, observer: StreamObserver) -> AsyncIterator[bytes]:
+    """Yield upstream chunks verbatim while feeding the observer the same bytes."""
+    try:
+        async for chunk in response.aiter_raw():
+            observer.feed(chunk)
+            yield chunk
+    finally:
+        await response.aclose()
+
+
+async def read_all(response: HttpxStreamingResponse) -> bytes:
+    chunks: list[bytes] = []
+    try:
+        async for chunk in response.aiter_raw():
+            chunks.append(chunk)
+    finally:
+        await response.aclose()
+    return b"".join(chunks)
+
+
+FILE C:src/adrl/config/checks.py
+"""Load-time configuration checks. Primary: ADRL-FND-002.
+Also implements: ADRL-OPS-003 (register additions of 2026-09-03).
+
+Secondary: ADRL-RTG-001 (evidence before live), ADRL-SAF-005 (compaction feasibility),
+ADRL-LRN-004 (deny-list), ADRL-CAS-002 (enum version).
+"""
+
+from __future__ import annotations
+
+from collections.abc import Sequence
+from dataclasses import dataclass
+
+from adrl.config.loaders import ConfigBundle
+from adrl.config.settings import Settings
+from adrl.core.enums import FAILURE_TYPES_VERSION, RoutingMode, Rung
+from adrl.core.errors import ConfigError
+
+
+@dataclass(frozen=True, slots=True)
+class CheckResult:
+    name: str
+    ok: bool
+    detail: str = ""
+
+
+def check_rung_closed_membership(bundle: ConfigBundle) -> CheckResult:
+    seen: dict[str, Rung] = {}
+    for rung, spec in bundle.rungs.rungs.items():
+        for member in spec.members:
+            if member in seen:
+                return CheckResult(
+                    "rung_closed_membership",
+                    False,
+                    f"model group {member!r} is in both {seen[member].value} and {rung.value}",
+                )
+            seen[member] = rung
+    return CheckResult("rung_closed_membership", True)
+
+
+def check_fallback_groups_within_rung(bundle: ConfigBundle) -> CheckResult:
+    group_to_rung = bundle.rungs.group_to_rung
+    for group in bundle.rungs.fallback_groups:
+        if group.primary not in group_to_rung:
+            return CheckResult(
+                "fallback_within_rung", False, f"fallback primary {group.primary!r} is in no rung"
+            )
+        rung = group_to_rung[group.primary]
+        for fallback in group.fallbacks:
+            if group_to_rung.get(fallback) is not rung:
+                return CheckResult(
+                    "fallback_within_rung",
+                    False,
+                    f"fallback group {group.primary!r} spans rungs via {fallback!r}",
+                )
+    return CheckResult("fallback_within_rung", True)
+
+
+def check_live_rung_has_evidence(bundle: ConfigBundle, settings: Settings) -> CheckResult:
+    if settings.routing_mode is not RoutingMode.LIVE:
+        return CheckResult("live_rung_has_evidence", True, "routing not live")
+    for rung, spec in bundle.rungs.rungs.items():
+        if spec.enabled and spec.boundary.evidence_ref is None:
+            return CheckResult(
+                "live_rung_has_evidence",
+                False,
+                f"rung {rung.value} is enabled in live mode without an evidence_ref",
+            )
+    return CheckResult("live_rung_has_evidence", True)
+
+
+def check_compaction_feasibility(bundle: ConfigBundle) -> CheckResult:
+    local = bundle.rungs.rungs.get(Rung.LOCAL)
+    if local is None or not local.enabled:
+        return CheckResult("compaction_feasibility", True, "no local rung")
+    needed = bundle.rungs.compaction_window_tokens + bundle.rungs.compaction_overhead_tokens
+    if local.boundary.context_ceiling < needed:
+        return CheckResult(
+            "compaction_feasibility",
+            False,
+            "pinned lineages will deadlock: largest local context "
+            f"{local.boundary.context_ceiling} < {needed} (compaction window plus overhead)",
+        )
+    return CheckResult("compaction_feasibility", True)
+
+
+def check_policy_references(bundle: ConfigBundle) -> CheckResult:
+    for rung in Rung:
+        if rung not in bundle.policy.tau_by_rung:
+            return CheckResult("policy_references", False, f"tau_by_rung missing {rung.value}")
+        if rung not in bundle.prices.by_rung:
+            return CheckResult("policy_references", False, f"prices missing {rung.value}")
+        if rung not in bundle.tripwires.by_rung:
+            return CheckResult("policy_references", False, f"tripwires missing {rung.value}")
+    ambiguous = [b for b in bundle.policy.bands if b.rung is None]
+    if len(ambiguous) != 1:
+        return CheckResult("policy_references", False, "exactly one ambiguous band is required")
+    if bundle.prices.by_rung[Rung.LOCAL].input <= 0:
+        return CheckResult(
+            "policy_references", False, "local rung must carry a non-zero latency-equivalent cost"
+        )
+    return CheckResult("policy_references", True)
+
+
+def check_learning_contract(bundle: ConfigBundle) -> CheckResult:
+    contract = bundle.learning_contract
+    if contract.failure_types_version != FAILURE_TYPES_VERSION:
+        return CheckResult(
+            "learning_contract",
+            False,
+            f"learning contract cites {contract.failure_types_version}, "
+            f"code is {FAILURE_TYPES_VERSION}",
+        )
+    required_denied = {"served_rung", "served_model", "escalated"}
+    missing = required_denied - set(contract.deny_list)
+    if missing:
+        return CheckResult("learning_contract", False, f"deny-list missing {sorted(missing)}")
+    for feature in contract.features:
+        if feature.name in contract.deny_list:
+            return CheckResult(
+                "learning_contract", False, f"feature {feature.name!r} is on the deny-list"
+            )
+    if (
+        "served_rung" not in contract.forbidden_targets
+        or "decision" not in contract.forbidden_targets
+    ):
+        return CheckResult(
+            "learning_contract", False, "forbidden_targets must include served_rung and decision"
+        )
+    return CheckResult("learning_contract", True)
+
+
+def check_repo_classification(bundle: ConfigBundle) -> CheckResult:
+    manifest = bundle.repo_classification
+    ids = {c.class_id for c in manifest.classes}
+    if manifest.default_class_id not in ids:
+        return CheckResult("repo_classification", False, "default class is not defined")
+    default = manifest.class_by_id(manifest.default_class_id)
+    if Rung.FRONTIER in default.allowed_rungs and not default.restricted:
+        pass
+    for entry in manifest.repos:
+        if entry.class_id not in ids:
+            return CheckResult(
+                "repo_classification", False, f"repo {entry.repo_id} cites unknown class"
+            )
+    for cls in manifest.classes:
+        if cls.restricted and cls.allowed_rungs != (Rung.LOCAL,):
+            return CheckResult(
+                "repo_classification",
+                False,
+                f"restricted class {cls.class_id} must be local-only",
+            )
+        if cls.restricted and cls.release_permitted:
+            return CheckResult(
+                "repo_classification",
+                False,
+                f"restricted class {cls.class_id} must not permit pin release",
+            )
+    return CheckResult("repo_classification", True)
+
+
+def check_endpoint_inventory(bundle: ConfigBundle) -> CheckResult:
+    """Deployments, not labels: the local rung is loopback-only and trust zones are coherent.
+
+    This is the substitution experiment from the 2026-09-03 review: a local group pointed at
+    a remote host must fail here, at load, not be discovered in the egress ledger.
+    """
+    from adrl.config.models import TRUST_ZONE_ORDER
+
+    inventory = bundle.endpoint_inventory
+    group_to_rung = bundle.rungs.group_to_rung
+    zones_by_rung: dict[Rung, set[str]] = {}
+    for dep in inventory.deployments:
+        expected = group_to_rung.get(dep.model_group)
+        if expected is None:
+            return CheckResult(
+                "endpoint_inventory",
+                False,
+                f"deployment {dep.id} names group {dep.model_group!r} that is in no rung",
+            )
+        if expected is not dep.rung:
+            return CheckResult(
+                "endpoint_inventory",
+                False,
+                f"deployment {dep.id} claims rung {dep.rung.value} but its group is in "
+                f"{expected.value}",
+            )
+        if dep.rung is Rung.LOCAL:
+            if dep.trust_zone != "local_host":
+                return CheckResult(
+                    "endpoint_inventory",
+                    False,
+                    f"local deployment {dep.id} has trust_zone {dep.trust_zone}; "
+                    "must be local_host",
+                )
+            if not dep.is_loopback:
+                return CheckResult(
+                    "endpoint_inventory",
+                    False,
+                    f"local deployment {dep.id} api_base {dep.api_base!r} is not loopback or a "
+                    "unix socket; a local label on a remote host would leave the machine",
+                )
+        elif dep.trust_zone == "local_host":
+            return CheckResult(
+                "endpoint_inventory",
+                False,
+                f"cloud deployment {dep.id} cannot claim trust_zone local_host",
+            )
+        zones_by_rung.setdefault(dep.rung, set()).add(dep.trust_zone)
+    for spec in bundle.rungs.rungs.values():
+        if not spec.enabled:
+            continue
+        for member in spec.members:
+            if not inventory.for_group(member):
+                return CheckResult(
+                    "endpoint_inventory", False, f"rung member {member!r} has no deployment"
+                )
+    ranks = {r: max(TRUST_ZONE_ORDER[z] for z in zs) for r, zs in zones_by_rung.items()}
+    for lower, higher in zip(Rung.ordered(), Rung.ordered()[1:], strict=False):
+        if lower in ranks and higher in ranks and ranks[lower] > ranks[higher]:
+            return CheckResult(
+                "endpoint_inventory",
+                False,
+                f"rung {lower.value} reaches a less trusted zone than rung {higher.value}",
+            )
+    return CheckResult("endpoint_inventory", True)
+
+
+def check_residency_reachable(
+    bundle: ConfigBundle, settings: Settings | None = None
+) -> CheckResult:
+    """A residency class in use must have an in-geo deployment on every cloud rung it allows."""
+    manifest = bundle.repo_classification
+    inventory = bundle.endpoint_inventory
+    in_use = {entry.class_id for entry in manifest.repos} | {manifest.default_class_id}
+    for cls in manifest.classes:
+        if cls.residency is None:
+            continue
+        cloud_rungs = [r for r in cls.allowed_rungs if r.is_cloud]
+        missing = [
+            r.value
+            for r in cloud_rungs
+            if not any(d.geo == cls.residency for d in inventory.for_rung(r))
+        ]
+        if missing and cls.class_id in in_use:
+            strict = settings is None or settings.residency_unreachable_is_error
+            return CheckResult(
+                "residency_reachable",
+                not strict,
+                f"class {cls.class_id} requires geo {cls.residency} but rungs "
+                f"{missing} have no deployment there",
+            )
+        if missing:
+            return CheckResult(
+                "residency_reachable",
+                True,
+                f"class {cls.class_id} is unused; rungs {missing} have no {cls.residency} "
+                "deployment, so lineages in that class would be local-or-block",
+            )
+    return CheckResult("residency_reachable", True)
+
+
+def all_checks(bundle: ConfigBundle, settings: Settings) -> Sequence[CheckResult]:
+    return (
+        check_rung_closed_membership(bundle),
+        check_fallback_groups_within_rung(bundle),
+        check_live_rung_has_evidence(bundle, settings),
+        check_compaction_feasibility(bundle),
+        check_policy_references(bundle),
+        check_learning_contract(bundle),
+        check_repo_classification(bundle),
+        check_endpoint_inventory(bundle),
+        check_residency_reachable(bundle, settings),
+    )
+
+
+def run_checks(bundle: ConfigBundle, settings: Settings) -> None:
+    failures = [c for c in all_checks(bundle, settings) if not c.ok]
+    if failures:
+        raise ConfigError("; ".join(f"{c.name}: {c.detail}" for c in failures))
+
+
+FILE C:src/adrl/config/settings.py
+"""Process settings from environment. Primary: ADRL-OPS-001 (referenced by gloss)."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from adrl.core.enums import GateMode, RoutingMode
+
+
+class Settings(BaseSettings):
+    """Runtime settings; environment variables carry the ADRL_ prefix."""
+
+    model_config = SettingsConfigDict(env_prefix="ADRL_", env_file=None, extra="ignore")
+
+    listen_host: str = "127.0.0.1"
+    listen_port: int = 8788
+    gateway_base_url: str = "http://127.0.0.1:4000"
+    gateway_timeout_s: float = 600.0
+
+    config_dir: Path = Path("config")
+    data_dir: Path = Path("data")
+    ledger_path: Path = Path("data/adrl.db")
+    egress_ledger_path: Path = Path("data/egress.db")
+    keystore_path: Path = Path("data/keystore")
+
+    gate_mode: GateMode = GateMode.ENFORCE
+    routing_mode: RoutingMode = RoutingMode.SHADOW
+    fallback_mode: RoutingMode = RoutingMode.SHADOW
+
+    deployment_tag: str = "dev-local"
+    deployment_geo: str = "local"
+    hmac_key_id: str = Field(default="dev", description="Identifier of the active HMAC key")
+    require_signed_manifest: bool = True
+    require_signed_inventory: bool = True
+    residency_unreachable_is_error: bool = Field(
+        default=True,
+        description="Fail config load when a residency class in use has no in-geo deployment; "
+        "when false the runtime backstop (local or block) applies (ADRL-SAF-008)",
+    )
+    egress_checkpoint_every: int = 500
+    egress_checkpoint_interval_s: float = Field(
+        default=300.0, description="Time-based checkpoint cadence for the egress ledger"
+    )
+    checkpoint_signing_key_path: Path | None = Field(
+        default=None,
+        description="Ed25519 private key that signs egress checkpoints (ADRL-SAF-009); "
+        "distinct from the manifest-signing key",
+    )
+    checkpoint_public_key_path: Path | None = Field(
+        default=None, description="Public half of the checkpoint key, for verifiers"
+    )
+    dev_keys_allowed: bool = Field(
+        default=False,
+        description="Permit keys under a 'dev' path; never set outside a developer machine",
+    )
+    egress_anchor_path: Path | None = Field(
+        default=None, description="Append-only anchor file on an off-device mount"
+    )
+    egress_anchor_url: str | None = Field(
+        default=None, description="HTTP anchoring endpoint that acknowledges checkpoints"
+    )
+    ledger_busy_timeout_ms: int = 5000
+
+    fail_open_alert_threshold: float = 0.05
+
+    classifier_base_url: str | None = Field(
+        default=None, description="OpenAI-compatible endpoint for the advisory classifier"
+    )
+    classifier_model: str = "qwen2.5:3b-instruct"
+    classifier_is_local: bool = True
+
+    gateway_health_enabled: bool = Field(
+        default=True, description="Read rung health from the gateway /health view (ADRL-SAF-006)"
+    )
+    local_tokenizer_path: Path | None = Field(
+        default=None, description="tokenizer.json of the local rung; chars/4 fallback when absent"
+    )
+    gate_p99_budget_s: float = Field(
+        default=0.05, description="Gate latency budget on continuations (ADRL-SAF-003)"
+    )
+    exploration_artifact_path: Path | None = Field(
+        default=None,
+        description="manifest.json of a graduated exploration artifact (ADRL-LRN-008); "
+        "absent means no exploration",
+    )
+
+    def resolved_config_path(self, name: str) -> Path:
+        return self.config_dir / name
+
+
+FILE C:src/adrl/config/loaders.py
+"""Config file loaders and the signed-manifest check. Primary: ADRL-FND-002.
+
+Secondary: ADRL-SAF-008.
+"""
+
+from __future__ import annotations
+
+import base64
+import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+import yaml
+from cryptography.exceptions import InvalidSignature
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+from pydantic import ValidationError
+
+from adrl.config.models import (
+    EndpointInventory,
+    LearningContract,
+    PolicyConfig,
+    PricesConfig,
+    ProviderPairsConfig,
+    RepoClassificationManifest,
+    RungsConfig,
+    TripwiresConfig,
+    UtilityFingerprintsConfig,
+)
+from adrl.config.settings import Settings
+from adrl.core.errors import ConfigError
+
+MANIFEST_SIGNATURE_FILE = "repo-classification-v1.sig"
+MANIFEST_PUBLIC_KEY_FILE = "keys/dev/manifest-signing.pub"
+INVENTORY_FILE = "endpoint-inventory-v1.json"
+INVENTORY_SIGNATURE_FILE = "endpoint-inventory-v1.sig"
+
+
+@dataclass(frozen=True, slots=True)
+class ConfigBundle:
+    rungs: RungsConfig
+    policy: PolicyConfig
+    prices: PricesConfig
+    provider_pairs: ProviderPairsConfig
+    tripwires: TripwiresConfig
+    repo_classification: RepoClassificationManifest
+    learning_contract: LearningContract
+    utility_fingerprints: UtilityFingerprintsConfig
+    manifest_signature_verified: bool
+    endpoint_inventory: EndpointInventory
+    inventory_signature_verified: bool = False
+
+    @property
+    def versions(self) -> dict[str, str]:
+        return {
+            "rungs": self.rungs.version,
+            "policy": self.policy.version,
+            "prices": self.prices.version,
+            "provider_pairs": self.provider_pairs.version,
+            "tripwires": self.tripwires.version,
+            "repo_classification": self.repo_classification.version,
+            "learning_contract": self.learning_contract.version,
+            "utility_fingerprints": self.utility_fingerprints.version,
+            "endpoint_inventory": self.endpoint_inventory.version,
+        }
+
+
+def _read_yaml(path: Path) -> dict[str, Any]:
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            data = yaml.safe_load(handle)
+    except FileNotFoundError as exc:
+        raise ConfigError(f"missing config file {path}") from exc
+    if not isinstance(data, dict):
+        raise ConfigError(f"{path} must contain a mapping at top level")
+    return data
+
+
+def _read_json_bytes(path: Path) -> bytes:
+    try:
+        return path.read_bytes()
+    except FileNotFoundError as exc:
+        raise ConfigError(f"missing config file {path}") from exc
+
+
+def canonical_json(data: Any) -> bytes:
+    return json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode()
+
+
+def verify_manifest_signature(
+    manifest_bytes: bytes, signature_b64: str, public_key_pem: bytes, *, what: str = "manifest"
+) -> None:
+    public_key = _load_public_key(public_key_pem)
+    payload = canonical_json(json.loads(manifest_bytes))
+    try:
+        public_key.verify(base64.b64decode(signature_b64), payload)
+    except InvalidSignature as exc:
+        raise ConfigError(f"{what} signature is invalid") from exc
+
+
+def _verify_signed_file(
+    base: Path, content: bytes, signature_file: str, *, required: bool, what: str
+) -> bool:
+    signature_path = base / signature_file
+    key_path = base / MANIFEST_PUBLIC_KEY_FILE
+    if signature_path.exists() and key_path.exists():
+        verify_manifest_signature(
+            content,
+            signature_path.read_text(encoding="utf-8").strip(),
+            key_path.read_bytes(),
+            what=what,
+        )
+        return True
+    if required:
+        raise ConfigError(f"{what} must be signed; missing signature or public key")
+    return False
+
+
+def _load_public_key(pem: bytes) -> Ed25519PublicKey:
+    from cryptography.hazmat.primitives import serialization
+
+    key = serialization.load_pem_public_key(pem)
+    if not isinstance(key, Ed25519PublicKey):
+        raise ConfigError("manifest signing key must be Ed25519")
+    return key
+
+
+def load_bundle(settings: Settings) -> ConfigBundle:
+    base = settings.config_dir
+    try:
+        rungs = RungsConfig.model_validate(_read_yaml(base / "rungs.yaml"))
+        policy = PolicyConfig.model_validate(_read_yaml(base / "policy.yaml"))
+        prices = PricesConfig.model_validate(_read_yaml(base / "prices.yaml"))
+        pairs = ProviderPairsConfig.model_validate(_read_yaml(base / "provider-pairs.yaml"))
+        tripwires = TripwiresConfig.model_validate(_read_yaml(base / "tripwires.yaml"))
+        fingerprints = UtilityFingerprintsConfig.model_validate(
+            _read_yaml(base / "utility-fingerprints.yaml")
+        )
+        manifest_bytes = _read_json_bytes(base / "repo-classification-v1.json")
+        manifest = RepoClassificationManifest.model_validate(json.loads(manifest_bytes))
+        contract = LearningContract.model_validate(
+            json.loads(_read_json_bytes(base / "learning-contract-v1.json"))
+        )
+        inventory_bytes = _read_json_bytes(base / INVENTORY_FILE)
+        inventory = EndpointInventory.model_validate(json.loads(inventory_bytes))
+    except ValidationError as exc:
+        raise ConfigError(f"config validation failed: {exc}") from exc
+
+    verified = _verify_signed_file(
+        base,
+        manifest_bytes,
+        MANIFEST_SIGNATURE_FILE,
+        required=settings.require_signed_manifest,
+        what="repo classification manifest",
+    )
+    inventory_verified = _verify_signed_file(
+        base,
+        inventory_bytes,
+        INVENTORY_SIGNATURE_FILE,
+        required=settings.require_signed_inventory,
+        what="endpoint inventory",
+    )
+
+    from adrl.config.checks import run_checks
+
+    bundle = ConfigBundle(
+        rungs=rungs,
+        policy=policy,
+        prices=prices,
+        provider_pairs=pairs,
+        tripwires=tripwires,
+        repo_classification=manifest,
+        learning_contract=contract,
+        utility_fingerprints=fingerprints,
+        manifest_signature_verified=verified,
+        endpoint_inventory=inventory,
+        inventory_signature_verified=inventory_verified,
+    )
+    run_checks(bundle, settings)
+    return bundle
+
+
+FILE C:src/adrl/cli/product.py
+"""Claude Code connection and evidence commands. Primary: ADRL-SEM-007. Secondary: ADRL-TRU-001."""
+
+from __future__ import annotations
+
+import json
+import os
+import shlex
+import sys
+from pathlib import Path
+
+import httpx
+import typer
+
+from adrl.api.auth import ApiError
+from adrl.api.client import Connection, ToolOutbox, call, flush, validate_server, write_private
+from adrl.api.contracts import IntegrationMode, SessionBinding, SessionRequest, VersionRef
+from adrl.config.loaders import load_bundle
+from adrl.config.settings import Settings
+from adrl.core.errors import AdrlError
+from adrl.gates.workload import (
+    HEADER_SESSION_ID,
+    HEADER_WORKLOAD_ASSERTION,
+    mint_launch,
+    normalise_identity,
+)
+from adrl.ledger.crypto import new_key
+from adrl.ledger.keystore import FileKeyStore
+
+connect_app = typer.Typer(help="Prepare isolated harness connections")
+product_app = typer.Typer(help="Inspect local sessions and deliver observations")
+
+
+def _connection(path: Path) -> Connection:
+    return Connection.model_validate_json(path.read_bytes())
+
+
+def _failure() -> None:
+    typer.echo(
+        "ADRL product operation failed; check the local service, binding and connection files.",
+        err=True,
+    )
+    raise typer.Exit(1)
+
+
+@connect_app.command("claude-code")
+def connect_claude(
+    repo: Path = typer.Option(..., help="Registered repository checkout"),
+    output: Path = typer.Option(
+        ..., help="New private connection directory outside the repository"
+    ),
+    server: str = typer.Option("http://127.0.0.1:8788"),
+    mode: IntegrationMode = typer.Option(
+        IntegrationMode.GATEWAY, help="Gateway or observations only"
+    ),
+) -> None:
+    """Bind a new session and write environment/hook files. Does not start a model run."""
+    try:
+        server = validate_server(server)
+        repo = repo.resolve()
+        output = output.resolve()
+        if output == repo or repo in output.parents:
+            raise ValueError("Keep the credential directory outside the repository.")
+        settings = Settings()
+        bundle = load_bundle(settings)
+        keys = FileKeyStore(settings.keystore_path)
+        material = mint_launch(repo, keys.hmac_key(), assertion_dir=None)
+        matches = {
+            entry.repo_id
+            for entry in bundle.repo_classification.repos
+            if normalise_identity(entry.match) in material.inventory.identities()
+        }
+        if len(matches) != 1:
+            raise ValueError("The checkout must match exactly one registered workload.")
+        output.mkdir(mode=0o700, parents=True, exist_ok=False)
+        token_path = output / "assertion.token"
+        write_private(token_path, material.token.encode())
+        connection = Connection(
+            server=server,
+            session_id=material.session_id,
+            token_file=token_path,
+            integration_mode=mode,
+        )
+        request = SessionRequest(
+            adapter=VersionRef(id="claude-code", version="1"),
+            profile=VersionRef(id="anthropic-messages-v1", version="1"),
+            workload_ref=matches.pop(),
+            integration_mode=mode,
+        )
+        binding = SessionBinding.model_validate(
+            call(connection, "POST", "/adrl/v1/sessions", request.model_dump(mode="json"))
+        )
+        if (
+            binding.session.session_id != material.session_id
+            or binding.session.workload_ref != request.workload_ref
+            or binding.session.profile != request.profile
+            or binding.session.adapter != request.adapter
+            or binding.session.integration_mode != mode
+        ):
+            raise ValueError("The service returned a different binding.")
+        connection_path = output / "connection.json"
+        write_private(connection_path, connection.model_dump_json(indent=2).encode())
+        write_private(output / "outbox.key", new_key())
+        environment = {"ADRL_LAUNCH_SESSION_ID": material.session_id}
+        if mode == IntegrationMode.GATEWAY:
+            custom = []
+            for line in os.environ.get("ANTHROPIC_CUSTOM_HEADERS", "").splitlines():
+                name = line.partition(":")[0].strip().lower()
+                if name not in {HEADER_WORKLOAD_ASSERTION, HEADER_SESSION_ID, "x-adrl-session-id"}:
+                    custom.append(line)
+            custom += [
+                f"{HEADER_WORKLOAD_ASSERTION}: {material.token}",
+                f"{HEADER_SESSION_ID}: {material.session_id}",
+                f"x-adrl-session-id: {material.session_id}",
+            ]
+            environment.update(
+                ANTHROPIC_BASE_URL=server, ANTHROPIC_CUSTOM_HEADERS="\n".join(custom)
+            )
+        write_private(
+            output / "env.sh",
+            (
+                "\n".join(
+                    f"export {name}={shlex.quote(value)}" for name, value in environment.items()
+                )
+                + "\n"
+            ).encode(),
+        )
+        command = shlex.join(
+            [
+                sys.executable,
+                "-m",
+                "adrl.cli.main",
+                "product",
+                "claude-hook",
+                "--connection",
+                str(connection_path),
+            ]
+        )
+        hooks = {
+            name: [
+                {"matcher": "", "hooks": [{"type": "command", "command": command, "timeout": 10}]}
+            ]
+            for name in ("PostToolUse", "PostToolUseFailure")
+        }
+        write_private(
+            output / "claude-settings.json", json.dumps({"hooks": hooks}, indent=2).encode()
+        )
+        typer.echo(f"Prepared {connection_path}. No provider request was made.")
+        if mode == IntegrationMode.OBSERVE:
+            typer.echo(
+                "Observation mode leaves native model authentication and destination unchanged. "
+                "Check Claude /status and remove stale gateway overrides before launch. "
+                "ADRL cannot inspect, block or account for model traffic in this mode."
+            )
+        typer.echo(
+            f"Source {output / 'env.sh'}, then start Claude Code with --session-id "
+            f"{material.session_id} --settings {shlex.quote(str(output / 'claude-settings.json'))}."
+        )
+    except (OSError, ValueError, httpx.HTTPError, AdrlError):
+        _failure()
+
+
+@product_app.command("claude-hook")
+def claude_hook(connection: Path = typer.Option(...)) -> None:
+    """Capture a supported tool observation; keep it queued if delivery fails."""
+    outbox = None
+    try:
+        config = _connection(connection)
+        # Bound memory use; raw tool input/output is discarded after typed extraction.
+        raw = sys.stdin.buffer.read(4 * 1024 * 1024 + 1)
+        if len(raw) > 4 * 1024 * 1024:
+            raise ValueError("Hook input exceeds the supported limit.")
+        hook = json.loads(raw)
+        if not isinstance(hook, dict):
+            raise ValueError("Hook input must be an object.")
+        outbox = ToolOutbox(connection.parent, config.session_id)
+        outbox.capture(hook)
+        flush(config, outbox, limit=1)
+    except (OSError, ValueError, httpx.HTTPError):
+        _failure()
+    finally:
+        if outbox is not None:
+            outbox.close()
+
+
+@product_app.command("flush")
+def flush_events(connection: Path = typer.Option(...)) -> None:
+    """Retry up to 50 pending observations with their original identities."""
+    outbox = None
+    try:
+        config = _connection(connection)
+        outbox = ToolOutbox(connection.parent, config.session_id)
+        typer.echo(f"Acknowledged {flush(config, outbox)} observations.")
+    except (OSError, ValueError, httpx.HTTPError):
+        _failure()
+    finally:
+        if outbox is not None:
+            outbox.close()
+
+
+@product_app.command("status")
+def session_status(connection: Path = typer.Option(...)) -> None:
+    """Read the authenticated binding; coverage remains explicit, including unknowns."""
+    try:
+        config = _connection(connection)
+        typer.echo(
+            json.dumps(call(config, "GET", f"/adrl/v1/sessions/{config.session_id}"), indent=2)
+        )
+    except (OSError, ValueError, httpx.HTTPError):
+        _failure()
+
+
+@product_app.command("timeline")
+def timeline(connection: Path = typer.Option(...), cursor: str | None = typer.Option(None)) -> None:
+    """Read one page of decision and observation references."""
+    try:
+        config = _connection(connection)
+        from urllib.parse import urlencode
+
+        path = f"/adrl/v1/sessions/{config.session_id}/timeline"
+        if cursor:
+            path += "?" + urlencode({"cursor": cursor})
+        typer.echo(json.dumps(call(config, "GET", path), indent=2))
+    except (OSError, ValueError, httpx.HTTPError):
+        _failure()
+
+
+@product_app.command("verify")
+def verify_session(
+    connection: Path = typer.Option(..., help="Bound session connection file"),
+    workspace: Path = typer.Option(..., help="Registered working copy to snapshot"),
+    plan: Path = typer.Option(..., help="Operator plan outside the working copy"),
+) -> None:
+    """Run independent local checks and append receipts; does not create learning labels."""
+    import asyncio
+
+    from adrl.api.service import ProductService
+    from adrl.core.ids import session_identity
+    from adrl.gates.sandbox import detect_runner
+    from adrl.ledger.session_verification import SessionPlan, SessionVerifier
+    from adrl.ledger.store import LedgerStore
+
+    store = None
+    try:
+        settings = Settings()
+        if not settings.ledger_path.is_file() or not settings.keystore_path.is_dir():
+            raise ValueError("The local session store must already exist.")
+        workspace = workspace.resolve(strict=True)
+        if plan.resolve(strict=True).is_relative_to(workspace) or plan.is_symlink():
+            raise ValueError("The operator plan must be outside the working copy.")
+        config = _connection(connection)
+        bundle = load_bundle(settings)
+        store = LedgerStore(settings.ledger_path)
+        store.open()
+        keys = FileKeyStore(settings.keystore_path, store=store)
+        service = ProductService(store, keys, bundle)
+        principal = service.principal(config.headers())
+        service.status(config.headers(), config.session_id)
+        if Path(principal.assertion.inventory.root).resolve() != workspace:
+            raise ValueError("The workspace must match the signed session binding.")
+        specification = SessionPlan.model_validate_json(plan.read_bytes())
+        result = asyncio.run(
+            SessionVerifier(service.data, detect_runner()).verify(
+                session_identity(config.session_id, keys.hmac_key()), workspace, specification
+            )
+        )
+        typer.echo(result.model_dump_json(indent=2))
+        if result.result != "passed":
+            raise typer.Exit(2 if result.result == "indeterminate" else 1)
+    except (OSError, ValueError, httpx.HTTPError, AdrlError, ApiError):
+        typer.echo("Local verification setup is invalid or unavailable.", err=True)
+        raise typer.Exit(2) from None
+    finally:
+        if store is not None:
+            store.close()
+
+
+FILE C:src/adrl/gates/deployments.py
+"""Permitted deployment sets and destination receipts. Primary: ADRL-SAF-008.
+Also implements: ADRL-TRU-002 (register additions of 2026-09-03).
+
+Secondary: ADRL-SAF-001 (monotone constraint), ADRL-FND-002 (rung-closed execution),
+ADRL-RTG-008 (served identity), ADRL-SAF-009 (actual destination in the egress ledger).
+
+The object ADRL constrains is the set of attested deployments a request may reach. A rung is a
+projection of that set. The pin keeps only ``local_host`` deployments; residency keeps only
+deployments in the lineage's geo plus the local host; the repository ceiling keeps only the
+rungs the class allows. Nothing here reads a label off a deployment the inventory has not
+attested, and every dispatch is expected to come back with a receipt naming the deployment
+that actually served it.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Mapping
+from dataclasses import dataclass
+from typing import Any
+from urllib.parse import urlsplit
+
+from adrl.config.models import EndpointInventory
+from adrl.core.enums import Rung, ServedSource
+from adrl.core.types import (
+    DeploymentInfo,
+    DeploymentSet,
+    ServedIdentity,
+)
+
+RECEIPT_HEADER_MODEL_ID = "x-litellm-model-id"
+RECEIPT_HEADER_API_BASE = "x-litellm-model-api-base"
+RECEIPT_HEADER_GROUP = "x-litellm-model-group"
+
+
+def catalog_from_inventory(inventory: EndpointInventory) -> dict[str, DeploymentInfo]:
+    return {
+        dep.id: DeploymentInfo(
+            deployment_id=dep.id,
+            rung=dep.rung,
+            model_group=dep.model_group,
+            provider=dep.provider,
+            trust_zone=dep.trust_zone,
+            geo=dep.geo,
+            api_base_host=dep.api_base_host,
+            data_use_profile=dep.data_use_profile,
+            model=dep.model,
+        )
+        for dep in inventory.deployments
+    }
+
+
+@dataclass(frozen=True, slots=True)
+class DeploymentReceipt:
+    """What the gateway said it served, mapped back onto the attested inventory."""
+
+    deployment: DeploymentInfo | None
+    source: ServedSource
+    api_base_host: str | None
+    raw_model_id: str | None
+
+
+class DeploymentPolicy:
+    """Derive the permitted deployment set from gate facts and pick the dispatch target."""
+
+    def __init__(self, inventory: EndpointInventory) -> None:
+        self._inventory = inventory
+        self._catalog = catalog_from_inventory(inventory)
+        self._order: dict[str, int] = {}
+        position = 0
+        for dep in inventory.deployments:
+            self._order[dep.id] = position
+            position += 1
+
+    @property
+    def inventory(self) -> EndpointInventory:
+        return self._inventory
+
+    @property
+    def catalog(self) -> Mapping[str, DeploymentInfo]:
+        return self._catalog
+
+    def universe(self) -> DeploymentSet:
+        return DeploymentSet.all_of(self._catalog)
+
+    def permitted_for(
+        self,
+        *,
+        permitted_rungs: frozenset[Rung],
+        pinned: bool,
+        residency: str | None,
+    ) -> DeploymentSet:
+        """Monotone derivation: rung ceiling, then residency, then the pin (ADRL-SAF-001)."""
+        deployments = self.universe().only_rungs(permitted_rungs)
+        if residency is not None:
+            deployments = deployments.only_geo(residency, keep_local_host=True)
+        if pinned:
+            deployments = deployments.local_host_only()
+        return deployments
+
+    def choose(
+        self,
+        deployments: DeploymentSet,
+        rung: Rung,
+        *,
+        preferred_group: str | None = None,
+        rung_member_order: tuple[str, ...] = (),
+    ) -> DeploymentInfo | None:
+        """First permitted deployment of ``rung``, honouring the rung's member order."""
+        candidates = list(deployments.for_rung(rung))
+        if not candidates:
+            return None
+        if preferred_group is not None:
+            for dep in candidates:
+                if dep.model_group == preferred_group:
+                    return dep
+        rank = {group: i for i, group in enumerate(rung_member_order)}
+        candidates.sort(
+            key=lambda d: (rank.get(d.model_group, len(rank)), self._order[d.deployment_id])
+        )
+        return candidates[0]
+
+    def frontier_for_model(
+        self, deployments: DeploymentSet, requested_model: str
+    ) -> DeploymentInfo | None:
+        """The deployment a frontier passthrough reaches; aliases resolve to the frontier group."""
+        target_group = self._inventory.frontier_aliases_to
+        for dep in deployments.for_rung(Rung.FRONTIER):
+            if target_group is None or dep.model_group == target_group:
+                return dep
+        first = deployments.for_rung(Rung.FRONTIER)
+        return first[0] if first else None
+
+    # ------------------------------------------------------------------ receipts
+
+    def receipt(
+        self, headers: Mapping[str, str], intended: DeploymentInfo | None
+    ) -> DeploymentReceipt:
+        """Map the gateway's response headers to an attested deployment.
+
+        Order: an ``x-litellm-model-id`` equal to a deployment id (the generator sets
+        ``model_info.id`` to the deployment id); else ``x-litellm-model-api-base`` whose host
+        matches a deployment; else assumed intended.
+        """
+        lowered = {k.lower(): v for k, v in headers.items()}
+        raw_id = lowered.get(RECEIPT_HEADER_MODEL_ID)
+        api_base = lowered.get(RECEIPT_HEADER_API_BASE)
+        host = _host_of(api_base) if api_base else None
+        if raw_id is not None:
+            head = raw_id.split("/", 1)[0]
+            if head in self._catalog:
+                dep = self._catalog[head]
+                return DeploymentReceipt(
+                    dep, ServedSource.GATEWAY_REPORTED, dep.api_base_host, raw_id
+                )
+        if host is not None:
+            found = self._inventory.by_host(host)
+            if found is not None:
+                dep = self._catalog[found.id]
+                return DeploymentReceipt(dep, ServedSource.GATEWAY_REPORTED, host, raw_id)
+            return DeploymentReceipt(None, ServedSource.GATEWAY_REPORTED, host, raw_id)
+        return DeploymentReceipt(intended, ServedSource.ASSUMED_INTENDED, None, raw_id)
+
+    def served_identity(
+        self, base: ServedIdentity, headers: Mapping[str, str], intended: DeploymentInfo | None
+    ) -> ServedIdentity:
+        """Enrich a served identity with the receipt; never downgrade a confirmed source."""
+        receipt = self.receipt(headers, intended)
+        dep = receipt.deployment
+        if receipt.source is ServedSource.GATEWAY_REPORTED:
+            return ServedIdentity(
+                rung=dep.rung if dep else base.rung,
+                model=(dep.model if dep and dep.model else base.model),
+                provider=dep.provider if dep else base.provider,
+                source=ServedSource.GATEWAY_REPORTED,
+                deployment_id=dep.deployment_id if dep else None,
+                api_base_host=receipt.api_base_host,
+                trust_zone=dep.trust_zone if dep else None,
+                geo=dep.geo if dep else None,
+            )
+        return ServedIdentity(
+            rung=base.rung,
+            model=base.model,
+            provider=base.provider if base.provider else (dep.provider if dep else None),
+            source=base.source,
+            deployment_id=dep.deployment_id if dep else None,
+            api_base_host=dep.api_base_host if dep else None,
+            trust_zone=dep.trust_zone if dep else None,
+            geo=dep.geo if dep else None,
+        )
+
+
+def _host_of(url: str) -> str | None:
+    parts = urlsplit(url)
+    if parts.scheme in ("unix", "http+unix"):
+        return "unix"
+    if parts.hostname is None:
+        return None
+    return f"{parts.hostname}:{parts.port}" if parts.port else parts.hostname
+
+
+def egress_fields(deployment: DeploymentInfo | None, receipt_source: str) -> dict[str, Any]:
+    return {
+        "deployment_id": deployment.deployment_id if deployment else None,
+        "trust_zone": deployment.trust_zone if deployment else None,
+        "geo": deployment.geo if deployment else None,
+        "api_base_host": deployment.api_base_host if deployment else None,
+        "receipt_source": receipt_source,
+    }
+
+
+FILE C:config/rungs.yaml
+# rung-membership-v1. Shared with the gateway config generator (ADRL-FND-002, ADRL-RTG-001).
+# ADRL never names a model in policy; it names LiteLLM model groups and rungs.
+version: rung-membership-v1
+cheap_cloud_admission_criterion: >
+  A model group enters cheap_cloud when it completes the local-rung task slice at non-inferior
+  verified quality to the local rung on the same counterfactual pairs, at list price at most
+  one fifth of the frontier group. Price alone never admits a group.
+compaction_window_tokens: 100000
+compaction_overhead_tokens: 8000
+gateway_served_model_header: x-litellm-model-id
+frontier_model_names:
+  - claude-fable-5-1
+  - claude-opus-5
+  - claude-sonnet-5
+  - claude-haiku-4-5-20251001
+rungs:
+  local:
+    members: [adrl-local, adrl-local-large]
+    intra_rung_escalation_order: [adrl-local, adrl-local-large]
+    tokenizer_ratio: 1.15
+    tokenizer_id: local-default
+    boundary:
+      context_ceiling: 131072
+      permitted_task_classes: [mechanical_edit, small_diff, small_context]
+      evidence_ref: null
+      evidence_date: null
+  cheap_cloud:
+    members: [adrl-cheap-cloud]
+    tokenizer_ratio: 1.0
+    boundary:
+      context_ceiling: 200000
+      permitted_task_classes: [mechanical_edit, small_diff, small_context, medium_diff]
+      evidence_ref: null
+      evidence_date: null
+  frontier:
+    members: [adrl-frontier]
+    tokenizer_ratio: 1.0
+    boundary:
+      context_ceiling: 1000000
+      permitted_task_classes: [any]
+      evidence_ref: null
+      evidence_date: null
+fallback_groups:
+  - primary: adrl-local
+    fallbacks: [adrl-local-large]
+
+
+FILE C:config/policy.yaml
+# policy-v1. Every constant here is recorded on the decision rows it influences (ADRL-RTG-002/003/004/005).
+version: policy-v1
+tau_by_rung:
+  local: 0.80
+  cheap_cloud: 0.85
+  frontier: 0.50
+bands:
+  - band_id: clear-local
+    rung: local
+    rule_ids: [rule.mechanical_edit_small_file, rule.read_only_lookup]
+    description: mechanical, small-context, small-diff work with a verifier available
+  - band_id: clear-frontier
+    rung: frontier
+    rule_ids: [rule.destructive_first_action, rule.large_context, rule.multi_file_design]
+    description: destructive first actions, large contexts, or design work
+  - band_id: ambiguous
+    rung: null
+    rule_ids: []
+    description: everything no clear rule claims
+rule_precision_threshold: 0.85
+ambiguous_fallback_rung: frontier
+classifier_timeout_s: 2.0
+classifier_token_cap: 2000
+objective_version: objective-v1
+objective_weights:
+  verified_quality: 1.0
+  retry_risk: 0.5
+  latency: 0.2
+  session_cost: 0.3
+close_rule:
+  rule_id: close-v1
+  subsequent_turns: 3
+  idle_minutes: 30
+local_attempt_budget:
+  unit: tool_calls
+  limit: 12
+  wall_clock_cap_s: 600
+cascade_safety_margin_tokens: 4000
+gateway_retry_budget:
+  max_attempts_per_turn: 2
+  wall_clock_cap_s: 30
+retention_prompt_class_days: 90
+retention_skeleton_days: 730
+exploration_epsilon_by_rung: {}
+exploration_version: null
+latency_weight_by_mode:
+  interactive: 1.0
+  background_subagent: 0.05
+  utility: 0.2
+episode_length_estimator: constant-v1
+episode_length_constant: 12
+
+
+FILE C:src/adrl/app.py
+"""Composition root. Primary: ADRL-FND-002.
+
+Builds settings, config, both ledgers, the memory facade, the keystore, the gateway client and
+the pipeline stages with their real adapters. A package that exists but fails to build raises
+ConfigError; only a genuinely absent package is replaced by the observe-only stages, which are
+real implementations (ADRL-FND-001 removal posture), never mocks. Learning is imported here
+only to load a graduated exploration artifact (ADRL-LRN-007); routing never imports it.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import contextlib
+import importlib
+from collections.abc import AsyncIterator, Mapping
+from dataclasses import dataclass
+from typing import Any
+
+import httpx
+import structlog
+from starlette.applications import Starlette
+
+from adrl.api.service import ProductService
+from adrl.config.loaders import ConfigBundle, load_bundle
+from adrl.config.settings import Settings
+from adrl.core.enums import GateMode
+from adrl.core.errors import ConfigError
+from adrl.core.ports import StateProvider, Tokenizer
+from adrl.ledger.anchoring import (
+    CheckpointShipper,
+    FileAnchorShipper,
+    HttpAnchorShipper,
+    checkpoint_key_from_settings,
+)
+from adrl.ledger.egress import EgressLedger
+from adrl.ledger.facade import MemoryFacade, SqliteLedgerProvider
+from adrl.ledger.store import LedgerStore
+from adrl.proxy.asgi import build_asgi
+from adrl.proxy.observe_only import InheritOnlyRouter, ObserveOnlyGate, PassthroughCascade
+from adrl.proxy.pipeline import Pipeline, ProxyResponse
+from adrl.proxy.stages import CascadeStage, GateStage, RouteStage, TranscriptTransform
+from adrl.proxy.upstream import HttpxGatewayClient
+from adrl.telemetry.logging import configure_logging
+from adrl.wire.identity import IdentityResolver, LineageLocks
+
+log = structlog.get_logger(__name__)
+
+SIGNING_PUB_FILE = "keys/dev/manifest-signing.pub"
+
+
+@dataclass
+class Components:
+    settings: Settings
+    bundle: ConfigBundle
+    store: LedgerStore
+    facade: MemoryFacade
+    egress: EgressLedger | None
+    gateway: HttpxGatewayClient
+    pipeline: Pipeline
+    gate: GateStage
+    router: RouteStage
+    cascade: CascadeStage
+    state: StateProvider | None
+    installed: dict[str, bool]
+    keystore: Any | None = None
+    erasure: Any | None = None
+    background: list[asyncio.Task[None]] | None = None
+    stop_event: asyncio.Event | None = None
+
+    def start_background(self) -> None:
+        """Interval checkpoints and anchor shipment for the egress ledger (ADRL-SAF-009)."""
+        if self.egress is None or self.background:
+            return
+        self.stop_event = asyncio.Event()
+        task = asyncio.create_task(
+            self.egress.run_periodic(self.settings.egress_checkpoint_interval_s, self.stop_event)
+        )
+        self.background = [task]
+
+    async def aclose(self) -> None:
+        if self.stop_event is not None:
+            self.stop_event.set()
+        for task in self.background or []:
+            with contextlib.suppress(asyncio.CancelledError, Exception):
+                await asyncio.wait_for(task, timeout=5.0)
+        await self.pipeline.drain()
+        await self.gateway.aclose()
+        if self.egress is not None:
+            self.egress.close()
+        self.store.close()
+
+
+def _optional(module: str) -> Any | None:
+    """Import a package that may be absent from this build; never swallow its own errors."""
+    try:
+        return importlib.import_module(module)
+    except ModuleNotFoundError as exc:
+        if exc.name is not None and exc.name.startswith(module.split(".")[0]):
+            return None
+        raise
+
+
+def _build(name: str, factory: Any, **kwargs: Any) -> Any:
+    try:
+        return factory(**kwargs)
+    except Exception as exc:
+        raise ConfigError(f"{name} failed to build: {type(exc).__name__}: {exc}") from exc
+
+
+def _keystore(settings: Settings, store: LedgerStore) -> Any | None:
+    module = _optional("adrl.ledger.keystore")
+    if module is None:
+        return None
+    return _build("keystore", module.FileKeyStore, root=settings.keystore_path, store=store)
+
+
+def _hmac_key(settings: Settings, keystore: Any | None) -> bytes:
+    """Per-deployment HMAC key. The keystore owns it when present; else a 0600 file."""
+    if keystore is not None:
+        return bytes(keystore.hmac_key())
+    path = settings.keystore_path / f"{settings.hmac_key_id}.hmac"
+    if path.exists():
+        return path.read_bytes()
+    import os
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    key = os.urandom(32)
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, "wb") as handle:
+        handle.write(key)
+    return key
+
+
+def _explorer(settings: Settings, bundle: ConfigBundle) -> Any | None:
+    """A graduated exploration artifact, or nothing (ADRL-LRN-007, ADRL-LRN-008)."""
+    if settings.exploration_artifact_path is None:
+        return None
+    from adrl.routing.features import FEATURES_VERSION
+
+    if bundle.learning_contract.feature_schema_version != FEATURES_VERSION:
+        raise ConfigError(
+            "exploration learning contract does not match live feature semantics; "
+            "qualify a compatible contract and artifact before enabling exploration"
+        )
+    artifacts = _optional("adrl.learning.artifacts")
+    explore = _optional("adrl.learning.explore")
+    if artifacts is None or explore is None:
+        raise ConfigError("exploration_artifact_path set but adrl.learning is not installed")
+    pub_path = settings.config_dir / SIGNING_PUB_FILE
+    if not pub_path.exists():
+        raise ConfigError(f"graduation public key missing: {pub_path}")
+    loaded = _build(
+        "exploration artifact",
+        artifacts.load_graduated,
+        manifest_path=settings.exploration_artifact_path,
+        bundle=bundle,
+        public_key_pem=pub_path.read_bytes(),
+    )
+    manifest = loaded.manifest
+    thresholds = dict(getattr(manifest, "thresholds", {}) or {})
+    epsilon = thresholds.get("epsilon_by_rung") or {
+        r.value: e for r, e in bundle.policy.exploration_epsilon_by_rung.items()
+    }
+    policy = explore.exploration_policy_from_manifest(
+        epsilon, str(manifest.artifact_version), graduated=True
+    )
+    return explore.RoutingExplorerAdapter(policy)
+
+
+def build_components(
+    settings: Settings | None = None,
+    *,
+    bundle: ConfigBundle | None = None,
+    gateway_client: httpx.AsyncClient | None = None,
+    egress_enabled: bool = True,
+) -> Components:
+    settings = settings or Settings()
+    bundle = bundle or load_bundle(settings)
+    if settings.gate_mode is GateMode.OBSERVE:
+        log.warning("gates_observe_only", detail="pins and blocks are logged, not enforced")
+
+    store = LedgerStore(settings.ledger_path, busy_timeout_ms=settings.ledger_busy_timeout_ms)
+    store.open()
+    facade = MemoryFacade(SqliteLedgerProvider(store))
+
+    egress: EgressLedger | None = None
+    if egress_enabled:
+        egress = _egress_ledger(settings)
+
+    gateway = HttpxGatewayClient(
+        settings.gateway_base_url, client=gateway_client, timeout_s=settings.gateway_timeout_s
+    )
+    installed: dict[str, bool] = {}
+
+    keystore = _keystore(settings, store)
+    installed["ledger.keystore"] = keystore is not None
+    hmac_key = _hmac_key(settings, keystore)
+
+    erasure: Any | None = None
+    erasure_mod = _optional("adrl.ledger.erasure")
+    if erasure_mod is not None and keystore is not None:
+        erasure = _build("erasure", erasure_mod.ErasureService, store=store, keystore=keystore)
+    installed["ledger.erasure"] = erasure is not None
+
+    state: StateProvider | None = None
+    ledger_state = _optional("adrl.ledger.state")
+    if ledger_state is not None:
+        provider: Any = _build("ledger.state", ledger_state.SqliteStateProvider, store=store)
+        log.info("sticky_state_loaded", lineages=provider.load_now())
+        state = provider
+        installed["ledger.state"] = True
+    else:
+        installed["ledger.state"] = False
+
+    tokenizer: Tokenizer | None = None
+    gates = _optional("adrl.gates.pipeline")
+    gate: GateStage
+    if gates is not None:
+        if egress is None:
+            raise ConfigError("gates require the egress ledger (ADRL-SAF-009); it is disabled")
+        health: Any | None = None
+        if settings.gateway_health_enabled:
+            feasibility_mod = importlib.import_module("adrl.gates.feasibility")
+            health = feasibility_mod.LiteLLMHealth(gateway.client)
+        gate_impl: Any = _build(
+            "gates",
+            gates.GatePipeline.from_components,
+            bundle=bundle,
+            settings=settings,
+            ledger=facade,
+            egress=egress,
+            hmac_key=hmac_key,
+            suppression=erasure,
+            health=health,
+            state=state,
+        )
+        tokenizer = gate_impl.feasibility.tokenizer(_local_rung())
+        gate = gate_impl
+        installed["gates"] = True
+    else:
+        gate = ObserveOnlyGate(facade)
+        installed["gates"] = False
+
+    routing = _optional("adrl.routing.router")
+    router: RouteStage
+    if routing is not None:
+        router = _build(
+            "routing",
+            routing.Router.from_components,
+            bundle=bundle,
+            settings=settings,
+            ledger=store,
+            explorer=_explorer(settings, bundle),
+        )
+        installed["routing"] = True
+    else:
+        router = InheritOnlyRouter(bundle)
+        installed["routing"] = False
+
+    cascade_mod = _optional("adrl.cascade.controller")
+    cascade: CascadeStage
+    transform: TranscriptTransform | None = None
+    if cascade_mod is not None:
+        cascade = _build(
+            "cascade",
+            cascade_mod.CascadeController.from_components,
+            bundle=bundle,
+            settings=settings,
+            ledger=facade,
+            state=state,
+        )
+        handoff = importlib.import_module("adrl.cascade.handoff")
+        transform = handoff.transform_transcript
+        installed["cascade"] = True
+    else:
+        cascade = PassthroughCascade()
+        installed["cascade"] = False
+
+    pipeline = Pipeline(
+        settings=settings,
+        bundle=bundle,
+        ledger=facade,
+        egress=egress,
+        gateway=gateway,
+        gate=gate,
+        router=router,
+        cascade=cascade,
+        state=state,
+        identity=IdentityResolver(hmac_key),
+        locks=LineageLocks(),
+        transcript_transform=transform,
+        tokenizer=tokenizer,
+    )
+    log.info("adrl_components_built", installed=installed, modes=_modes(settings))
+    return Components(
+        settings=settings,
+        bundle=bundle,
+        store=store,
+        facade=facade,
+        egress=egress,
+        gateway=gateway,
+        pipeline=pipeline,
+        gate=gate,
+        router=router,
+        cascade=cascade,
+        state=state,
+        installed=installed,
+        keystore=keystore,
+        erasure=erasure,
+    )
+
+
+def _egress_ledger(settings: Settings) -> EgressLedger:
+    """Egress ledger with its own checkpoint key and off-device shippers (ADRL-SAF-009).
+
+    A development key is refused unless dev_keys_allowed is set; with no key configured the
+    ledger still chains but cannot checkpoint, which the health view reports.
+    """
+    checkpoint_key = checkpoint_key_from_settings(settings)
+    if checkpoint_key is None:
+        log.warning(
+            "egress_checkpoints_unsigned",
+            detail="no checkpoint_signing_key_path; tamper evidence stops at the hash chain",
+        )
+    elif checkpoint_key.dev:
+        log.warning(
+            "egress_dev_key_in_use",
+            key_id=checkpoint_key.key_id,
+            path=str(checkpoint_key.path),
+            detail="development checkpoint key; anchors signed by it have no audit value",
+        )
+    shippers: list[CheckpointShipper] = []
+    if settings.egress_anchor_path is not None:
+        shippers.append(FileAnchorShipper(settings.egress_anchor_path))
+    if settings.egress_anchor_url is not None:
+        shippers.append(HttpAnchorShipper(settings.egress_anchor_url))
+    if checkpoint_key is not None and not shippers:
+        log.warning(
+            "egress_anchor_missing",
+            detail="checkpoints are signed but no anchor is configured; set "
+            "ADRL_EGRESS_ANCHOR_PATH or ADRL_EGRESS_ANCHOR_URL",
+        )
+    ledger = EgressLedger(
+        settings.egress_ledger_path,
+        signing_key=checkpoint_key.private if checkpoint_key else None,
+        key_id=checkpoint_key.key_id if checkpoint_key else None,
+        checkpoint_every=settings.egress_checkpoint_every,
+        shippers=shippers,
+    )
+    ledger.open()
+    return ledger
+
+
+def _local_rung() -> Any:
+    from adrl.core.enums import Rung
+
+    return Rung.LOCAL
+
+
+def _modes(settings: Settings) -> dict[str, str]:
+    return {
+        "gates": settings.gate_mode.value,
+        "routing": settings.routing_mode.value,
+        "fallback": settings.fallback_mode.value,
+    }
+
+
+def build_app(settings: Settings | None = None) -> Starlette:
+    """ASGI app with a lifespan that owns every component."""
+    settings = settings or Settings()
+    configure_logging()
+    holder: dict[str, Components] = {}
+    products: dict[str, ProductService] = {}
+
+    @contextlib.asynccontextmanager
+    async def lifespan(_: Starlette) -> AsyncIterator[None]:
+        components = build_components(settings)
+        holder["components"] = components
+        if components.keystore is not None:
+            products["service"] = ProductService(
+                components.store, components.keystore, components.bundle
+            )
+        app.state.components = components
+        components.start_background()
+        try:
+            yield
+        finally:
+            await components.aclose()
+
+    async def health() -> dict[str, object]:
+        components = holder.get("components")
+        if components is None:
+            return {"components": "starting"}
+        return {
+            "installed": components.installed,
+            "gateway": await components.gateway.health(),
+            "ledger": (await components.facade.health()).available,
+            "modes": _modes(settings),
+            "egress": (
+                components.egress.anchor_status() if components.egress is not None else None
+            ),
+        }
+
+    app = build_asgi(
+        _LazyPipeline(holder),
+        lifespan=lifespan,
+        health=health,
+        product=lambda: products.get("service"),
+    )
+    return app
+
+
+class _LazyPipeline:
+    """RequestHandler resolved after lifespan startup."""
+
+    def __init__(self, holder: dict[str, Components]) -> None:
+        self._holder = holder
+
+    async def handle(
+        self,
+        method: str,
+        path: str,
+        headers: Mapping[str, str],
+        body: bytes,
+        peer: tuple[str, int] | None,
+        *,
+        query: str = "",
+    ) -> ProxyResponse:
+        components = self._holder.get("components")
+        if components is None:
+            raise RuntimeError("components not built; lifespan has not started")
+        return await components.pipeline.handle(method, path, headers, body, peer, query=query)
+
+
+def serve(settings: Settings | None = None) -> None:
+    import uvicorn
+
+    settings = settings or Settings()
+    uvicorn.run(
+        build_app(settings), host=settings.listen_host, port=settings.listen_port, log_level="info"
+    )
+
+
+FILE C:src/adrl/cascade/handoff.py
+"""Cross-model handoff transform. Primary: ADRL-CAS-004. Secondary: ADRL-CAS-003.
+
+The reasoning rule is keyed by (source family, target family, thinking on target). Tool ids
+are preserved verbatim within a provider and mapped 1:1 with the mapping recorded when the
+target's id format differs. The handoff note is appended after all tool_result blocks in the
+last user message, never in system, and nothing here touches tools or system.
+"""
+
+from __future__ import annotations
+
+import copy
+import re
+from collections.abc import Mapping
+from dataclasses import dataclass, field
+from typing import Any
+
+from adrl.config.models import ProviderPairRule
+from adrl.core.types import HandoffNote
+
+THINKING_TYPES: frozenset[str] = frozenset({"thinking", "redacted_thinking"})
+THINKING_PARAMETERS: tuple[str, ...] = ("thinking",)
+DOWNGRADE_MARKER = "[adrl: {kind} content omitted for the target provider]"
+OPENAI_TOOL_ID = re.compile(r"^call_[A-Za-z0-9_-]{1,64}$")
+ANTHROPIC_TOOL_ID = re.compile(r"^toolu_[A-Za-z0-9_-]{1,64}$")
+UNSUPPORTED_RESULT_TYPES_BY_FAMILY: dict[str, frozenset[str]] = {
+    "openai": frozenset({"image", "document"}),
+    "local": frozenset({"image", "document"}),
+}
+
+
+class HandoffError(ValueError):
+    """The transformed transcript violates a CAS-004 invariant."""
+
+
+def _thinking_enabled(body: Mapping[str, Any]) -> bool:
+    thinking = body.get("thinking")
+    return isinstance(thinking, Mapping) and thinking.get("type") != "disabled"
+
+
+def latest_assistant_has_thinking(body: Mapping[str, Any]) -> bool | None:
+    """None when there is no assistant turn; else whether it carries a thinking block."""
+    for message in reversed(_messages(body)):
+        if message.get("role") != "assistant":
+            continue
+        content = message.get("content")
+        if not isinstance(content, list):
+            return False
+        return any(isinstance(b, dict) and b.get("type") in THINKING_TYPES for b in content)
+    return None
+
+
+def needs_thinking_suppression(body: Mapping[str, Any]) -> bool:
+    """True when the Anthropic thinking contract would reject this request as sent.
+
+    With thinking enabled, a final assistant message that carries tool_use must start with a
+    thinking or redacted_thinking block. A turn served by a rung without thinking cannot satisfy
+    that, so the request must go out with thinking disabled (ADRL-CAS-004).
+    """
+    if not _thinking_enabled(body):
+        return False
+    messages = _messages(body)
+    if len(messages) < 2 or messages[-1].get("role") != "user":
+        return False
+    last_content = messages[-1].get("content")
+    is_continuation = isinstance(last_content, list) and any(
+        isinstance(b, dict) and b.get("type") == "tool_result" for b in last_content
+    )
+    if not is_continuation:
+        return False
+    previous = messages[-2]
+    if previous.get("role") != "assistant":
+        return False
+    content = previous.get("content")
+    if not isinstance(content, list) or not content:
+        return False
+    has_tool_use = any(isinstance(b, dict) and b.get("type") == "tool_use" for b in content)
+    first = content[0] if isinstance(content[0], dict) else {}
+    return has_tool_use and first.get("type") not in THINKING_TYPES
+
+
+def validate_thinking_contract(body: Mapping[str, Any]) -> None:
+    """Raise HandoffError when the request violates the Anthropic thinking echo rule."""
+    if needs_thinking_suppression(body):
+        raise HandoffError(
+            "thinking is enabled but the final assistant turn starts with tool_use and carries "
+            "no thinking block; Anthropic rejects this request"
+        )
+
+
+def without_thinking(body: Mapping[str, Any]) -> dict[str, Any]:
+    out = dict(body)
+    for key in THINKING_PARAMETERS:
+        out.pop(key, None)
+    return out
+
+
+@dataclass(frozen=True, slots=True)
+class TransformResult:
+    body: dict[str, Any]
+    tool_id_mapping: Mapping[str, str] = field(default_factory=dict)
+    stripped_blocks: int = 0
+    downgraded_blocks: int = 0
+    note_applied: bool = False
+    thinking_disabled: bool = False
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "tool_id_mapping": dict(self.tool_id_mapping),
+            "stripped_blocks": self.stripped_blocks,
+            "downgraded_blocks": self.downgraded_blocks,
+            "note_applied": self.note_applied,
+            "thinking_disabled": self.thinking_disabled,
+        }
+
+
+def _messages(body: Mapping[str, Any]) -> list[dict[str, Any]]:
+    raw = body.get("messages")
+    return [m for m in raw if isinstance(m, dict)] if isinstance(raw, list) else []
+
+
+def _strip_reasoning(
+    messages: list[dict[str, Any]], *, keep_latest: bool
+) -> tuple[list[dict[str, Any]], int]:
+    latest_index = -1
+    for index in range(len(messages) - 1, -1, -1):
+        if messages[index].get("role") == "assistant":
+            latest_index = index
+            break
+    out: list[dict[str, Any]] = []
+    stripped = 0
+    for index, message in enumerate(messages):
+        if message.get("role") != "assistant" or not isinstance(message.get("content"), list):
+            out.append(message)
+            continue
+        if keep_latest and index == latest_index:
+            out.append(message)
+            continue
+        kept = [
+            b
+            for b in message["content"]
+            if not (isinstance(b, dict) and b.get("type") in THINKING_TYPES)
+        ]
+        stripped += len(message["content"]) - len(kept)
+        if kept:
+            out.append({**message, "content": kept})
+    return out, stripped
+
+
+def _target_id_format(target_family: str) -> re.Pattern[str] | None:
+    if target_family == "openai":
+        return OPENAI_TOOL_ID
+    if target_family == "anthropic":
+        return ANTHROPIC_TOOL_ID
+    return None
+
+
+def _map_tool_ids(
+    messages: list[dict[str, Any]], target_family: str
+) -> tuple[list[dict[str, Any]], dict[str, str]]:
+    pattern = _target_id_format(target_family)
+    if pattern is None:
+        return messages, {}
+    ids: list[str] = []
+    for message in messages:
+        if message.get("role") == "assistant" and isinstance(message.get("content"), list):
+            for block in message["content"]:
+                if (
+                    isinstance(block, dict)
+                    and block.get("type") == "tool_use"
+                    and isinstance(block.get("id"), str)
+                ):
+                    ids.append(block["id"])
+    if all(pattern.match(i) for i in ids):
+        return messages, {}
+    prefix = "call_" if target_family == "openai" else "toolu_"
+    mapping: dict[str, str] = {}
+    for index, original in enumerate(dict.fromkeys(ids)):
+        mapping[original] = f"{prefix}adrl{index:04d}"
+    out: list[dict[str, Any]] = []
+    for message in messages:
+        if not isinstance(message.get("content"), list):
+            out.append(message)
+            continue
+        blocks: list[Any] = []
+        for block in message["content"]:
+            if (
+                isinstance(block, dict)
+                and block.get("type") == "tool_use"
+                and block.get("id") in mapping
+            ):
+                blocks.append({**block, "id": mapping[block["id"]]})
+            elif (
+                isinstance(block, dict)
+                and block.get("type") == "tool_result"
+                and block.get("tool_use_id") in mapping
+            ):
+                blocks.append({**block, "tool_use_id": mapping[block["tool_use_id"]]})
+            else:
+                blocks.append(block)
+        out.append({**message, "content": blocks})
+    return out, mapping
+
+
+def _downgrade_results(
+    messages: list[dict[str, Any]], target_family: str
+) -> tuple[list[dict[str, Any]], int]:
+    unsupported = UNSUPPORTED_RESULT_TYPES_BY_FAMILY.get(target_family)
+    if not unsupported:
+        return messages, 0
+    downgraded = 0
+    out: list[dict[str, Any]] = []
+    for message in messages:
+        if message.get("role") != "user" or not isinstance(message.get("content"), list):
+            out.append(message)
+            continue
+        blocks: list[Any] = []
+        for block in message["content"]:
+            if (
+                isinstance(block, dict)
+                and block.get("type") == "tool_result"
+                and isinstance(block.get("content"), list)
+            ):
+                inner: list[Any] = []
+                for part in block["content"]:
+                    if isinstance(part, dict) and part.get("type") in unsupported:
+                        inner.append(
+                            {"type": "text", "text": DOWNGRADE_MARKER.format(kind=part["type"])}
+                        )
+                        downgraded += 1
+                    else:
+                        inner.append(part)
+                blocks.append({**block, "content": inner})
+            else:
+                blocks.append(block)
+        out.append({**message, "content": blocks})
+    return out, downgraded
+
+
+def _append_note(messages: list[dict[str, Any]], note: HandoffNote) -> list[dict[str, Any]]:
+    block = note.as_content_block()
+    if messages and messages[-1].get("role") == "user":
+        last = messages[-1]
+        content = last.get("content")
+        if isinstance(content, str):
+            new_content: list[Any] = [{"type": "text", "text": content}, block]
+        elif isinstance(content, list):
+            new_content = [*content, block]
+        else:
+            new_content = [block]
+        return [*messages[:-1], {**last, "content": new_content}]
+    return [*messages, {"role": "user", "content": [block]}]
+
+
+def validate_tool_pairs(messages: list[dict[str, Any]]) -> None:
+    """Every tool_use retains exactly one tool_result (ADRL-CAS-004 clause 2)."""
+    uses: list[str] = []
+    results: dict[str, int] = {}
+    for message in messages:
+        if not isinstance(message.get("content"), list):
+            continue
+        for block in message["content"]:
+            if not isinstance(block, dict):
+                continue
+            if block.get("type") == "tool_use":
+                uses.append(str(block.get("id")))
+            elif block.get("type") == "tool_result":
+                key = str(block.get("tool_use_id"))
+                results[key] = results.get(key, 0) + 1
+    pending = uses[-_trailing_tool_uses(messages) :] if _trailing_tool_uses(messages) else []
+    for use in uses:
+        count = results.get(use, 0)
+        if use in pending and count == 0:
+            continue
+        if count != 1:
+            raise HandoffError(f"tool_use {use} has {count} results after transform")
+
+
+def _trailing_tool_uses(messages: list[dict[str, Any]]) -> int:
+    """tool_use blocks in a trailing assistant message have no result yet by construction."""
+    if not messages or messages[-1].get("role") != "assistant":
+        return 0
+    content = messages[-1].get("content")
+    if not isinstance(content, list):
+        return 0
+    return sum(1 for b in content if isinstance(b, dict) and b.get("type") == "tool_use")
+
+
+def transform(
+    body: Mapping[str, Any], rule: ProviderPairRule, note: HandoffNote | None
+) -> TransformResult:
+    """Apply the provider-pair rule and append the handoff note; tools and system untouched."""
+    out = copy.deepcopy(dict(body))
+    messages = _messages(out)
+    keep_latest = rule.action == "keep_latest_thinking"
+    if keep_latest and latest_assistant_has_thinking(out) is False:
+        # the source turn was served without thinking blocks: nothing to keep, and the
+        # target would reject a thinking-enabled request; fall back to the handoff rule
+        keep_latest = False
+    messages, stripped = _strip_reasoning(messages, keep_latest=keep_latest)
+    thinking_disabled = False
+    if not keep_latest:
+        for key in THINKING_PARAMETERS:
+            if key in out:
+                del out[key]
+                thinking_disabled = True
+    mapping: dict[str, str] = {}
+    if rule.map_tool_ids:
+        messages, mapping = _map_tool_ids(messages, rule.target_family)
+    messages, downgraded = _downgrade_results(messages, rule.target_family)
+    applied = False
+    if note is not None:
+        messages = _append_note(messages, note)
+        applied = True
+    validate_tool_pairs(messages)
+    out["messages"] = messages
+    if "system" in body:
+        out["system"] = copy.deepcopy(body["system"])
+    if "tools" in body:
+        out["tools"] = copy.deepcopy(body["tools"])
+    if rule.target_family == "anthropic":
+        validate_thinking_contract(out)
+    return TransformResult(out, mapping, stripped, downgraded, applied, thinking_disabled)
+
+
+def transform_transcript(
+    body: Mapping[str, Any], rule: ProviderPairRule, note: HandoffNote | None
+) -> dict[str, Any]:
+    return transform(body, rule, note).body
+
+
+ADR EXCERPT (unchanged history omitted, complete source snapshotted): SEM-007
+
+
+Every wire format ADRL accepts is a named, versioned protocol profile that defines its request classes, turn and boundary signals, identity headers, content-bearing rules, error shapes and handoff rules; profile `anthropic-messages-v1` is the Anthropic Messages API with the six request classes of SEM-001, and no other format (in particular the OpenAI Responses API spoken by Codex CLI) enters scope until it has its own profile with an adapter, a mechanical discriminator and a captured corpus.
+
+1. *Profile contents*: request-class discriminator (SEM-001), user-turn and action-boundary definitions (FND-003, CAS-003), session and lineage identity sources (SEM-002, SEM-006), utility fingerprints (SEM-004), content-bearing rule per class, protocol-conformant error shapes (SAF-004, CAS-007), and the provider-pair handoff rules the profile participates in (CAS-004). Each is versioned with the profile.
+2. *No branch without a profile*: a discriminator, classifier or rewrite may not gain a code path for a second format; the second format is a second profile selected by endpoint path and headers before classification.
+3. *Responses API prerequisites*: a `openai-responses-v1` profile requires, before Proposed status: a mapping of input and output item types to request classes; a state model for `previous_response_id` and server-side conversation state; handling of reasoning items (encrypted, same-family only); tool output items as the boundary signal; compaction semantics; and a scrubbed corpus of at least the SEM-001 fixture set.
+4. *Cross-profile handoff* is forbidden until both profiles are at D2 and CAS-004 carries a pair rule for them.
+
+
+ADR EXCERPT (unchanged history omitted, complete source snapshotted): FND-001
+
+
+ADRL is a protocol-transparent, removable control layer between an Anthropic-Messages-format coding harness and the model gateway; it never changes the wire contract the harness observes except through the enumerated user-facing surfaces owned by SAF.
+
+1. *Protocol-transparent* means: request headers the harness marks forward-unchanged (`anthropic-version`, `anthropic-beta`) reach the gateway byte-for-byte; response bodies, streaming events (including keep-alive pings) and upstream error wording are relayed unmodified on the passthrough path; and any body the layer must rewrite for a non-Claude rung (for example stripping `thinking`, `cache_control`, or beta tool fields) is rewritten by ADRL, not left for the upstream to reject.
+2. *Removable* means the golden test: point `ANTHROPIC_BASE_URL` back at the gateway and every behaviour is unchanged, with nothing to uninstall and no residual state the harness depends on.
+3. *Enumerated surfaces* means the only developer-visible differences ADRL may introduce are those listed in SAF-004/SAF-005 (blocked or surfaced failures on a pinned session) and the harness's own capability-degradation behaviour when a request is served by a non-Claude rung; each such surface must be documented, and each is a measured cost, not a transparency violation.
+4. Harnesses that speak the OpenAI Responses API (Codex CLI) are out of scope for this decision until a Responses-format discriminator and corpus exist (SEM-001 follow-up).
+5. *Product boundary, clarified 2026-09-07*: ADRL is developed as one reusable policy, routing and evidence engine with harness adapters and versioned protocol profiles (SEM-007). Harness setup, identity correlation and event translation belong to adapters; native model semantics belong to profiles. Product APIs use a separate `/adrl/v1` namespace. This direction does not expand the currently supported model-traffic protocols beyond clause 4's admission rule.
+
+
+ADR EXCERPT (unchanged history omitted, complete source snapshotted): FND-002
+
+
+ADRL owns semantic policy; LiteLLM and providers own mechanical model execution, subject to a deployment-set-closed execution contract: no gateway retry, fallback or context-window fallback may serve a request from a deployment outside the permitted deployment set ADRL computed for it (TRU-002), and the signed deployment inventory (deployment id, rung, provider, api_base, trust zone, geography, data-use profile) is a shared, versioned configuration that both sides read.
+
+1. "Mechanical execution" includes endpoint choice within a rung, provider choice within a rung, retry, cooldown, transport, and health signalling.
+2. Any gateway feature that changes the *model class* in response to request content or size (LiteLLM `context_window_fallbacks`, `content_policy_fallbacks`, cross-rung `fallbacks`) is semantic and is disabled or constrained to the same rung for ADRL-originated traffic; for privacy-pinned traffic the gateway fallback set is the local rung only.
+3. Where the gateway also offers content controls that overlap SAF (secret redaction, PII masking), ADRL's gate is authoritative for the routing decision and the gateway's control is defence in depth, never a substitute; the two rulesets are diffed and reconciled on a schedule.
+4. The monotone object the gates tighten and the gateway honours is the permitted deployment set, never a rung label; a rung is the economic tier of a deployment (RTG-001). A `local` deployment is loopback or unix-socket by inventory rule, and the served-deployment receipt (TRU-002 clause 4) is the detective backstop that CAS-006 records.
+
+
+ADR EXCERPT (unchanged history omitted, complete source snapshotted): FND-005
+
+
+Scope expands only through measured phase gates; component presence is not readiness.
+
+### Product application, 2026-09-07
+
+For the current product workstream, keep the public API in preview until real integrations have
+validated at least two harnesses and two protocols. Claude Code is the first path, OpenCode tests
+reuse of the Messages profile, and Codex tests a separately admitted Responses profile. Passing
+offline tests for the first extraction does not satisfy that release gate. Changes to the contract
+during preview are versioned and recorded with their compatibility impact. See the
+[product contract](/Users/arunmenon/projects/adrl-world-class/design/adrl-multi-harness-product-contract-2026-09-07.md)
+and [implementation evidence](/Users/arunmenon/projects/adrl-world-class/reports/adrl-product-foundation-implementation-2026-09-07.md).
+
+
+ADR EXCERPT (unchanged history omitted, complete source snapshotted): RTG-001
+
+
+The policy reasons over three economic and service tiers, called rungs (local, cheap cloud, frontier), each defined by a versioned, measured capability boundary rather than by a model name and each realised by deployments in the signed inventory (TRU-002); rungs do not form a total capability order, "higher" means an approved escalation edge for a task slice, and per-request reasoning effort is a parameter inside a rung, not a rung.
+
+1. Each rung carries a published boundary (context ceiling, permitted task classes, verified non-inferiority evidence) in the runtime registry; a rung whose boundary has no organic evidence is marked as such and its permitted scope is the conservative subset (Q2).
+2. Adding or splitting a rung requires the same evidence as adding a learned component: a measured boundary and a scorecard entry, not a new model alias.
+3. Reasoning effort / thinking budget within the frontier and cheap-cloud rungs is a dispatch parameter (CAS/gateway), and a change of effort is not a rung change for sticky-state purposes (CAS-005, CAS-006).
+4. Escalation edges are declared per task slice in the registry (`escalation-edges-v1`: slice, from rung, to rung, evidence reference); a trip-wire escalation follows a declared edge; where no edge exists for a slice the request is placed at the highest permitted deployment from the start.
+5. A rung is not a trust boundary: "local" as a safety property is `trust_zone: local_host` on a deployment (TRU-002), never the rung name.
+
+
+ADR EXCERPT (unchanged history omitted, complete source snapshotted): CAS-004
+
+
+Cross-model continuation preserves tool IDs and tool results, transforms private reasoning according to a versioned per-provider-pair rule (strip, keep, or let the API drop), and appends a short, mechanically generated, clearly delimited handoff note at the end of the last user message — never in the system prompt — listing the escalation cause and the side-effecting actions already executed.
+
+1. Reasoning blocks: the rule is keyed by (source model family, target model family, thinking enabled on target). Anthropic→Anthropic within a family that can read the blocks: keep them (the API requires the latest assistant message's thinking blocks to be unmodified when thinking is enabled, and drops unreadable older-model blocks itself). Anthropic→non-Anthropic or OpenAI→anything: strip `thinking`, `redacted_thinking` and encrypted reasoning items, and disable thinking-continuation parameters on the first request after handoff. The rule table is versioned config; an unknown pair defaults to strip-and-disable.
+2. Tool identity: `tool_use.id`/`tool_result.tool_use_id` pairs are preserved verbatim within a provider and mapped 1:1 (with the mapping recorded on the outcome row) when the target provider's id format differs; every `tool_use` in the transcript retains a matching result (CAS-003 clause 1) and tool-result content types the target cannot accept are downgraded to text with an explicit marker.
+3. Handoff note: generated from ledger fields only (trip-wire type, rung from/to, executed side-effecting tool calls per CAS-003 clause 3, verifier result if any); never model-authored; placed after all `tool_result` blocks in the last user message (provider ordering rule) and wrapped in a fixed delimiter so it is distinguishable from user text and cannot be mistaken for an instruction from the developer. The note's schema version is recorded on the outcome row.
+4. Cache: a handoff is a cache-cold event on the target by construction (different model, different prefix); its cost is charged per RTG-009. Nothing in the handoff may modify `tools` or `system`, so the *source* rung's cache survives if the episode later returns to it.
+
+
+ADR EXCERPT (unchanged history omitted, complete source snapshotted): CAS-006
+
+
+Sticky state records the rung that actually served the response, including transport fallback — and, alongside it, the served model and provider identity as reported by the gateway, and the confidence of that record — because prompt caches and reasoning signatures follow the model, not the rung.
+
+1. Fields: `served_rung`, `served_model`, `served_provider`, `served_source` ∈ {gateway_reported, proxy_observed, assumed_intended} on both sticky state (`router/state.py`) and the outcome row (MEM-001). `assumed_intended` is set when the gateway did not report identity; a continuation routed on an `assumed_intended` record is flagged so the outcome is `unverifiable` for cause typing if it fails (CAS-002).
+2. A within-rung change of `served_model` between consecutive requests of an episode is recorded as an infrastructure event (CAS-002 clause 2), triggers the CAS-004 provider-pair rule for the next continuation if the model family changed, and is charged as a cache-cold switch in RTG-009.
+3. If sticky state is unavailable (process restart; OPS-001 single-process dict), the next request in an episode is routed as a fresh decision but with `state_loss=true` on the decision row, and the outcome is excluded from stickiness evidence.
+
+
+ADR EXCERPT (unchanged history omitted, complete source snapshotted): TRU-002
+
+
+The object that the gates tighten and that routing chooses from is the permitted deployment set: a subset of a signed, versioned endpoint inventory in which every entry names a deployment id, its rung, provider, `api_base`, trust zone, geography and data-use profile; a rung is the economic tier of a deployment, not a security boundary, and no policy, pin, residency rule or fallback may be expressed in terms of a rung alone.
+
+1. *Inventory*: `deployment-inventory-v1` is signed by security and shared with the gateway generator (FND-002). An entry is `{deployment_id, rung, provider, api_base, trust_zone, geo, data_use_profile, evidence_ref}`. A `local` rung entry must have a loopback or unix-socket `api_base` and `trust_zone: local_host`; the configuration checker rejects any other local entry.
+2. *Tightening*: TRU-001 identity, residency, the SAF-002 pin and SAF-006 feasibility each remove deployments, never rungs: a pin removes every deployment whose `trust_zone` is not `local_host`; a residency tag removes every deployment whose `geo` does not match; a data-class restriction removes every deployment whose `data_use_profile` is not approved for the class. The set is monotone within a lineage (SAF-001).
+3. *Gateway contract*: the gateway generator emits one model group per deployment and fallback groups only within the permitted-set-closed subsets that ADRL names per request (a pinned lineage's group contains only `local_host` deployments); alias fallback lists must be subsets of the inventory. This replaces "rung-closed" in FND-002 and RTG-008 with "deployment-set-closed".
+4. *Receipt*: every dispatch yields a served-deployment receipt (`deployment_id`, provider, `api_base` host, `geo`, `trust_zone`, source in {gateway_reported, proxy_observed, assumed_intended}) recorded on the outcome row (CAS-006) and in the egress ledger (TRU-003). An `assumed_intended` receipt on a pinned or residency-tagged lineage is a gate failure for the next request until a reported receipt arrives.
+5. *Routing inside the set*: RTG chooses among the permitted deployments by rung economics (RTG-002, RTG-009); cost and cache identity are keyed by deployment id, because caches and signatures are per endpoint.
+
+
+ADR EXCERPT (unchanged history omitted, complete source snapshotted): EVL-005
+
+
+Evidence produced by the simulator, by public benchmarks, or by any synthetic task generator is a separate evidence family from organic traffic. It is recorded with `source=synthetic`, assigned to its own tier (LRN-001 T4), reported in its own section of every scorecard, and never counted toward any gate that names organic evidence (EVL-004, the RTG-007 pre-build gate, the D3 and D4 rungs of EVL-007). Synthetic evidence may qualify a mechanism (a trip-wire fires, a transform produces a valid request, a sandbox denies egress) and may bound a claim (a rung cannot be worse than its benchmark score suggests), but it cannot establish that a rung is reliable on the organisation's code.

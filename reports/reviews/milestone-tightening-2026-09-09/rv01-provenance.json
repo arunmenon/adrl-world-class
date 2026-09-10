@@ -1,0 +1,8 @@
+{
+  "review_folder": "/Users/arunmenon/projects/adrl-world-class/reports/reviews/outcome-contract-2026-09-09",
+  "recheck_session": "f47c78bb-b7bb-4462-ac0f-6361ad990242",
+  "recheck_manifest_sha256": "2d6a5f7ee07eb021fe27d5e9d6cd1bbd0004f6002d6a9a0b4fd378ea76da682c",
+  "recheck_response_sha256": "263cf73e41e14a35d02a6fab23ffce6f198ed3ceb228d13236f69bc7bcbce8fe",
+  "final_checks_manifest_sha256": "1aa05cdc42a990c395e2ef00bed2bdb89229b1eb6f755c5a0f9ad323814f6007",
+  "claim": "Separate Fable source/log review, not continuation of the external retrospective session; no independent test execution"
+}

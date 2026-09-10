@@ -1,0 +1,32 @@
+{
+  "config_versions": {
+    "rungs": "rung-membership-v1",
+    "policy": "policy-v1",
+    "prices": "prices-v1",
+    "provider_pairs": "provider-pairs-v1",
+    "tripwires": "tripwires-v1",
+    "repo_classification": "repo-classification-v1",
+    "learning_contract": "learning-contract-v1",
+    "utility_fingerprints": "utility-fingerprints-v1",
+    "endpoint_inventory": "endpoint-inventory-v1"
+  },
+  "installed": {
+    "ledger.keystore": true,
+    "ledger.erasure": true,
+    "ledger.state": true,
+    "gates": true,
+    "routing": true,
+    "cascade": true
+  },
+  "harness_binary_version": null,
+  "model_revision": null,
+  "repo_snapshot": null,
+  "client": "synthetic Claude Code Messages fixture; no harness executed",
+  "endpoint": "in-process synthetic ASGI",
+  "health": "static fixture health",
+  "workload_assertion": "synthetic development-repository identity",
+  "live_config_admitted": false,
+  "config_load_mode": "shadow",
+  "pipeline_mode": "live inside in-process simulation only",
+  "config_evidence_bypass": "test-only bundle; no provider transport"
+}

@@ -1,0 +1,200 @@
+{
+  "date": "2026-09-07",
+  "status": "applied",
+  "source_root": "/Users/arunmenon/projects/adrl-core",
+  "staging_root": "/private/tmp/adrl-services-z_vjuyws/work",
+  "baseline_files": 258,
+  "tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "506",
+    "time": "15.924",
+    "timestamp": "2026-09-07T15:46:41.466487+05:30",
+    "hostname": "Aruns-MacBook-Pro.local"
+  },
+  "checks": {
+    "ruff_lint": "passed",
+    "ruff_format": "passed, 219 files",
+    "mypy": "passed, 112 source files",
+    "pytest": "passed, 506 tests",
+    "ledger_discipline": "passed",
+    "configuration": "passed, 9 checks; manifest signature verified",
+    "data_inventory": "passed, 241 fields"
+  },
+  "http_smoke": {
+    "status": "passed",
+    "transport": "real loopback HTTP",
+    "composition_root": true,
+    "cli_connect_status_hook_timeline": true,
+    "synthetic_observation_only": true,
+    "model_requests": 0,
+    "real_claude_process_started": false
+  },
+  "application": {
+    "status": "applied",
+    "files_verified": 25,
+    "unchanged_original_files_verified": 244
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "before_sha256": "4b6907bacb7d98744d4335750929addccc6b2249538225291c43df10795f148f",
+      "after_sha256": "debb84f5f3394788cb834ef5ab014c3565ce75cf669bce8d5294b5677e5f1ab2",
+      "bytes": 9481
+    },
+    {
+      "path": "api/adrl-api-v1-preview.json",
+      "before_sha256": "503a952b1d1b26989862744a50b1f6c4cddeb2723a7c1a1a98d8310346703dbf",
+      "after_sha256": "82d2d99b8169a7972a8e83926bb999d1125f136e23b53b5ff057ce59c332ef1f",
+      "bytes": 44710
+    },
+    {
+      "path": "docs/adr-module-map.md",
+      "before_sha256": "cd9aff5b9ff7a253f4185367fd1eba5bd18c4d53864dcafc9c18b5ebba60c21a",
+      "after_sha256": "67cf6dcc00b0d088c38450a5083e036cd0052f948754f66457f22021ea2cf9c8",
+      "bytes": 24771
+    },
+    {
+      "path": "docs/data-inventory.md",
+      "before_sha256": "218d83a78783f262aa58481186644b88b59371ffe945e2da0d8486a66c4b9d86",
+      "after_sha256": "3442d3815c0d797c62961fe3e4b5314d9f41d70482c0f5e89d6621a3df8f5963",
+      "bytes": 15766
+    },
+    {
+      "path": "docs/product-services.md",
+      "before_sha256": null,
+      "after_sha256": "0a23f1777faedc5b7fe1ef6429fa1a9e2d415e8b867b67a451ef1769699ade01",
+      "bytes": 8114
+    },
+    {
+      "path": "docs/protocol-boundary.md",
+      "before_sha256": "7e9027a9010df871d299e72bca40eb357c5734fc17c03f1931564fe24a00e511",
+      "after_sha256": "bd3204b7a6db02fb251b9cf5e3c3ce356de5c1229a9b3e147027fd2a765d61d8",
+      "bytes": 3831
+    },
+    {
+      "path": "src/adrl/api/auth.py",
+      "before_sha256": null,
+      "after_sha256": "d666e1fa36b41d16448143eed404a7ccb0fde0cf6d32e70747df89b85da1bc3d",
+      "bytes": 2944
+    },
+    {
+      "path": "src/adrl/api/client.py",
+      "before_sha256": null,
+      "after_sha256": "7610ab03cb614856252f0f0805d99d30479de2c5c65e0cb14c82cb7835fea826",
+      "bytes": 6636
+    },
+    {
+      "path": "src/adrl/api/contracts.py",
+      "before_sha256": "5e5fa8ed8965bbd30b86adca967ac661007f64180a9599dc53dfca4341fd97f8",
+      "after_sha256": "90c581ed0bc1720c387b430fc11dc933c16f6409bab62ee36173f5541b925946",
+      "bytes": 7387
+    },
+    {
+      "path": "src/adrl/api/http.py",
+      "before_sha256": null,
+      "after_sha256": "c129cbd845d04583af3f566099117ba58e7fa12cc75694cc7f60a9161e3f8bd1",
+      "bytes": 4934
+    },
+    {
+      "path": "src/adrl/api/schema.py",
+      "before_sha256": "721bc6aacf63e655a05fefb065863896d85d82c1a56ea1c1c3f8cfe8a699235c",
+      "after_sha256": "e839e85d32982463056a5bedeb21ed99c1ede5602f38acb922fd970a27044581",
+      "bytes": 6151
+    },
+    {
+      "path": "src/adrl/api/service.py",
+      "before_sha256": null,
+      "after_sha256": "c34d850000b9046d8d3ad53f5e76550e1b6b79a8def63be65d0c4b91b83f4cc2",
+      "bytes": 14103
+    },
+    {
+      "path": "src/adrl/api/store.py",
+      "before_sha256": null,
+      "after_sha256": "f80fc9691d4545357110d63d3b746271bf3e8245a2e4d52ba7df1f12418c159c",
+      "bytes": 9386
+    },
+    {
+      "path": "src/adrl/app.py",
+      "before_sha256": "76a5c0d2c95fda28588f832f01a8816cc3d3005fc522ddbf4113f72ffccfc681",
+      "after_sha256": "426fcf77232c9b8f06764e0a9f3e75088747ac81ace5ef501fe1294371b6bd09",
+      "bytes": 15065
+    },
+    {
+      "path": "src/adrl/cli/main.py",
+      "before_sha256": "2fc4e7b2e758a22b223fec5d133de1f34b47d673987435d8943e35dd5e891d7c",
+      "after_sha256": "d5de15c803d7741befce0ff85f71168786afc30fa819a4e843ce0f0f88369031",
+      "bytes": 18660
+    },
+    {
+      "path": "src/adrl/cli/product.py",
+      "before_sha256": null,
+      "after_sha256": "e75b60200e438940f80ecee2ff19b5b70108bb6cf53d1fe7390f3f92c11ebc17",
+      "bytes": 7980
+    },
+    {
+      "path": "src/adrl/ledger/migrations/0003_product.sql",
+      "before_sha256": null,
+      "after_sha256": "0689c91906d06152af09937eb2758f7891c14a7456542632d19b40567b0f30b6",
+      "bytes": 1365
+    },
+    {
+      "path": "src/adrl/ledger/store.py",
+      "before_sha256": "87373cbbb9befb2c0c0a6d11426fed7b80552e9d698961652980c1486e6d5cef",
+      "after_sha256": "4bef263447219212d3e8b3262d0666abdc20ed9832d15777595eae1621ea35c2",
+      "bytes": 10978
+    },
+    {
+      "path": "src/adrl/proxy/asgi.py",
+      "before_sha256": "e0449527ce69ec88b917472a46879e663cc68c5e3f3c6f52b05ad1d4589e193a",
+      "after_sha256": "491c8a431380483eff035d136749a9c13c7738ad613f75ee879fdd929ee23640",
+      "bytes": 6662
+    },
+    {
+      "path": "src/adrl/wire/parse.py",
+      "before_sha256": "3d395c6e97a1ed4b246af304898b5141500edabaf18f3a60705e5ae4a9f4c6e2",
+      "after_sha256": "f4c7c61438e50c8b91ab08ff927dbb17d5887802949ff3ac27925c0d9fcef28e",
+      "bytes": 8112
+    },
+    {
+      "path": "tests/integration/e2e/test_product_services.py",
+      "before_sha256": null,
+      "after_sha256": "0246e39475b7f1572359bf907ae5dbd2c789e1ec97a6e5dc46b05fcb962727cb",
+      "bytes": 15074
+    },
+    {
+      "path": "tests/integration/proxy/test_profiles.py",
+      "before_sha256": "ceb261f506227f351d94958f31e5a23878d356c237614c00f38b7cd23187baee",
+      "after_sha256": "46ff3d92a6ffbd8885b25e52a6e67a357276365caab866035e51bf55bfa2b48e",
+      "bytes": 1990
+    },
+    {
+      "path": "tests/unit/test_api_contract.py",
+      "before_sha256": "52fea0de2ad9111df4b407a6371877f0770a0dc3a5c80d868b6d5f7348833c63",
+      "after_sha256": "e88641a573a983f7494df8352fc0ff82408e93288ec13fdbf68e700cbf578e74",
+      "bytes": 5572
+    },
+    {
+      "path": "tests/unit/test_ledger_cancellation.py",
+      "before_sha256": null,
+      "after_sha256": "e3e9fe83e60f06cd7892398b339f7db98373cccb3e7a8695cff35ab877c6f36b",
+      "bytes": 1171
+    },
+    {
+      "path": "tests/unit/test_product_client.py",
+      "before_sha256": null,
+      "after_sha256": "ee36c1be5b203de8610f7952b39f3f4218965f42b7cfde1928b388b57f33ac9d",
+      "bytes": 6844
+    }
+  ],
+  "limits": [
+    "No real Claude Code process, provider run or measured savings",
+    "Root Claude Code Messages binding only; child binding and remote verifier credentials unsupported",
+    "Unbound traffic still uses legacy forwarding",
+    "Server erasure does not erase the separate client connection/outbox",
+    "No model or paid-run budget selected"
+  ],
+  "reported_test_duration_seconds": 16.17
+}

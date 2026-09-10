@@ -1,0 +1,19 @@
+{
+  "probe": "read-only synthetic function calls; no service, network or config edits",
+  "rewrite_model": "claude-sonnet-5",
+  "removed_top_level": [
+    "output_config",
+    "thinking",
+    "tools"
+  ],
+  "system_cache_marker_preserved": false,
+  "headers_forwarded": {
+    "authorization": "Bearer SYNTHETIC",
+    "anthropic-beta": "oauth-SYNTHETIC",
+    "accept-encoding": "identity"
+  },
+  "live_load": {
+    "type": "ConfigError",
+    "message": "live_rung_has_evidence: rung local is enabled in live mode without an evidence_ref"
+  }
+}

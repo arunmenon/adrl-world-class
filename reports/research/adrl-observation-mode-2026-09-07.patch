@@ -1,0 +1,2818 @@
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,8 @@
+ # adrl-core
++
++Product API preview 3 adds `connect claude-code --mode observe`: tool observations use ADRL's
++local API while model traffic stays on Claude's native connection. Observation coverage is
++explicitly limited and the session cannot dispatch through ADRL. See [product services](docs/product-services.md).
+ 
+ Current product service update (2026-09-07): authenticated local session binding, encrypted
+ observation intake, timeline/decision reads and isolated Claude Code connection files are
+--- a/tools/check_data_inventory.py
++++ b/tools/check_data_inventory.py
+@@ -35,6 +35,9 @@
+ )
+ PAYLOAD_NAMES = {"payload", "finished_payload", "material", "outputs", "results", "record"}
+ CREATE_TABLE = re.compile(r"CREATE TABLE (?:IF NOT EXISTS )?(\w+)\s*\((.*?)\);", re.S)
++ADDED_COLUMN = re.compile(
++    r"ALTER TABLE (\w+)\s+ADD COLUMN (\w+)\s+(?:TEXT|INTEGER|REAL|BLOB)", re.I
++)
+ COLUMN = re.compile(r"^\s*(\w+)\s+(?:TEXT|INTEGER|REAL|BLOB)", re.M)
+ 
+ 
+@@ -44,6 +47,8 @@
+     sources += [ROOT / "src/adrl/ledger/egress.py"]
+     for source in sources:
+         text = source.read_text(encoding="utf-8")
++        for table, column in ADDED_COLUMN.findall(text):
++            found.add(f"{table}.{column}")
+         for table, body in CREATE_TABLE.findall(text):
+             for column in COLUMN.findall(body):
+                 found.add(f"{table}.{column}")
+--- a/docs/product-services.md
++++ b/docs/product-services.md
+@@ -1,4 +1,4 @@
+-# Local product services, preview 2
++# Local product services, preview 3
+ 
+ Primary: ADRL-SEM-007. Secondary: ADRL-TRU-001, ADRL-MEM-001/005/010, ADRL-FND-001.
+ 
+@@ -63,7 +63,34 @@
+ observed proxy records, not an inventory of hidden gateway retry attempts. Missing served deployment
+ identity remains absent. Historical records without adapter/profile metadata report `unknown`.
+ 
+-## Claude Code setup
++## Observation-only setup
++
++Use `adrl connect claude-code --mode observe` with the same repository, output and server
++arguments below to bind a session for hooks while Claude uses its native model connection.
++The emitted environment file exports only ADRL_LAUNCH_SESSION_ID. No provider base URL,
++provider credential or ADRL assertion is installed in Claude's model environment. The hooks
++read the separate local connection credential. Existing native environment/settings remain
++the caller's responsibility: inspect Claude /status and remove stale gateway overrides.
++This command prepares files; it does not start Claude or authorize usage-credit/API spend.
++
++Session responses now include immutable `integration_mode` (`gateway` by default or `observe`).
++Observation sessions explicitly report request interception, content inspection, dispatch
++enforcement and served destination as unavailable. Identity binding is enforced for local API
++access; other dimensions remain unknown until independently evidenced. An observation session
++cannot be rebound as a gateway session, and model requests carrying its identity are rejected.
++This does not close the separately documented unbound legacy forwarding path.
++
++Migration 0004 adds the mode column. Existing bindings retain their original gateway semantics;
++no event history is rewritten. Preview-3 session requests replace preview-2 requests, so connection
++clients must be upgraded together. Existing preview-2 event envelopes remain readable and can
++still be delivered from pending outboxes without changing their idempotency payloads. New event
++envelopes use preview 3. Reconnect/restart/resume limitations below still apply.
++
++The Messages profile on an observation session identifies the declared harness profile, not
++proof that the service saw or validated native model traffic. Observations do not prove privacy
++pins, complete egress accounting, trusted outcomes, local model compatibility or routing savings.
++
++## Gateway setup
+ 
+ Prepare the approved repository classification, signed inventory, gateway and provider credentials
+ first. Use isolated pilot ledger/keystore paths and the same configuration in the service and launcher.
+--- a/docs/data-inventory.md
++++ b/docs/data-inventory.md
+@@ -276,3 +276,5 @@
+ The local Claude connection directory is a separate client copy. Its assertion credential,
+ outbox key and encrypted outbox are not erased by the server erasure operation. See
+ `docs/product-services.md` for its lifecycle and the explicit pilot limitation.
++
++| `product_sessions.integration_mode` | `skeleton` | Migration 0004; immutable gateway/observe coverage mode, legacy bindings default to gateway |
+--- a/api/adrl-api-v1-preview.json
++++ b/api/adrl-api-v1-preview.json
+@@ -1,4 +1,571 @@
+ {
++  "openapi": "3.1.0",
++  "info": {
++    "title": "ADRL product API preview",
++    "version": "adrl-api-v1-preview.3",
++    "description": "Local session binding and encrypted observation services. Native model APIs remain defined by their protocol profiles. Timeline sequence is index order, not tool execution order."
++  },
++  "paths": {
++    "/adrl/v1/capabilities": {
++      "get": {
++        "operationId": "getCapabilities",
++        "x-adrl-implementation": "implemented",
++        "security": [],
++        "responses": {
++          "200": {
++            "description": "Success",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/Capabilities"
++                }
++              }
++            }
++          }
++        }
++      }
++    },
++    "/adrl/v1/sessions": {
++      "post": {
++        "operationId": "bindSession",
++        "x-adrl-implementation": "implemented",
++        "security": [
++          {
++            "adrlWorkload": []
++          }
++        ],
++        "responses": {
++          "200": {
++            "description": "Success",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/SessionBinding"
++                }
++              }
++            }
++          },
++          "400": {
++            "description": "Invalid request",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "401": {
++            "description": "Unauthenticated",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "403": {
++            "description": "Forbidden",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "409": {
++            "description": "Conflicting event identity",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "422": {
++            "description": "Unsupported capability",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "501": {
++            "description": "Not implemented",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "503": {
++            "description": "Temporarily unavailable",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          }
++        },
++        "description": "Loopback preview using an expiring signed launcher assertion. Root Claude Code Messages sessions only. Harness observations cannot submit trusted verification.",
++        "requestBody": {
++          "required": true,
++          "content": {
++            "application/json": {
++              "schema": {
++                "$ref": "#/components/schemas/SessionRequest"
++              }
++            }
++          }
++        }
++      }
++    },
++    "/adrl/v1/sessions/{session_id}": {
++      "get": {
++        "operationId": "getSession",
++        "x-adrl-implementation": "implemented",
++        "security": [
++          {
++            "adrlWorkload": []
++          }
++        ],
++        "responses": {
++          "200": {
++            "description": "Success",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/SessionStatus"
++                }
++              }
++            }
++          },
++          "400": {
++            "description": "Invalid request",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "401": {
++            "description": "Unauthenticated",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "403": {
++            "description": "Forbidden",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "409": {
++            "description": "Conflicting event identity",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "422": {
++            "description": "Unsupported capability",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "501": {
++            "description": "Not implemented",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "503": {
++            "description": "Temporarily unavailable",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          }
++        },
++        "description": "Loopback preview using an expiring signed launcher assertion. Root Claude Code Messages sessions only. Harness observations cannot submit trusted verification.",
++        "parameters": [
++          {
++            "name": "session_id",
++            "in": "path",
++            "required": true,
++            "schema": {
++              "type": "string",
++              "minLength": 1
++            }
++          }
++        ]
++      }
++    },
++    "/adrl/v1/events": {
++      "post": {
++        "operationId": "appendEvent",
++        "x-adrl-implementation": "implemented",
++        "security": [
++          {
++            "adrlWorkload": []
++          }
++        ],
++        "responses": {
++          "200": {
++            "description": "Success",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/EventAcknowledgement"
++                }
++              }
++            }
++          },
++          "400": {
++            "description": "Invalid request",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "401": {
++            "description": "Unauthenticated",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "403": {
++            "description": "Forbidden",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "409": {
++            "description": "Conflicting event identity",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "422": {
++            "description": "Unsupported capability",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "501": {
++            "description": "Not implemented",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "503": {
++            "description": "Temporarily unavailable",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          }
++        },
++        "description": "Loopback preview using an expiring signed launcher assertion. Root Claude Code Messages sessions only. Harness observations cannot submit trusted verification.",
++        "requestBody": {
++          "required": true,
++          "content": {
++            "application/json": {
++              "schema": {
++                "$ref": "#/components/schemas/EventRequest"
++              }
++            }
++          }
++        }
++      }
++    },
++    "/adrl/v1/sessions/{session_id}/timeline": {
++      "get": {
++        "operationId": "getTimeline",
++        "x-adrl-implementation": "implemented",
++        "security": [
++          {
++            "adrlWorkload": []
++          }
++        ],
++        "responses": {
++          "200": {
++            "description": "Success",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/TimelinePage"
++                }
++              }
++            }
++          },
++          "400": {
++            "description": "Invalid request",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "401": {
++            "description": "Unauthenticated",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "403": {
++            "description": "Forbidden",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "409": {
++            "description": "Conflicting event identity",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "422": {
++            "description": "Unsupported capability",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "501": {
++            "description": "Not implemented",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "503": {
++            "description": "Temporarily unavailable",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          }
++        },
++        "description": "Loopback preview using an expiring signed launcher assertion. Root Claude Code Messages sessions only. Harness observations cannot submit trusted verification.",
++        "parameters": [
++          {
++            "name": "session_id",
++            "in": "path",
++            "required": true,
++            "schema": {
++              "type": "string",
++              "minLength": 1
++            }
++          },
++          {
++            "name": "cursor",
++            "in": "query",
++            "schema": {
++              "type": "string"
++            }
++          },
++          {
++            "name": "limit",
++            "in": "query",
++            "schema": {
++              "type": "integer",
++              "minimum": 1,
++              "maximum": 100,
++              "default": 50
++            }
++          }
++        ]
++      }
++    },
++    "/adrl/v1/decisions/{route_id}": {
++      "get": {
++        "operationId": "getDecision",
++        "x-adrl-implementation": "implemented",
++        "security": [
++          {
++            "adrlWorkload": []
++          }
++        ],
++        "responses": {
++          "200": {
++            "description": "Success",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/DecisionExplanation"
++                }
++              }
++            }
++          },
++          "400": {
++            "description": "Invalid request",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "401": {
++            "description": "Unauthenticated",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "403": {
++            "description": "Forbidden",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "409": {
++            "description": "Conflicting event identity",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "422": {
++            "description": "Unsupported capability",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "501": {
++            "description": "Not implemented",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          },
++          "503": {
++            "description": "Temporarily unavailable",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            }
++          }
++        },
++        "description": "Loopback preview using an expiring signed launcher assertion. Root Claude Code Messages sessions only. Harness observations cannot submit trusted verification.",
++        "parameters": [
++          {
++            "name": "route_id",
++            "in": "path",
++            "required": true,
++            "schema": {
++              "type": "string",
++              "minLength": 1
++            }
++          }
++        ]
++      }
++    }
++  },
+   "components": {
+     "schemas": {
+       "AdapterCapability": {
+@@ -13,6 +580,14 @@
+               "authenticated_binding"
+             ],
+             "title": "Identity",
++            "type": "string"
++          },
++          "tool_events": {
++            "enum": [
++              "not_implemented",
++              "implemented"
++            ],
++            "title": "Tool Events",
+             "type": "string"
+           },
+           "tested_harness_versions": {
+@@ -22,13 +597,16 @@
+             "title": "Tested Harness Versions",
+             "type": "array"
+           },
+-          "tool_events": {
+-            "enum": [
+-              "not_implemented",
+-              "implemented"
+-            ],
+-            "title": "Tool Events",
+-            "type": "string"
++          "integration_modes": {
++            "default": [
++              "gateway",
++              "observe"
++            ],
++            "items": {
++              "$ref": "#/components/schemas/IntegrationMode"
++            },
++            "title": "Integration Modes",
++            "type": "array"
+           }
+         },
+         "required": [
+@@ -43,6 +621,25 @@
+       "Capabilities": {
+         "additionalProperties": false,
+         "properties": {
++          "schema_version": {
++            "const": "adrl-api-v1-preview.3",
++            "default": "adrl-api-v1-preview.3",
++            "title": "Schema Version",
++            "type": "string"
++          },
++          "scope": {
++            "const": "distribution",
++            "default": "distribution",
++            "title": "Scope",
++            "type": "string"
++          },
++          "profiles": {
++            "items": {
++              "$ref": "#/components/schemas/ProfileCapability"
++            },
++            "title": "Profiles",
++            "type": "array"
++          },
+           "adapters": {
+             "items": {
+               "$ref": "#/components/schemas/AdapterCapability"
+@@ -55,36 +652,17 @@
+             "title": "Effective Enforcement",
+             "type": "string"
+           },
++          "unclassified_traffic": {
++            "const": "legacy_forwarding_without_profile_guarantees",
++            "title": "Unclassified Traffic",
++            "type": "string"
++          },
+           "product_operations": {
+             "items": {
+               "type": "string"
+             },
+             "title": "Product Operations",
+             "type": "array"
+-          },
+-          "profiles": {
+-            "items": {
+-              "$ref": "#/components/schemas/ProfileCapability"
+-            },
+-            "title": "Profiles",
+-            "type": "array"
+-          },
+-          "schema_version": {
+-            "const": "adrl-api-v1-preview.2",
+-            "default": "adrl-api-v1-preview.2",
+-            "title": "Schema Version",
+-            "type": "string"
+-          },
+-          "scope": {
+-            "const": "distribution",
+-            "default": "distribution",
+-            "title": "Scope",
+-            "type": "string"
+-          },
+-          "unclassified_traffic": {
+-            "const": "legacy_forwarding_without_profile_guarantees",
+-            "title": "Unclassified Traffic",
+-            "type": "string"
+           }
+         },
+         "required": [
+@@ -100,23 +678,37 @@
+       "ClosureEvent": {
+         "additionalProperties": false,
+         "properties": {
++          "schema_version": {
++            "default": "adrl-api-v1-preview.3",
++            "enum": [
++              "adrl-api-v1-preview.2",
++              "adrl-api-v1-preview.3"
++            ],
++            "title": "Schema Version",
++            "type": "string"
++          },
+           "event_id": {
+             "format": "uuid",
+             "title": "Event Id",
+             "type": "string"
+           },
+-          "event_type": {
+-            "const": "session.closed",
+-            "title": "Event Type",
+-            "type": "string"
+-          },
+-          "occurred_at": {
+-            "format": "date-time",
+-            "title": "Occurred At",
+-            "type": "string"
+-          },
+-          "payload": {
+-            "$ref": "#/components/schemas/TaskClosure"
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          },
++          "route_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Route Id"
+           },
+           "producer_seq": {
+             "maximum": 9223372036854775807,
+@@ -124,29 +716,18 @@
+             "title": "Producer Seq",
+             "type": "integer"
+           },
+-          "route_id": {
+-            "anyOf": [
+-              {
+-                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-                "type": "string"
+-              },
+-              {
+-                "type": "null"
+-              }
+-            ],
+-            "default": null,
+-            "title": "Route Id"
+-          },
+-          "schema_version": {
+-            "const": "adrl-api-v1-preview.2",
+-            "default": "adrl-api-v1-preview.2",
+-            "title": "Schema Version",
+-            "type": "string"
+-          },
+-          "session_id": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Session Id",
+-            "type": "string"
++          "occurred_at": {
++            "format": "date-time",
++            "title": "Occurred At",
++            "type": "string"
++          },
++          "event_type": {
++            "const": "session.closed",
++            "title": "Event Type",
++            "type": "string"
++          },
++          "payload": {
++            "$ref": "#/components/schemas/TaskClosure"
+           }
+         },
+         "required": [
+@@ -163,23 +744,37 @@
+       "CompactionEvent": {
+         "additionalProperties": false,
+         "properties": {
++          "schema_version": {
++            "default": "adrl-api-v1-preview.3",
++            "enum": [
++              "adrl-api-v1-preview.2",
++              "adrl-api-v1-preview.3"
++            ],
++            "title": "Schema Version",
++            "type": "string"
++          },
+           "event_id": {
+             "format": "uuid",
+             "title": "Event Id",
+             "type": "string"
+           },
+-          "event_type": {
+-            "const": "session.compacted",
+-            "title": "Event Type",
+-            "type": "string"
+-          },
+-          "occurred_at": {
+-            "format": "date-time",
+-            "title": "Occurred At",
+-            "type": "string"
+-          },
+-          "payload": {
+-            "$ref": "#/components/schemas/CompactionResult"
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          },
++          "route_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Route Id"
+           },
+           "producer_seq": {
+             "maximum": 9223372036854775807,
+@@ -187,29 +782,18 @@
+             "title": "Producer Seq",
+             "type": "integer"
+           },
+-          "route_id": {
+-            "anyOf": [
+-              {
+-                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-                "type": "string"
+-              },
+-              {
+-                "type": "null"
+-              }
+-            ],
+-            "default": null,
+-            "title": "Route Id"
+-          },
+-          "schema_version": {
+-            "const": "adrl-api-v1-preview.2",
+-            "default": "adrl-api-v1-preview.2",
+-            "title": "Schema Version",
+-            "type": "string"
+-          },
+-          "session_id": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Session Id",
+-            "type": "string"
++          "occurred_at": {
++            "format": "date-time",
++            "title": "Occurred At",
++            "type": "string"
++          },
++          "event_type": {
++            "const": "session.compacted",
++            "title": "Event Type",
++            "type": "string"
++          },
++          "payload": {
++            "$ref": "#/components/schemas/CompactionResult"
+           }
+         },
+         "required": [
+@@ -226,14 +810,14 @@
+       "CompactionResult": {
+         "additionalProperties": false,
+         "properties": {
++          "before_state_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Before State Ref",
++            "type": "string"
++          },
+           "after_state_ref": {
+             "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+             "title": "After State Ref",
+-            "type": "string"
+-          },
+-          "before_state_ref": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Before State Ref",
+             "type": "string"
+           }
+         },
+@@ -261,19 +845,6 @@
+             "title": "Dimension",
+             "type": "string"
+           },
+-          "evidence_ref": {
+-            "anyOf": [
+-              {
+-                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-                "type": "string"
+-              },
+-              {
+-                "type": "null"
+-              }
+-            ],
+-            "default": null,
+-            "title": "Evidence Ref"
+-          },
+           "status": {
+             "enum": [
+               "enforced",
+@@ -283,6 +854,19 @@
+             ],
+             "title": "Status",
+             "type": "string"
++          },
++          "evidence_ref": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Evidence Ref"
+           }
+         },
+         "required": [
+@@ -295,8 +879,32 @@
+       "DecisionExplanation": {
+         "additionalProperties": false,
+         "properties": {
++          "route_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Route Id",
++            "type": "string"
++          },
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          },
++          "policy": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "profile": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
+           "adapter": {
+             "$ref": "#/components/schemas/VersionRef"
++          },
++          "reason_codes": {
++            "items": {
++              "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++              "type": "string"
++            },
++            "title": "Reason Codes",
++            "type": "array"
+           },
+           "attempts": {
+             "items": {
+@@ -318,30 +926,6 @@
+             },
+             "title": "Evidence Gaps",
+             "type": "array"
+-          },
+-          "policy": {
+-            "$ref": "#/components/schemas/VersionRef"
+-          },
+-          "profile": {
+-            "$ref": "#/components/schemas/VersionRef"
+-          },
+-          "reason_codes": {
+-            "items": {
+-              "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-              "type": "string"
+-            },
+-            "title": "Reason Codes",
+-            "type": "array"
+-          },
+-          "route_id": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Route Id",
+-            "type": "string"
+-          },
+-          "session_id": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Session Id",
+-            "type": "string"
+           }
+         },
+         "required": [
+@@ -365,6 +949,24 @@
+             "title": "Attempt Id",
+             "type": "string"
+           },
++          "intended_deployment_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Intended Deployment Ref",
++            "type": "string"
++          },
++          "served_deployment_ref": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Served Deployment Ref"
++          },
+           "confidence": {
+             "enum": [
+               "unknown",
+@@ -379,24 +981,6 @@
+             "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+             "title": "Evidence Ref",
+             "type": "string"
+-          },
+-          "intended_deployment_ref": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Intended Deployment Ref",
+-            "type": "string"
+-          },
+-          "served_deployment_ref": {
+-            "anyOf": [
+-              {
+-                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-                "type": "string"
+-              },
+-              {
+-                "type": "null"
+-              }
+-            ],
+-            "default": null,
+-            "title": "Served Deployment Ref"
+           }
+         },
+         "required": [
+@@ -414,6 +998,16 @@
+           "event_id": {
+             "format": "uuid",
+             "title": "Event Id",
++            "type": "string"
++          },
++          "producer_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Producer Id",
++            "type": "string"
++          },
++          "recorded_at": {
++            "format": "date-time",
++            "title": "Recorded At",
+             "type": "string"
+           },
+           "ledger_sequence": {
+@@ -422,14 +1016,12 @@
+             "title": "Ledger Sequence",
+             "type": "integer"
+           },
+-          "producer_id": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Producer Id",
+-            "type": "string"
+-          },
+-          "recorded_at": {
+-            "format": "date-time",
+-            "title": "Recorded At",
++          "status": {
++            "enum": [
++              "recorded",
++              "duplicate"
++            ],
++            "title": "Status",
+             "type": "string"
+           },
+           "sequence_status": {
+@@ -439,14 +1031,6 @@
+               "late"
+             ],
+             "title": "Sequence Status",
+-            "type": "string"
+-          },
+-          "status": {
+-            "enum": [
+-              "recorded",
+-              "duplicate"
+-            ],
+-            "title": "Status",
+             "type": "string"
+           }
+         },
+@@ -488,6 +1072,14 @@
+         ],
+         "title": "EventRequest"
+       },
++      "IntegrationMode": {
++        "enum": [
++          "gateway",
++          "observe"
++        ],
++        "title": "IntegrationMode",
++        "type": "string"
++      },
+       "ProductError": {
+         "additionalProperties": false,
+         "properties": {
+@@ -519,6 +1111,9 @@
+       "ProfileCapability": {
+         "additionalProperties": false,
+         "properties": {
++          "profile": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
+           "endpoints": {
+             "items": {
+               "type": "string"
+@@ -526,9 +1121,6 @@
+             "title": "Endpoints",
+             "type": "array"
+           },
+-          "profile": {
+-            "$ref": "#/components/schemas/VersionRef"
+-          },
+           "transport": {
+             "const": "http",
+             "title": "Transport",
+@@ -555,6 +1147,9 @@
+       "SessionBinding": {
+         "additionalProperties": false,
+         "properties": {
++          "session": {
++            "$ref": "#/components/schemas/SessionStatus"
++          },
+           "credential_ref": {
+             "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+             "title": "Credential Ref",
+@@ -564,9 +1159,6 @@
+             "format": "date-time",
+             "title": "Expires At",
+             "type": "string"
+-          },
+-          "session": {
+-            "$ref": "#/components/schemas/SessionStatus"
+           }
+         },
+         "required": [
+@@ -580,8 +1172,26 @@
+       "SessionRequest": {
+         "additionalProperties": false,
+         "properties": {
++          "schema_version": {
++            "const": "adrl-api-v1-preview.3",
++            "default": "adrl-api-v1-preview.3",
++            "title": "Schema Version",
++            "type": "string"
++          },
+           "adapter": {
+             "$ref": "#/components/schemas/VersionRef"
++          },
++          "profile": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "workload_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Workload Ref",
++            "type": "string"
++          },
++          "integration_mode": {
++            "$ref": "#/components/schemas/IntegrationMode",
++            "default": "gateway"
+           },
+           "parent_session_id": {
+             "anyOf": [
+@@ -595,20 +1205,6 @@
+             ],
+             "default": null,
+             "title": "Parent Session Id"
+-          },
+-          "profile": {
+-            "$ref": "#/components/schemas/VersionRef"
+-          },
+-          "schema_version": {
+-            "const": "adrl-api-v1-preview.2",
+-            "default": "adrl-api-v1-preview.2",
+-            "title": "Schema Version",
+-            "type": "string"
+-          },
+-          "workload_ref": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Workload Ref",
+-            "type": "string"
+           }
+         },
+         "required": [
+@@ -622,8 +1218,47 @@
+       "SessionStatus": {
+         "additionalProperties": false,
+         "properties": {
++          "schema_version": {
++            "const": "adrl-api-v1-preview.3",
++            "default": "adrl-api-v1-preview.3",
++            "title": "Schema Version",
++            "type": "string"
++          },
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          },
++          "workload_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Workload Ref",
++            "type": "string"
++          },
++          "integration_mode": {
++            "$ref": "#/components/schemas/IntegrationMode",
++            "default": "gateway"
++          },
++          "policy": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
+           "adapter": {
+             "$ref": "#/components/schemas/VersionRef"
++          },
++          "profile": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "parent_session_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Parent Session Id"
+           },
+           "coverage": {
+             "items": {
+@@ -631,41 +1266,6 @@
+             },
+             "title": "Coverage",
+             "type": "array"
+-          },
+-          "parent_session_id": {
+-            "anyOf": [
+-              {
+-                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-                "type": "string"
+-              },
+-              {
+-                "type": "null"
+-              }
+-            ],
+-            "default": null,
+-            "title": "Parent Session Id"
+-          },
+-          "policy": {
+-            "$ref": "#/components/schemas/VersionRef"
+-          },
+-          "profile": {
+-            "$ref": "#/components/schemas/VersionRef"
+-          },
+-          "schema_version": {
+-            "const": "adrl-api-v1-preview.2",
+-            "default": "adrl-api-v1-preview.2",
+-            "title": "Schema Version",
+-            "type": "string"
+-          },
+-          "session_id": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Session Id",
+-            "type": "string"
+-          },
+-          "workload_ref": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Workload Ref",
+-            "type": "string"
+           }
+         },
+         "required": [
+@@ -682,6 +1282,11 @@
+       "TaskClosure": {
+         "additionalProperties": false,
+         "properties": {
++          "task_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Task Ref",
++            "type": "string"
++          },
+           "reported_outcome": {
+             "enum": [
+               "accepted",
+@@ -691,11 +1296,6 @@
+             ],
+             "title": "Reported Outcome",
+             "type": "string"
+-          },
+-          "task_ref": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Task Ref",
+-            "type": "string"
+           }
+         },
+         "required": [
+@@ -708,7 +1308,18 @@
+       "TimelineEntry": {
+         "additionalProperties": false,
+         "properties": {
+-          "event_type": {
++          "ledger_sequence": {
++            "maximum": 9223372036854775807,
++            "minimum": 0,
++            "title": "Ledger Sequence",
++            "type": "integer"
++          },
++          "record_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Record Ref",
++            "type": "string"
++          },
++          "route_id": {
+             "anyOf": [
+               {
+                 "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+@@ -719,12 +1330,7 @@
+               }
+             ],
+             "default": null,
+-            "title": "Event Type"
+-          },
+-          "evidence_ref": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Evidence Ref",
+-            "type": "string"
++            "title": "Route Id"
+           },
+           "kind": {
+             "enum": [
+@@ -737,11 +1343,28 @@
+             "title": "Kind",
+             "type": "string"
+           },
+-          "ledger_sequence": {
+-            "maximum": 9223372036854775807,
+-            "minimum": 0,
+-            "title": "Ledger Sequence",
+-            "type": "integer"
++          "evidence_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Evidence Ref",
++            "type": "string"
++          },
++          "recorded_at": {
++            "format": "date-time",
++            "title": "Recorded At",
++            "type": "string"
++          },
++          "event_type": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Event Type"
+           },
+           "observation": {
+             "anyOf": [
+@@ -763,29 +1386,6 @@
+             ],
+             "title": "Payload State",
+             "type": "string"
+-          },
+-          "record_ref": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Record Ref",
+-            "type": "string"
+-          },
+-          "recorded_at": {
+-            "format": "date-time",
+-            "title": "Recorded At",
+-            "type": "string"
+-          },
+-          "route_id": {
+-            "anyOf": [
+-              {
+-                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-                "type": "string"
+-              },
+-              {
+-                "type": "null"
+-              }
+-            ],
+-            "default": null,
+-            "title": "Route Id"
+           }
+         },
+         "required": [
+@@ -801,6 +1401,11 @@
+       "TimelinePage": {
+         "additionalProperties": false,
+         "properties": {
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          },
+           "entries": {
+             "items": {
+               "$ref": "#/components/schemas/TimelineEntry"
+@@ -820,11 +1425,6 @@
+             ],
+             "default": null,
+             "title": "Next Cursor"
+-          },
+-          "session_id": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Session Id",
+-            "type": "string"
+           }
+         },
+         "required": [
+@@ -837,23 +1437,37 @@
+       "ToolEvent": {
+         "additionalProperties": false,
+         "properties": {
++          "schema_version": {
++            "default": "adrl-api-v1-preview.3",
++            "enum": [
++              "adrl-api-v1-preview.2",
++              "adrl-api-v1-preview.3"
++            ],
++            "title": "Schema Version",
++            "type": "string"
++          },
+           "event_id": {
+             "format": "uuid",
+             "title": "Event Id",
+             "type": "string"
+           },
+-          "event_type": {
+-            "const": "tool.completed",
+-            "title": "Event Type",
+-            "type": "string"
+-          },
+-          "occurred_at": {
+-            "format": "date-time",
+-            "title": "Occurred At",
+-            "type": "string"
+-          },
+-          "payload": {
+-            "$ref": "#/components/schemas/ToolResult"
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          },
++          "route_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Route Id"
+           },
+           "producer_seq": {
+             "maximum": 9223372036854775807,
+@@ -861,29 +1475,18 @@
+             "title": "Producer Seq",
+             "type": "integer"
+           },
+-          "route_id": {
+-            "anyOf": [
+-              {
+-                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-                "type": "string"
+-              },
+-              {
+-                "type": "null"
+-              }
+-            ],
+-            "default": null,
+-            "title": "Route Id"
+-          },
+-          "schema_version": {
+-            "const": "adrl-api-v1-preview.2",
+-            "default": "adrl-api-v1-preview.2",
+-            "title": "Schema Version",
+-            "type": "string"
+-          },
+-          "session_id": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Session Id",
+-            "type": "string"
++          "occurred_at": {
++            "format": "date-time",
++            "title": "Occurred At",
++            "type": "string"
++          },
++          "event_type": {
++            "const": "tool.completed",
++            "title": "Event Type",
++            "type": "string"
++          },
++          "payload": {
++            "$ref": "#/components/schemas/ToolResult"
+           }
+         },
+         "required": [
+@@ -900,6 +1503,11 @@
+       "ToolResult": {
+         "additionalProperties": false,
+         "properties": {
++          "tool_call_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Tool Call Ref",
++            "type": "string"
++          },
+           "outcome": {
+             "enum": [
+               "completed",
+@@ -922,11 +1530,6 @@
+             ],
+             "default": null,
+             "title": "Output Ref"
+-          },
+-          "tool_call_ref": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Tool Call Ref",
+-            "type": "string"
+           }
+         },
+         "required": [
+@@ -939,23 +1542,37 @@
+       "VerificationEvent": {
+         "additionalProperties": false,
+         "properties": {
++          "schema_version": {
++            "default": "adrl-api-v1-preview.3",
++            "enum": [
++              "adrl-api-v1-preview.2",
++              "adrl-api-v1-preview.3"
++            ],
++            "title": "Schema Version",
++            "type": "string"
++          },
+           "event_id": {
+             "format": "uuid",
+             "title": "Event Id",
+             "type": "string"
+           },
+-          "event_type": {
+-            "const": "verification.completed",
+-            "title": "Event Type",
+-            "type": "string"
+-          },
+-          "occurred_at": {
+-            "format": "date-time",
+-            "title": "Occurred At",
+-            "type": "string"
+-          },
+-          "payload": {
+-            "$ref": "#/components/schemas/VerificationResult"
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          },
++          "route_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Route Id"
+           },
+           "producer_seq": {
+             "maximum": 9223372036854775807,
+@@ -963,29 +1580,18 @@
+             "title": "Producer Seq",
+             "type": "integer"
+           },
+-          "route_id": {
+-            "anyOf": [
+-              {
+-                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-                "type": "string"
+-              },
+-              {
+-                "type": "null"
+-              }
+-            ],
+-            "default": null,
+-            "title": "Route Id"
+-          },
+-          "schema_version": {
+-            "const": "adrl-api-v1-preview.2",
+-            "default": "adrl-api-v1-preview.2",
+-            "title": "Schema Version",
+-            "type": "string"
+-          },
+-          "session_id": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Session Id",
+-            "type": "string"
++          "occurred_at": {
++            "format": "date-time",
++            "title": "Occurred At",
++            "type": "string"
++          },
++          "event_type": {
++            "const": "verification.completed",
++            "title": "Event Type",
++            "type": "string"
++          },
++          "payload": {
++            "$ref": "#/components/schemas/VerificationResult"
+           }
+         },
+         "required": [
+@@ -1002,10 +1608,18 @@
+       "VerificationResult": {
+         "additionalProperties": false,
+         "properties": {
+-          "evidence_ref": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Evidence Ref",
+-            "type": "string"
++          "task_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Task Ref",
++            "type": "string"
++          },
++          "snapshot_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Snapshot Ref",
++            "type": "string"
++          },
++          "verifier": {
++            "$ref": "#/components/schemas/VersionRef"
+           },
+           "result": {
+             "enum": [
+@@ -1016,18 +1630,10 @@
+             "title": "Result",
+             "type": "string"
+           },
+-          "snapshot_ref": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Snapshot Ref",
+-            "type": "string"
+-          },
+-          "task_ref": {
+-            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+-            "title": "Task Ref",
+-            "type": "string"
+-          },
+-          "verifier": {
+-            "$ref": "#/components/schemas/VersionRef"
++          "evidence_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Evidence Ref",
++            "type": "string"
+           }
+         },
+         "required": [
+@@ -1064,577 +1670,10 @@
+     },
+     "securitySchemes": {
+       "adrlWorkload": {
+-        "description": "Expiring assertion from the trusted local launcher, bound to the registered workload and explicit session. Provider credentials remain separate. Remote issuance is not implemented.",
++        "type": "apiKey",
+         "in": "header",
+         "name": "x-adrl-workload-assertion",
+-        "type": "apiKey"
+-      }
+-    }
+-  },
+-  "info": {
+-    "description": "Local session binding and encrypted observation services. Native model APIs remain defined by their protocol profiles. Timeline sequence is index order, not tool execution order.",
+-    "title": "ADRL product API preview",
+-    "version": "adrl-api-v1-preview.2"
+-  },
+-  "openapi": "3.1.0",
+-  "paths": {
+-    "/adrl/v1/capabilities": {
+-      "get": {
+-        "operationId": "getCapabilities",
+-        "responses": {
+-          "200": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/Capabilities"
+-                }
+-              }
+-            },
+-            "description": "Success"
+-          }
+-        },
+-        "security": [],
+-        "x-adrl-implementation": "implemented"
+-      }
+-    },
+-    "/adrl/v1/decisions/{route_id}": {
+-      "get": {
+-        "description": "Loopback preview using an expiring signed launcher assertion. Root Claude Code Messages sessions only. Harness observations cannot submit trusted verification.",
+-        "operationId": "getDecision",
+-        "parameters": [
+-          {
+-            "in": "path",
+-            "name": "route_id",
+-            "required": true,
+-            "schema": {
+-              "minLength": 1,
+-              "type": "string"
+-            }
+-          }
+-        ],
+-        "responses": {
+-          "200": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/DecisionExplanation"
+-                }
+-              }
+-            },
+-            "description": "Success"
+-          },
+-          "400": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Invalid request"
+-          },
+-          "401": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Unauthenticated"
+-          },
+-          "403": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Forbidden"
+-          },
+-          "409": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Conflicting event identity"
+-          },
+-          "422": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Unsupported capability"
+-          },
+-          "501": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Not implemented"
+-          },
+-          "503": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Temporarily unavailable"
+-          }
+-        },
+-        "security": [
+-          {
+-            "adrlWorkload": []
+-          }
+-        ],
+-        "x-adrl-implementation": "implemented"
+-      }
+-    },
+-    "/adrl/v1/events": {
+-      "post": {
+-        "description": "Loopback preview using an expiring signed launcher assertion. Root Claude Code Messages sessions only. Harness observations cannot submit trusted verification.",
+-        "operationId": "appendEvent",
+-        "requestBody": {
+-          "content": {
+-            "application/json": {
+-              "schema": {
+-                "$ref": "#/components/schemas/EventRequest"
+-              }
+-            }
+-          },
+-          "required": true
+-        },
+-        "responses": {
+-          "200": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/EventAcknowledgement"
+-                }
+-              }
+-            },
+-            "description": "Success"
+-          },
+-          "400": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Invalid request"
+-          },
+-          "401": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Unauthenticated"
+-          },
+-          "403": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Forbidden"
+-          },
+-          "409": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Conflicting event identity"
+-          },
+-          "422": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Unsupported capability"
+-          },
+-          "501": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Not implemented"
+-          },
+-          "503": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Temporarily unavailable"
+-          }
+-        },
+-        "security": [
+-          {
+-            "adrlWorkload": []
+-          }
+-        ],
+-        "x-adrl-implementation": "implemented"
+-      }
+-    },
+-    "/adrl/v1/sessions": {
+-      "post": {
+-        "description": "Loopback preview using an expiring signed launcher assertion. Root Claude Code Messages sessions only. Harness observations cannot submit trusted verification.",
+-        "operationId": "bindSession",
+-        "requestBody": {
+-          "content": {
+-            "application/json": {
+-              "schema": {
+-                "$ref": "#/components/schemas/SessionRequest"
+-              }
+-            }
+-          },
+-          "required": true
+-        },
+-        "responses": {
+-          "200": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/SessionBinding"
+-                }
+-              }
+-            },
+-            "description": "Success"
+-          },
+-          "400": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Invalid request"
+-          },
+-          "401": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Unauthenticated"
+-          },
+-          "403": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Forbidden"
+-          },
+-          "409": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Conflicting event identity"
+-          },
+-          "422": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Unsupported capability"
+-          },
+-          "501": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Not implemented"
+-          },
+-          "503": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Temporarily unavailable"
+-          }
+-        },
+-        "security": [
+-          {
+-            "adrlWorkload": []
+-          }
+-        ],
+-        "x-adrl-implementation": "implemented"
+-      }
+-    },
+-    "/adrl/v1/sessions/{session_id}": {
+-      "get": {
+-        "description": "Loopback preview using an expiring signed launcher assertion. Root Claude Code Messages sessions only. Harness observations cannot submit trusted verification.",
+-        "operationId": "getSession",
+-        "parameters": [
+-          {
+-            "in": "path",
+-            "name": "session_id",
+-            "required": true,
+-            "schema": {
+-              "minLength": 1,
+-              "type": "string"
+-            }
+-          }
+-        ],
+-        "responses": {
+-          "200": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/SessionStatus"
+-                }
+-              }
+-            },
+-            "description": "Success"
+-          },
+-          "400": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Invalid request"
+-          },
+-          "401": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Unauthenticated"
+-          },
+-          "403": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Forbidden"
+-          },
+-          "409": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Conflicting event identity"
+-          },
+-          "422": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Unsupported capability"
+-          },
+-          "501": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Not implemented"
+-          },
+-          "503": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Temporarily unavailable"
+-          }
+-        },
+-        "security": [
+-          {
+-            "adrlWorkload": []
+-          }
+-        ],
+-        "x-adrl-implementation": "implemented"
+-      }
+-    },
+-    "/adrl/v1/sessions/{session_id}/timeline": {
+-      "get": {
+-        "description": "Loopback preview using an expiring signed launcher assertion. Root Claude Code Messages sessions only. Harness observations cannot submit trusted verification.",
+-        "operationId": "getTimeline",
+-        "parameters": [
+-          {
+-            "in": "path",
+-            "name": "session_id",
+-            "required": true,
+-            "schema": {
+-              "minLength": 1,
+-              "type": "string"
+-            }
+-          },
+-          {
+-            "in": "query",
+-            "name": "cursor",
+-            "schema": {
+-              "type": "string"
+-            }
+-          },
+-          {
+-            "in": "query",
+-            "name": "limit",
+-            "schema": {
+-              "default": 50,
+-              "maximum": 100,
+-              "minimum": 1,
+-              "type": "integer"
+-            }
+-          }
+-        ],
+-        "responses": {
+-          "200": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/TimelinePage"
+-                }
+-              }
+-            },
+-            "description": "Success"
+-          },
+-          "400": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Invalid request"
+-          },
+-          "401": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Unauthenticated"
+-          },
+-          "403": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Forbidden"
+-          },
+-          "409": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Conflicting event identity"
+-          },
+-          "422": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Unsupported capability"
+-          },
+-          "501": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Not implemented"
+-          },
+-          "503": {
+-            "content": {
+-              "application/json": {
+-                "schema": {
+-                  "$ref": "#/components/schemas/ProductError"
+-                }
+-              }
+-            },
+-            "description": "Temporarily unavailable"
+-          }
+-        },
+-        "security": [
+-          {
+-            "adrlWorkload": []
+-          }
+-        ],
+-        "x-adrl-implementation": "implemented"
++        "description": "Expiring assertion from the trusted local launcher, bound to the registered workload and explicit session. Provider credentials remain separate. Remote issuance is not implemented."
+       }
+     }
+   }
+--- a/src/adrl/cli/product.py
++++ b/src/adrl/cli/product.py
+@@ -12,7 +12,7 @@
+ import typer
+ 
+ from adrl.api.client import Connection, ToolOutbox, call, flush, validate_server, write_private
+-from adrl.api.contracts import SessionBinding, SessionRequest, VersionRef
++from adrl.api.contracts import IntegrationMode, SessionBinding, SessionRequest, VersionRef
+ from adrl.config.loaders import load_bundle
+ from adrl.config.settings import Settings
+ from adrl.core.errors import AdrlError
+@@ -48,6 +48,9 @@
+         ..., help="New private connection directory outside the repository"
+     ),
+     server: str = typer.Option("http://127.0.0.1:8788"),
++    mode: IntegrationMode = typer.Option(
++        IntegrationMode.GATEWAY, help="Gateway or observations only"
++    ),
+ ) -> None:
+     """Bind a new session and write environment/hook files. Does not start a model run."""
+     try:
+@@ -71,12 +74,16 @@
+         token_path = output / "assertion.token"
+         write_private(token_path, material.token.encode())
+         connection = Connection(
+-            server=server, session_id=material.session_id, token_file=token_path
++            server=server,
++            session_id=material.session_id,
++            token_file=token_path,
++            integration_mode=mode,
+         )
+         request = SessionRequest(
+             adapter=VersionRef(id="claude-code", version="1"),
+             profile=VersionRef(id="anthropic-messages-v1", version="1"),
+             workload_ref=matches.pop(),
++            integration_mode=mode,
+         )
+         binding = SessionBinding.model_validate(
+             call(connection, "POST", "/adrl/v1/sessions", request.model_dump(mode="json"))
+@@ -86,26 +93,27 @@
+             or binding.session.workload_ref != request.workload_ref
+             or binding.session.profile != request.profile
+             or binding.session.adapter != request.adapter
++            or binding.session.integration_mode != mode
+         ):
+             raise ValueError("The service returned a different binding.")
+         connection_path = output / "connection.json"
+         write_private(connection_path, connection.model_dump_json(indent=2).encode())
+         write_private(output / "outbox.key", new_key())
+-        custom = []
+-        for line in os.environ.get("ANTHROPIC_CUSTOM_HEADERS", "").splitlines():
+-            name = line.partition(":")[0].strip().lower()
+-            if name not in {HEADER_WORKLOAD_ASSERTION, HEADER_SESSION_ID, "x-adrl-session-id"}:
+-                custom.append(line)
+-        custom += [
+-            f"{HEADER_WORKLOAD_ASSERTION}: {material.token}",
+-            f"{HEADER_SESSION_ID}: {material.session_id}",
+-            f"x-adrl-session-id: {material.session_id}",
+-        ]
+-        environment = {
+-            "ANTHROPIC_BASE_URL": server,
+-            "ANTHROPIC_CUSTOM_HEADERS": "\n".join(custom),
+-            "ADRL_LAUNCH_SESSION_ID": material.session_id,
+-        }
++        environment = {"ADRL_LAUNCH_SESSION_ID": material.session_id}
++        if mode == IntegrationMode.GATEWAY:
++            custom = []
++            for line in os.environ.get("ANTHROPIC_CUSTOM_HEADERS", "").splitlines():
++                name = line.partition(":")[0].strip().lower()
++                if name not in {HEADER_WORKLOAD_ASSERTION, HEADER_SESSION_ID, "x-adrl-session-id"}:
++                    custom.append(line)
++            custom += [
++                f"{HEADER_WORKLOAD_ASSERTION}: {material.token}",
++                f"{HEADER_SESSION_ID}: {material.session_id}",
++                f"x-adrl-session-id: {material.session_id}",
++            ]
++            environment.update(
++                ANTHROPIC_BASE_URL=server, ANTHROPIC_CUSTOM_HEADERS="\n".join(custom)
++            )
+         write_private(
+             output / "env.sh",
+             (
+@@ -136,6 +144,12 @@
+             output / "claude-settings.json", json.dumps({"hooks": hooks}, indent=2).encode()
+         )
+         typer.echo(f"Prepared {connection_path}. No provider request was made.")
++        if mode == IntegrationMode.OBSERVE:
++            typer.echo(
++                "Observation mode leaves native model authentication and destination unchanged. "
++                "Check Claude /status and remove stale gateway overrides before launch. "
++                "ADRL cannot inspect, block or account for model traffic in this mode."
++            )
+         typer.echo(
+             f"Source {output / 'env.sh'}, then start Claude Code with --session-id "
+             f"{material.session_id} --settings {shlex.quote(str(output / 'claude-settings.json'))}."
+--- a/src/adrl/api/store.py
++++ b/src/adrl/api/store.py
+@@ -50,6 +50,7 @@
+             request.adapter.version,
+             request.profile.id,
+             request.profile.version,
++            request.integration_mode.value,
+             policy,
+             config_digest,
+         )
+@@ -58,7 +59,8 @@
+             conn.execute(
+                 "INSERT OR IGNORE INTO product_sessions "
+                 "(session_hmac,workload_ref,adapter_id,adapter_version,profile_id,"
+-                "profile_version,policy_version,config_digest,ts) VALUES (?,?,?,?,?,?,?,?,?)",
++                "profile_version,integration_mode,policy_version,config_digest,ts) "
++                "VALUES (?,?,?,?,?,?,?,?,?,?)",
+                 (*material, utc_now_iso()),
+             )
+             return dict(
+@@ -77,6 +79,7 @@
+                     "adapter_version",
+                     "profile_id",
+                     "profile_version",
++                    "integration_mode",
+                     "policy_version",
+                     "config_digest",
+                 ),
+--- a/src/adrl/api/service.py
++++ b/src/adrl/api/service.py
+@@ -20,6 +20,7 @@
+     DispatchEvidence,
+     EventAcknowledgement,
+     EventRequest,
++    IntegrationMode,
+     SessionBinding,
+     SessionRequest,
+     SessionStatus,
+@@ -75,17 +76,30 @@
+         return SessionStatus(
+             session_id=principal.session_id,
+             workload_ref=principal.workload_ref,
++            integration_mode=row["integration_mode"],
+             policy=VersionRef(id="adrl-policy", version=row["policy_version"]),
+             adapter=VersionRef(id=row["adapter_id"], version=row["adapter_version"]),
+             profile=VersionRef(id=row["profile_id"], version=row["profile_version"]),
+             coverage=(
+                 CoverageFact(dimension="identity_binding", status="enforced"),
+-                CoverageFact(dimension="request_interception", status="unknown"),
+-                CoverageFact(dimension="content_inspection", status="unknown"),
+-                CoverageFact(dimension="dispatch_enforcement", status="unknown"),
++                CoverageFact(
++                    dimension="request_interception",
++                    status="unavailable" if row["integration_mode"] == "observe" else "unknown",
++                ),
++                CoverageFact(
++                    dimension="content_inspection",
++                    status="unavailable" if row["integration_mode"] == "observe" else "unknown",
++                ),
++                CoverageFact(
++                    dimension="dispatch_enforcement",
++                    status="unavailable" if row["integration_mode"] == "observe" else "unknown",
++                ),
+                 CoverageFact(dimension="tool_events", status="unknown"),
+                 CoverageFact(dimension="lineage", status="unknown"),
+-                CoverageFact(dimension="served_destination", status="unknown"),
++                CoverageFact(
++                    dimension="served_destination",
++                    status="unavailable" if row["integration_mode"] == "observe" else "unknown",
++                ),
+                 CoverageFact(dimension="outcome_verification", status="unknown"),
+             ),
+         )
+@@ -156,7 +170,9 @@
+         if bound is None and PRODUCT_SESSION_HEADER not in headers:
+             return
+         principal = self.principal(headers)
+-        self._binding(principal, sid)
++        row = self._binding(principal, sid)
++        if row["integration_mode"] == IntegrationMode.OBSERVE:
++            raise ApiError(403, "forbidden", "Observation-only sessions cannot dispatch models.")
+         if headers.get(HEADER_SESSION_ID) != sid:
+             raise ApiError(
+                 403, "forbidden", "Bound model requests require the matching session header."
+--- a/src/adrl/api/client.py
++++ b/src/adrl/api/client.py
+@@ -18,7 +18,7 @@
+ import httpx
+ from pydantic import BaseModel, ConfigDict
+ 
+-from adrl.api.contracts import EventRequest, OpaqueId
++from adrl.api.contracts import EventRequest, IntegrationMode, OpaqueId
+ from adrl.gates.workload import HEADER_SESSION_ID, HEADER_WORKLOAD_ASSERTION
+ from adrl.ledger import crypto
+ 
+@@ -28,6 +28,7 @@
+     server: str
+     session_id: OpaqueId
+     token_file: Path
++    integration_mode: IntegrationMode = IntegrationMode.GATEWAY
+ 
+     def headers(self) -> dict[str, str]:
+         validate_server(self.server)
+--- a/src/adrl/api/contracts.py
++++ b/src/adrl/api/contracts.py
+@@ -7,14 +7,20 @@
+ 
+ from __future__ import annotations
+ 
++from enum import StrEnum
+ from typing import Annotated, Final, Literal
+ from uuid import UUID
+ 
+ from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, RootModel, StringConstraints
+ 
+-SCHEMA_VERSION: Final = "adrl-api-v1-preview.2"
++SCHEMA_VERSION: Final = "adrl-api-v1-preview.3"
+ OpaqueId = Annotated[str, StringConstraints(pattern=r"^[A-Za-z0-9_.:-]{1,128}$")]
+ SequenceNumber = Annotated[int, Field(strict=True, ge=0, le=2**63 - 1)]
++
++
++class IntegrationMode(StrEnum):
++    GATEWAY = "gateway"
++    OBSERVE = "observe"
+ 
+ 
+ class ApiRecord(BaseModel):
+@@ -38,10 +44,14 @@
+     identity: Literal["correlation_only", "authenticated_binding"]
+     tool_events: Literal["not_implemented", "implemented"]
+     tested_harness_versions: tuple[str, ...]
++    integration_modes: tuple[IntegrationMode, ...] = (
++        IntegrationMode.GATEWAY,
++        IntegrationMode.OBSERVE,
++    )
+ 
+ 
+ class Capabilities(ApiRecord):
+-    schema_version: Literal["adrl-api-v1-preview.2"] = SCHEMA_VERSION
++    schema_version: Literal["adrl-api-v1-preview.3"] = SCHEMA_VERSION
+     scope: Literal["distribution"] = "distribution"
+     profiles: tuple[ProfileCapability, ...]
+     adapters: tuple[AdapterCapability, ...]
+@@ -51,10 +61,11 @@
+ 
+ 
+ class SessionRequest(ApiRecord):
+-    schema_version: Literal["adrl-api-v1-preview.2"] = SCHEMA_VERSION
++    schema_version: Literal["adrl-api-v1-preview.3"] = SCHEMA_VERSION
+     adapter: VersionRef
+     profile: VersionRef
+     workload_ref: OpaqueId
++    integration_mode: IntegrationMode = IntegrationMode.GATEWAY
+     parent_session_id: OpaqueId | None = None
+ 
+ 
+@@ -74,9 +85,10 @@
+ 
+ 
+ class SessionStatus(ApiRecord):
+-    schema_version: Literal["adrl-api-v1-preview.2"] = SCHEMA_VERSION
++    schema_version: Literal["adrl-api-v1-preview.3"] = SCHEMA_VERSION
+     session_id: OpaqueId
+     workload_ref: OpaqueId
++    integration_mode: IntegrationMode = IntegrationMode.GATEWAY
+     policy: VersionRef
+     adapter: VersionRef
+     profile: VersionRef
+@@ -91,7 +103,8 @@
+ 
+ 
+ class EventBase(ApiRecord):
+-    schema_version: Literal["adrl-api-v1-preview.2"] = SCHEMA_VERSION
++    # Existing encrypted envelopes and pending outboxes keep their original version.
++    schema_version: Literal["adrl-api-v1-preview.2", "adrl-api-v1-preview.3"] = SCHEMA_VERSION
+     event_id: UUID
+     session_id: OpaqueId
+     route_id: OpaqueId | None = None
+--- a/src/adrl/ledger/migrations/0004_integration_mode.sql
++++ b/src/adrl/ledger/migrations/0004_integration_mode.sql
+@@ -0,0 +1,4 @@
++-- Explicit session coverage mode (ADRL-SEM-007, ADRL-MEM-001).
++-- Existing preview-2 bindings were gateway bindings. No observation mode existed.
++ALTER TABLE product_sessions ADD COLUMN integration_mode TEXT NOT NULL DEFAULT 'gateway'
++    CHECK (integration_mode IN ('gateway', 'observe'));
+--- a/tests/unit/test_product_client.py
++++ b/tests/unit/test_product_client.py
+@@ -124,8 +124,9 @@
+         outbox.close()
+ 
+ 
++@pytest.mark.parametrize("mode", ["gateway", "observe"])
+ def test_connection_command_writes_private_isolated_files(
+-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, mode: str
+ ) -> None:
+     monkeypatch.setenv("ADRL_CONFIG_DIR", str(CONFIG_DIR))
+     monkeypatch.setenv("ADRL_KEYSTORE_PATH", str(tmp_path / "keys"))
+@@ -141,6 +142,7 @@
+                 "session": {
+                     "session_id": request.headers["x-claude-code-session-id"],
+                     "workload_ref": payload["workload_ref"],
++                    "integration_mode": payload["integration_mode"],
+                     "adapter": payload["adapter"],
+                     "profile": payload["profile"],
+                     "policy": {"id": "policy", "version": "1"},
+@@ -162,19 +164,30 @@
+                 "/Users/arunmenon/projects/adrl-core",
+                 "--output",
+                 str(output),
++                "--mode",
++                mode,
+             ],
+         )
+     assert result.exit_code == 0, result.output
+     assert route.call_count == 1
+     token = (output / "assertion.token").read_text()
+     assert token not in result.output
+-    assert "X-Org: existing" in (output / "env.sh").read_text()
++    environment = (output / "env.sh").read_text()
++    if mode == "gateway":
++        assert "X-Org: existing" in environment
++        assert "ANTHROPIC_BASE_URL" in environment
++    else:
++        assert "ANTHROPIC" not in environment
++        assert token not in environment
++        assert "cannot inspect, block" in result.output
+     hook_settings = json.loads((output / "claude-settings.json").read_text())
+     assert set(hook_settings["hooks"]) == {"PostToolUse", "PostToolUseFailure"}
+     for path in output.iterdir():
+         assert os.stat(path).st_mode & 0o777 == 0o600
+     config = Connection.model_validate_json((output / "connection.json").read_bytes())
+     assert config.headers()["x-adrl-workload-assertion"] == token
++    assert config.integration_mode == mode
++    assert token not in (output / "claude-settings.json").read_text()
+     assert os.stat(output).st_mode & 0o777 == 0o700
+ 
+ 
+--- a/tests/unit/test_data_inventory_migration.py
++++ b/tests/unit/test_data_inventory_migration.py
+@@ -0,0 +1,31 @@
++"""Inventory catches columns introduced by migration. Primary: ADRL-MEM-001."""
++
++from __future__ import annotations
++
++import importlib.util
++from pathlib import Path
++
++import pytest
++
++
++def test_undocumented_added_column_fails_inventory(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
++) -> None:
++    root = Path(__file__).resolve().parents[2]
++    spec = importlib.util.spec_from_file_location(
++        "inventory_check", root / "tools/check_data_inventory.py"
++    )
++    assert spec is not None and spec.loader is not None
++    module = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(module)
++    document = tmp_path / "inventory.md"
++    document.write_text(
++        "\n".join(
++            line
++            for line in module.DOC.read_text().splitlines()
++            if "product_sessions.integration_mode" not in line
++        )
++    )
++    monkeypatch.setattr(module, "DOC", document)
++    assert module.main([]) == 1
++    assert "unlisted field: product_sessions.integration_mode" in capsys.readouterr().out
+--- a/tests/unit/test_product_migration.py
++++ b/tests/unit/test_product_migration.py
+@@ -0,0 +1,47 @@
++"""Legacy product bindings retain gateway scope. Primary: ADRL-MEM-001, ADRL-SEM-007."""
++
++from __future__ import annotations
++
++import sqlite3
++from pathlib import Path
++
++from adrl.ledger.migrations import load_migrations
++from adrl.ledger.store import LedgerStore
++
++
++def test_existing_binding_survives_mode_migration(tmp_path: Path) -> None:
++    path = tmp_path / "ledger.db"
++    connection = sqlite3.connect(path)
++    try:
++        for migration in load_migrations():
++            if migration.version <= 3:
++                connection.executescript(migration.sql)
++        connection.execute(
++            "INSERT INTO product_sessions VALUES (?,?,?,?,?,?,?,?,?)",
++            (
++                "session",
++                "repo",
++                "claude-code",
++                "1",
++                "anthropic-messages-v1",
++                "1",
++                "1",
++                "digest",
++                "ts",
++            ),
++        )
++        connection.execute("PRAGMA user_version=3")
++        connection.commit()
++    finally:
++        connection.close()
++    store = LedgerStore(path)
++    store.open()
++    try:
++        row = dict(store.read("SELECT * FROM product_sessions")[0])
++        assert row["integration_mode"] == "gateway"
++        assert row["session_hmac"] == "session"
++        assert row["config_digest"] == "digest"
++        assert row["ts"] == "ts"
++        assert store.schema_user_version() == 4
++    finally:
++        store.close()
+--- a/tests/integration/e2e/test_product_services.py
++++ b/tests/integration/e2e/test_product_services.py
+@@ -358,3 +358,49 @@
+     response = await product.client.post("/v1/messages", headers=headers, json={})
+     assert response.status_code == 400
+     assert not product.system.gateway_requests()
++
++
++async def test_observation_mode_is_durable_and_cannot_dispatch(product: ProductHarness) -> None:
++    response = await product.bind(integration_mode="observe")
++    assert response.status_code == 200
++    status = response.json()["session"]
++    assert status["integration_mode"] == "observe"
++    facts = {f["dimension"]: f["status"] for f in status["coverage"]}
++    assert facts["identity_binding"] == "enforced"
++    for dimension in (
++        "request_interception",
++        "content_inspection",
++        "dispatch_enforcement",
++        "served_destination",
++    ):
++        assert facts[dimension] == "unavailable"
++    product.service = ProductService(
++        product.system.store, product.system.components.keystore, product.system.components.bundle
++    )
++    renewed = await product.bind(integration_mode="observe")
++    assert renewed.status_code == 200
++    assert renewed.json()["session"] == status
++    assert (await product.bind(integration_mode="gateway")).status_code == 409
++    denied = await product.client.post(
++        "/v1/messages", headers=product.headers(), json={"model": "not-dispatched"}
++    )
++    assert denied.status_code == 403
++    assert not product.system.gateway_requests()
++    event = product.event(schema_version="adrl-api-v1-preview.2")
++    ack = await product.client.post("/adrl/v1/events", headers=product.headers(), json=event)
++    assert ack.status_code == 200
++    timeline = await product.client.get(
++        f"/adrl/v1/sessions/{product.sid}/timeline", headers=product.headers()
++    )
++    entries = timeline.json()["entries"]
++    assert len(entries) == 1
++    assert entries[0]["kind"] == "observation"
++    assert entries[0]["observation"]["schema_version"] == "adrl-api-v1-preview.2"
++    assert entries[0]["observation"]["payload"]["outcome"] == "failed"
++
++
++async def test_gateway_binding_cannot_be_relabelled_as_observation(product: ProductHarness) -> None:
++    assert (await product.bind()).status_code == 200
++    assert (await product.bind(integration_mode="observe")).status_code == 409
++    status = product.service.status(product.headers(), product.sid)
++    assert status.integration_mode == "gateway"

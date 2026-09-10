@@ -1,0 +1,672 @@
+--- a/docs/data-inventory.md
++++ b/docs/data-inventory.md
+@@ -524,6 +524,7 @@
+ | `LaunchEvent:exact_close_eligible` | `skeleton` | Always false |
+ | `LaunchEvent:eligible_for_learning` | `skeleton` | Always false |
+ | `ExecutionPolicy:schema_version` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
++| `ExecutionPolicy:active_request_seconds` | `skeleton` | V2 active HTTP phase/elapsed-response bound; default two seconds. V1 histories retain the fixed two-second admission ceiling and original coupled transport |
+ | `ExecutionPolicy:max_histories` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
+ | `ExecutionPolicy:max_events` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
+ | `ExecutionPolicy:max_event_bytes` | `skeleton` | Versioned operational bound or pinned public engine/fixture constant; no task payload |
+--- a/docs/isolated-execution.md
++++ b/docs/isolated-execution.md
+@@ -7,7 +7,14 @@
+ `IsolatedExecution` takes an existing authenticated stopped resource from `StoppedResourceOwner`.
+ The latter keeps its original raw configuration binding, non-force removal and no-start API.
+ The execution transport needs an explicitly selected local socket, pinned seccomp and an HTTP
+-I/O budget of at most two seconds. A strict expected-status check requires 204 on start/kill/
++I/O budget of at most two seconds. Execution policy v2 records `active_request_seconds` and
++uses an independent tighter client for profile, inspection, start, kill, discard and recovery.
++The stopped owner keeps its existing preparation policy (ten-second default, fifteen-second
++maximum); execution no longer requires reducing that budget before creation. The active bound
++is an HTTP phase timeout plus elapsed-response rejection, not a hard deadline over all requests.
++V1 histories keep their original profile hash and coupled <=2-second admission rule; recovery
++uses the authenticated event's version even when opened by a v2 coordinator. No rows are rewritten.
++A strict expected-status check requires 204 on start/kill/
+ discard. This is separate from arbitrary Docker CLI arguments, pull, exec or restart support.
+ 
+ Admission requires a readable started attempt with intact grant, the exact never-started bound
+@@ -50,6 +57,16 @@
+ 
+ ## Uncertainty and cleanup
+ 
++A lost or rejected create response can leave a created object without binding authority.
++Creation is never retried or adopted by name. Bounded transport causes distinguish read/connect/
++write/pool timeout, HTTP transport failure and socket failure in transient errors and private
++synthetic-fixture diagnostics. Raw exception text is suppressed; no diagnostic field is added
++to the product ledger. Cancellation still drains the original worker and may retain its genuine
++returned and validated binding. A response that never arrives retains uncertainty and its fence.
++The September 8 historical failed create has no retained underlying cause: a reproduced timeout
++mechanism does not establish that it caused the earlier failure. V2 remains offline tested until
++a separately bounded real-engine acceptance completes.
++
+ `recover(operation_id)` is a trusted local operator operation. It never starts, restarts, adopts
+ by name or signals saved PIDs. An authenticated existing launch history permits sealing and
+ force-discarding only its original exact owned fixture, followed by exact-ID absence confirmation.
+--- a/src/adrl/core/container_control.py
++++ b/src/adrl/core/container_control.py
+@@ -10,6 +10,7 @@
+ import json
+ import re
+ import time
++from copy import copy
+ from pathlib import Path
+ from typing import Any, Literal, cast
+ from urllib.parse import quote
+@@ -31,6 +32,24 @@
+     def __init__(self, status: int) -> None:
+         super().__init__(f"engine_http_{status}")
+         self.status = status
++
++
++class TransportError(ResourceError):
++    """Safe transient diagnosis; raw transport exceptions never enter the product ledger."""
++
++    def __init__(
++        self,
++        kind: Literal[
++            "read_timeout",
++            "connect_timeout",
++            "write_timeout",
++            "pool_timeout",
++            "http_transport",
++            "socket_failure",
++        ],
++    ) -> None:
++        super().__init__("engine_unavailable_or_uncertain")
++        self.kind = kind
+ 
+ 
+ class ResourcePolicy(BaseModel):
+@@ -87,7 +106,19 @@
+             raise ResourceError("invalid_seccomp_profile") from None
+         self.profile = canonical(value).decode()
+         self.profile_sha256 = profile_sha256
+-        self.policy = policy
++        self.policy = ResourcePolicy.model_validate(policy.model_dump())
++
++    def bounded(self, request_seconds: float) -> ContainerControl:
++        """Independent tighter I/O view; preserve the original endpoint and profile custody."""
++        original = ResourcePolicy.model_validate(self.policy.model_dump())
++        requested = ResourcePolicy.model_validate(
++            original.model_dump() | {"request_seconds": request_seconds}
++        )
++        if requested.request_seconds > original.request_seconds:
++            raise ResourceError("engine_request_budget_widening_refused")
++        result = copy(self)
++        result.policy = requested
++        return result
+ 
+     def _request(
+         self,
+@@ -124,6 +155,8 @@
+                         chunks.extend(chunk)
+                         if len(chunks) > self.policy.response_bytes:
+                             raise ResourceError("engine_response_limit")
++                    if time.monotonic() - started > self.policy.request_seconds:
++                        raise ResourceError("engine_request_deadline")
+                     if response.status_code not in {200, 201, 204} or (
+                         expected_status is not None and response.status_code != expected_status
+                     ):
+@@ -131,8 +164,18 @@
+                     if response.status_code == 204:
+                         return None
+                     return json.loads(chunks)
+-        except (httpx.HTTPError, OSError):
+-            raise ResourceError("engine_unavailable_or_uncertain") from None
++        except httpx.ReadTimeout:
++            raise TransportError("read_timeout") from None
++        except httpx.ConnectTimeout:
++            raise TransportError("connect_timeout") from None
++        except httpx.WriteTimeout:
++            raise TransportError("write_timeout") from None
++        except httpx.PoolTimeout:
++            raise TransportError("pool_timeout") from None
++        except httpx.HTTPError:
++            raise TransportError("http_transport") from None
++        except OSError:
++            raise TransportError("socket_failure") from None
+         except (UnicodeError, json.JSONDecodeError):
+             raise ResourceError("engine_response_invalid") from None
+ 
+--- a/src/adrl/core/execution_control.py
++++ b/src/adrl/core/execution_control.py
+@@ -11,14 +11,17 @@
+ from typing import Any, Literal
+ from urllib.parse import quote
+ 
+-from pydantic import BaseModel, ConfigDict, Field
++from pydantic import BaseModel, ConfigDict, Field, model_validator
+ 
+ from adrl.core.container_control import ContainerControl, ResourceError, canonical
+ 
+ 
+ class ExecutionPolicy(BaseModel):
+     model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
+-    schema_version: Literal["isolated-fixture-execution-v1"] = "isolated-fixture-execution-v1"
++    schema_version: Literal["isolated-fixture-execution-v1", "isolated-fixture-execution-v2"] = (
++        "isolated-fixture-execution-v2"
++    )
++    active_request_seconds: float = Field(default=2, ge=0.1, le=2)
+     max_histories: int = Field(default=32, ge=1, le=32)
+     max_events: Literal[8] = 8
+     max_event_bytes: Literal[4096] = 4096
+@@ -46,15 +49,31 @@
+     ] = "74085cef493ac7e62755cdcc650ef9f1c3856d05a5b9016e2cc8978eb4949e07"
+     fixture_argv: tuple[Literal["/probe"], Literal["forced_stop"]] = ("/probe", "forced_stop")
+ 
++    @model_validator(mode="after")
++    def legacy_transport(self) -> ExecutionPolicy:
++        if (
++            self.schema_version == "isolated-fixture-execution-v1"
++            and self.active_request_seconds != 2
++        ):
++            raise ValueError("legacy_execution_budget_fixed")
++        return self
++
+ 
+ class ExecutionControl:
+     """No public API export. Stable projection and changing lifecycle are checked separately."""
+ 
+     def __init__(self, control: ContainerControl, policy: ExecutionPolicy) -> None:
+-        self.control = control
+         self.policy = ExecutionPolicy.model_validate(policy.model_dump())
+-        if control.profile_sha256 != policy.seccomp_sha256 or control.policy.request_seconds > 2:
++        if control.profile_sha256 != self.policy.seccomp_sha256:
+             raise ResourceError("execution_transport_profile_required")
++        if self.policy.schema_version == "isolated-fixture-execution-v1":
++            if control.policy.request_seconds > 2:
++                raise ResourceError("execution_transport_profile_required")
++            self.control = control
++        else:
++            self.control = control.bounded(
++                min(control.policy.request_seconds, self.policy.active_request_seconds)
++            )
+ 
+     def profile(self) -> dict[str, Any]:
+         p = self.policy
+--- a/src/adrl/core/isolated_execution.py
++++ b/src/adrl/core/isolated_execution.py
+@@ -284,13 +284,19 @@
+             self.owner.journal.data.ledger.submit(write).result(timeout=self.policy.ledger_seconds),
+         )
+ 
+-    def _engine(self, event: LaunchEvent) -> None:
+-        control = ExecutionControl(self.owner.control, event.policy)
++    def _execution(self, event: LaunchEvent) -> ExecutionControl:
++        if event.policy == self.control.policy:
++            return self.control
++        return ExecutionControl(self.owner.control, event.policy)
++
++    def _engine(self, event: LaunchEvent) -> ExecutionControl:
++        control = self._execution(event)
+         if self._ref("engine", control.profile()) != event.engine_ref:
+             raise ResourceError("launch_engine_changed")
++        return control
+ 
+     def _value(self, event: LaunchEvent, value: dict[str, Any]) -> dict[str, Any]:
+-        control = ExecutionControl(self.owner.control, event.policy)
++        control = self._execution(event)
+         if self._ref("configuration", control.projection(value)) != event.configuration_ref:
+             raise ResourceError("launch_configuration_changed")
+         if event.started_at is not None:
+@@ -298,15 +304,15 @@
+         return value
+ 
+     def _inspect(self, event: LaunchEvent) -> dict[str, Any]:
+-        self._engine(event)
+-        return self._value(event, self.owner.control.inspect(event.resource_id))
++        control = self._engine(event)
++        return self._value(event, control.control.inspect(event.resource_id))
+ 
+     def _absent(self, event: LaunchEvent) -> bool:
+         # Only the exact container inspection's 404 can confirm absence, never /info,
+         # /version, image validation, or another intermediate request's error.
+-        self._engine(event)
+-        try:
+-            value = self.owner.control.inspect(event.resource_id)
++        control = self._engine(event)
++        try:
++            value = control.control.inspect(event.resource_id)
+         except EngineError as exc:
+             if exc.status == 404:
+                 return True
+@@ -371,7 +377,7 @@
+         try:
+             if not self._absent(event):
+                 try:
+-                    self.control.discard(event.resource_id)
++                    self._execution(event).discard(event.resource_id)
+                 except Exception:
+                     # No reissue: only exact-ID absence may reconcile a lost deletion reply.
+                     if not self._absent(event):
+@@ -391,7 +397,7 @@
+         value = self._inspect(event)
+         if value["State"]["Running"]:
+             try:
+-                self.control.kill(event.resource_id)
++                self._execution(event).kill(event.resource_id)
+             except EngineError as exc:
+                 if exc.status != 409:
+                     raise
+--- a/tests/integration/test_launch_engine.py
++++ b/tests/integration/test_launch_engine.py
+@@ -20,7 +20,6 @@
+     ContainerControl,
+     ContainerRequest,
+     ResourceError,
+-    ResourcePolicy,
+ )
+ from adrl.core.errors import LedgerAppendFailure
+ from adrl.core.execution_control import ExecutionPolicy
+@@ -42,7 +41,6 @@
+     fault: str,
+ ) -> None:
+     control, image = engine
+-    control.policy = ResourcePolicy(request_seconds=2)
+     journal = AttemptJournal(capture.data)
+     task = start()
+     operation = uuid4()
+--- a/tests/integration/test_resource_engine.py
++++ b/tests/integration/test_resource_engine.py
+@@ -21,6 +21,7 @@
+     EngineError,
+     ResourceError,
+     ResourcePolicy,
++    TransportError,
+ )
+ from adrl.core.resource_owner import StoppedResourceOwner
+ from adrl.ledger.attempts import AttemptJournal
+@@ -77,6 +78,7 @@
+                 "name": name,
+                 "error_type": type(exc).__name__,
+                 "safe_code": code if re.fullmatch(r"[a-z0-9_]{1,80}", code) else "unavailable",
++                "transport_cause": exc.kind if isinstance(exc, TransportError) else None,
+             }
+             uncertain.append(failure)
+             record(failure)
+--- /dev/null
++++ b/tests/unit/test_create_receipt.py
+@@ -0,0 +1,325 @@
++"""Original create receipt custody and transport bounds. Primary: ADRL-OPS-001.
++
++Secondary: ADRL-MEM-001/002/003/005/010, ADRL-SAF-007, ADRL-TRU-001.
++Offline HTTP faults run against an in-process Unix socket, never a Docker daemon.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import json
++import sqlite3
++from pathlib import Path
++from types import SimpleNamespace
++from typing import Any
++from uuid import uuid4
++
++import httpx
++import pytest
++
++from adrl.core.container_control import (
++    ContainerControl,
++    ContainerRequest,
++    ResourceError,
++    ResourcePolicy,
++    TransportError,
++)
++from adrl.core.execution_control import ExecutionControl, ExecutionPolicy
++from adrl.core.isolated_execution import IsolatedExecution
++from adrl.core.resource_owner import StoppedResourceOwner
++from adrl.ledger.attempts import AttemptJournal
++
++from .test_attempts import start
++from .test_capture import Fixture
++from .test_capture import capture as capture
++from .test_isolated_execution import IMAGE, Engine, prepared
++from .test_isolated_execution import engine as engine
++
++
++@pytest.mark.parametrize(
++    ("reply", "code", "cause"),
++    [
++        ("disconnect", "engine_unavailable_or_uncertain", "http_transport"),
++        ("invalid", "engine_response_invalid", None),
++        ("missing", "create_identity_unavailable", None),
++        ("oversized", "engine_response_limit", None),
++        ("encoded", "engine_encoded_response_refused", None),
++        ("drip", "engine_request_deadline", None),
++    ],
++)
++def test_created_object_can_outlive_rejected_original_reply(
++    engine: Engine, reply: str, code: str, cause: str | None
++) -> None:
++    control = engine.control()
++    control.policy = ResourcePolicy(request_seconds=0.15, response_bytes=1024)
++    engine.create_reply = reply
++    name, body = control.prepare(ContainerRequest(image_id=IMAGE, argv=("/probe",)), "f" * 64)
++    with pytest.raises(ResourceError, match=code) as failure:
++        control.create(name, body)
++    assert getattr(failure.value, "kind", None) == cause
++    assert len(engine.resources) == 1 and engine.starts() == 0
++    assert sum("/create?" in p for _m, p in engine.calls) == 1
++
++
++@pytest.mark.parametrize("seconds", [2, 10])
++def test_delayed_original_receipt_distinguishes_preparation_from_active_budget(
++    engine: Engine, seconds: float
++) -> None:
++    engine.create_delay = 2.25
++    control = engine.control()
++    control.policy = ResourcePolicy(request_seconds=seconds)
++    name, body = control.prepare(ContainerRequest(image_id=IMAGE, argv=("/probe",)), "e" * 64)
++    if seconds == 2:
++        with pytest.raises(TransportError) as failure:
++            control.create(name, body)
++        assert failure.value.kind == "read_timeout"
++        assert str(failure.value) == "engine_unavailable_or_uncertain"
++    else:
++        identity = control.create(name, body)
++        assert identity in engine.resources
++        control.verify_created(control.inspect(identity), name, body)
++        control.remove(identity)
++        assert not engine.resources
++    assert engine.starts() == 0
++    assert sum("/create?" in p for _m, p in engine.calls) == 1
++
++
++async def test_missing_create_receipt_keeps_fence_without_reissue_or_adoption(
++    capture: Fixture, engine: Engine
++) -> None:
++    engine.create_delay = 0.3
++    control = engine.control()
++    control.policy = ResourcePolicy(request_seconds=0.1)
++    journal = AttemptJournal(capture.data)
++    task, operation = start(), uuid4()
++    await journal.start(capture.principal, capture.workspace, task)
++    owner = StoppedResourceOwner(journal, control)
++    request = ContainerRequest(image_id=IMAGE, argv=("/probe", "forced_stop"))
++    with pytest.raises(ResourceError, match="resource_create_uncertain"):
++        await owner.create(capture.principal, operation, task.attempt_id, request)
++    assert [e.phase for e in owner.read(operation)] == ["intent", "create_issued"]
++    assert owner.read(operation)[-1].resource_id is None
++    with pytest.raises(ResourceError, match="already_issued"):
++        await owner.create(capture.principal, operation, task.attempt_id, request)
++    with pytest.raises(ResourceError):
++        owner.remove(operation)
++    assert capture.store.read("SELECT * FROM product_execution_fences")
++    assert not capture.store.read("SELECT * FROM product_launch_events")
++    assert engine.starts() == 0 and len(engine.resources) == 1
++    assert sum("/create?" in p for _m, p in engine.calls) == 1
++
++
++async def test_cancelled_creation_drains_original_receipt_without_start(
++    capture: Fixture, engine: Engine
++) -> None:
++    engine.create_delay = 0.3
++    journal = AttemptJournal(capture.data)
++    task, operation = start(), uuid4()
++    await journal.start(capture.principal, capture.workspace, task)
++    owner = StoppedResourceOwner(journal, engine.control())
++    pending = asyncio.create_task(
++        owner.create(
++            capture.principal,
++            operation,
++            task.attempt_id,
++            ContainerRequest(image_id=IMAGE, argv=("/probe", "forced_stop")),
++        )
++    )
++    assert await asyncio.to_thread(engine.create_entered.wait, 2)
++    pending.cancel()
++    await asyncio.sleep(0.02)
++    pending.cancel()
++    with pytest.raises(asyncio.CancelledError):
++        await pending
++    assert owner.last_event and owner.last_event.phase == "bound"
++    assert owner.read(operation)[-1].resource_id in engine.resources
++    owner.remove(operation)
++    assert not engine.resources and engine.starts() == 0
++
++
++async def test_every_active_request_uses_its_own_budget(
++    capture: Fixture, engine: Engine, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    journal = AttemptJournal(capture.data)
++    task, operation = start(), uuid4()
++    await journal.start(capture.principal, capture.workspace, task)
++    control = engine.control()
++    control.policy = ResourcePolicy()
++    owner = StoppedResourceOwner(journal, control)
++    run = IsolatedExecution(owner, ExecutionPolicy(active_request_seconds=0.3, max_run_seconds=0.1))
++    original = ContainerControl._request
++    calls: list[tuple[str, str, float]] = []
++
++    def recorded(self: ContainerControl, method: str, path: str, *args: Any, **kw: Any) -> Any:
++        calls.append((method, path, self.policy.request_seconds))
++        return original(self, method, path, *args, **kw)
++
++    monkeypatch.setattr(ContainerControl, "_request", recorded)
++    await owner.create(
++        capture.principal,
++        operation,
++        task.attempt_id,
++        ContainerRequest(image_id=IMAGE, argv=("/probe", "forced_stop")),
++    )
++    assert next(b for m, p, b in calls if "/create?" in p) == 10
++    assert run.control.control is not owner.control
++    assert run.control.control.socket == owner.control.socket
++    assert run.control.control.profile_sha256 == owner.control.profile_sha256
++    assert (await run.run(capture.principal, operation)).resource_state == "stopped"
++    assert run.recover(operation).resource_state == "absent"
++    started = next(i for i, (m, p, b) in enumerate(calls) if p.endswith("/start"))
++    active = calls[started:]
++    assert all(b == 0.3 for m, p, b in active)
++    assert any(m == "DELETE" for m, p, b in active)
++    assert any("/kill?" in p for m, p, b in active)
++    assert any(p.endswith("/json") for m, p, b in active)
++    assert owner.policy.request_seconds == owner.control.policy.request_seconds == 10
++    assert run.read(operation)[-1].policy.schema_version == "isolated-fixture-execution-v2"
++
++
++async def test_active_start_timeout_does_not_inherit_preparation_budget(
++    capture: Fixture, engine: Engine
++) -> None:
++    run, operation = await prepared(capture, engine, active_request_seconds=0.1)
++    engine.start_delay = 0.3
++    report = await run.run(capture.principal, operation)
++    assert report.execution_failed and report.resource_state == "absent"
++    assert [e.phase for e in run.read(operation)] == [
++        "claim",
++        "sealed",
++        "discard_issued",
++        "discarded",
++    ]
++    assert run.owner.control.policy.request_seconds == 1
++    assert engine.starts() == 1 and not engine.resources
++
++
++@pytest.mark.parametrize("reopen_seconds", [1, 10])
++async def test_legacy_signed_history_keeps_its_original_transport_meaning(
++    capture: Fixture, engine: Engine, reopen_seconds: float
++) -> None:
++    run, operation = await prepared(capture, engine, schema_version="isolated-fixture-execution-v1")
++    assert (await run.run(capture.principal, operation)).resource_state == "stopped"
++    key = run.owner._operation(operation)
++
++    def old_shape(conn: sqlite3.Connection) -> list[str]:
++        rows = list(conn.execute("SELECT * FROM product_launch_events ORDER BY event_seq"))
++        previous = rows[0]["prev_mac"]
++        payloads = []
++        for row in rows:
++            value = json.loads(row["payload_json"])
++            del value["policy"]["active_request_seconds"]
++            payload = json.dumps(value)
++            mac = run._ref("event", [previous, payload])
++            conn.execute(
++                "UPDATE product_launch_events SET payload_json=?,prev_mac=?,mac=? "
++                "WHERE operation_key=? AND event_seq=?",
++                (payload, previous, mac, key, row["event_seq"]),
++            )
++            previous = mac
++            payloads.append(payload)
++        return payloads
++
++    original = await asyncio.wrap_future(capture.store.submit(old_shape))
++    run.owner.control.policy = ResourcePolicy(request_seconds=reopen_seconds)
++    reopened = IsolatedExecution(run.owner, ExecutionPolicy(active_request_seconds=0.1))
++    assert reopened.read(operation)[-1].policy.schema_version == "isolated-fixture-execution-v1"
++    report = reopened.recover(operation)
++    assert report.resource_state == ("absent" if reopen_seconds == 1 else "uncertain")
++    assert report.exact_close_eligible is False and report.eligible_for_learning is False
++    rows = capture.store.read("SELECT payload_json FROM product_launch_events ORDER BY event_seq")
++    assert [r["payload_json"] for r in rows[: len(original)]] == original
++    assert engine.starts() == 1
++    if reopen_seconds == 10:
++        assert engine.resources and not any(m == "DELETE" for m, p in engine.calls)
++
++
++@pytest.mark.parametrize("seconds", [float("nan"), 0, 2.1])
++def test_invalid_active_budget_is_refused(engine: Engine, seconds: float) -> None:
++    policy = ExecutionPolicy.model_construct(active_request_seconds=seconds)
++    with pytest.raises(ValueError):
++        ExecutionControl(engine.control(), policy)
++    assert not engine.calls
++
++
++def test_transport_view_cannot_widen_or_reinterpret_legacy(engine: Engine) -> None:
++    control = engine.control()
++    with pytest.raises(ResourceError, match="widening"):
++        control.bounded(2)
++    with pytest.raises(ValueError, match="legacy_execution_budget_fixed"):
++        ExecutionPolicy(schema_version="isolated-fixture-execution-v1", active_request_seconds=0.5)
++    control.policy = ResourcePolicy()
++    with pytest.raises(ResourceError, match="profile_required"):
++        ExecutionControl(control, ExecutionPolicy(schema_version="isolated-fixture-execution-v1"))
++    assert control.policy.request_seconds == 10 and not engine.calls
++
++
++@pytest.mark.parametrize(
++    ("error", "cause"),
++    [
++        (httpx.ReadTimeout, "read_timeout"),
++        (httpx.ConnectTimeout, "connect_timeout"),
++        (httpx.WriteTimeout, "write_timeout"),
++        (httpx.PoolTimeout, "pool_timeout"),
++        (httpx.RemoteProtocolError, "http_transport"),
++        (OSError, "socket_failure"),
++    ],
++)
++def test_transport_causes_do_not_expose_raw_messages(
++    engine: Engine, monkeypatch: pytest.MonkeyPatch, error: type[Exception], cause: str
++) -> None:
++    def failed(*args: Any, **kw: Any) -> Any:
++        raise error("sensitive-path-and-daemon-text")
++
++    monkeypatch.setattr(httpx.HTTPTransport, "handle_request", failed)
++    with pytest.raises(TransportError) as failure:
++        engine.control().engine()
++    assert failure.value.kind == cause
++    assert str(failure.value) == "engine_unavailable_or_uncertain"
++    assert failure.value.__suppress_context__ is True
++
++
++def test_engine_guard_retains_safe_transport_cause_and_halts(
++    engine: Engine, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    from tests.integration.test_resource_engine import engine as fixture
++
++    log = tmp_path / "receipts.jsonl"
++    for key, value in {
++        "ADRL_RESOURCE_DOCKER_SOCKET": str(engine.path),
++        "ADRL_RESOURCE_FIXTURE_IMAGE": IMAGE,
++        "ADRL_RESOURCE_SECCOMP_PATH": str(
++            Path(__file__).parents[1] / "fixtures/seccomp-v27.3.1.json"
++        ),
++        "ADRL_RESOURCE_ACCEPTANCE_LOG": str(log),
++    }.items():
++        monkeypatch.setenv(key, value)
++    context = fixture.__wrapped__(monkeypatch)
++    control, _ = next(context)
++    control.policy = ResourcePolicy(request_seconds=0.1)
++    engine.create_delay = 0.3
++    name, body = control.prepare(ContainerRequest(image_id=IMAGE, argv=("/probe",)), "c" * 64)
++    with pytest.raises(TransportError):
++        control.create(name, body)
++    with pytest.raises(pytest.exit.Exception):
++        next(context)
++    records = [json.loads(line) for line in log.read_text().splitlines()]
++    assert [r["event"] for r in records] == ["create_issued", "create_uncertain"]
++    assert records[-1]["transport_cause"] == "read_timeout"
++    assert records[-1]["safe_code"] == "engine_unavailable_or_uncertain"
++    assert engine.starts() == 0
++
++
++def test_empty_success_response_still_obeys_elapsed_budget(
++    engine: Engine, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    import adrl.core.container_control as transport
++
++    control = engine.control()
++    name, body = control.prepare(ContainerRequest(image_id=IMAGE, argv=("/probe",)), "b" * 64)
++    identity = control.create(name, body)
++    stamps = iter([0.0, 2.0])
++    monkeypatch.setattr(transport, "time", SimpleNamespace(monotonic=lambda: next(stamps)))
++    with pytest.raises(ResourceError, match="engine_request_deadline"):
++        control.remove(identity)
++    assert not engine.resources
+--- a/tests/unit/test_isolated_execution.py
++++ b/tests/unit/test_isolated_execution.py
+@@ -61,6 +61,10 @@
+     image_layer: str = ExecutionPolicy().archive_sha256
+     engine_id: str = "launch-fixture-engine-id"
+     info_status: int = 200
++    create_delay: float = 0
++    create_reply: str = "normal"
++    create_entered: threading.Event = field(default_factory=threading.Event)
++    start_delay: float = 0
+ 
+     def control(self) -> ContainerControl:
+         return ContainerControl(
+@@ -173,6 +177,35 @@
+                             "FinishedAt": "0001-01-01T00:00:00Z",
+                         },
+                     }
++                    state.create_entered.set()
++                    time.sleep(state.create_delay)
++                    if state.create_reply == "disconnect":
++                        self.connection.close()
++                        return
++                    if state.create_reply != "normal":
++                        data = {
++                            "invalid": b"not json",
++                            "missing": b"{}",
++                            "oversized": b" " * 2048,
++                            "encoded": json.dumps({"Id": identity}).encode(),
++                            "drip": json.dumps({"Id": identity}).encode(),
++                        }[state.create_reply]
++                        try:
++                            self.send_response(201)
++                            self.send_header("Content-Length", str(len(data)))
++                            if state.create_reply == "encoded":
++                                self.send_header("Content-Encoding", "gzip")
++                            self.end_headers()
++                            if state.create_reply == "drip":
++                                for part in (data[:1], data[1:2], data[2:]):
++                                    time.sleep(0.08)
++                                    self.wfile.write(part)
++                                    self.wfile.flush()
++                            else:
++                                self.wfile.write(data)
++                        except (BrokenPipeError, ConnectionResetError):
++                            pass
++                        return
+                     self.send(201, {"Id": identity})
+                     return
+                 identity = self.path.split("/")[-2]
+@@ -191,6 +224,7 @@
+                         StartedAt="2026-09-08T01:00:00.000000000Z",
+                     )
+                     item["HostConfig"]["OomKillDisable"] = None
++                    time.sleep(state.start_delay)
+                     if state.drop_start:
+                         self.connection.close()
+                         return

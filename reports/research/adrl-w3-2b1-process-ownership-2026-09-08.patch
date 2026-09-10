@@ -1,0 +1,1111 @@
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,9 @@
+ # adrl-core
++
++W3.2b1 adds an internal [owned process-group runner](docs/process-ownership.md) for bounded
++synthetic commands. It tests exit, timeout, cancellation and owner-death cleanup. Detached
++and unrelated writers remain outside its scope; every result is ineligible for exact task
++closure or learning. Writer containment and journal/capture association remain open.
+ 
+ W3.2a adds an [internal attempt journal](docs/attempt-lifecycle.md): encrypted starts, close
+ requests and interruption history with transactional workspace reservations. It does not launch
+--- a/docs/adr-module-map.md
++++ b/docs/adr-module-map.md
+@@ -33,6 +33,8 @@
+ | `adrl/core/errors.py` | ADRL-CAS-007, ADRL-SAF-004, ADRL-SAF-005 | Error hierarchy and the published error-code table. Primary: ADRL-CAS-007. |
+ | `adrl/core/ids.py` | ADRL-MEM-001, ADRL-SEM-002 | Identity minting and hashing. Primary: ADRL-MEM-001. Secondary: ADRL-SEM-002. |
+ | `adrl/core/ports.py` | ADRL-FND-002, ADRL-MEM-005, ADRL-MEM-006, ADRL-MEM-010, ADRL-SAF-003, ADRL-SAF-006, ADRL-SAF-007 | Port interfaces every adapter implements. Primary: ADRL-MEM-006. |
++| `adrl/core/process_anchor.py` | ADRL-OPS-001, ADRL-SAF-007, ADRL-SEM-006, ADRL-TRU-001 | Private process-group launcher. Primary: ADRL-OPS-001. |
++| `adrl/core/process_owner.py` | ADRL-MEM-003, ADRL-OPS-001, ADRL-SAF-007, ADRL-SEM-006, ADRL-TRU-001 | Owned process-group execution and cleanup. Primary: ADRL-OPS-001. |
+ | `adrl/core/types.py` | ADRL-CAS-004, ADRL-CAS-006, ADRL-RTG-002, ADRL-RTG-009, ADRL-SAF-001, ADRL-SEM-001, ADRL-TRU-002 | Value objects shared across packages. Primary: ADRL-SEM-001. |
+ | `adrl/gates/block.py` | ADRL-SAF-004, ADRL-SAF-005, ADRL-SEM-004 | Fail-loud and block contract. Primary: ADRL-SAF-004. Secondary: ADRL-SAF-005, ADRL-SEM-004. |
+ | `adrl/gates/cli.py` | ADRL-SAF-002, ADRL-SAF-003, ADRL-SAF-007, ADRL-SAF-009 | Operator commands owned by the gates package. Primary: ADRL-SAF-002. |
+@@ -147,7 +149,7 @@
+ | ADRL-LRN-008 | `adrl/learning/explore.py`, `adrl/learning/tiers.py`, `adrl/routing/advisor.py`, `adrl/routing/router.py` |
+ | ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
+ | ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/core/process_owner.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-004 | `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/learning/artifacts.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/upcast.py` |
+ | ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/ports.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-006 | `adrl/core/ports.py`, `adrl/learning/abstention.py`, `adrl/ledger/facade.py`, `adrl/ledger/readiness.py`, `adrl/ledger/state.py`, `adrl/ledger/store.py`, `adrl/proxy/observe_only.py`, `adrl/telemetry/metrics.py` |
+@@ -155,7 +157,7 @@
+ | ADRL-MEM-008 | `adrl/ledger/shadow_retrieval.py` |
+ | ADRL-MEM-009 | `adrl/learning/pairs.py`, `adrl/ledger/counterfactual.py`, `adrl/ledger/events.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/ports.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+-| ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/ledger/attempts.py`, `adrl/telemetry/logging.py` |
++| ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/ledger/attempts.py`, `adrl/telemetry/logging.py` |
+ | ADRL-OPS-002 | `adrl/ledger/anchoring.py` |
+ | ADRL-OPS-003 | `adrl/config/checks.py` |
+ | ADRL-OPS-004 | `adrl/ledger/erasure.py` |
+@@ -177,7 +179,7 @@
+ | ADRL-SAF-004 | `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-005 | `adrl/config/checks.py`, `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py`, `adrl/telemetry/metrics.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-006 | `adrl/core/ports.py`, `adrl/gates/content.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py` |
+-| ADRL-SAF-007 | `adrl/core/ports.py`, `adrl/gates/cli.py`, `adrl/gates/sandbox.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-SAF-007 | `adrl/core/ports.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/gates/cli.py`, `adrl/gates/sandbox.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-SAF-008 | `adrl/config/loaders.py`, `adrl/config/models.py`, `adrl/gates/content.py`, `adrl/gates/deployments.py`, `adrl/gates/pipeline.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py` |
+ | ADRL-SAF-009 | `adrl/cli/main.py`, `adrl/gates/cli.py`, `adrl/gates/deployments.py`, `adrl/gates/egress.py`, `adrl/gates/pipeline.py`, `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-SEM-001 | `adrl/core/types.py`, `adrl/gates/feasibility.py`, `adrl/telemetry/metrics.py`, `adrl/wire/classify.py`, `adrl/wire/parse.py` |
+@@ -185,9 +187,9 @@
+ | ADRL-SEM-003 | `adrl/proxy/pipeline.py` |
+ | ADRL-SEM-004 | `adrl/config/models.py`, `adrl/gates/block.py`, `adrl/proxy/pipeline.py`, `adrl/wire/classify.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SEM-005 | `adrl/cascade/sticky.py` |
+-| ADRL-SEM-006 | `adrl/cascade/controller.py`, `adrl/proxy/observe_only.py`, `adrl/proxy/pipeline.py`, `adrl/wire/identity.py` |
++| ADRL-SEM-006 | `adrl/cascade/controller.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/proxy/observe_only.py`, `adrl/proxy/pipeline.py`, `adrl/wire/identity.py` |
+ | ADRL-SEM-007 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/schema.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/proxy/errors.py`, `adrl/wire/adapters.py`, `adrl/wire/profiles/base.py`, `adrl/wire/profiles/messages.py`, `adrl/wire/profiles/messages_responses.py` |
+-| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py` |
++| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py` |
+ | ADRL-TRU-002 | `adrl/core/types.py`, `adrl/gates/deployments.py`, `adrl/proxy/pipeline.py`, `adrl/wire/observe.py` |
+ | ADRL-TRU-003 | `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py` |
+ 
+--- a/docs/known-gaps.md
++++ b/docs/known-gaps.md
+@@ -1,4 +1,10 @@
+ # Known gaps (reconciled 2026-09-08)
++
++W3.2b1 current context: the [owned process-group runner](process-ownership.md) has bounded
++synthetic exit/cancellation/owner-loss cleanup mechanics. A detached fixture survives by
++design, so no result qualifies for exact-close attribution. It is not integrated with the
++journal, captures or verifier. Complete writer containment, terminal-capacity reservation,
++erasure/release coordination and restart qualification remain W3.2b2/b3 work.
+ 
+ W3.2a current context: the [attempt journal](attempt-lifecycle.md) records durable intent and
+ interruption but has no process supervisor. Reservations are journal state only. Quota exhaustion
+--- /dev/null
++++ b/docs/process-ownership.md
+@@ -0,0 +1,86 @@
++# Owned process groups: W3.2b1 internal boundary
++
++Implemented 8 September 2026. Primary ADRL-OPS-001; secondary SAF-007, SEM-006, MEM-003
++and TRU-001. This trusted local primitive has no public endpoint, CLI or journal bridge.
++Only self-authored synthetic commands have been exercised. Schema 8 and API preview 4
++are unchanged. The [attempt journal](attempt-lifecycle.md) still records intent alone.
++
++## What it does
++
++`ProcessOwner.run(ProcessSpec(...))` launches one explicitly supplied command with an
++absolute executable path, expected executable SHA-256, absolute working directory and
++explicit environment. It resolves and checks the executable, validates the request, and
++passes one bounded request to a private Python launcher through private pipes. The
++launcher checks the executable digest again before launching the command. This pins the
++executable bytes at those checks; it does not pin scripts, modules, libraries or every
++subsequent file read, or eliminate filesystem replacement races against a hostile account.
++
++The launcher owns a fresh POSIX session/process group. It waits for the direct command,
++reports its exit code, and stays alive until cleanup. The parent never polls or reaps this
++launcher before its final group signal. A live or unreaped launcher reserves the PID used
++for that signal. The parent sends one group SIGKILL, closes its control pipe and waits to
++reap the launcher. It never signals that group after releasing the identity.
++
++If the owner dies, control-pipe EOF makes the launcher kill its own group. A bounded
++launcher watchdog also handles an owner that remains alive but stops monitoring. Workloads
++inherit neither private control descriptors nor the parent's environment. The documented
++defaults are `PATH=/usr/bin:/bin` and `LANG=C`; only the operator's explicit mapping is
++added. A program may alter its own environment (Python can add locale settings). All three
++standard streams are discarded; no raw command, environment, workspace path or output is
++returned in a report. This does not hide arguments from operating-system process inspection.
++
++## Limits and observations
++
++`owned-process-policy-v1` defaults to 30 seconds of command runtime, 5 seconds for launch
++and 2 seconds for reaping. Its upper bounds are 60, 10 and 5 seconds and 8,192 encoded launch
++bytes. One instance admits one active run, one command launch and no retry. The private
++wire protocol has a 10-second initial request bound and at most an 80-second watchdog;
++the runner supplies a shorter watchdog from its recorded policy. Source hashes identify
++both sides of this protocol. Process creation, executable hashing and operating-system
++scheduling can outlast a configured timeout: these are bounded polling/wait policies,
++not a hard real-time deadline.
++
++An explicit stop returns a stopped observation after cleanup. Coroutine cancellation,
++including repeated cancellation and event-loop shutdown, drains the protected executor
++Future before propagating cancellation. A failed signal or unconfirmed reap prevents
++reuse of that owner instance. The exact unreaped handle is retained without retrying a
++signal from saved metadata. Signal failure may still be followed by successful launcher
++self-cleanup on EOF; both observations stay visible rather than replacing the failure.
++
++The in-memory `owned-process-report-v1` records a random run ID, direct-command outcome
++and exit code, group-signal result, launcher reaping, elapsed time, full policy, a keyed
++request reference, and executable/runner/launcher digests. It is not persisted in this
++slice. A zero exit code is only the command's reported exit; it is not a quality label.
++Reports always carry:
++
++```text
++containment = process_group_only
++exact_close_eligible = false
++eligible_for_learning = false
++```
++
++## Why this does not close a task
++
++A child can detach into a new group/session. Another program, editor or prior task can
++write the same folder. Sending SIGKILL and reaping the launcher also does not certify
++completion of every descendant's kernel work. The tests deliberately demonstrate a
++short-lived detached writer surviving group cleanup. Therefore this primitive cannot
++establish an all-writer barrier, exact task-close attribution, workspace exclusivity or
++a safe capture association. It is not a hostile-code sandbox, credential boundary or
++protection against an attacker controlling the OS account.
++
++The embedding process must keep normal SIGCHLD handling and have no competing child
++reaper. Known non-default SIGCHLD settings are rejected before launch; arbitrary concurrent
++reapers or later signal-handler changes are outside the trusted embedding contract.
++The implementation backend is POSIX; actual test evidence is Python 3.12.7 on Darwin.
++There is no Linux qualification or cross-harness claim from these tests.
++
++W3.2b2 must qualify writer containment/admission, reserve terminal-record capacity and
++coordinate erasure, release and restart before real supervised task execution. W3.2b3
++must then bind the attempt and its reserved capture to that qualified close boundary.
++Active plaintext leases and crash-leftover cleanup remain separate capture gates.
++No native task payload, model call, routing change or learning authority follows from b1.
++
++Evidence and disposition live in the sibling register's
++[W3.2b1 report](../../adrl-world-class/reports/adrl-w3-2b1-process-ownership-2026-09-08.md).
++The process fixtures are [test_process_owner.py](../tests/unit/test_process_owner.py).
+--- /dev/null
++++ b/src/adrl/core/process_anchor.py
+@@ -0,0 +1,144 @@
++"""Private process-group launcher. Primary: ADRL-OPS-001.
++
++Secondary: ADRL-SAF-007, ADRL-SEM-006, ADRL-TRU-001.
++Standalone stdlib program, launched only by process_owner in a fresh session. This is
++cleanup plumbing for trusted commands, not a sandbox or an all-writer barrier.
++"""
++
++from __future__ import annotations
++
++import hashlib
++import json
++import math
++import os
++import selectors
++import signal
++import subprocess
++import sys
++import time
++from pathlib import Path
++from typing import Any
++
++WIRE_VERSION = "owned-process-wire-v1"
++FRAME_LIMIT = 8192
++BOOTSTRAP_SECONDS = 10.0
++WATCHDOG_LIMIT = 80.0
++
++
++def _frame(fd: int, value: dict[str, Any]) -> None:
++    payload = json.dumps(value, separators=(",", ":")).encode() + b"\n"
++    if os.write(fd, payload) != len(payload):
++        raise OSError("short_status_write")
++
++
++def _request(fd: int) -> dict[str, Any]:
++    deadline = time.monotonic() + BOOTSTRAP_SECONDS
++    data = bytearray()
++    with selectors.DefaultSelector() as selector:
++        selector.register(fd, selectors.EVENT_READ)
++        while time.monotonic() < deadline:
++            if not selector.select(max(0, deadline - time.monotonic())):
++                break
++            chunk = os.read(fd, FRAME_LIMIT + 1)
++            if not chunk:
++                raise ValueError("owner_lost")
++            data.extend(chunk)
++            if len(data) > FRAME_LIMIT:
++                raise ValueError("oversized_request")
++            if b"\n" in data:
++                line, rest = data.split(b"\n", 1)
++                if rest:
++                    raise ValueError("extra_request")
++                value: Any = json.loads(line)
++                if not isinstance(value, dict):
++                    raise ValueError("invalid_request")
++                return value
++    raise ValueError("bootstrap_timeout")
++
++
++def _validate(value: dict[str, Any]) -> tuple[list[str], str, dict[str, str], float]:
++    if set(value) != {"version", "argv", "cwd", "env", "executable_sha256", "watchdog"}:
++        raise ValueError("invalid_request")
++    argv, cwd, env, digest, watchdog = (
++        value["argv"],
++        value["cwd"],
++        value["env"],
++        value["executable_sha256"],
++        value["watchdog"],
++    )
++    if value["version"] != WIRE_VERSION or not isinstance(argv, list) or not argv:
++        raise ValueError("invalid_request")
++    if not all(isinstance(arg, str) and "\0" not in arg for arg in argv):
++        raise ValueError("invalid_request")
++    if not isinstance(cwd, str) or not os.path.isabs(cwd) or not os.path.isabs(argv[0]):
++        raise ValueError("invalid_request")
++    if not isinstance(env, dict) or not all(
++        isinstance(key, str)
++        and key
++        and "=" not in key
++        and "\0" not in key
++        and isinstance(item, str)
++        and "\0" not in item
++        for key, item in env.items()
++    ):
++        raise ValueError("invalid_request")
++    if not isinstance(watchdog, (int, float)) or not math.isfinite(watchdog):
++        raise ValueError("invalid_request")
++    if not 0 < watchdog <= WATCHDOG_LIMIT:
++        raise ValueError("invalid_request")
++    with Path(argv[0]).open("rb") as handle:
++        if hashlib.file_digest(handle, "sha256").hexdigest() != digest:
++            raise ValueError("executable_changed")
++    return argv, cwd, env, float(watchdog)
++
++
++def _serve(control: int, status: int) -> None:
++    try:
++        argv, cwd, env, watchdog = _validate(_request(control))
++        child = subprocess.Popen(
++            argv,
++            cwd=cwd,
++            env=env,
++            close_fds=True,
++            stdin=subprocess.DEVNULL,
++            stdout=subprocess.DEVNULL,
++            stderr=subprocess.DEVNULL,
++        )
++    except (OSError, ValueError, TypeError):
++        _frame(status, {"phase": "launch_failed"})
++        return
++    deadline = time.monotonic() + watchdog
++    _frame(status, {"phase": "started"})
++    exit_sent = False
++    with selectors.DefaultSelector() as selector:
++        selector.register(control, selectors.EVENT_READ)
++        while time.monotonic() < deadline:
++            # Any further command bytes, or EOF, revoke this owner's run.
++            if selector.select(min(0.02, max(0, deadline - time.monotonic()))):
++                return
++            if not exit_sent:
++                code = child.poll()
++                if code is not None:
++                    _frame(status, {"phase": "exited", "returncode": code})
++                    exit_sent = True
++            # Stay alive after the workload exits: our PID/group identity is still owned.
++
++
++def main() -> int:
++    if os.name != "posix" or os.getpid() != os.getpgrp() or os.getsid(0) != os.getpid():
++        return 2
++    try:
++        if len(sys.argv) != 3:
++            return 2
++        control, status = int(sys.argv[1]), int(sys.argv[2])
++        _serve(control, status)
++    except (OSError, ValueError):
++        pass
++    finally:
++        # This process is still alive and is its own session/group leader. No saved PID.
++        os.killpg(os.getpgrp(), signal.SIGKILL)
++    return 2  # pragma: no cover - SIGKILL above does not return on this supported backend.
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+--- /dev/null
++++ b/src/adrl/core/process_owner.py
+@@ -0,0 +1,315 @@
++"""Owned process-group execution and cleanup. Primary: ADRL-OPS-001.
++
++Secondary: ADRL-SAF-007, ADRL-SEM-006, ADRL-MEM-003, ADRL-TRU-001.
++Internal trusted-operator primitive. Every result is ineligible for exact task-close
++attribution: detached and unrelated writers are outside this backend's scope.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import contextvars
++import hashlib
++import hmac
++import json
++import os
++import selectors
++import signal
++import subprocess
++import sys
++import threading
++import time
++from pathlib import Path
++from typing import Literal
++from uuid import UUID, uuid4
++
++from pydantic import BaseModel, ConfigDict, Field, model_validator
++
++from adrl.core import process_anchor
++
++ANCHOR = Path(process_anchor.__file__).resolve()
++MINIMAL_ENV = {"PATH": "/usr/bin:/bin", "LANG": "C"}
++Outcome = Literal["exited", "timed_out", "stopped", "launch_failed", "monitor_failed"]
++
++
++class ProcessError(ValueError):
++    """Admission failed; no workload was launched by this request."""
++
++
++class ProcessPolicy(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
++    schema_version: Literal["owned-process-policy-v1"] = "owned-process-policy-v1"
++    runtime_seconds: float = Field(default=30, ge=0.05, le=60)
++    launch_seconds: float = Field(default=5, ge=0.05, le=10)
++    reap_seconds: float = Field(default=2, ge=0.05, le=5)
++    max_launch_bytes: int = Field(default=8192, ge=1, le=8192)
++
++
++class ProcessSpec(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    argv: tuple[str, ...] = Field(min_length=1, max_length=256, repr=False)
++    cwd: Path = Field(repr=False)
++    executable_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
++    environment: dict[str, str] = Field(default_factory=dict, repr=False)
++
++    @model_validator(mode="after")
++    def valid_inputs(self) -> ProcessSpec:
++        if not Path(self.argv[0]).is_absolute() or not self.cwd.is_absolute():
++            raise ValueError("absolute_paths_required")
++        if any("\0" in arg for arg in self.argv) or "\0" in str(self.cwd):
++            raise ValueError("invalid_argument")
++        if any(
++            not key or "=" in key or "\0" in key or "\0" in value
++            for key, value in self.environment.items()
++        ):
++            raise ValueError("invalid_environment")
++        return self
++
++
++class ProcessReport(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    schema_version: Literal["owned-process-report-v1"] = "owned-process-report-v1"
++    run_id: UUID
++    outcome: Outcome
++    direct_child_returncode: int | None
++    group_signal: Literal["not_launched", "sent", "absent", "failed"]
++    anchor_reaped: bool
++    containment: Literal["process_group_only"] = "process_group_only"
++    exact_close_eligible: Literal[False] = False
++    eligible_for_learning: Literal[False] = False
++    policy: ProcessPolicy
++    request_ref: str
++    executable_sha256: str
++    runner_sha256: str
++    anchor_sha256: str
++    elapsed_seconds: float
++
++
++def _digest(path: Path) -> str:
++    with path.open("rb") as handle:
++        return hashlib.file_digest(handle, "sha256").hexdigest()
++
++
++class ProcessOwner:
++    """One in-memory owner, no PID-based restore, attach or signal API.
++
++    The embedding process must retain normal SIGCHLD handling and must not use a
++    competing child reaper. A cleanup failure poisons this instance for further runs.
++    """
++
++    def __init__(self, reference_key: bytes, policy: ProcessPolicy | None = None) -> None:
++        if len(reference_key) < 32:
++            raise ProcessError("reference_key_too_short")
++        self.policy = policy or ProcessPolicy()
++        self._reference_key = bytes(reference_key)
++        self._active = threading.Lock()
++        self._unreaped: subprocess.Popen[bytes] | None = None
++        self._poisoned = False
++        self.last_report: ProcessReport | None = None
++
++    async def run(self, spec: ProcessSpec, *, stop: threading.Event | None = None) -> ProcessReport:
++        # Copy and revalidate mutable nested caller inputs before acquiring ownership.
++        copied = ProcessSpec.model_validate(spec.model_dump())
++        if not self._active.acquire(blocking=False):
++            raise ProcessError("owner_already_active")
++        stopping = stop if stop is not None else threading.Event()
++        # An executor Future is not an independently cancellable asyncio Task. Loop shutdown
++        # may cancel every Task; it must not mark our worker done while its thread still owns
++        # the launcher. Shield the Future and drain it before releasing this instance.
++        context = contextvars.copy_context()
++        worker = asyncio.get_running_loop().run_in_executor(
++            None, context.run, self._run, copied, stopping
++        )
++        try:
++            try:
++                return await asyncio.shield(worker)
++            except asyncio.CancelledError:
++                stopping.set()
++                # Repeated cancellation cannot release this owner before its bounded cleanup.
++                while not worker.done():
++                    try:
++                        await asyncio.shield(worker)
++                    except asyncio.CancelledError:
++                        stopping.set()
++                    except Exception:
++                        break
++                # Retrieve exceptions to avoid abandoning a failed worker silently.
++                if not worker.cancelled():
++                    worker.exception()
++                raise
++        finally:
++            self._active.release()
++
++    def _prepare(self, spec: ProcessSpec) -> bytes:
++        if os.name != "posix" or signal.getsignal(signal.SIGCHLD) != signal.SIG_DFL:
++            raise ProcessError("unsupported_child_ownership")
++        if self._poisoned:
++            raise ProcessError("owner_cleanup_unresolved")
++        try:
++            if spec.cwd.is_symlink() or not spec.cwd.is_dir():
++                raise ProcessError("invalid_workspace")
++            executable = Path(spec.argv[0]).resolve(strict=True)
++            if not executable.is_file() or not os.access(executable, os.X_OK):
++                raise ProcessError("invalid_executable")
++            if not hmac.compare_digest(_digest(executable), spec.executable_sha256):
++                raise ProcessError("executable_pin_mismatch")
++            value = {
++                "version": process_anchor.WIRE_VERSION,
++                "argv": [str(executable), *spec.argv[1:]],
++                "cwd": str(spec.cwd.resolve(strict=True)),
++                "env": MINIMAL_ENV | spec.environment,
++                "executable_sha256": spec.executable_sha256,
++                "watchdog": self.policy.runtime_seconds
++                + self.policy.launch_seconds
++                + self.policy.reap_seconds
++                + 2,
++            }
++            payload = json.dumps(value, sort_keys=True, separators=(",", ":")).encode() + b"\n"
++        except (OSError, ValueError) as exc:
++            if isinstance(exc, ProcessError):
++                raise
++            raise ProcessError("invalid_launch_input") from None
++        if len(payload) > self.policy.max_launch_bytes:
++            raise ProcessError("launch_input_too_large")
++        return payload
++
++    def _send(self, fd: int, payload: bytes, stop: threading.Event, deadline: float) -> None:
++        os.set_blocking(fd, False)
++        with selectors.DefaultSelector() as selector:
++            selector.register(fd, selectors.EVENT_WRITE)
++            sent = 0
++            while sent < len(payload):
++                if stop.is_set() or time.monotonic() >= deadline:
++                    raise TimeoutError("launch_interrupted")
++                if selector.select(0.02):
++                    try:
++                        sent += os.write(fd, payload[sent:])
++                    except BlockingIOError:
++                        continue
++
++    def _monitor(
++        self, fd: int, stop: threading.Event, deadline: float
++    ) -> tuple[Outcome, int | None]:
++        data = bytearray()
++        started = False
++        with selectors.DefaultSelector() as selector:
++            selector.register(fd, selectors.EVENT_READ)
++            while True:
++                if stop.is_set():
++                    return "stopped", None
++                remaining = deadline - time.monotonic()
++                if remaining <= 0:
++                    return "timed_out", None
++                if not selector.select(min(remaining, 0.02)):
++                    continue
++                chunk = os.read(fd, 257)
++                if not chunk:
++                    return "monitor_failed", None
++                data.extend(chunk)
++                if len(data) > 256:
++                    return "monitor_failed", None
++                while b"\n" in data:
++                    line, rest = data.split(b"\n", 1)
++                    data = bytearray(rest)
++                    try:
++                        frame = json.loads(line)
++                    except (ValueError, UnicodeError):
++                        return "monitor_failed", None
++                    if frame == {"phase": "started"} and not started:
++                        started = True
++                        deadline = time.monotonic() + self.policy.runtime_seconds
++                    elif frame == {"phase": "launch_failed"} and not started:
++                        return "launch_failed", None
++                    elif (
++                        started
++                        and isinstance(frame, dict)
++                        and set(frame) == {"phase", "returncode"}
++                        and frame["phase"] == "exited"
++                        and type(frame["returncode"]) is int
++                        and -(2**31) <= frame["returncode"] < 2**31
++                        and not data
++                    ):
++                        return "exited", frame["returncode"]
++                    else:
++                        return "monitor_failed", None
++
++    def _run(self, spec: ProcessSpec, stop: threading.Event) -> ProcessReport:
++        started_at = time.monotonic()
++        payload = self._prepare(spec)
++        anchor_digest = _digest(ANCHOR)
++        runner_digest = _digest(Path(__file__))
++        request_ref = "hmac:" + hmac.new(self._reference_key, payload, "sha256").hexdigest()
++        proc: subprocess.Popen[bytes] | None = None
++        fds: set[int] = set()
++        control_write: int | None = None
++        outcome: Outcome = "launch_failed"
++        code: int | None = None
++        group_signal: Literal["not_launched", "sent", "absent", "failed"] = "not_launched"
++        reaped = False
++        try:
++            if stop.is_set():
++                outcome = "stopped"
++            else:
++                control_read, control_write = os.pipe()
++                fds.update((control_read, control_write))
++                status_read, status_write = os.pipe()
++                fds.update((status_read, status_write))
++                deadline = time.monotonic() + self.policy.launch_seconds
++                proc = subprocess.Popen(
++                    [sys.executable, "-I", "-B", str(ANCHOR), str(control_read), str(status_write)],
++                    env=MINIMAL_ENV,
++                    start_new_session=True,
++                    close_fds=True,
++                    pass_fds=(control_read, status_write),
++                    stdin=subprocess.DEVNULL,
++                    stdout=subprocess.DEVNULL,
++                    stderr=subprocess.DEVNULL,
++                )
++                for fd in (control_read, status_write):
++                    os.close(fd)
++                    fds.remove(fd)
++                self._send(control_write, payload, stop, deadline)
++                outcome, code = self._monitor(status_read, stop, deadline)
++        except TimeoutError:
++            outcome = "stopped" if stop.is_set() else "timed_out"
++        except OSError:
++            outcome = "launch_failed" if proc is None else "monitor_failed"
++        finally:
++            if proc is not None:
++                # Never poll/wait/reap this launcher before the LAST group signal. Its live
++                # or unreaped PID reserves the identity. Never signal this group afterward.
++                try:
++                    os.killpg(proc.pid, signal.SIGKILL)
++                    group_signal = "sent"
++                except ProcessLookupError:
++                    group_signal = "absent"
++                except OSError:
++                    group_signal = "failed"
++                if control_write in fds:
++                    os.close(control_write)
++                    fds.remove(control_write)
++                try:
++                    proc.wait(timeout=self.policy.reap_seconds)
++                    reaped = True
++                except subprocess.TimeoutExpired:
++                    # Retain the handle, refuse reuse, and expose failure. No stale PID retries.
++                    self._unreaped = proc
++                if not reaped or group_signal == "failed":
++                    self._poisoned = True
++            for fd in fds:
++                os.close(fd)
++        report = ProcessReport(
++            run_id=uuid4(),
++            outcome=outcome,
++            direct_child_returncode=code,
++            group_signal=group_signal,
++            anchor_reaped=reaped,
++            policy=self.policy,
++            request_ref=request_ref,
++            executable_sha256=spec.executable_sha256,
++            runner_sha256=runner_digest,
++            anchor_sha256=anchor_digest,
++            elapsed_seconds=time.monotonic() - started_at,
++        )
++        self.last_report = report
++        return report
+--- /dev/null
++++ b/tests/unit/test_process_owner.py
+@@ -0,0 +1,479 @@
++"""Real synthetic process fixtures for ADRL-OPS-001's limited cleanup boundary."""
++
++from __future__ import annotations
++
++import asyncio
++import hashlib
++import json
++import os
++import signal
++import subprocess
++import sys
++import threading
++from pathlib import Path
++
++import pytest
++from pydantic import ValidationError
++
++from adrl.core import process_anchor, process_owner
++from adrl.core.process_owner import ProcessError, ProcessOwner, ProcessPolicy, ProcessSpec
++
++pytestmark = pytest.mark.skipif(os.name != "posix", reason="POSIX owned-group backend")
++PYTHON = str(Path(sys.executable).resolve())
++PYTHON_HASH = hashlib.sha256(Path(PYTHON).read_bytes()).hexdigest()
++
++
++def spec(root: Path, code: str, **kwargs: object) -> ProcessSpec:
++    return ProcessSpec.model_validate(
++        {
++            "argv": (PYTHON, "-c", code),
++            "cwd": root,
++            "executable_sha256": PYTHON_HASH,
++            **kwargs,
++        }
++    )
++
++
++def owner(**kwargs: object) -> ProcessOwner:
++    return ProcessOwner(
++        b"r" * 32,
++        ProcessPolicy.model_validate(
++            {
++                "runtime_seconds": 2,
++                "launch_seconds": 3,
++                "reap_seconds": 2,
++                **kwargs,
++            }
++        ),
++    )
++
++
++async def exists(path: Path) -> None:
++    for _ in range(150):
++        if await asyncio.to_thread(path.exists):
++            return
++        await asyncio.sleep(0.02)
++    pytest.fail("fixture readiness deadline exceeded")
++
++
++@pytest.mark.parametrize("exitcode", [0, 7])
++async def test_exit_is_observed_not_verified(tmp_path: Path, exitcode: int) -> None:
++    run = owner()
++    report = await run.run(spec(tmp_path, f"raise SystemExit({exitcode})"))
++    assert report.outcome == "exited"
++    assert report.direct_child_returncode == exitcode
++    assert report.group_signal == "sent" and report.anchor_reaped
++    assert report.containment == "process_group_only"
++    assert not report.exact_close_eligible and not report.eligible_for_learning
++    assert (
++        report.runner_sha256
++        == hashlib.sha256(
++            await asyncio.to_thread(Path(process_owner.__file__).read_bytes)
++        ).hexdigest()
++    )
++    assert report.anchor_sha256 == hashlib.sha256(process_owner.ANCHOR.read_bytes()).hexdigest()
++    assert report == run.last_report
++
++
++async def test_same_group_descendant_is_stopped_after_leader_exit(tmp_path: Path) -> None:
++    descendant = "import time; from pathlib import Path; time.sleep(.6); Path('late').touch()"
++    command = f"import subprocess,sys; subprocess.Popen([sys.executable,'-c',{descendant!r}])"
++    report = await owner().run(spec(tmp_path, command))
++    assert report.outcome == "exited" and report.anchor_reaped
++    await asyncio.sleep(0.8)
++    assert not (tmp_path / "late").exists()
++
++
++async def test_timeout_forces_cleanup_of_signal_ignoring_child(tmp_path: Path) -> None:
++    command = (
++        "import signal,time; from pathlib import Path; "
++        "signal.signal(signal.SIGTERM, signal.SIG_IGN); Path('ready').touch(); "
++        "time.sleep(.7); Path('late').touch()"
++    )
++    report = await owner(runtime_seconds=0.2).run(spec(tmp_path, command))
++    assert report.outcome == "timed_out" and report.anchor_reaped
++    assert report.group_signal == "sent" and report.direct_child_returncode is None
++    assert (tmp_path / "ready").exists()
++    await asyncio.sleep(0.7)
++    assert not (tmp_path / "late").exists()
++
++
++async def test_explicit_stop_cleans_before_return(tmp_path: Path) -> None:
++    stop = threading.Event()
++    command = "from pathlib import Path; import time; Path('ready').touch(); time.sleep(3)"
++    task = asyncio.create_task(owner().run(spec(tmp_path, command), stop=stop))
++    await exists(tmp_path / "ready")
++    stop.set()
++    report = await task
++    assert report.outcome == "stopped" and report.anchor_reaped
++
++
++async def test_coroutine_cancellation_waits_for_cleanup(tmp_path: Path) -> None:
++    run = owner()
++    command = (
++        "from pathlib import Path; import time; Path('ready').touch(); "
++        "time.sleep(.6); Path('late').touch()"
++    )
++    task = asyncio.create_task(run.run(spec(tmp_path, command)))
++    await exists(tmp_path / "ready")
++    task.cancel()
++    await asyncio.sleep(0)
++    task.cancel()
++    with pytest.raises(asyncio.CancelledError):
++        await task
++    assert run.last_report is not None and run.last_report.anchor_reaped
++    assert run.last_report.outcome == "stopped"
++    await asyncio.sleep(0.7)
++    assert not (tmp_path / "late").exists()
++    assert (await run.run(spec(tmp_path, "pass"))).outcome == "exited"
++
++
++async def test_presignalled_stop_does_not_launch(tmp_path: Path) -> None:
++    stop = threading.Event()
++    stop.set()
++    report = await owner().run(
++        spec(tmp_path, "from pathlib import Path; Path('bad').touch()"), stop=stop
++    )
++    assert report.outcome == "stopped" and report.group_signal == "not_launched"
++    assert not (tmp_path / "bad").exists()
++
++
++async def test_environment_is_explicit_and_report_has_no_payload(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    canary = "private-parent-environment-canary"
++    monkeypatch.setenv("ADRL_TEST_PARENT_SECRET", canary)
++    command = (
++        "import os,json; from pathlib import Path; "
++        "Path('env.json').write_text(json.dumps(dict(os.environ)))"
++    )
++    run = owner()
++    report = await run.run(spec(tmp_path, command, environment={"EXPLICIT": "allowed"}))
++    env = json.loads((tmp_path / "env.json").read_text())
++    assert "ADRL_TEST_PARENT_SECRET" not in env and env["EXPLICIT"] == "allowed"
++    assert env["PATH"] == "/usr/bin:/bin" and "HOME" not in env
++    encoded = report.model_dump_json()
++    assert canary not in encoded and command not in encoded and str(tmp_path) not in encoded
++    assert report.request_ref.startswith("hmac:")
++    changed = await run.run(spec(tmp_path, "pass"))
++    assert changed.request_ref != report.request_ref
++
++
++async def test_detached_writer_demonstrates_scope_limit(tmp_path: Path) -> None:
++    # This deliberately escaped fixture terminates itself after its one bounded write.
++    child = "import time; from pathlib import Path; time.sleep(.3); Path('detached').touch()"
++    command = (
++        f"import subprocess,sys; subprocess.Popen([sys.executable,'-c',{child!r}],"
++        "start_new_session=True)"
++    )
++    report = await owner().run(spec(tmp_path, command))
++    assert report.anchor_reaped and report.outcome == "exited"
++    await exists(tmp_path / "detached")
++    assert report.containment == "process_group_only" and not report.exact_close_eligible
++
++
++async def test_concurrent_use_rejected_then_owner_reusable(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    run, stop = owner(), threading.Event()
++    signals: list[int] = []
++    killpg = os.killpg
++
++    def signal_owned(pid: int, sig: int) -> None:
++        signals.append(pid)
++        killpg(pid, sig)
++
++    monkeypatch.setattr(process_owner.os, "killpg", signal_owned)
++    task = asyncio.create_task(
++        run.run(
++            spec(
++                tmp_path,
++                "import time; from pathlib import Path; Path('ready').touch(); time.sleep(3)",
++            ),
++            stop=stop,
++        )
++    )
++    await exists(tmp_path / "ready")
++    with pytest.raises(ProcessError, match="already_active"):
++        await run.run(spec(tmp_path, "pass"))
++    stop.set()
++    first = await task
++    second = await run.run(spec(tmp_path, "pass"))
++    assert first.run_id != second.run_id
++    assert len(signals) == 2 and len(set(signals)) == 2
++    assert second.anchor_reaped
++
++
++@pytest.mark.parametrize(
++    "change,error",
++    [
++        ({"executable_sha256": "0" * 64}, "pin_mismatch"),
++        ({"argv": ("/nonexistent/adrl-fixture-command",)}, "invalid_launch_input"),
++    ],
++)
++async def test_invalid_executable_rejected(
++    tmp_path: Path, change: dict[str, object], error: str
++) -> None:
++    with pytest.raises(ProcessError, match=error):
++        await owner().run(spec(tmp_path, "from pathlib import Path; Path('bad').touch()", **change))
++    assert not (tmp_path / "bad").exists()
++
++
++async def test_executable_pin_rechecked_in_anchor(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    executable = tmp_path / "command"
++    executable.write_text("#!/bin/sh\nexit 0\n")
++    executable.chmod(0o700)
++    run = owner()
++    original_send = run._send
++
++    def change_before_send(fd: int, payload: bytes, stop: threading.Event, deadline: float) -> None:
++        executable.write_text("#!/bin/sh\ntouch bad\n")
++        original_send(fd, payload, stop, deadline)
++
++    monkeypatch.setattr(run, "_send", change_before_send)
++    report = await run.run(
++        ProcessSpec(
++            argv=(str(executable),),
++            cwd=tmp_path,
++            executable_sha256=hashlib.sha256(executable.read_bytes()).hexdigest(),
++        )
++    )
++    assert report.outcome == "launch_failed" and report.anchor_reaped
++    assert not (tmp_path / "bad").exists()
++
++
++async def test_invalid_workspace_and_size_rejected(tmp_path: Path) -> None:
++    link = tmp_path / "link"
++    link.symlink_to(tmp_path, target_is_directory=True)
++    with pytest.raises(ProcessError, match="invalid_workspace"):
++        await owner().run(spec(link, "pass"))
++    with pytest.raises(ProcessError, match="too_large"):
++        await owner(max_launch_bytes=100).run(spec(tmp_path, "pass"))
++
++
++@pytest.mark.parametrize(
++    "change",
++    [
++        {"argv": ("relative",)},
++        {"argv": (PYTHON, "nul\0")},
++        {"environment": {"": "empty"}},
++        {"environment": {"a=b": "bad"}},
++        {"environment": {"a": "bad\0"}},
++        {"cwd": Path("relative")},
++    ],
++)
++def test_invalid_spec(change: dict[str, object], tmp_path: Path) -> None:
++    with pytest.raises(ValidationError):
++        spec(tmp_path, "pass", **change)
++
++
++@pytest.mark.parametrize(
++    "change",
++    [
++        {"runtime_seconds": 61},
++        {"launch_seconds": 11},
++        {"reap_seconds": 6},
++        {"max_launch_bytes": 8193},
++        {"runtime_seconds": float("nan")},
++    ],
++)
++def test_policy_cannot_widen_packet(change: dict[str, object]) -> None:
++    with pytest.raises(ValidationError):
++        owner(**change)
++
++
++async def test_custom_child_reaper_is_rejected(tmp_path: Path) -> None:
++    old = signal.signal(signal.SIGCHLD, signal.SIG_IGN)
++    try:
++        with pytest.raises(ProcessError, match="unsupported_child_ownership"):
++            await owner().run(spec(tmp_path, "pass"))
++    finally:
++        signal.signal(signal.SIGCHLD, old)
++
++
++@pytest.mark.parametrize("frame", [b"{bad}\n", b"x" * 300, b'{"phase":"exited","returncode":0}\n'])
++async def test_failed_protocol_cleans_owned_launcher(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, frame: bytes
++) -> None:
++    fake = tmp_path / "protocol_fixture.py"
++    fake.write_text(f"import os,sys,time\nos.write(int(sys.argv[2]),{frame!r})\ntime.sleep(2)\n")
++    monkeypatch.setattr(process_owner, "ANCHOR", fake)
++    report = await owner().run(spec(tmp_path, "pass"))
++    assert report.outcome == "monitor_failed" and report.anchor_reaped
++    assert report.group_signal == "sent" and not report.exact_close_eligible
++
++
++async def test_launcher_handshake_timeout(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
++    fake = tmp_path / "silent_fixture.py"
++    fake.write_text("import time\ntime.sleep(2)\n")
++    monkeypatch.setattr(process_owner, "ANCHOR", fake)
++    report = await owner(launch_seconds=0.1).run(spec(tmp_path, "pass"))
++    assert report.outcome == "timed_out" and report.anchor_reaped
++
++
++async def test_owner_death_closes_private_pipe_and_stops_workload(tmp_path: Path) -> None:
++    workload = (
++        "from pathlib import Path; import time; Path('ready').touch(); "
++        "time.sleep(.7); Path('late').touch()"
++    )
++    script = (
++        "import asyncio\nfrom pathlib import Path\n"
++        "from adrl.core.process_owner import ProcessOwner,ProcessSpec,ProcessPolicy\n"
++        f"s=ProcessSpec(argv=({PYTHON!r},'-c',{workload!r}),cwd=Path({str(tmp_path)!r}),executable_sha256={PYTHON_HASH!r})\n"
++        "asyncio.run(ProcessOwner(b'r'*32,ProcessPolicy(runtime_seconds=2)).run(s))\n"
++    )
++    parent = await asyncio.to_thread(
++        subprocess.Popen,
++        [sys.executable, "-c", script],
++        env=process_owner.MINIMAL_ENV,
++        stdin=subprocess.DEVNULL,
++        stdout=subprocess.DEVNULL,
++        stderr=subprocess.DEVNULL,
++    )
++    try:
++        await exists(tmp_path / "ready")
++        parent.kill()  # The exact Popen child owned by this fixture, not a restored PID.
++        await asyncio.to_thread(parent.wait, timeout=3)
++        await asyncio.sleep(0.9)
++        assert not (tmp_path / "late").exists()
++    finally:
++        if parent.poll() is None:
++            parent.kill()
++            await asyncio.to_thread(parent.wait, timeout=3)
++
++
++async def test_anchor_watchdog_works_while_owner_pipe_stays_open(tmp_path: Path) -> None:
++    control_read, control_write = os.pipe()
++    status_read, status_write = os.pipe()
++    anchor = await asyncio.to_thread(
++        subprocess.Popen,
++        [
++            sys.executable,
++            "-I",
++            "-B",
++            str(process_owner.ANCHOR),
++            str(control_read),
++            str(status_write),
++        ],
++        env=process_owner.MINIMAL_ENV,
++        start_new_session=True,
++        close_fds=True,
++        pass_fds=(control_read, status_write),
++        stdin=subprocess.DEVNULL,
++        stdout=subprocess.DEVNULL,
++        stderr=subprocess.DEVNULL,
++    )
++    os.close(control_read)
++    os.close(status_write)
++    try:
++        value = {
++            "version": process_anchor.WIRE_VERSION,
++            "argv": [
++                PYTHON,
++                "-c",
++                "from pathlib import Path; import time; Path('ready').touch(); "
++                "time.sleep(.7); Path('late').touch()",
++            ],
++            "cwd": str(tmp_path),
++            "env": process_owner.MINIMAL_ENV,
++            "executable_sha256": PYTHON_HASH,
++            "watchdog": 0.2,
++        }
++        os.write(control_write, json.dumps(value).encode() + b"\n")
++        await exists(tmp_path / "ready")
++        assert await asyncio.to_thread(anchor.wait, timeout=2) == -signal.SIGKILL
++        await asyncio.sleep(0.8)
++        assert not (tmp_path / "late").exists()
++    finally:
++        os.close(control_write)
++        os.close(status_read)
++        # No group signal after wait has released its identity. EOF/watchdog own cleanup.
++        if anchor.poll() is None:
++            await asyncio.to_thread(anchor.wait, timeout=3)
++
++
++async def test_mutated_nested_input_rejected_without_wedging_owner(tmp_path: Path) -> None:
++    run, request = owner(), spec(tmp_path, "pass")
++    request.environment["bad=key"] = "value"
++    with pytest.raises(ValidationError):
++        await run.run(request)
++    assert (await run.run(spec(tmp_path, "pass"))).anchor_reaped
++
++
++def test_no_api_to_restore_pid_authority() -> None:
++    assert not any(
++        hasattr(ProcessOwner, method) for method in ("attach", "restore", "kill", "signal")
++    )
++    with pytest.raises(ProcessError, match="too_short"):
++        ProcessOwner(b"short")
++
++
++async def test_failed_group_signal_uses_eof_and_poisoned_owner(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    def denied(pid: int, sig: int) -> None:
++        raise PermissionError("synthetic signal failure")
++
++    monkeypatch.setattr(process_owner.os, "killpg", denied)
++    run = owner()
++    report = await run.run(spec(tmp_path, "pass"))
++    assert report.outcome == "exited" and report.group_signal == "failed"
++    assert report.anchor_reaped and not report.exact_close_eligible
++    with pytest.raises(ProcessError, match="cleanup_unresolved"):
++        await run.run(spec(tmp_path, "pass"))
++
++
++async def test_reap_timeout_retains_handle_and_blocks_reuse(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    original = subprocess.Popen.wait
++
++    def timeout_once(self: subprocess.Popen[bytes], timeout: float | None = None) -> int:
++        raise subprocess.TimeoutExpired("owned-launcher", timeout or 0)
++
++    run = owner()
++    monkeypatch.setattr(subprocess.Popen, "wait", timeout_once)
++    try:
++        report = await run.run(spec(tmp_path, "pass"))
++        assert report.group_signal == "sent" and not report.anchor_reaped
++        with pytest.raises(ProcessError, match="cleanup_unresolved"):
++            await run.run(spec(tmp_path, "pass"))
++    finally:
++        monkeypatch.setattr(subprocess.Popen, "wait", original)
++        assert run._unreaped is not None
++        # Test teardown only reaps the retained exact handle. It does not signal again.
++        await asyncio.to_thread(run._unreaped.wait, timeout=3)
++
++
++async def test_missing_anchor_reports_failure_without_workload(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    # A readable launcher that cannot start exercises status EOF with an owned process.
++    broken = tmp_path / "broken.py"
++    broken.write_text("raise SystemExit(3)\n")
++    monkeypatch.setattr(process_owner, "ANCHOR", broken)
++    report = await owner().run(spec(tmp_path, "from pathlib import Path; Path('bad').touch()"))
++    assert report.outcome == "monitor_failed" and report.anchor_reaped
++    assert not (tmp_path / "bad").exists()
++
++
++async def test_loop_shutdown_does_not_abandon_owned_worker(tmp_path: Path) -> None:
++    # A separate event loop's shutdown cancels all Tasks, including its caller. The worker
++    # Future must survive that cancellation until cleanup finishes.
++    def separate_loop() -> None:
++        async def main() -> None:
++            command = (
++                "from pathlib import Path; import time; Path('shutdown-ready').touch(); "
++                "time.sleep(.6); Path('shutdown-late').touch()"
++            )
++            task = asyncio.create_task(owner().run(spec(tmp_path, command)))
++            await exists(tmp_path / "shutdown-ready")
++            assert not task.done()
++
++        asyncio.run(main())
++
++    await asyncio.to_thread(separate_loop)
++    await asyncio.sleep(0.7)
++    assert not (tmp_path / "shutdown-late").exists()

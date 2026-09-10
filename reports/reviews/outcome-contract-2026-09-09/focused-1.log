@@ -1,0 +1,45 @@
+..F
+=================================== FAILURES ===================================
+______ test_terminal_cause_survives_next_turn_and_close[400-unverifiable] ______
+
+live = E2E(settings=Settings(listen_host='127.0.0.1', listen_port=8788, gateway_base_url='http://fake-gateway', gateway_timeo...:[{"type":"text","text":"Fix the typo in README.md"}]}]}'}]), gateway_client=<httpx.AsyncClient object at 0x1189ce2a0>)
+status = 400, cause = <FailureType.UNVERIFIABLE: 'unverifiable'>
+
+    @pytest.mark.parametrize(
+        "status,cause", [(503, FailureType.INFRASTRUCTURE), (400, FailureType.UNVERIFIABLE)]
+    )
+    async def test_terminal_cause_survives_next_turn_and_close(
+        live: E2E, status: int, cause: FailureType
+    ) -> None:
+        live.gateway_state.status_code = status
+        response = await live.send("user_turn")
+        assert response.status_code == status
+        first = RouteId(live.decisions()[0]["route_id"])
+        assert read_projection(live.store, first).state is OutcomeState.CLOSED_TURN
+        live.gateway_state.status_code = 200
+        await live.send("user_turn", body=user_turn_body("Fix the typo in README.md"))
+        closed = [
+            e
+            for e in read_stored_events(live.store, first, OUTCOME_EVENT)
+            if e.payload["state"] == "closed_turn"
+        ]
+        assert len(closed) == 2
+>       assert closed[0].payload["failure_type"] == cause.value
+E       AssertionError: assert 'infrastructure' == 'unverifiable'
+E         
+E         - unverifiable
+E         + infrastructure
+
+tests/integration/e2e/test_outcome_contract.py:71: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+2026-09-09 00:10:16 [warning  ] egress_checkpoints_unsigned    detail='no checkpoint_signing_key_path; tamper evidence stops at the hash chain'
+2026-09-09 00:10:16 [info     ] sticky_state_loaded            lineages=0
+2026-09-09 00:10:16 [info     ] adrl_components_built          installed={'ledger.keystore': True, 'ledger.erasure': True, 'ledger.state': True, 'gates': True, 'routing': True, 'cascade': True} modes={'gates': 'enforce', 'routing': 'live', 'fallback': 'live'}
+----------------------------- Captured stdout call -----------------------------
+2026-09-09 00:10:16 [info     ] lineage_classified             allowed=['cheap_cloud', 'frontier', 'local'] class_id=open lineage=7d9371b9e12f1bf94a70f94d55305c8f1a72cb031aee2e8030725c82fa4b9f25 request_class=user_turn source=assertion verified=True
+2026-09-09 00:10:16 [info     ] gate_outcome                   block=None latency_ms=5.41 lineage=7d9371b9e12f1bf94a70f94d55305c8f1a72cb031aee2e8030725c82fa4b9f25 permitted=['local', 'cheap_cloud', 'frontier'] pinned=False request_class=user_turn unscanned=False
+2026-09-09 00:10:16 [info     ] gate_outcome                   block=None latency_ms=3.19 lineage=7d9371b9e12f1bf94a70f94d55305c8f1a72cb031aee2e8030725c82fa4b9f25 permitted=['local', 'cheap_cloud', 'frontier'] pinned=False request_class=user_turn unscanned=False
+=========================== short test summary info ============================
+FAILED tests/integration/e2e/test_outcome_contract.py::test_terminal_cause_survives_next_turn_and_close[400-unverifiable]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 2 passed in 0.44s

@@ -1,0 +1,73 @@
+{
+  "bootstrap_original_sha256": "afdd883cbc4c20df051b73a1cd0c9325ab900cafb27608242a4ad95d2f06d105",
+  "bootstrap_original_keys": [
+    "schema",
+    "created_at",
+    "roots",
+    "scope",
+    "files",
+    "note"
+  ],
+  "original_capture_timestamp": "2026-09-09T06:46:06.774708+00:00",
+  "first_tool_file_birth_utc": "2026-09-09T06:49:23.004486+00:00",
+  "preserved_inputs": 422,
+  "preserved_bytes_mismatches": [],
+  "baseline_derivation": "Original bootstrap JSON has hashes/scope but no fields. baseline.json adds fields and display_fields from preserved pre-edit bytes using the later parser. It does not re-snapshot the edited repositories. No stand-alone script existed at capture time: the stdlib walk ran inline through the retained conversation exec tool call; no historical script hash is available or asserted. Both artifacts live under reports/reviews outside scanned scope. Timestamps are host evidence, not independent attestation.",
+  "protected_display_before_after": {
+    "ADRL-FND-005": {
+      "before": {
+        "index": {
+          "verdict": "APPROVE",
+          "maturity": "Historical D3 governance; product release gate unmet"
+        },
+        "bucket": {
+          "verdict": "APPROVE",
+          "maturity": "D3 \u2192 D3 (governance note)"
+        }
+      },
+      "after": {
+        "index": {
+          "verdict": "APPROVE",
+          "maturity": "Historical D3 governance; product release gate unmet"
+        },
+        "bucket": {
+          "verdict": "APPROVE",
+          "maturity": "D3 \u2192 D3 (governance note)"
+        }
+      }
+    },
+    "ADRL-EVL-009": {
+      "before": {
+        "index": {
+          "verdict": "PROPOSED (new)",
+          "maturity": "D1"
+        },
+        "bucket": {
+          "verdict": "PROPOSED (new)",
+          "maturity": "; \u2192 D1"
+        }
+      },
+      "after": {
+        "index": {
+          "verdict": "PROPOSED (new)",
+          "maturity": "D1"
+        },
+        "bucket": {
+          "verdict": "PROPOSED (new)",
+          "maturity": "; \u2192 D1"
+        }
+      }
+    }
+  },
+  "latest_runtime_manifest": "reports/reviews/outcome-contract-2026-09-09/checks-2/manifest.json",
+  "latest_runtime_manifest_sha256": "1aa05cdc42a990c395e2ef00bed2bdb89229b1eb6f755c5a0f9ad323814f6007",
+  "runtime_manifest_input_count": 324,
+  "changed_since_that_manifest": [
+    "AGENTS.md"
+  ],
+  "skill_mirror_sha256": {
+    ".codex": "4f4e92e45638783430779ebc210192e5e259a4f109448ad9c9f7c44aa30fccf0",
+    ".claude": "4f4e92e45638783430779ebc210192e5e259a4f109448ad9c9f7c44aa30fccf0"
+  },
+  "canonical_skill_sha256": "4f4e92e45638783430779ebc210192e5e259a4f109448ad9c9f7c44aa30fccf0"
+}

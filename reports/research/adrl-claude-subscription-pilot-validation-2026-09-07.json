@@ -1,0 +1,14 @@
+{
+  "date": "2026-09-07",
+  "status": "passed",
+  "local_links_checked": 140,
+  "broken_links": [],
+  "decisions": 77,
+  "one_index_row_per_decision": true,
+  "existing_adr_text_preserved": 2,
+  "original_pilot_files_unchanged": 9,
+  "prepared_baseline_and_run_copy_unchanged": true,
+  "tested_runtime_file_hashes_still_match": 25,
+  "model_runs": 0,
+  "baseline_test_failures_are_intentional_task_input": true
+}

@@ -1,0 +1,10 @@
+{
+  "experiment_id": "d5651e66-519f-46ee-a012-290817e285e8",
+  "counts": {
+    "responded": 13,
+    "blocked": 1,
+    "upstream_error": 1,
+    "unsupported": 1
+  },
+  "run_completed": true
+}

@@ -1,0 +1,1131 @@
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,9 @@
+ # adrl-core
++
++W3.2a adds an [internal attempt journal](docs/attempt-lifecycle.md): encrypted starts, close
++requests and interruption history with transactional workspace reservations. It does not launch
++processes or establish that writers stopped. Process supervision and capture association remain
++W3.2b work; the public API is still preview 4.
+ 
+ W3.1 adds [retained operator captures](docs/operator-captures.md) as an internal, fixture-tested
+ API. Encrypted output A can be recovered after the workspace changes to B. Exact task-close
+--- a/docs/adr-module-map.md
++++ b/docs/adr-module-map.md
+@@ -60,6 +60,7 @@
+ | `adrl/learning/readiness.py` | ADRL-EVL-004, ADRL-EVL-009, ADRL-FND-005, ADRL-LRN-001, ADRL-LRN-002, ADRL-LRN-006 | Learning readiness report. Primary: ADRL-LRN-001. Secondary: ADRL-FND-005, ADRL-EVL-004, |
+ | `adrl/learning/tiers.py` | ADRL-EVL-005, ADRL-LRN-001, ADRL-LRN-002, ADRL-LRN-008, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-004 | Evidence tiers and pooling rules. Primary: ADRL-LRN-001. |
+ | `adrl/ledger/anchoring.py` | ADRL-OPS-002, ADRL-OPS-007, ADRL-SAF-009, ADRL-TRU-003 | Checkpoint key custody, off-device anchoring and anchor verification. Primary: ADRL-SAF-009. |
++| `adrl/ledger/attempts.py` | ADRL-MEM-001, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-005, ADRL-MEM-010, ADRL-OPS-001, ADRL-SEM-002, ADRL-SEM-007, ADRL-TRU-001 | Append-only operator attempt lifecycle. Primary: ADRL-MEM-002. |
+ | `adrl/ledger/capture.py` | ADRL-MEM-001, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-005, ADRL-MEM-010, ADRL-SAF-007, ADRL-SEM-002, ADRL-SEM-007, ADRL-TRU-001 | Retained operator-time snapshots. Primary: ADRL-MEM-003. |
+ | `adrl/ledger/counterfactual.py` | ADRL-LRN-001, ADRL-MEM-009 | Counterfactual evidence bound to an explicit route_id. Primary: ADRL-MEM-009. |
+ | `adrl/ledger/crypto.py` | ADRL-MEM-005, ADRL-MEM-010 | AES-GCM and keyed hashing primitives for prompt-class data. Primary: ADRL-MEM-010. |
+@@ -144,17 +145,17 @@
+ | ADRL-LRN-006 | `adrl/learning/abstention.py`, `adrl/learning/readiness.py` |
+ | ADRL-LRN-007 | `adrl/app.py`, `adrl/cli/improvement.py`, `adrl/learning/artifacts.py`, `adrl/learning/improvement.py` |
+ | ADRL-LRN-008 | `adrl/learning/explore.py`, `adrl/learning/tiers.py`, `adrl/routing/advisor.py`, `adrl/routing/router.py` |
+-| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/learning/tiers.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
++| ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-004 | `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/learning/artifacts.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/ports.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/ports.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-006 | `adrl/core/ports.py`, `adrl/learning/abstention.py`, `adrl/ledger/facade.py`, `adrl/ledger/readiness.py`, `adrl/ledger/state.py`, `adrl/ledger/store.py`, `adrl/proxy/observe_only.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-MEM-007 | `adrl/learning/dataset.py`, `adrl/ledger/erasure.py`, `adrl/ledger/projections.py`, `adrl/ledger/replay.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/store.py` |
+ | ADRL-MEM-008 | `adrl/ledger/shadow_retrieval.py` |
+ | ADRL-MEM-009 | `adrl/learning/pairs.py`, `adrl/ledger/counterfactual.py`, `adrl/ledger/events.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/ports.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+-| ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/telemetry/logging.py` |
++| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/ports.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/ledger/attempts.py`, `adrl/telemetry/logging.py` |
+ | ADRL-OPS-002 | `adrl/ledger/anchoring.py` |
+ | ADRL-OPS-003 | `adrl/config/checks.py` |
+ | ADRL-OPS-004 | `adrl/ledger/erasure.py` |
+@@ -180,13 +181,13 @@
+ | ADRL-SAF-008 | `adrl/config/loaders.py`, `adrl/config/models.py`, `adrl/gates/content.py`, `adrl/gates/deployments.py`, `adrl/gates/pipeline.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py` |
+ | ADRL-SAF-009 | `adrl/cli/main.py`, `adrl/gates/cli.py`, `adrl/gates/deployments.py`, `adrl/gates/egress.py`, `adrl/gates/pipeline.py`, `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-SEM-001 | `adrl/core/types.py`, `adrl/gates/feasibility.py`, `adrl/telemetry/metrics.py`, `adrl/wire/classify.py`, `adrl/wire/parse.py` |
+-| ADRL-SEM-002 | `adrl/api/auth.py`, `adrl/core/ids.py`, `adrl/ledger/capture.py`, `adrl/wire/adapters.py`, `adrl/wire/identity.py` |
++| ADRL-SEM-002 | `adrl/api/auth.py`, `adrl/core/ids.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/wire/adapters.py`, `adrl/wire/identity.py` |
+ | ADRL-SEM-003 | `adrl/proxy/pipeline.py` |
+ | ADRL-SEM-004 | `adrl/config/models.py`, `adrl/gates/block.py`, `adrl/proxy/pipeline.py`, `adrl/wire/classify.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SEM-005 | `adrl/cascade/sticky.py` |
+ | ADRL-SEM-006 | `adrl/cascade/controller.py`, `adrl/proxy/observe_only.py`, `adrl/proxy/pipeline.py`, `adrl/wire/identity.py` |
+-| ADRL-SEM-007 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/schema.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/proxy/errors.py`, `adrl/wire/adapters.py`, `adrl/wire/profiles/base.py`, `adrl/wire/profiles/messages.py`, `adrl/wire/profiles/messages_responses.py` |
+-| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py`, `adrl/ledger/capture.py` |
++| ADRL-SEM-007 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/schema.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/proxy/errors.py`, `adrl/wire/adapters.py`, `adrl/wire/profiles/base.py`, `adrl/wire/profiles/messages.py`, `adrl/wire/profiles/messages_responses.py` |
++| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py` |
+ | ADRL-TRU-002 | `adrl/core/types.py`, `adrl/gates/deployments.py`, `adrl/proxy/pipeline.py`, `adrl/wire/observe.py` |
+ | ADRL-TRU-003 | `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py` |
+ 
+--- /dev/null
++++ b/docs/attempt-lifecycle.md
+@@ -0,0 +1,83 @@
++# Internal attempt journal: W3.2a
++
++Primary: ADRL-MEM-002. Secondary: ADRL-MEM-001/003/005/010, ADRL-SEM-002/007,
++ADRL-TRU-001, ADRL-OPS-001.
++
++`AttemptJournal` records operator intent and interruption independently of a routing decision.
++It is an internal library tested with synthetic fixtures. There is no new CLI, HTTP endpoint,
++harness hook mapping or process launch. API preview 4 remains unchanged.
++
++The supported history is:
++
++```text
++started -> close_requested -> cancelled or incomplete
++started --------------------> cancelled or incomplete
++```
++
++No successful-close, quiesced-writer, capture-associated or verified-result state exists here.
++Every event reports attribution as `unestablished` and learning eligibility as false. A close
++request is only a request. The existing capture library remains independent; it does not enforce
++this journal's reservations or associate its manual captures with close requests. W3.2b must
++implement that association with an actual writer barrier before claiming exact task output.
++
++## Identity, evidence and recovery
++
++A start reserves an attempt UUID and a future capture UUID within the bound session, names an
++opaque task reference and optional terminal parent attempt, and records its initial included-tree
++manifest, fingerprint, canonical workspace reference and policy. The manifest retains names,
++permissions and content hashes, without the file bytes. The capture scanner establishes the same
++included-tree scope and rejects its existing unsafe-input/drift cases. This is operator-time
++initial state, not proof that a harness had yet to write anything.
++
++Migration 0008 stores encrypted append-only events. It reuses the bound session key and creates
++no new key. Raw UUIDs, task identity, source/workspace references, names/hashes, reasons and policy
++remain encrypted. Session, attempt, event and workspace pseudonyms plus phase, sequence and append
++time form a plaintext skeleton. The workspace pseudonym is host-keyed so different sessions on
++the same ledger refer to one canonical workspace. Headers are authenticated with the ciphertext.
++Erasure changes no existing row and denies fresh access or append, including when an old wrapped
++key is restored while the erasure audit remains intact.
++
++The caller supplies a previously authenticated local principal. Binding, workload, session,
++workspace, expiry and erasure checks retain the existing same-OS-user boundary. This is not a
++remote verifier identity service or an authorization mechanism for arbitrary same-user code.
++
++An identical event UUID and command returns the original record, even after later phases are
++appended. A start retry keeps the original initial manifest when files have since changed.
++Changed commands, policies or workspaces under that UUID conflict. A different UUID cannot
++repeat an already pending close or append after a terminal event. Existing attempt and capture
++IDs cannot be reassigned, and a capture cannot retrospectively establish its attempt's start.
++Parent validation requires the same task, session and workspace plus a terminal parent.
++
++One active journal attempt per canonical workspace is admitted transactionally across sessions
++on the same ledger. This is a data reservation, not an operating-system/file lock. Terminal
++journal state does not prove a process stopped. On reopen, a pending attempt remains pending and
++retains its reservation; there is no expiry-based abandonment or automatic process resumption.
++An authorized operator can append an explicit incomplete reason when the key and quota permit.
++
++Read validation detects altered identities/headers/ciphertext, missing starts, sequence gaps and
++invalid transitions. It does not anchor history against an attacker removing a suffix or rolling
++back the entire database. These states cannot produce a successful-close projection. A future
++supervisor must reconcile actual process ownership and liveness before reuse; persisted PIDs
++alone cannot grant signal/kill authority after restart.
++
++## Bounds and unresolved recovery
++
++The starting `AttemptPolicy` limits attempts per session (upper/default 3), events per attempt
++(8), encoded plaintext bytes per event (8,000,000), and ciphertext-plus-nonce bytes across the
++attempt table (32,000,000). Limits may be lower. Its embedded capture policy supplies initial
++scan bounds; no capture archive row is created by the scan. Later transitions retain the
++attempt's original policy, with a newly lowered journal-wide byte bound also respected.
++
++Quota checks occur in the serialized write transaction; failed writes add no partial event and
++lost acknowledgements can be recovered through the same ID. Erased history still occupies quota.
++SQLite/WAL overhead is outside the logical count. Quota exhaustion can leave an attempt pending,
++and erasing an unfinished attempt can leave its reservation blocked because its key is no longer
++available. Neither condition silently releases a possibly active workspace. A supervisor admission
++and recovery design must reserve terminal-record capacity and coordinate erasure/release before
++real execution is enabled. The small-policy fault cases intentionally exercise this conservative
++blocked state; it is not a completed operations/recovery feature.
++
++No new plaintext materialization is introduced, and fixture state is removed afterward. W3.1's
++active-copy erasure and process-death leftover gates remain open. The next slice must test owned
++writers, descendants, cancellation, restart and capture association. Full W3 still needs those
++gates, retained verification/CLI/timeline integration and a bounded native Claude demonstration.
+--- a/docs/data-inventory.md
++++ b/docs/data-inventory.md
+@@ -337,3 +337,27 @@
+ coordination remain required before real task capture. Only synthetic fixtures use this internal
+ slice. Erased ciphertext still consumes the archive quota; no automatic data rewrite or quota
+ reclamation is implemented. See [capture boundary](operator-captures.md).
++
++## Operator attempt history (internal, migration 0008)
++
++The entire operator command, raw task/attempt/capture IDs, initial manifest, source reference,
++reason and policy are inside the session-key envelope. Initial manifests contain paths and
++hashes, not file bytes. No keys, routes, learning labels or plaintext materializations are created.
++
++| Field | Class | Note |
++|---|---|---|
++| `product_attempt_events.seq` | `skeleton` | Append order |
++| `product_attempt_events.session_hmac` | `keyed_hash` | Existing bound session |
++| `product_attempt_events.attempt_key` | `keyed_hash` | Session-key HMAC of attempt UUID |
++| `product_attempt_events.event_key` | `keyed_hash` | Session-key HMAC of command UUID |
++| `product_attempt_events.workspace_key` | `keyed_hash` | Host-key HMAC of canonical workspace |
++| `product_attempt_events.event_type` | `skeleton` | started, close_requested, cancelled, incomplete |
++| `product_attempt_events.attempt_seq` | `skeleton` | Per-attempt sequence, authenticated with payload |
++| `product_attempt_events.nonce` | `skeleton` | AEAD nonce |
++| `product_attempt_events.ciphertext` | `encrypted_prompt_class` | Complete operator-attempt-event-v1 |
++| `product_attempt_events.ts` | `skeleton` | Append time checked against encrypted event |
++
++Erasure denies reads/appends and does not reclaim ciphertext quota or release an unfinished
++workspace reservation. Active in-memory copies and external backups retain separate lifetimes.
++Only synthetic fixtures are used. See [journal boundary](attempt-lifecycle.md) for its quota,
++pending-history and recovery limits; this addition does not settle the wider DQ6 copy policy.
+--- a/docs/known-gaps.md
++++ b/docs/known-gaps.md
+@@ -1,4 +1,9 @@
+ # Known gaps (reconciled 2026-09-08)
++
++W3.2a current context: the [attempt journal](attempt-lifecycle.md) records durable intent and
++interruption but has no process supervisor. Reservations are journal state only. Quota exhaustion
++or erasing a pending attempt can leave a reservation blocked; terminal-capacity reservation and
++coordinated release are required before real execution. Capture association also remains open.
+ 
+ W3.1 current context: [retained operator capture](operator-captures.md) is implemented internally
+ for synthetic fixtures. Trusted task closure, active-copy erasure coordination, crash-leftover
+--- /dev/null
++++ b/src/adrl/ledger/attempts.py
+@@ -0,0 +1,482 @@
++"""Append-only operator attempt lifecycle. Primary: ADRL-MEM-002.
++
++Secondary: ADRL-MEM-001/003/005/010, ADRL-SEM-002/007, ADRL-TRU-001, ADRL-OPS-001.
++Records intent and interruption only. No successful close, process supervision, capture
++association or learning authority is implemented by this internal journal.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import re
++import sqlite3
++import time
++from datetime import UTC, datetime
++from pathlib import Path, PurePosixPath
++from typing import Annotated, Any, Literal, cast
++from uuid import UUID
++
++from cryptography.exceptions import InvalidTag
++from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, ValidationError, model_validator
++
++from adrl.api.auth import Principal
++from adrl.api.contracts import OpaqueId
++from adrl.api.store import ProductStore
++from adrl.ledger import crypto
++from adrl.ledger.capture import CaptureArchive, CaptureEntry, CapturePolicy, _manifest
++from adrl.ledger.session_verification import _tree_ref
++
++PHASES = {
++    "start": "started",
++    "request_close": "close_requested",
++    "cancel": "cancelled",
++    "mark_incomplete": "incomplete",
++}
++TERMINAL = frozenset({"cancelled", "incomplete"})
++
++
++class AttemptError(ValueError):
++    """An attempt command conflicts with its identity, history or resource bounds."""
++
++
++class AttemptPolicy(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    schema_version: Literal["operator-attempt-policy-v1"] = "operator-attempt-policy-v1"
++    snapshot: CapturePolicy = Field(default_factory=CapturePolicy)
++    max_session_attempts: int = Field(default=3, ge=1, le=3)
++    max_events_per_attempt: int = Field(default=8, ge=1, le=8)
++    max_event_bytes: int = Field(default=8_000_000, ge=1, le=8_000_000)
++    max_history_bytes: int = Field(default=32_000_000, ge=1, le=32_000_000)
++
++
++class StartAttempt(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    kind: Literal["start"] = "start"
++    event_id: UUID
++    attempt_id: UUID
++    task_ref: OpaqueId
++    capture_id: UUID
++    parent_attempt_id: UUID | None = None
++
++    @model_validator(mode="after")
++    def distinct_parent(self) -> StartAttempt:
++        if self.parent_attempt_id == self.attempt_id:
++            raise ValueError("An attempt cannot parent itself.")
++        return self
++
++
++class AttemptTransition(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    kind: Literal["request_close", "cancel", "mark_incomplete"]
++    event_id: UUID
++    attempt_id: UUID
++    reason: (
++        Literal[
++            "operator_cancelled",
++            "operator_interrupted",
++            "supervisor_lost",
++            "capture_unavailable",
++            "quiescence_unavailable",
++        ]
++        | None
++    ) = None
++
++    @model_validator(mode="after")
++    def meaningful_reason(self) -> AttemptTransition:
++        if self.kind == "request_close" and self.reason is not None:
++            raise ValueError("Close requests carry no terminal reason.")
++        if self.kind == "cancel" and self.reason != "operator_cancelled":
++            raise ValueError("Cancellation needs its explicit operator reason.")
++        if self.kind == "mark_incomplete" and self.reason in {None, "operator_cancelled"}:
++            raise ValueError("Incomplete attempts need an interruption reason.")
++        return self
++
++
++AttemptCommand = Annotated[StartAttempt | AttemptTransition, Field(discriminator="kind")]
++
++
++class AttemptEvent(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    schema_version: Literal["operator-attempt-event-v1"] = "operator-attempt-event-v1"
++    authority: Literal["local_operator"] = "local_operator"
++    attribution: Literal["unestablished"] = "unestablished"
++    eligible_for_learning: Literal[False] = False
++    command: AttemptCommand
++    sequence: int = Field(strict=True, ge=0, le=7)
++    recorded_at: AwareDatetime
++    workspace_ref: str = Field(pattern=r"^hmac:[a-f0-9]{64}$")
++    policy: AttemptPolicy | None = None
++    initial_manifest: tuple[tuple[str, str], ...] | None = None
++    initial_source_ref: str | None = Field(default=None, pattern=r"^hmac:[a-f0-9]{64}$")
++
++    @property
++    def phase(self) -> str:
++        return PHASES[self.command.kind]
++
++    @model_validator(mode="after")
++    def initial_state(self) -> AttemptEvent:
++        if not isinstance(self.command, StartAttempt):
++            if (
++                self.policy is not None
++                or self.initial_manifest is not None
++                or self.initial_source_ref is not None
++            ):
++                raise ValueError("Only the start event carries initial state.")
++            return self
++        if (
++            self.sequence != 0
++            or self.policy is None
++            or self.initial_manifest is None
++            or self.initial_source_ref is None
++        ):
++            raise ValueError("A start requires sequence zero and its initial provenance.")
++        manifest = dict(self.initial_manifest)
++        if (
++            len(manifest) != len(self.initial_manifest)
++            or len(manifest) > self.policy.snapshot.max_files
++        ):
++            raise ValueError("Duplicate or excessive manifest entries.")
++        paths: set[str] = set()
++        for name, signature in self.initial_manifest:
++            directory = signature == "directory"
++            if directory and not name.endswith("/"):
++                raise ValueError("Directory manifest key must end in slash.")
++            if not directory and not re.fullmatch(r"[01]:[a-f0-9]{64}", signature):
++                raise ValueError("Invalid manifest signature.")
++            path = name[:-1] if directory else name
++            CaptureEntry(
++                path=path,
++                kind="directory" if directory else "file",
++                content=None if directory else "",
++            )
++            if path in paths:
++                raise ValueError("Manifest path has conflicting kinds.")
++            paths.add(path)
++            for parent in PurePosixPath(path).parents:
++                if str(parent) != "." and manifest.get(str(parent) + "/") != "directory":
++                    raise ValueError("Missing manifest parent directory.")
++        return self
++
++
++def _allowed(previous: str, command: StartAttempt | AttemptTransition) -> bool:
++    if isinstance(command, StartAttempt) or previous in TERMINAL:
++        return False
++    return previous == "started" or (
++        previous == "close_requested" and command.kind in {"cancel", "mark_incomplete"}
++    )
++
++
++class AttemptJournal:
++    """Trusted local journal; an active reservation is not a process or filesystem lock."""
++
++    def __init__(self, data: ProductStore, policy: AttemptPolicy | None = None) -> None:
++        self.data = data
++        self.policy = policy or AttemptPolicy()
++        self.captures = CaptureArchive(data, self.policy.snapshot)
++
++    def _workspace(
++        self, principal: Principal, workspace: Path, *, strict: bool
++    ) -> tuple[Path, str]:
++        if workspace.is_symlink():
++            raise AttemptError("symlink_workspace")
++        root = workspace.resolve(strict=strict)
++        if root != Path(principal.assertion.inventory.root).resolve(strict=strict):
++            raise AttemptError("attempt_workspace_binding_mismatch")
++        identity = crypto.keyed_hash(self.data.keys.hmac_key(), "attempt-workspace:" + str(root))
++        return root, identity
++
++    @staticmethod
++    def _aad(
++        session: str, attempt: str, event: str, workspace: str, phase: str, sequence: int
++    ) -> bytes:
++        return f"attempt:{session}:{attempt}:{event}:{workspace}:{phase}:{sequence}".encode()
++
++    def _decode(self, principal: Principal, key: bytes, row: dict[str, Any]) -> AttemptEvent:
++        aad = self._aad(
++            principal.session_hmac,
++            row["attempt_key"],
++            row["event_key"],
++            row["workspace_key"],
++            row["event_type"],
++            row["attempt_seq"],
++        )
++        try:
++            event = AttemptEvent.model_validate_json(
++                crypto.decrypt(key, row["nonce"], row["ciphertext"], aad)
++            )
++        except (InvalidTag, ValidationError, ValueError, TypeError) as exc:
++            raise AttemptError("attempt_integrity_failure") from exc
++        if (
++            row["session_hmac"] != principal.session_hmac
++            or row["attempt_key"]
++            != crypto.keyed_hash(key, "attempt:" + str(event.command.attempt_id))
++            or row["event_key"]
++            != crypto.keyed_hash(key, "attempt-event:" + str(event.command.event_id))
++            or event.sequence != row["attempt_seq"]
++            or event.phase != row["event_type"]
++            or event.workspace_ref != "hmac:" + row["workspace_key"]
++            or event.recorded_at.isoformat() != row["ts"]
++        ):
++            raise AttemptError("attempt_integrity_failure")
++        if event.initial_manifest is not None and event.initial_source_ref != _tree_ref(
++            self.data.keys.hmac_key(), dict(event.initial_manifest)
++        ):
++            raise AttemptError("attempt_integrity_failure")
++        return event
++
++    def _history(
++        self, principal: Principal, key: bytes, rows: list[dict[str, Any]]
++    ) -> tuple[AttemptEvent, ...]:
++        if not rows:
++            raise AttemptError("attempt_unavailable")
++        events = tuple(self._decode(principal, key, row) for row in rows)
++        if not isinstance(events[0].command, StartAttempt) or events[0].policy is None:
++            raise AttemptError("attempt_history_incomplete")
++        if len(events) > events[0].policy.max_events_per_attempt:
++            raise AttemptError("attempt_history_incomplete")
++        for index, event in enumerate(events):
++            if (
++                event.sequence != index
++                or event.workspace_ref != events[0].workspace_ref
++                or (index > 0 and not _allowed(events[index - 1].phase, event.command))
++            ):
++                raise AttemptError("attempt_history_incomplete")
++        return events
++
++    def read(self, principal: Principal, attempt_id: UUID) -> tuple[AttemptEvent, ...]:
++        key = self.captures._key(principal)
++        rows = self.data.ledger.read(
++            "SELECT * FROM product_attempt_events WHERE session_hmac=? AND attempt_key=? "
++            "ORDER BY attempt_seq",
++            (principal.session_hmac, crypto.keyed_hash(key, "attempt:" + str(attempt_id))),
++        )
++        events = self._history(principal, key, [dict(row) for row in rows])
++        _, workspace = self._workspace(
++            principal, Path(principal.assertion.inventory.root), strict=False
++        )
++        if events[0].workspace_ref != "hmac:" + workspace:
++            raise AttemptError("attempt_workspace_binding_mismatch")
++        if self.captures._key(principal) != key:
++            raise AttemptError("attempt_key_unavailable")
++        return events
++
++    def _same_request(
++        self, event: AttemptEvent, command: StartAttempt | AttemptTransition, workspace: str
++    ) -> bool:
++        return (
++            event.command == command
++            and event.workspace_ref == "hmac:" + workspace
++            and (not isinstance(command, StartAttempt) or event.policy == self.policy)
++        )
++
++    async def start(
++        self, principal: Principal, workspace: Path, command: StartAttempt
++    ) -> AttemptEvent:
++        key = self.captures._key(principal)
++        root, identity = await asyncio.to_thread(self._workspace, principal, workspace, strict=True)
++        # A retry preserves the original starting point, even after the task has edited files.
++        prior = self.data.ledger.read(
++            "SELECT * FROM product_attempt_events WHERE session_hmac=? AND event_key=?",
++            (
++                principal.session_hmac,
++                crypto.keyed_hash(key, "attempt-event:" + str(command.event_id)),
++            ),
++        )
++        if prior:
++            event = self._decode(principal, key, dict(prior[0]))
++            if not self._same_request(event, command, identity):
++                raise AttemptError("attempt_event_conflict")
++            self.read(principal, command.attempt_id)
++            return event
++        _, entries = await asyncio.to_thread(self.captures._inputs, principal, root)
++        initial = tuple(sorted(_manifest(entries).items()))
++        del entries
++        return await self._append(principal, key, identity, command, initial)
++
++    async def transition(self, principal: Principal, command: AttemptTransition) -> AttemptEvent:
++        key = self.captures._key(principal)
++        _, workspace = await asyncio.to_thread(
++            self._workspace, principal, Path(principal.assertion.inventory.root), strict=False
++        )
++        return await self._append(principal, key, workspace, command, None)
++
++    async def _append(
++        self,
++        principal: Principal,
++        key: bytes,
++        workspace: str,
++        command: StartAttempt | AttemptTransition,
++        initial: tuple[tuple[str, str], ...] | None,
++    ) -> AttemptEvent:
++        attempt_key = crypto.keyed_hash(key, "attempt:" + str(command.attempt_id))
++        event_key = crypto.keyed_hash(key, "attempt-event:" + str(command.event_id))
++
++        def write(conn: sqlite3.Connection) -> tuple[str, dict[str, Any] | None]:
++            if principal.assertion.expires_at <= time.time():
++                return "attempt_credential_expired", None
++            if (
++                self.data.keys.get_session_key(principal.session_hmac) != key
++                or conn.execute(
++                    "SELECT 1 FROM lineage_events WHERE lineage_hmac=? AND event_type='erased' "
++                    "UNION ALL SELECT 1 FROM session_keys "
++                    "WHERE session_hmac=? AND action='shredded'",
++                    (principal.session_hmac, principal.session_hmac),
++                ).fetchone()
++            ):
++                return "attempt_key_unavailable", None
++
++            def rows_for(identity: str) -> list[dict[str, Any]]:
++                return [
++                    dict(r)
++                    for r in conn.execute(
++                        "SELECT * FROM product_attempt_events WHERE session_hmac=? "
++                        "AND attempt_key=? ORDER BY attempt_seq",
++                        (principal.session_hmac, identity),
++                    )
++                ]
++
++            rows = rows_for(attempt_key)
++            try:
++                history = self._history(principal, key, rows) if rows else ()
++                prior = conn.execute(
++                    "SELECT * FROM product_attempt_events WHERE session_hmac=? AND event_key=?",
++                    (principal.session_hmac, event_key),
++                ).fetchone()
++                if prior:
++                    event = self._decode(principal, key, dict(prior))
++                    if not self._same_request(event, command, workspace):
++                        return "attempt_event_conflict", None
++                    return "prior", dict(prior)
++                if isinstance(command, StartAttempt):
++                    if rows:
++                        return "attempt_already_started", None
++                    if conn.execute(
++                        "SELECT 1 FROM product_captures WHERE session_hmac=? "
++                        "AND (attempt_key=? OR capture_key=?)",
++                        (
++                            principal.session_hmac,
++                            attempt_key,
++                            crypto.keyed_hash(key, "capture:" + str(command.capture_id)),
++                        ),
++                    ).fetchone():
++                        return "capture_predates_attempt", None
++                    if conn.execute(
++                        "SELECT 1 FROM product_attempt_events a WHERE workspace_key=? "
++                        "AND event_type IN ('started','close_requested') AND NOT EXISTS "
++                        "(SELECT 1 FROM product_attempt_events b "
++                        "WHERE b.session_hmac=a.session_hmac "
++                        "AND b.attempt_key=a.attempt_key AND b.attempt_seq>a.attempt_seq)",
++                        (workspace,),
++                    ).fetchone():
++                        return "workspace_reserved", None
++                    starts = list(
++                        conn.execute(
++                            "SELECT * FROM product_attempt_events "
++                            "WHERE session_hmac=? AND event_type='started'",
++                            (principal.session_hmac,),
++                        )
++                    )
++                    for row in starts:
++                        previous = self._decode(principal, key, dict(row)).command
++                        if (
++                            isinstance(previous, StartAttempt)
++                            and previous.capture_id == command.capture_id
++                        ):
++                            return "capture_id_reserved", None
++                    if len(starts) >= self.policy.max_session_attempts:
++                        return "session_attempt_limit", None
++                    if command.parent_attempt_id is not None:
++                        parent = self._history(
++                            principal,
++                            key,
++                            rows_for(
++                                crypto.keyed_hash(key, "attempt:" + str(command.parent_attempt_id))
++                            ),
++                        )
++                        parent_spec = parent[0].command
++                        if (
++                            parent[-1].phase not in TERMINAL
++                            or not isinstance(parent_spec, StartAttempt)
++                            or parent_spec.task_ref != command.task_ref
++                            or parent[0].workspace_ref != "hmac:" + workspace
++                        ):
++                            return "parent_attempt_mismatch", None
++                    policy = self.policy
++                else:
++                    if not history:
++                        return "attempt_unavailable", None
++                    if history[0].workspace_ref != "hmac:" + workspace:
++                        return "attempt_workspace_binding_mismatch", None
++                    if not _allowed(history[-1].phase, command):
++                        return "attempt_transition_conflict", None
++                    assert history[0].policy is not None
++                    policy = history[0].policy
++                if len(rows) >= policy.max_events_per_attempt:
++                    return "attempt_event_limit", None
++                event = AttemptEvent(
++                    command=command,
++                    sequence=len(rows),
++                    recorded_at=datetime.now(UTC),
++                    workspace_ref="hmac:" + workspace,
++                    policy=policy if isinstance(command, StartAttempt) else None,
++                    initial_manifest=initial,
++                    initial_source_ref=_tree_ref(self.data.keys.hmac_key(), dict(initial))
++                    if initial is not None
++                    else None,
++                )
++            except AttemptError as exc:
++                return str(exc), None
++            plaintext = event.model_dump_json().encode()
++            if len(plaintext) > policy.max_event_bytes:
++                return "attempt_payload_limit", None
++            nonce, ciphertext = crypto.encrypt(
++                key,
++                plaintext,
++                self._aad(
++                    principal.session_hmac,
++                    attempt_key,
++                    event_key,
++                    workspace,
++                    event.phase,
++                    event.sequence,
++                ),
++            )
++            size = conn.execute(
++                "SELECT COALESCE(SUM(LENGTH(ciphertext)+LENGTH(nonce)),0) "
++                "FROM product_attempt_events"
++            ).fetchone()[0]
++            if size + len(ciphertext) + len(nonce) > min(
++                policy.max_history_bytes, self.policy.max_history_bytes
++            ):
++                return "attempt_history_limit", None
++            cursor = conn.execute(
++                "INSERT INTO product_attempt_events "
++                "(session_hmac,attempt_key,event_key,workspace_key,"
++                "event_type,attempt_seq,nonce,ciphertext,ts) VALUES (?,?,?,?,?,?,?,?,?)",
++                (
++                    principal.session_hmac,
++                    attempt_key,
++                    event_key,
++                    workspace,
++                    event.phase,
++                    event.sequence,
++                    nonce,
++                    ciphertext,
++                    event.recorded_at.isoformat(),
++                ),
++            )
++            return "recorded", dict(
++                conn.execute(
++                    "SELECT * FROM product_attempt_events WHERE seq=?", (cursor.lastrowid,)
++                ).fetchone()
++            )
++
++        status, row = cast(
++            tuple[str, dict[str, Any] | None], await self.data.ledger.write_through(write)
++        )
++        if row is None:
++            raise AttemptError(status)
++        event = self._decode(principal, key, row)
++        if self.captures._key(principal) != key:
++            raise AttemptError("attempt_key_unavailable")
++        return event
+--- /dev/null
++++ b/src/adrl/ledger/migrations/0008_attempts.sql
+@@ -0,0 +1,17 @@
++-- Local operator attempt history. Primary: ADRL-MEM-002. Secondary: ADRL-MEM-001/010.
++CREATE TABLE product_attempt_events (
++    seq INTEGER PRIMARY KEY AUTOINCREMENT,
++    session_hmac TEXT NOT NULL REFERENCES product_sessions(session_hmac),
++    attempt_key TEXT NOT NULL,
++    event_key TEXT NOT NULL,
++    workspace_key TEXT NOT NULL,
++    event_type TEXT NOT NULL,
++    attempt_seq INTEGER NOT NULL CHECK (attempt_seq >= 0),
++    nonce BLOB NOT NULL,
++    ciphertext BLOB NOT NULL,
++    ts TEXT NOT NULL,
++    UNIQUE(session_hmac, event_key),
++    UNIQUE(session_hmac, attempt_key, attempt_seq)
++);
++CREATE INDEX product_attempt_identity_idx ON product_attempt_events(session_hmac, attempt_key);
++CREATE INDEX product_attempt_workspace_idx ON product_attempt_events(workspace_key, seq);
+--- /dev/null
++++ b/tests/unit/test_attempts.py
+@@ -0,0 +1,412 @@
++"""Attempt history and admission fault cases. Primary: ADRL-MEM-002, ADRL-OPS-001."""
++
++from __future__ import annotations
++
++import asyncio
++import sqlite3
++from dataclasses import replace
++from typing import Any
++from uuid import uuid4
++
++import pytest
++from pydantic import ValidationError
++
++from adrl.api.store import ProductStore
++from adrl.core.errors import LedgerAppendFailure
++from adrl.ledger import attempts as module
++from adrl.ledger.attempts import (
++    AttemptError,
++    AttemptJournal,
++    AttemptPolicy,
++    AttemptTransition,
++    StartAttempt,
++)
++from adrl.ledger.capture import CaptureArchive
++from adrl.ledger.keystore import FileKeyStore
++from adrl.ledger.migrations import load_migrations
++from adrl.ledger.session_verification import snapshot_fingerprint
++from adrl.ledger.store import LedgerStore
++
++from .test_capture import Fixture, bind
++from .test_capture import capture as capture
++
++
++def start(**changes: Any) -> StartAttempt:
++    return StartAttempt.model_validate(
++        {"event_id": uuid4(), "attempt_id": uuid4(), "task_ref": "task-one", "capture_id": uuid4()}
++        | changes
++    )
++
++
++def transition(spec: StartAttempt, kind: str, **changes: Any) -> AttemptTransition:
++    reasons = {"cancel": "operator_cancelled", "mark_incomplete": "operator_interrupted"}
++    return AttemptTransition.model_validate(
++        {
++            "event_id": uuid4(),
++            "attempt_id": spec.attempt_id,
++            "kind": kind,
++            "reason": reasons.get(kind),
++        }
++        | changes
++    )
++
++
++async def test_start_retry_preserves_initial_tree_after_edits_and_later_events(
++    capture: Fixture,
++) -> None:
++    journal = AttemptJournal(capture.data)
++    spec = start()
++    first = await journal.start(capture.principal, capture.workspace, spec)
++    reference = snapshot_fingerprint(
++        capture.workspace, journal.policy.snapshot, capture.keys.hmac_key()
++    )[1]
++    assert first.initial_source_ref == reference
++    assert dict(first.initial_manifest or ())["code.txt"].startswith("0:")
++    (capture.workspace / "code.txt").write_text("B")
++    close = await journal.transition(capture.principal, transition(spec, "request_close"))
++    assert close.phase == "close_requested" and close.attribution == "unestablished"
++    assert await journal.start(capture.principal, capture.workspace, spec) == first
++    history = journal.read(capture.principal, spec.attempt_id)
++    assert [event.sequence for event in history] == [0, 1]
++    assert not any(event.eligible_for_learning for event in history)
++    assert len(capture.store.read("SELECT * FROM product_attempt_events")) == 2
++    assert not capture.store.read("SELECT * FROM product_captures")
++    row = dict(capture.store.read("SELECT * FROM product_attempt_events LIMIT 1")[0])
++    for private in [
++        b"code.txt",
++        str(capture.workspace).encode(),
++        str(spec.attempt_id).encode(),
++        b"task-one",
++    ]:
++        assert private not in repr(row).encode()
++    assert "output-A-private-canary" not in first.model_dump_json()
++
++
++@pytest.mark.parametrize("change", ["task", "capture", "attempt", "policy", "workspace"])
++async def test_changed_start_identity_conflicts(capture: Fixture, change: str) -> None:
++    journal = AttemptJournal(capture.data)
++    spec = start()
++    await journal.start(capture.principal, capture.workspace, spec)
++    principal, workspace = capture.principal, capture.workspace
++    if change == "task":
++        spec = spec.model_copy(update={"task_ref": "different"})
++    elif change == "capture":
++        spec = spec.model_copy(update={"capture_id": uuid4()})
++    elif change == "attempt":
++        spec = spec.model_copy(update={"attempt_id": uuid4()})
++    elif change == "policy":
++        journal = AttemptJournal(capture.data, AttemptPolicy(max_session_attempts=1))
++    else:
++        workspace = capture.scratch
++        principal = replace(
++            principal,
++            assertion=replace(
++                principal.assertion,
++                inventory=replace(principal.assertion.inventory, root=str(workspace)),
++            ),
++        )
++    with pytest.raises(AttemptError, match="event_conflict"):
++        await journal.start(principal, workspace, spec)
++    assert len(capture.store.read("SELECT * FROM product_attempt_events")) == 1
++
++
++async def test_order_duplicate_close_and_terminal_history(capture: Fixture) -> None:
++    journal = AttemptJournal(capture.data)
++    spec = start()
++    close = transition(spec, "request_close")
++    with pytest.raises(AttemptError, match="attempt_unavailable"):
++        await journal.transition(capture.principal, close)
++    await journal.start(capture.principal, capture.workspace, spec)
++    original = await journal.transition(capture.principal, close)
++    with pytest.raises(AttemptError, match="transition_conflict"):
++        await journal.transition(capture.principal, transition(spec, "request_close"))
++    await journal.transition(capture.principal, transition(spec, "cancel"))
++    assert await journal.transition(capture.principal, close) == original
++    with pytest.raises(AttemptError, match="transition_conflict"):
++        await journal.transition(capture.principal, transition(spec, "mark_incomplete"))
++    changed = transition(spec, "cancel", event_id=close.event_id)
++    with pytest.raises(AttemptError, match="event_conflict"):
++        await journal.transition(capture.principal, changed)
++    assert [event.phase for event in journal.read(capture.principal, spec.attempt_id)] == [
++        "started",
++        "close_requested",
++        "cancelled",
++    ]
++
++
++async def test_restart_preserves_reservation_until_explicit_incomplete(capture: Fixture) -> None:
++    journal = AttemptJournal(capture.data)
++    spec = start()
++    await journal.start(capture.principal, capture.workspace, spec)
++    close = transition(spec, "request_close")
++    original = await journal.transition(capture.principal, close)
++    capture.store.close()
++    capture.store.open()
++    journal = AttemptJournal(capture.data)
++    assert await journal.transition(capture.principal, close) == original
++    other = await bind(capture.data, capture.workspace, str(uuid4()))
++    with pytest.raises(AttemptError, match="workspace_reserved"):
++        await journal.start(other, capture.workspace, start())
++    await journal.transition(
++        capture.principal, transition(spec, "mark_incomplete", reason="supervisor_lost")
++    )
++    assert journal.read(capture.principal, spec.attempt_id)[-1].attribution == "unestablished"
++    await journal.start(other, capture.workspace, start(task_ref="separate-task"))
++    assert len(capture.store.read("SELECT * FROM product_attempt_events")) == 4
++
++
++async def test_simultaneous_sessions_get_only_one_workspace_reservation(capture: Fixture) -> None:
++    journal = AttemptJournal(capture.data)
++    other = await bind(capture.data, capture.workspace, str(uuid4()))
++    results = await asyncio.gather(
++        journal.start(capture.principal, capture.workspace, start()),
++        journal.start(other, capture.workspace, start()),
++        return_exceptions=True,
++    )
++    assert sum(isinstance(result, AttemptError) for result in results) == 1
++    assert len(capture.store.read("SELECT * FROM product_attempt_events")) == 1
++    assert any(
++        isinstance(result, AttemptError) and str(result) == "workspace_reserved"
++        for result in results
++    )
++
++
++async def test_different_workspaces_remain_independent(capture: Fixture) -> None:
++    other = await bind(capture.data, capture.scratch, str(uuid4()))
++    journal = AttemptJournal(capture.data)
++    first, second = start(), start(task_ref="task-two")
++    await journal.start(capture.principal, capture.workspace, first)
++    await journal.start(other, capture.scratch, second)
++    assert journal.read(capture.principal, first.attempt_id)[0].command.task_ref == "task-one"
++    assert journal.read(other, second.attempt_id)[0].command.task_ref == "task-two"
++    with pytest.raises(AttemptError, match="attempt_unavailable"):
++        journal.read(other, first.attempt_id)
++
++
++@pytest.mark.parametrize("case", ["valid", "task", "session", "workspace", "active"])
++async def test_parent_scope_and_terminal_state(capture: Fixture, case: str) -> None:
++    journal = AttemptJournal(capture.data)
++    parent = start()
++    await journal.start(capture.principal, capture.workspace, parent)
++    if case != "active":
++        await journal.transition(capture.principal, transition(parent, "cancel"))
++    principal, workspace = capture.principal, capture.workspace
++    if case == "session":
++        principal = await bind(capture.data, workspace, str(uuid4()))
++    if case == "workspace":
++        workspace = capture.scratch
++        principal = replace(
++            principal,
++            assertion=replace(
++                principal.assertion,
++                inventory=replace(principal.assertion.inventory, root=str(workspace)),
++            ),
++        )
++    child = start(
++        parent_attempt_id=parent.attempt_id, task_ref="other" if case == "task" else parent.task_ref
++    )
++    if case == "valid":
++        event = await journal.start(principal, workspace, child)
++        assert event.command.parent_attempt_id == parent.attempt_id
++    else:
++        with pytest.raises(AttemptError):
++            await journal.start(principal, workspace, child)
++
++
++async def test_reserved_capture_id_and_retrospective_start_are_rejected(capture: Fixture) -> None:
++    journal = AttemptJournal(capture.data)
++    spec = start()
++    await journal.start(capture.principal, capture.workspace, spec)
++    await journal.transition(capture.principal, transition(spec, "cancel"))
++    with pytest.raises(AttemptError, match="capture_id_reserved"):
++        await journal.start(capture.principal, capture.workspace, start(capture_id=spec.capture_id))
++    existing = capture.request()
++    await capture.archive.capture(capture.principal, capture.workspace, existing)
++    for proposed in [start(attempt_id=existing.attempt_id), start(capture_id=existing.capture_id)]:
++        with pytest.raises(AttemptError, match="capture_predates_attempt"):
++            await journal.start(capture.principal, capture.workspace, proposed)
++
++
++@pytest.mark.parametrize("case", ["expired", "workload", "root"])
++async def test_invalid_context_denied(capture: Fixture, case: str) -> None:
++    principal = capture.principal
++    if case == "expired":
++        principal = replace(principal, assertion=replace(principal.assertion, expires_at=0))
++    elif case == "workload":
++        principal = replace(principal, workload_ref="wrong")
++    else:
++        principal = replace(
++            principal,
++            assertion=replace(
++                principal.assertion,
++                inventory=replace(principal.assertion.inventory, root=str(capture.scratch)),
++            ),
++        )
++    with pytest.raises(ValueError):
++        await AttemptJournal(capture.data).start(principal, capture.workspace, start())
++    assert not capture.store.read("SELECT * FROM product_attempt_events")
++
++
++@pytest.mark.parametrize("case", ["expiry", "erasure"])
++async def test_queued_append_rechecks_expiry_and_erasure(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch, case: str
++) -> None:
++    original = capture.store.write_through
++
++    async def intervene(fn: Any) -> Any:
++        if case == "expiry":
++            monkeypatch.setattr(
++                module.time, "time", lambda: capture.principal.assertion.expires_at + 1
++            )
++        else:
++            capture.keys.shred_session_key(capture.principal.session_hmac, "fixture-erasure")
++        return await original(fn)
++
++    monkeypatch.setattr(capture.store, "write_through", intervene)
++    with pytest.raises(AttemptError, match=r"expired|key_unavailable"):
++        await AttemptJournal(capture.data).start(capture.principal, capture.workspace, start())
++    assert not capture.store.read("SELECT * FROM product_attempt_events")
++
++
++async def test_erased_history_cannot_be_restored_with_old_key(capture: Fixture) -> None:
++    journal = AttemptJournal(capture.data)
++    spec = start()
++    await journal.start(capture.principal, capture.workspace, spec)
++    path = capture.keys.root / "sessions" / f"{capture.principal.session_hmac}.key"
++    old = path.read_bytes()
++    capture.keys.shred_session_key(capture.principal.session_hmac, "fixture-erasure")
++    path.write_bytes(old)
++    with pytest.raises(ValueError, match="key_unavailable"):
++        journal.read(capture.principal, spec.attempt_id)
++    with pytest.raises(ValueError, match="key_unavailable"):
++        await journal.transition(capture.principal, transition(spec, "cancel"))
++    assert len(capture.store.read("SELECT * FROM product_attempt_events")) == 1
++
++
++async def test_erased_pending_attempt_stays_reserved_and_counts_against_quota(
++    capture: Fixture,
++) -> None:
++    journal = AttemptJournal(capture.data)
++    await journal.start(capture.principal, capture.workspace, start())
++    row = capture.store.read("SELECT * FROM product_attempt_events")[0]
++    used = len(row["ciphertext"]) + len(row["nonce"])
++    capture.keys.shred_session_key(capture.principal.session_hmac, "fixture-erasure")
++    same = await bind(capture.data, capture.workspace, str(uuid4()))
++    with pytest.raises(AttemptError, match="workspace_reserved"):
++        await journal.start(same, capture.workspace, start())
++    other = await bind(capture.data, capture.scratch, str(uuid4()))
++    limited = AttemptJournal(capture.data, AttemptPolicy(max_history_bytes=used + 1))
++    with pytest.raises(AttemptError, match="attempt_history_limit"):
++        await limited.start(other, capture.scratch, start())
++    assert len(capture.store.read("SELECT * FROM product_attempt_events")) == 1
++
++
++@pytest.mark.parametrize(
++    "case", ["ciphertext", "event_type", "workspace_key", "ts", "missing_start", "gap"]
++)
++async def test_corrupt_or_incomplete_history_is_rejected(capture: Fixture, case: str) -> None:
++    journal = AttemptJournal(capture.data)
++    spec = start()
++    await journal.start(capture.principal, capture.workspace, spec)
++    await journal.transition(capture.principal, transition(spec, "request_close"))
++    await journal.transition(capture.principal, transition(spec, "cancel"))
++    with sqlite3.connect(capture.store.path) as conn:
++        if case in {"missing_start", "gap"}:
++            conn.execute(
++                "DELETE FROM product_attempt_events WHERE attempt_seq=?",
++                (0 if case == "missing_start" else 1,),
++            )
++        else:
++            conn.execute(
++                f"UPDATE product_attempt_events SET {case}=? WHERE attempt_seq=1", (b"tampered",)
++            )
++    with pytest.raises(AttemptError, match=r"integrity|history_incomplete"):
++        journal.read(capture.principal, spec.attempt_id)
++
++
++async def test_failed_commit_and_lost_ack_are_recoverable(
++    capture: Fixture, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    journal = AttemptJournal(capture.data)
++    spec = start()
++    with sqlite3.connect(capture.store.path) as conn:
++        conn.execute(
++            "CREATE TRIGGER fail_attempt BEFORE INSERT ON product_attempt_events "
++            "BEGIN SELECT RAISE(ABORT,'injected'); END"
++        )
++    with pytest.raises(LedgerAppendFailure):
++        await journal.start(capture.principal, capture.workspace, spec)
++    assert not capture.store.read("SELECT * FROM product_attempt_events")
++    with sqlite3.connect(capture.store.path) as conn:
++        conn.execute("DROP TRIGGER fail_attempt")
++    original = capture.store.write_through
++
++    async def commit_without_ack(fn: Any) -> Any:
++        await original(fn)
++        raise asyncio.CancelledError
++
++    monkeypatch.setattr(capture.store, "write_through", commit_without_ack)
++    with pytest.raises(asyncio.CancelledError):
++        await journal.start(capture.principal, capture.workspace, spec)
++    stored = journal.read(capture.principal, spec.attempt_id)[0]
++    monkeypatch.setattr(capture.store, "write_through", original)
++    assert await journal.start(capture.principal, capture.workspace, spec) == stored
++    assert len(capture.store.read("SELECT * FROM product_attempt_events")) == 1
++
++
++@pytest.mark.parametrize(
++    "policy", [AttemptPolicy(max_event_bytes=1), AttemptPolicy(max_history_bytes=1)]
++)
++async def test_initial_storage_limits_are_atomic(capture: Fixture, policy: AttemptPolicy) -> None:
++    with pytest.raises(AttemptError, match="limit"):
++        await AttemptJournal(capture.data, policy).start(
++            capture.principal, capture.workspace, start()
++        )
++    assert not capture.store.read("SELECT * FROM product_attempt_events")
++
++
++async def test_event_and_session_limits_do_not_reclaim_history(capture: Fixture) -> None:
++    journal = AttemptJournal(capture.data, AttemptPolicy(max_events_per_attempt=1))
++    spec = start()
++    await journal.start(capture.principal, capture.workspace, spec)
++    with pytest.raises(AttemptError, match="event_limit"):
++        await journal.transition(capture.principal, transition(spec, "cancel"))
++    other = await bind(capture.data, capture.scratch, str(uuid4()))
++    journal = AttemptJournal(capture.data, AttemptPolicy(max_session_attempts=1))
++    spec = start()
++    await journal.start(other, capture.scratch, spec)
++    await journal.transition(other, transition(spec, "cancel"))
++    with pytest.raises(AttemptError, match="session_attempt_limit"):
++        await journal.start(other, capture.scratch, start())
++
++
++@pytest.mark.parametrize("kind", ["success", "verified", "writers_quiesced", "closed"])
++def test_unimplemented_authority_cannot_be_submitted(kind: str) -> None:
++    with pytest.raises(ValidationError):
++        AttemptTransition.model_validate({"kind": kind, "attempt_id": uuid4(), "event_id": uuid4()})
++
++
++async def test_version_seven_capture_survives_attempt_migration(capture: Fixture) -> None:
++    request = capture.request()
++    snapshot = await capture.archive.capture(capture.principal, capture.workspace, request)
++    legacy = capture.scratch / "version-seven.db"
++    with sqlite3.connect(legacy) as conn:
++        for migration in load_migrations():
++            if migration.version <= 7:
++                conn.executescript(migration.sql)
++        for table in ["product_sessions", "product_captures"]:
++            row = dict(capture.store.read(f"SELECT * FROM {table}")[0])
++            conn.execute(
++                f"INSERT INTO {table} ({','.join(row)}) VALUES ({','.join('?' for _ in row)})",
++                tuple(row.values()),
++            )
++        conn.execute("PRAGMA user_version=7")
++    store = LedgerStore(legacy)
++    store.open()
++    try:
++        archive = CaptureArchive(ProductStore(store, FileKeyStore(capture.keys.root, store=store)))
++        assert store.schema_user_version() == 8
++        assert archive.read(capture.principal, request.capture_id) == snapshot
++        assert not store.read("SELECT * FROM product_attempt_events")
++    finally:
++        store.close()
+--- a/tests/unit/test_product_migration.py
++++ b/tests/unit/test_product_migration.py
+@@ -48,7 +48,7 @@
+         assert row["session_hmac"] == "session"
+         assert row["config_digest"] == "digest"
+         assert row["ts"] == "ts"
+-        assert store.schema_user_version() == 7
++        assert store.schema_user_version() == 8
+         assert not store.read("SELECT * FROM product_verifications")
+         assert not store.read("SELECT * FROM product_captures")
+     finally:
+@@ -94,7 +94,7 @@
+     try:
+         data = ProductStore(store, FileKeyStore(keys.root, store=store))
+         row = dict(store.read("SELECT * FROM product_verifications")[0])
+-        assert store.schema_user_version() == 7
++        assert store.schema_user_version() == 8
+         assert row["ciphertext"] == ciphertext and row["ts"] == "old-time"
+         assert data.verification(row) == receipt
+         assert not store.read("SELECT * FROM product_captures")

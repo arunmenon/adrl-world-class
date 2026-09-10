@@ -1,0 +1,5 @@
+.project/
+_to_delete/
+.chart-data-*/
+.codex-executive-build/
+.DS_Store

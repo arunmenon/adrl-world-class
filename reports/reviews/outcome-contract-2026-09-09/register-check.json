@@ -1,0 +1,12 @@
+{
+  "field_checks": {
+    "MEM-001": "status and maturity unchanged",
+    "MEM-002": "status and maturity unchanged",
+    "MEM-004": "status and maturity unchanged",
+    "CAS-003": "status and maturity unchanged",
+    "CAS-007": "status and maturity unchanged",
+    "FND-003": "status and maturity unchanged"
+  },
+  "runtime_hashes_matched": 324,
+  "scope": "No grade promotion; source unchanged after checks"
+}

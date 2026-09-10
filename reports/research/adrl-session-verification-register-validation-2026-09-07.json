@@ -1,0 +1,15 @@
+{
+  "date": "2026-09-07",
+  "status": "passed",
+  "implementation_files_hash_verified": 14,
+  "untouched_source_files_hash_verified": 260,
+  "adrs_in_index": 77,
+  "index_duplicates": 0,
+  "owning_adrs_prior_text_preserved": 10,
+  "statuses_unchanged": true,
+  "updated_markdown_documents_checked": 25,
+  "existing_local_links_checked": 253,
+  "broken_local_links": [],
+  "archived_verifier_artifacts_hash_verified": 4,
+  "sandbox_receipt_source_hash_matches_applied_code": true
+}

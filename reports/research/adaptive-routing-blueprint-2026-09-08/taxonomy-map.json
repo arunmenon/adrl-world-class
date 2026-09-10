@@ -1,0 +1,1316 @@
+{
+  "at": "2026-09-08T06:39:25.459522+00:00",
+  "count": 77,
+  "scope": "All 77 ADRs mapped to product responsibilities; no new per-ADR adversarial review or formal disposition",
+  "decisions": [
+    {
+      "id": "ADRL-CAS-001",
+      "title": "Deterministic trip-wires, with measured coverage",
+      "path": "adr/CAS/ADRL-CAS-001.md",
+      "bucket_role": "Execution, switching and recovery",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D3 Shadow, review recommends D3 Shadow (trip-wires have post-call shadow evidence; the amendment adds a coverage measurement and a verifier-backed wire that are D2 work, and notes thresholds are untuned for reasoning models) |"
+      ],
+      "decision_text": "Escalation is triggered by deterministic post-call trip-wires, not free-form model self-judgment \u2014 where the trip-wire set includes deterministic verification outcomes (failed tests, lint, protected-path violations) alongside loop, schema and tool-error counters, thresholds are versioned and tuned per rung, and the miss rate of the set against verified failures is measured and published as the instrument's known blind spot.\n\n1. Wire classes: (a) repeated identical or alternating tool calls; (b) schema-invalid or dialect-invalid tool calls (typed `harness_dialect`, CAS-002); (c) tool-error repetition; (d) attempt-budget exhaustion with no verifiable progress (RTG-004 clause 1c); (e) deterministic verifier failure where a verifier exists for the task (MEM-003, SAF-007). Class (e) is the only wire that can catch a methodical-but-wrong run and is therefore first-class, not enrichment.\n2. Thresholds are per rung and per wire, versioned in policy config, recorded on the outcome row when they fire, and tuned against reasoning-model traces (long thinking, few tool calls) as well as chatty local traces before any live exposure.\n3. Coverage: the fraction of `closed_final` verified failures on which no wire fired is reported on the scorecard as the trip-wire miss rate; the local rung's permitted scope (Q2) may not exceed task classes for which class (e) verification exists, because there the instrument is blind.\n4. Signals from the harness are admissible as wires when mechanical (e.g. Claude Code `PostToolUseFailure` hooks, MCP `is_error` tool results); model-authored text (confidence statements, \"I am done\") is never a wire.",
+      "decision_sha256": "0fc000e555103c009e0ce83f84f3ef8e9523af530472ba62e4fc7cebc582b6d5",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-CAS-002",
+      "title": "Typed failures, versioned enum, measured attribution",
+      "path": "adr/CAS/ADRL-CAS-002.md",
+      "bucket_role": "Execution, switching and recovery",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (typing is implemented and tested; attribution precision against human labels is not yet reported and is added as a gate before these labels feed LRN) |"
+      ],
+      "decision_text": "Failures are typed as task capability, harness dialect, infrastructure, policy constraint, context feasibility, user abort, or unverifiable \u2014 the six types implemented in `outcomes.py` plus `context_feasibility`, together versioned as `failure-types-v2` (MEM-004) \u2014 with a versioned precedence rule for ambiguous cases, an explicit `unverifiable` default rather than a guessed cause, and a measured attribution precision against human labels before any type is used as a training signal.\n\n1. Precedence when several causes are plausible: `policy_constraint` > `context_feasibility` > `infrastructure` > `harness_dialect` > `task_capability`; a failure that cannot be placed with the rule is `unverifiable`, never `task_capability` by default (the poisoning direction MEM-004 guards against).\n2. `infrastructure` includes gateway-internal failover and within-rung model substitution (RTG-008 clause 2), rate limits and timeouts; a context-window rejection or a request that could not fit the rung's window is `context_feasibility` (a SAF-006 signal, never a capability signal); a timeout on a slow local engine is `infrastructure` unless a verifier shows the partial output was wrong.\n3. `harness_dialect` is scoped to *format* failures (schema-invalid tool call, exact-string edit that does not match, malformed JSON) and carries the harness id and tool name; whether the *same* model would have succeeded with a different dialect is a counterfactual question (LRN-002), not an inference made at typing time.\n4. Attribution precision (agreement with `tools/sem_label.py` human labels) is reported per type on the scorecard; a type below threshold is excluded from LRN training data (LRN-001) until re-qualified.",
+      "decision_sha256": "a89c95c3b6f3f2753baecfc47ad01f8d7d6a1415fe5d5483784e3a87b06e7142",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-CAS-003",
+      "title": "Action boundary defined; no re-issue after side effects",
+      "path": "adr/CAS/ADRL-CAS-003.md",
+      "bucket_role": "Execution, switching and recovery",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Clarify initial versus safe-boundary decisions"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 \u00b7 amended 2026-09-03 (proposed amendment, pending disposition) |",
+        "| Maturity | D2 Tested, review recommends D2 Tested only after the golden trace in the follow-ups exists; the current tests cover \"wait for boundary\" but not the streamed-partial-response and parallel-tool-call cases that are where a replay would actually occur |"
+      ],
+      "decision_text": "Escalation occurs only at a controlled action boundary, defined as the arrival of a continuation request in which the harness has supplied a `tool_result` for every `tool_use` id in the preceding assistant message; ADRL never re-issues, on any deployment, a request whose original response had begun streaming tool-use content to the harness; recovery from a partially delivered response is the harness's, not the router's; and the side-effect class of every executed call is established by the provenance rule of CAS-009, which trusts MCP annotations only from allow-listed servers, parses compound commands, treats unknown actions as destructive and enumerates read-only calls in the record.\n\n1. Boundary definition: for Anthropic-protocol traffic the boundary is a request whose last user message contains `tool_result` blocks matching every `tool_use.id` in the last assistant message (including `is_error: true` results for calls the harness declined to run). A request with a partial set of results is not a boundary; it is passed through on the served rung (CAS-006).\n2. No blind replay: if a response fails after the first `tool_use` content block has been streamed to the harness, ADRL does not retry that request on any rung (the harness may already be executing the tool). Transport failure *before* any content is streamed may be retried by the gateway under its budget (CAS-007). A failure after streaming is surfaced as a protocol-conformant error.\n3. Side-effect inheritance: the escalated model inherits a workspace mutated by the prior rung. The handoff note (CAS-004) must enumerate the side-effecting tool calls executed since the turn began (tool name, target path or command, result status) so the new model does not re-derive and re-apply them. Side-effect class is derived mechanically from tool name / MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`), not from model text.\n4. Non-idempotent executed actions are never undone by ADRL (no compensation); a turn whose trip-wire fired after a destructive tool executed is escalated with the note, and the outcome row carries `side_effects_before_escalation=true` for MEM.\n5. Provenance (CAS-009): side-effect class comes from the built-in tool table, an attested annotation from an allow-listed MCP server, or a parsed command, in that order of preference; annotations from unlisted servers are ignored; compound shell commands are classified by their most severe component; unknown is destructive. The handoff record lists every executed call with its class and provenance source, read-only included.",
+      "decision_sha256": "988ac0d50fc8b567f9b665f80f1275a32e96dcaef02cad0d49434315aee8c8e9",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-CAS-004",
+      "title": "Cross-model handoff: provider-pair rules, not one stripping rule",
+      "path": "adr/CAS/ADRL-CAS-004.md",
+      "bucket_role": "Execution, switching and recovery",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Qualify deployment capabilities and transition edges"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D3 Shadow, review recommends D2 Tested \u2014 shadow mode cannot exercise a cross-provider continuation (it never sends the transformed transcript to the target model), so \"shadow evidence\" here is evidence that the transformation *runs*, not that any provider *accepts* it; D3 should be re-claimed only after replay tests against each live provider pair pass |"
+      ],
+      "decision_text": "Cross-model continuation preserves tool IDs and tool results, transforms private reasoning according to a versioned per-provider-pair rule (strip, keep, or let the API drop), and appends a short, mechanically generated, clearly delimited handoff note at the end of the last user message \u2014 never in the system prompt \u2014 listing the escalation cause and the side-effecting actions already executed.\n\n1. Reasoning blocks: the rule is keyed by (source model family, target model family, thinking enabled on target). Anthropic\u2192Anthropic within a family that can read the blocks: keep them (the API requires the latest assistant message's thinking blocks to be unmodified when thinking is enabled, and drops unreadable older-model blocks itself). Anthropic\u2192non-Anthropic or OpenAI\u2192anything: strip `thinking`, `redacted_thinking` and encrypted reasoning items, and disable thinking-continuation parameters on the first request after handoff. The rule table is versioned config; an unknown pair defaults to strip-and-disable.\n2. Tool identity: `tool_use.id`/`tool_result.tool_use_id` pairs are preserved verbatim within a provider and mapped 1:1 (with the mapping recorded on the outcome row) when the target provider's id format differs; every `tool_use` in the transcript retains a matching result (CAS-003 clause 1) and tool-result content types the target cannot accept are downgraded to text with an explicit marker.\n3. Handoff note: generated from ledger fields only (trip-wire type, rung from/to, executed side-effecting tool calls per CAS-003 clause 3, verifier result if any); never model-authored; placed after all `tool_result` blocks in the last user message (provider ordering rule) and wrapped in a fixed delimiter so it is distinguishable from user text and cannot be mistaken for an instruction from the developer. The note's schema version is recorded on the outcome row.\n4. Cache: a handoff is a cache-cold event on the target by construction (different model, different prefix); its cost is charged per RTG-009. Nothing in the handoff may modify `tools` or `system`, so the *source* rung's cache survives if the episode later returns to it.",
+      "decision_sha256": "0801b959b80a641d002c7d1a90288203d0f45702f3b0d1ea014e2cce2ceea9a9",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-CAS-005",
+      "title": "Sticky escalation within an episode",
+      "path": "adr/CAS/ADRL-CAS-005.md",
+      "bucket_role": "Execution, switching and recovery",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Keep baseline; experiment before changing stickiness"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 unchanged |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (hysteresis is implemented and tested; the ratchet-cost measurement in the follow-ups is needed before D3) |"
+      ],
+      "decision_text": "Escalation is sticky within an episode; only a conservative episode boundary may lower the rung.",
+      "decision_sha256": "f01d4d0ffcc9a432d3915f5f11ffcbb4f67bf1c5dd82cc9152893f6374e6f2e2",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-CAS-006",
+      "title": "Record the served model, not only the served rung",
+      "path": "adr/CAS/ADRL-CAS-006.md",
+      "bucket_role": "Execution, switching and recovery",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (served-rung correction is tested in `tests/test_router_proxy.py`; served-model capture and the state-loss case are untested and are added as gates for D3) |"
+      ],
+      "decision_text": "Sticky state records the rung that actually served the response, including transport fallback \u2014 and, alongside it, the served model and provider identity as reported by the gateway, and the confidence of that record \u2014 because prompt caches and reasoning signatures follow the model, not the rung.\n\n1. Fields: `served_rung`, `served_model`, `served_provider`, `served_source` \u2208 {gateway_reported, proxy_observed, assumed_intended} on both sticky state (`router/state.py`) and the outcome row (MEM-001). `assumed_intended` is set when the gateway did not report identity; a continuation routed on an `assumed_intended` record is flagged so the outcome is `unverifiable` for cause typing if it fails (CAS-002).\n2. A within-rung change of `served_model` between consecutive requests of an episode is recorded as an infrastructure event (CAS-002 clause 2), triggers the CAS-004 provider-pair rule for the next continuation if the model family changed, and is charged as a cache-cold switch in RTG-009.\n3. If sticky state is unavailable (process restart; OPS-001 single-process dict), the next request in an episode is routed as a fresh decision but with `state_loss=true` on the decision row, and the outcome is excluded from stickiness evidence.",
+      "decision_sha256": "05a6738ecbb835dc9da5db30ed10fc946db4862c5f7bb4d8e5e7a2ad7c34ab96",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-CAS-007",
+      "title": "Terminal failure surfaced; ADRL owns zero retries",
+      "path": "adr/CAS/ADRL-CAS-007.md",
+      "bucket_role": "Execution, switching and recovery",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (terminal-failure surfacing is tested; the retry-ownership contract with the gateway and the protocol-conformant error shape need tests before D3) |"
+      ],
+      "decision_text": "Failure at the top permitted rung, or on a privacy-pinned route, is surfaced to the developer as a protocol-conformant error carrying the typed cause, rather than hidden by another automatic retry \u2014 where ADRL itself performs no retries at any rung, the gateway's retries are bounded by a per-turn budget agreed under FND-002, and a retry never crosses a rung, a pin, or a streamed-response boundary.\n\n1. Surfacing: the harness receives a well-formed error in the protocol it speaks (Anthropic Messages error object for Claude Code; the equivalent for Codex CLI) with a stable ADRL error code and the CAS-002 type; ADRL never synthesises a normal-looking assistant message to explain a failure, because that would be a fabricated model output inside the transcript.\n2. Retry ownership: ADRL makes exactly one attempt per request at the chosen rung. Connection-level retries before any response byte is forwarded are the gateway's (FND-002) under a per-turn budget (attempts and wall-clock) shared as versioned config; no retry after first byte (CAS-003 clause 2); no gateway fallback to a model outside the rung's membership list (RTG-008 clause 3) or to a cloud model on a pinned session (SAF-004).\n3. Ledger: a surfaced failure closes the outcome as `closed_turn` with the type, the rung, the number of gateway attempts observed, and `surfaced=true`; a later developer re-issue of the same instruction is a new turn (FND-003) and is not counted as an automatic retry.",
+      "decision_sha256": "7db08889ff50090d345c7d347f55bfbe0fa4b934990549725ef4e3548199a564",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-CAS-008",
+      "title": "Escalation scope under subagents",
+      "path": "adr/CAS/ADRL-CAS-008.md",
+      "bucket_role": "Execution, switching and recovery",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-02 (new, from adversarial review) |",
+        "| Maturity | D0 Design, review recommends D0 Design (depends on SEM-006, also D0; interim behaviour \u2014 passthrough \u2014 is what runs today) |"
+      ],
+      "decision_text": "Escalation is scoped to a single routing identity: a subagent's trip-wires, action boundary, sticky state and handoff apply to the subagent's own transcript and never change the parent's rung, and a parent's escalation never changes an in-flight child's rung; constraints (privacy pin, permitted-rung set, budget ceiling) flow parent\u2192child at spawn time only, and outcomes flow child\u2192parent as typed evidence, not as escalation triggers.\n\n1. Identity: each subagent request stream is a separate routing identity (SEM-006) linked to the parent's `route_id`; in Claude Code the link is the `agent_id`/`agent_type` present on hook events and, on the wire, the request shape the discriminator recognises as a subagent. Until SEM-006 is built, subagent traffic follows the SEM-006 interim \u2014 constrained passthrough at the model the harness requested, with the parent's pin and gate state inherited \u2014 and is shadow-logged with `subagent=true`; no trip-wire fires on it. (A *fork*, which shares the parent's transcript prefix, starts at the parent's served rung \u2014 see attack 5.)\n2. Constraint inheritance: a child inherits the parent's pin (one-way, SAF-002) and permitted-rung set at spawn; a pin acquired by the child (e.g. it reads a secret) pins the child and is reported to the parent's identity as a `policy_constraint` event so the parent's *next* decision is pinned \u2014 it does not retroactively alter in-flight parent requests.\n3. No cross-identity escalation: a child that trips a wire escalates its own stream at its own action boundary (CAS-003); the parent continues on its rung. A child's terminal failure (CAS-007) surfaces to the parent as the child's result (the harness already returns subagent completions to the parent), never as a parent-level protocol error. The parent may then escalate on its own trip-wires (e.g. repeated failed delegations count as repeated tool errors).\n4. Budget: the parent's identity carries an episode budget (tokens / cost per RTG-009) from which children draw; a child cannot escalate to a rung whose expected cost exceeds its remaining allocation; exhaustion is a typed `policy_constraint` outcome, not a capability failure. Nested subagents (Claude Code allows three layers) inherit recursively.\n5. Evidence: parent and child outcomes are never pooled; MEM-004 typing applies per identity; a child's failure is not evidence about the parent's task difficulty and vice versa.",
+      "decision_sha256": "b11842a03a31a73eccd733c47c248c3494915051388d162bdfc7715854db1c03",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-CAS-009",
+      "title": "Action-effect provenance and authorization boundary (Proposed)",
+      "path": "adr/CAS/ADRL-CAS-009.md",
+      "bucket_role": "Execution, switching and recovery",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (new, from external review) |",
+        "| Maturity | D0 Design, review recommends D0 Design (the 2026-09-02 implementation trusts MCP hints unconditionally and classifies compound shell commands by their first word) |"
+      ],
+      "decision_text": "The side-effect class of an action is established by a provenance rule that trusts only sources outside the model's and the tool server's control: built-in harness tools are classified by a versioned table; MCP tool annotations are accepted only from servers on an OPS allow-list and are otherwise ignored; shell commands are parsed (operators, pipes, redirections, substitutions) and classified by the most severe component; any action whose class cannot be established is `destructive`; every executed call, including read-only ones, is enumerated in the side-effect record; and the handoff note is untrusted context for the receiving model, never an instruction with authority.\n\n1. *Provenance table*: `action-provenance-v1` lists, per harness and tool name, the class and the evidence source (`builtin_table`, `attested_annotation`, `parsed_command`, `unknown`). MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`) count as `attested_annotation` only when the server id is on the allow-list; the MCP specification itself says clients must treat annotations as untrusted unless the server is trusted.\n2. *Command parsing*: a Bash or shell action is split on `&&`, `||`, `;`, `|`, newlines, subshells and command substitution; each component is classified; redirections that write (`>`, `>>`, `tee`) and network clients (`curl`, `wget`, `ssh`, `scp`, `nc`, package publishers) are `destructive`; an unparseable command is `destructive`.\n3. *Closed world*: unknown tools and unknown commands are `destructive` for RTG-004's cascade feasibility and for the CAS-003 record; there is no read-only default.\n4. *Full enumeration*: the side-effect record lists every executed call with its class and provenance source; read-only calls are recorded, not omitted, because a mis-classified read-only call is exactly the one the next model needs to see.\n5. *Handoff is data*: the CAS-004 note is inserted as delimited context and the receiving model is told it is a mechanical record; nothing in the note may be phrased as an instruction, and ADRL's own control decisions (rung, escalation, boundaries) never read the note. This is the CaMeL separation of control flow from untrusted data.",
+      "decision_sha256": "f4dd0b9c7f71d0afb915950740d271f97c4c20e08850584494ab29435061b8f5",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-EVL-001",
+      "title": "Baseline set: four fixed comparators, two price bases",
+      "path": "adr/EVL/ADRL-EVL-001.md",
+      "bucket_role": "Comparison, graduation and independent assessment",
+      "loop": "Policy and RSI evaluation; all maturity claims",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture) |",
+        "| Maturity | D0 Design; the overview records \"a best-single-model cost baseline exists\" (Phase 0), but no baseline set is defined as a versioned artifact; the adrl-core build carries price vectors but computes no baseline comparison |"
+      ],
+      "decision_text": "Every evaluation of a routing policy, heuristic or learned artifact reports against the same four comparators on the same evaluation window: always-local, always-frontier, the current deterministic heuristic (RTG-002 at its recorded policy version), and the best single cloud model repriced over the whole window. Each comparator is reported at two price bases, after cache effects and at list price (RTG-009), and the two are never mixed in one figure. The baseline set is a versioned artifact (`baselines-v<N>`) naming the window, the comparators, the price vectors and the verifier version; an evaluation that does not cite a baseline version is not an evaluation.\n\n1. *Always-local* and *always-frontier* are the two bounds of the rung order; a policy that does not beat both on the objective (RTG-005) has not earned any exposure.\n2. *Current heuristic* is the policy actually serving shadow traffic; it is the comparator a learned artifact must beat to leave D2 (RTG-007 pre-build gate).\n3. *Best single model* is the Phase 0 baseline generalised: the cheapest single model that would have produced the same verified outcomes over the window, repriced with the window's cache statistics.\n4. Quality in every comparison is verified quality only (MEM-003, LRN-001 tier 1); proxy quality is reported separately and labelled.",
+      "decision_sha256": "8ecc73ab4edca14dcd307be1910ce96d3f45397e286e0dc871fe2cf243351b61",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-EVL-002",
+      "title": "Holdout and calibration protocol: temporal, session-grouped, tier-1 only",
+      "path": "adr/EVL/ADRL-EVL-002.md",
+      "bucket_role": "Comparison, graduation and independent assessment",
+      "loop": "Policy and RSI evaluation; all maturity claims",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture) |",
+        "| Maturity | D1 Code; adrl-core `learning/dataset.py` implements temporal session-grouped splits and rejects random K-fold, and `learning/abstention.py` measures calibration on a time-ordered holdout; no protocol document or scorecard exists |"
+      ],
+      "decision_text": "Every reported metric for a routing artifact is computed on a holdout that is later in time than all training data, grouped so that no session spans training and holdout, and restricted to tier-1 evidence (LRN-001) at `closed_final` (MEM-002). Calibration is reported as reliability (expected calibration error and a reliability diagram) for each pairwise effect the artifact outputs (LRN-003), and abstention coverage and realised risk are reported alongside (LRN-006). Every metric carries a confidence interval from session-level bootstrap and the number of sessions and decisions in its denominator. A window smaller than the declared minimum (`min_holdout_sessions` in the EVL config) reports \"insufficient\" instead of a point estimate.",
+      "decision_sha256": "79df7d658e8b7735eabb431eefd637d0af8e772d56c97503ec9cb2e726e1c779",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-EVL-003",
+      "title": "Branch protocol and replay prohibition",
+      "path": "adr/EVL/ADRL-EVL-003.md",
+      "bucket_role": "Comparison, graduation and independent assessment",
+      "loop": "Policy and RSI evaluation; all maturity claims",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture) |",
+        "| Maturity | D0 Design; adrl-core has a branched-pair contract and a subprocess branch runner (LRN-002), but no branch has been executed on organic traffic |"
+      ],
+      "decision_text": "Counterfactual evidence about a routing choice comes only from live branches: both arms execute from the same repository snapshot, transcript prefix, tool results, harness dialect and verifier version up to the decision boundary (LRN-002), bound to an explicit `route_id` (MEM-009). Replaying a logged trajectory with a different model, or substituting a model into a stored transcript and scoring the stored outcome, is prohibited as evidence anywhere in the register: not in an evaluation report, not in a readiness score, not in a graduation pack. Off-policy estimates from logged propensities (LRN-008) are admissible only after they have been validated against live branches on the same slice, and the validation result is attached to the estimate.",
+      "decision_sha256": "763f42278ac336a8ad7f5941da50b035edaad937aa782d87da4f1781cd6dcf83",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-EVL-004",
+      "title": "Label quantity and quality gate for retrieval and learned authority",
+      "path": "adr/EVL/ADRL-EVL-004.md",
+      "bucket_role": "Comparison, graduation and independent assessment",
+      "loop": "Policy and RSI evaluation; all maturity claims",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture; referenced by MEM-002, MEM-004, MEM-008, LRN-001 since 2026-08-27) |",
+        "| Maturity | D1 Code; adrl-core `ledger/readiness.py` counts only `task_capability` at `closed_final` and reports diversity and excluded fractions; the threshold itself has not been pre-registered |"
+      ],
+      "decision_text": "Retrieval (MEM-008) and any learned component (LRN-003) gain advisory authority only when the evidence corpus passes a gate with four conditions, all pre-registered in `evl-config-v1.json` before being measured:\n\n1. *Quantity.* At least `min_labels` outcomes typed `task_capability` at `closed_final` (MEM-002, MEM-004); the register's working figure is 300 and the overview records 34. Outcomes of any other type, and any outcome not at `closed_final`, are excluded from the count and reported separately.\n2. *Quality.* Verifier precision (repeat-run agreement, flake rate, tree-drift rate per MEM-003) above the LRN-001 threshold on the same corpus; labels from unsandboxed or indeterminate runs never count.\n3. *Representativeness.* At least `min_intents` distinct intent classes, `min_repos` distinct repositories and more than one user; the corpus's own non-claims (single-user, workflow-heavy) are reported as a condition on every figure.\n4. *Suppressed fraction.* The share of traffic excluded from the corpus by privacy pin, suppression, degraded memory or subagent passthrough is reported next to the count; above `max_suppressed_fraction` the gate fails regardless of quantity.",
+      "decision_sha256": "b4f02bc1ce809edcf698249e9f3dbe68c3b1e7025dfaca2496cdcaac96b6c303",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-EVL-005",
+      "title": "Simulator and benchmark evidence is not organic evidence",
+      "path": "adr/EVL/ADRL-EVL-005.md",
+      "bucket_role": "Comparison, graduation and independent assessment",
+      "loop": "Policy and RSI evaluation; all maturity claims",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture; referenced by the overview, LRN-001, MEM-009 since 2026-08-27) |",
+        "| Maturity | D1 Code; adrl-core `learning/tiers.py` assigns simulator and benchmark examples to tier T4 and refuses to pool them with organic tiers; no scorecard separates them yet |"
+      ],
+      "decision_text": "Evidence produced by the simulator, by public benchmarks, or by any synthetic task generator is a separate evidence family from organic traffic. It is recorded with `source=synthetic`, assigned to its own tier (LRN-001 T4), reported in its own section of every scorecard, and never counted toward any gate that names organic evidence (EVL-004, the RTG-007 pre-build gate, the D3 and D4 rungs of EVL-007). Synthetic evidence may qualify a mechanism (a trip-wire fires, a transform produces a valid request, a sandbox denies egress) and may bound a claim (a rung cannot be worse than its benchmark score suggests), but it cannot establish that a rung is reliable on the organisation's code.",
+      "decision_sha256": "f1cd0b09218857d2cf2a5c7a00eeb2c24d8634c7104475c92260421f8adec5c1",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-EVL-006",
+      "title": "Offline evaluation against baselines, branched or propensity-weighted",
+      "path": "adr/EVL/ADRL-EVL-006.md",
+      "bucket_role": "Comparison, graduation and independent assessment",
+      "loop": "Policy and RSI evaluation; all maturity claims",
+      "proposed_disposition": [
+        "Version improvers; preserve independent graduation"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture; referenced by LRN-003, LRN-007, LRN-008 since 2026-08-27) |",
+        "| Maturity | D0 Design; adrl-core has an `adrl learning evaluate` command that runs the estimators T1-only, but no evaluation report has been produced against a baseline version |"
+      ],
+      "decision_text": "Before any routing artifact (heuristic version, calibration map, estimator, exploration rule) may be proposed for graduation (EVL-007), it receives an offline evaluation report that (1) cites a baseline version (EVL-001) and reports the artifact against all four comparators at both price bases; (2) computes every metric under the holdout protocol (EVL-002); (3) draws its counterfactual evidence only from live branches or from off-policy estimates validated against branches on the same slice (EVL-003); (4) reports the excluded fraction, the suppressed fraction and the tier mix of its evidence; (5) states the minimum realised gain the artifact was required to show (RTG-007) and whether it was met; and (6) is hashed, and the hash is written into the artifact manifest (LRN-005 v2). A report that omits any item is incomplete, not failing, and cannot be presented at graduation.",
+      "decision_sha256": "b14c5f20b893af69631a8ed0ae0fb2303c5af9cbd1aaf5ea4336f7d1ac07b348",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-EVL-007",
+      "title": "Explicit human graduation and the D2 to D5 ladder",
+      "path": "adr/EVL/ADRL-EVL-007.md",
+      "bucket_role": "Comparison, graduation and independent assessment",
+      "loop": "Policy and RSI evaluation; all maturity claims",
+      "proposed_disposition": [
+        "Version improvers; preserve independent graduation"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture; referenced by LRN-005, LRN-007, LRN-008 since 2026-08-27) |",
+        "| Maturity | D1 Code; adrl-core `learning/artifacts.py` refuses any artifact without a signed graduation record and checks policy compatibility; no graduation has ever been performed and the signing key in use is a development key (OPS-002) |"
+      ],
+      "decision_text": "Maturity moves only by an explicit, recorded human decision, one rung at a time, on the evidence named for that rung:\n\n| From | To | Evidence required | Who records it |\n|---|---|---|---|\n| D1 Code | D2 Tested | Unit, integration and fault tests for the decision's promised behaviour pass; for SAF decisions the adversarial suite has run at least once and its results are published | Decision owner |\n| D2 Tested | D3 Shadow | The behaviour has run against organic traffic without affecting execution for a declared window (EVL config), every metric reports its excluded fraction, and no EVL-009 blocker is open for the window | Decision owner plus one reviewer outside the team |\n| D3 Shadow | D4 Pilot | An EVL-006 report meets the RTG-007 minimum realised gain against all four baselines, a rollback path is exercised (OPS-007), and a constrained population is named | Graduation meeting, minuted |\n| D4 Pilot | D5 Graduated | Pilot window closed with no blocker, the excluded fraction of the pilot population reported, and the security owner's sign-off for any SAF or TRU decision | Graduation meeting, minuted |\n\nTwo further rules. First, a learned artifact's graduation record is a signature over its manifest (LRN-005 v2) by a key held outside the team that trained it (OPS-002); the router refuses artifacts without it (LRN-007). A parameter-only change (same feature schema, objective, deny-list and enum versions) may use a lightweight path: a single reviewer, a report that cites unchanged sections, and the same signature. Second, a brand-new implementation inherits no historical maturity above D2: shadow and pilot evidence attaches to the code that produced it, and the adrl-core build of 2026-09-02 therefore starts every decision at the level its own tests support.",
+      "decision_sha256": "09f08c1612186ff7e350a4afab99c9596c3ebdd8b3081f29a026111b30976a2b",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-EVL-008",
+      "title": "Scorecard format: every number with its denominator, window and exclusions",
+      "path": "adr/EVL/ADRL-EVL-008.md",
+      "bucket_role": "Comparison, graduation and independent assessment",
+      "loop": "Policy and RSI evaluation; all maturity claims",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture) |",
+        "| Maturity | D0 Design; the old repository published `reports/learning-readiness.md`; adrl-core produces a readiness report object but no scorecard document |"
+      ],
+      "decision_text": "The evidence pack for any window is one scorecard with a fixed structure: (1) window identity (dates, harness and model versions, config versions, ledger high-water mark); (2) traffic denominators (requests by class, turns, sessions, lineages, users, repositories); (3) the excluded fraction by reason (pinned, suppressed, degraded memory, subagent passthrough, unverifiable, erased) reported before any metric; (4) organic metrics under EVL-002 with intervals; (5) synthetic evidence in its own section (EVL-005); (6) counterfactual pairs: budget, count, noise floor (LRN-002); (7) open blockers (EVL-009) listed by name with the decision they block; (8) the maturity ladder position of every decision the window bears on (EVL-007). A figure that appears without its denominator and window is not admissible in the register.",
+      "decision_sha256": "de0c97135ebffec417311d8f11ed0e7ef15b193cdb9e95456bf7cc8ace06ab2f",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-EVL-009",
+      "title": "Blockers are never averaged away",
+      "path": "adr/EVL/ADRL-EVL-009.md",
+      "bucket_role": "Comparison, graduation and independent assessment",
+      "loop": "Policy and RSI evaluation; all maturity claims",
+      "proposed_disposition": [
+        "Version improvers; preserve independent graduation"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture; referenced by the overview, MEM-006, MEM-010, LRN-006 since 2026-08-27) |",
+        "| Maturity | D1 Code; adrl-core `learning/readiness.py` and `ledger/readiness.py` list blockers by name and never fold them into a score; the blocker list itself is not yet pre-registered |"
+      ],
+      "decision_text": "A blocker is a named condition that, while open, prevents a decision from moving up the maturity ladder (EVL-007) regardless of any score. Blockers are listed by name in every scorecard (EVL-008) and are never converted into a weight, a penalty or a component of the readiness score. The pre-registered blocker set is:\n\n1. *Safety not attacked.* A SAF or TRU decision whose adversarial suite has not run in the window; blocks that decision above D2.\n2. *Verifier precision unmeasured or below threshold* (LRN-001, EVL-004); blocks any learned or retrieval authority.\n3. *Degraded memory non-zero in the window* (MEM-006); blocks the window's evidence from counting toward any gate.\n4. *Erasure inside the window* (MEM-010); blocks the window.\n5. *Abstention rate outside declared bounds* (LRN-006); blocks the artifact.\n6. *Fail-open rate above threshold in any failure class* (FND-004, OPS-008); blocks any routing decision above D3.\n7. *Excluded fraction above `max_suppressed_fraction`* (EVL-004); blocks retrieval and learned authority.\n8. *Unanchored egress ledger* (SAF-009, OPS-007): no verified checkpoint in the window; blocks any SAF or TRU decision above D2.\n\nAdding or removing a blocker is a new EVL config version with a recorded reason.",
+      "decision_sha256": "1d1f46b4a27ddaa3e785d4343eba50d6d7081990dbc734fe09ed431c8c7aaabd",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-FND-001",
+      "title": "Transparent control layer, protocol-scoped",
+      "path": "adr/FND/ADRL-FND-001.md",
+      "bucket_role": "Product boundary and authority",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 \u00b7 product boundary clarified 2026-09-07 |",
+        "| Maturity | D3 Shadow, review recommends D3 Shadow for the Anthropic-Messages path only; the Codex CLI (Responses API) path has no evidence and should carry D0 |"
+      ],
+      "decision_text": "ADRL is a protocol-transparent, removable control layer between an Anthropic-Messages-format coding harness and the model gateway; it never changes the wire contract the harness observes except through the enumerated user-facing surfaces owned by SAF.\n\n1. *Protocol-transparent* means: request headers the harness marks forward-unchanged (`anthropic-version`, `anthropic-beta`) reach the gateway byte-for-byte; response bodies, streaming events (including keep-alive pings) and upstream error wording are relayed unmodified on the passthrough path; and any body the layer must rewrite for a non-Claude rung (for example stripping `thinking`, `cache_control`, or beta tool fields) is rewritten by ADRL, not left for the upstream to reject.\n2. *Removable* means the golden test: point `ANTHROPIC_BASE_URL` back at the gateway and every behaviour is unchanged, with nothing to uninstall and no residual state the harness depends on.\n3. *Enumerated surfaces* means the only developer-visible differences ADRL may introduce are those listed in SAF-004/SAF-005 (blocked or surfaced failures on a pinned session) and the harness's own capability-degradation behaviour when a request is served by a non-Claude rung; each such surface must be documented, and each is a measured cost, not a transparency violation.\n4. Harnesses that speak the OpenAI Responses API (Codex CLI) are out of scope for this decision until a Responses-format discriminator and corpus exist (SEM-001 follow-up).\n5. *Product boundary, clarified 2026-09-07*: ADRL is developed as one reusable policy, routing and evidence engine with harness adapters and versioned protocol profiles (SEM-007). Harness setup, identity correlation and event translation belong to adapters; native model semantics belong to profiles. Product APIs use a separate `/adrl/v1` namespace. This direction does not expand the currently supported model-traffic protocols beyond clause 4's admission rule.",
+      "decision_sha256": "51f7e9e8bc79fd6bebaed8f51ae64c2c52af33c90dbfb94bde0defe84d52b502",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-FND-002",
+      "title": "Semantic policy vs mechanical execution, rung-closed",
+      "path": "adr/FND/ADRL-FND-002.md",
+      "bucket_role": "Product boundary and authority",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 \u00b7 amended 2026-09-03 (proposed amendment, pending disposition) |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (the split is implemented; the rung-closed fallback contract with the gateway is not yet tested and must be before D3) |"
+      ],
+      "decision_text": "ADRL owns semantic policy; LiteLLM and providers own mechanical model execution, subject to a deployment-set-closed execution contract: no gateway retry, fallback or context-window fallback may serve a request from a deployment outside the permitted deployment set ADRL computed for it (TRU-002), and the signed deployment inventory (deployment id, rung, provider, api_base, trust zone, geography, data-use profile) is a shared, versioned configuration that both sides read.\n\n1. \"Mechanical execution\" includes endpoint choice within a rung, provider choice within a rung, retry, cooldown, transport, and health signalling.\n2. Any gateway feature that changes the *model class* in response to request content or size (LiteLLM `context_window_fallbacks`, `content_policy_fallbacks`, cross-rung `fallbacks`) is semantic and is disabled or constrained to the same rung for ADRL-originated traffic; for privacy-pinned traffic the gateway fallback set is the local rung only.\n3. Where the gateway also offers content controls that overlap SAF (secret redaction, PII masking), ADRL's gate is authoritative for the routing decision and the gateway's control is defence in depth, never a substitute; the two rulesets are diffed and reconciled on a schedule.\n4. The monotone object the gates tighten and the gateway honours is the permitted deployment set, never a rung label; a rung is the economic tier of a deployment (RTG-001). A `local` deployment is loopback or unix-socket by inventory rule, and the served-deployment receipt (TRU-002 clause 4) is the detective backstop that CAS-006 records.",
+      "decision_sha256": "e42dbf3302afacfd24070381bd592f7f030f9fedb2420df18257448c1d29c063",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-FND-003",
+      "title": "Routing boundary is the user turn",
+      "path": "adr/FND/ADRL-FND-003.md",
+      "bucket_role": "Product boundary and authority",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Clarify initial versus safe-boundary decisions"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D3 Shadow, review recommends D3 Shadow (cache-hit evidence on real traffic supports it; the warm-up-request and subagent edge cases need golden tests before D4) |"
+      ],
+      "decision_text": "The normal routing boundary is a user turn, not every HTTP request; a user turn is the first request in an agent lineage whose latest message is developer-authored content and which is neither a utility call, a passthrough call, nor a harness pre-warm request.\n\n1. Routing (rung selection) happens once per user turn; hard gates (SAF-001) run on every request regardless of class.\n2. The harness's cache pre-warm request \u2014 a request carrying the full tool list and conversation prefix with `max_tokens: 1` \u2014 is not a turn boundary and inherits the current sticky route.\n3. Each agent lineage (parent, and each subagent identified by `x-claude-code-agent-id`) has its own turn boundary; a subagent's first request is its own boundary, not a continuation of the parent's turn (SEM-006).\n4. The only in-turn route change permitted is a CAS escalation at an action boundary.",
+      "decision_sha256": "390cf919cd3a4ef53d16c5d7f3f7049d7681b3d4bcce1232609e38610f2e5455",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-FND-004",
+      "title": "Fail to last-known-safe, not fail-open",
+      "path": "adr/FND/ADRL-FND-004.md",
+      "bucket_role": "Product boundary and authority",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Superseded 2026-09-02 (see replacement) |",
+        "| Maturity | D4 Pilot, review recommends D3 Shadow \u2014 no decision in the register affects live execution for any population (\"live adaptive routing intentionally blocked\"), so nothing can be D4; and the failure-injection matrix has not been run against real traffic |"
+      ],
+      "decision_text": "On failure ADRL falls back to the last-known-safe behaviour for the session, which is unchanged upstream behaviour for an unpinned session and local-only-or-block for a privacy-pinned session; there is a one-step operator bypass that is audited and that cannot release a pin.\n\n1. *Routing-path failures* (classifier timeout, ledger unavailable, policy exception, rung-selection error) fail open to the upstream gateway for unpinned sessions and to the local rung for pinned sessions.\n2. *Gate-path failures* (secret scanner unavailable or timed out) fail open to upstream for unpinned sessions but mark the request `unscanned` in the ledger; for a session that is already pinned they fail closed (local rung or block per SAF-004/005). An `unscanned` request can never be the basis for releasing or skipping a pin.\n3. *Proxy-path failures* (the ADRL process itself is unreachable) are not something ADRL can fail-open from; the one-step operator bypass \u2014 repoint `ANTHROPIC_BASE_URL` at the gateway \u2014 is the documented recovery and its use is logged.\n4. Every automatic fail-open event is recorded with its failure class; a sustained fail-open rate above a configured threshold is itself an alert, because a layer that is silently bypassed is a layer that is silently off.",
+      "decision_sha256": "b6b2f32bd10e11cf103e45477cf7ff42fafe9531c8e12b36f870c354cf32be7c",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-FND-005",
+      "title": "Scope expands only through measured gates",
+      "path": "adr/FND/ADRL-FND-005.md",
+      "bucket_role": "Product boundary and authority",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Version improvers; preserve independent graduation"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 unchanged |",
+        "| Maturity | D3 Shadow, review recommends D3 Shadow with a note: the D-scale measures runtime behaviour and fits a governance commitment poorly; the honest reading is \"the readiness tooling runs against shadow data and its verdicts have so far been respected\" |"
+      ],
+      "decision_text": "Scope expands only through measured phase gates; component presence is not readiness.\n\n### Product application, 2026-09-07\n\nFor the current product workstream, keep the public API in preview until real integrations have\nvalidated at least two harnesses and two protocols. Claude Code is the first path, OpenCode tests\nreuse of the Messages profile, and Codex tests a separately admitted Responses profile. Passing\noffline tests for the first extraction does not satisfy that release gate. Changes to the contract\nduring preview are versioned and recorded with their compatibility impact. See the\n[product contract](/Users/arunmenon/projects/adrl-world-class/design/adrl-multi-harness-product-contract-2026-09-07.md)\nand [implementation evidence](/Users/arunmenon/projects/adrl-world-class/reports/adrl-product-foundation-implementation-2026-09-07.md).",
+      "decision_sha256": "7d5f144abaa7eebdd3b707494d771c6e2bab33bba315afb81aa26496fc4b9a14",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-LRN-001",
+      "title": "Evidence tiers, not \"outrank\"",
+      "path": "adr/LRN/ADRL-LRN-001.md",
+      "bucket_role": "Policy learning and improver candidates",
+      "loop": "Policy-improvement and RSI loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D1 Code \u2014 `learning_contract.py` encodes the preference and is unit-tested, but with one strongly-verified task the tier-1 set is a single task, so the contract has never been exercised on a real training set |"
+      ],
+      "decision_text": "Training data is stratified into evidence tiers and only tier-1 labels \u2014 deterministically verified, cause-typed `task_capability`, `closed_final` \u2014 enter the estimator's objective; lower tiers (verified-but-not-final, proxy/heuristic, simulator) may be used only as declared weak or unlabeled signal with the tier recorded on every example, never pooled into tier-1, and the verifier's own precision is measured and reported as a condition of tier-1 status.\n\n1. **Tiers.** T1: verified (MEM-003, non-indeterminate, no tree drift) + `task_capability`-typed (MEM-004) + `closed_final` (MEM-002) + organic (EVL-005). T2: verified but `closed_turn` only (censored). T3: proxy (no error, harness reported success) organic. T4: simulator/benchmark. T5: counterfactual pairs are tagged with their own tier (LRN-002) and never mixed with organic tiers (Tenet 8).\n2. **Weak signal is allowed, pooling is not.** T2\u2013T4 may be used for pre-training, pseudo-labelling under confident-learning-style noise estimation, or feature learning, provided the training manifest (LRN-005) lists the tier mix and the evaluation holdout is T1-only.\n3. **The verifier is audited.** T1 status requires a measured verifier precision (repeat-run agreement, flake rate, tree-drift rate per MEM-003) above a threshold set by EVL; a verifier below threshold demotes its labels to T2.",
+      "decision_sha256": "c109459737dc0c91266304bc17f313ce6d194817df8c6f1422f9bf8b6ea8276b",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-LRN-002",
+      "title": "Branched pairs, plus a logged-exploration channel",
+      "path": "adr/LRN/ADRL-LRN-002.md",
+      "bucket_role": "Policy learning and improver candidates",
+      "loop": "Policy-improvement and RSI loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested for the pairing contract in `counterfactual.py`; the evidence it is meant to produce is effectively D0 (usable pair volume \"very low\"; no power target) |"
+      ],
+      "decision_text": "Counterfactual training data uses paired local/frontier attempts branched from the same sanitised snapshot *and the same turn state* (identical transcript prefix, tool results and harness dialect up to the decision boundary), verified by the same verifier version, bound to the explicit `route_id` (MEM-009), and tagged as counterfactual tier; pairs are the primary estimand for marginal frontier gain, are sized to a declared power target, and are complemented \u2014 not replaced \u2014 by logged-propensity exploration data (LRN-008) for off-policy evaluation.\n\n1. **A pair is a branch, not a replay.** Both arms execute live from the same container/tree state and the same transcript prefix; substituting one model's logged output into the other's trajectory is not a pair.\n2. **Same rules on both arms.** Sanitisation, privacy pin status, protected-path policy and trip-wire configuration are identical across arms; a pinned session cannot produce a frontier arm (SAF-002), so pinned turns are excluded from pairing and the exclusion is reported.\n3. **Power target declared.** The pair budget is set from a stated minimum detectable marginal gain \u03b4 and discordance rate; at \u03b4 = 0.10 and 15\u201330% discordance this is roughly 115\u2013235 pairs per slice for 80% power at \u03b1 = 0.05 (McNemar), i.e. an order of magnitude above today's corpus.\n4. **Deterministic routing has no propensity.** Because the deterministic policy assigns each turn to exactly one rung, importance-weighted off-policy estimators cannot be applied to organic logs; OPE becomes possible only for turns inside an exploration band with logged propensities (LRN-008).",
+      "decision_sha256": "de46b967ce3544804281c8cabf1a6744358aad7fd3be3ef2cc199689d3545668",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-LRN-003",
+      "title": "The target is a CATE, name it",
+      "path": "adr/LRN/ADRL-LRN-003.md",
+      "bucket_role": "Policy learning and improver candidates",
+      "loop": "Policy-improvement and RSI loops",
+      "proposed_disposition": [
+        "Align complete-task objective and cost"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D0 Design, review recommends D0 Design \u2014 nothing is built and the amended text does not change that |"
+      ],
+      "decision_text": "Train a calibrated estimator of the conditional effect of rung choice on verified outcome and cost \u2014 the conditional average treatment effect (CATE) of frontier over cheaper rungs given pre-decision features \u2014 using paired and logged-exploration data (LRN-002, LRN-008) as the label source; never train on the deterministic policy's own routing decisions as targets, and never deploy a model whose output is a rung rather than a calibrated effect estimate with an uncertainty.\n\n1. **Estimand.** \u03c4(x) = E[Y(frontier) \u2212 Y(cheaper) | x] where Y is the verified T1 outcome (LRN-001) and x is the pre-decision feature vector (LRN-004); with three rungs, two pairwise effects (frontier vs cheap_cloud, cheap_cloud vs local) are estimated, not one.\n2. **Estimator family.** Meta-learners (T-, X- or DR-learner) over the existing feature set are the default; the X-learner is preferred while pair volume is small and treatment groups unbalanced. A single-model S-learner is acceptable only as a baseline, because it tends to regularise the treatment effect toward zero.\n3. **Cost enters the decision, not the label.** The estimator predicts \u03c4(x) and its uncertainty; RTG combines \u03c4(x) with post-cache marginal cost to choose a rung. The estimator does not output a rung.\n4. **Outcome-preference data is a valid label source.** Pairwise \"which arm's verified outcome was better\" labels (as in preference-trained routers) are consistent with the estimand; what is prohibited is the heuristic's *decision* as a label.",
+      "decision_sha256": "57d52a0f1e2a68354012854cf6f8b64f7501846a42c22fcc1d797786c986d154",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-LRN-004",
+      "title": "Pre-decision features, enforced by construction",
+      "path": "adr/LRN/ADRL-LRN-004.md",
+      "bucket_role": "Policy learning and improver candidates",
+      "loop": "Policy-improvement and RSI loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D1 Code \u2014 the prohibition is stated in `learning_contract.py` and tested as a rule, but the enforcement mechanisms (decision-time feature snapshot, time-respecting projections, temporal split) do not exist, so leakage is currently prevented by convention |"
+      ],
+      "decision_text": "Learned models may use only information available before the routing decision, enforced by construction: the exact feature vector the router observed is persisted on the decision event at decision time and is the only feature source for training; retrieval and similar-task features are computed against a projection frozen at the decision's ledger position (MEM-007); evaluation uses time-ordered splits; and outcome, served-rung, verification and any later-session information are prohibited features with a maintained deny-list checked in CI.\n\n1. **Snapshot at decision time.** `decisions` rows carry `features_v<N>` as observed by `features.py` at the decision boundary; training reads that column and never recomputes features from the ledger.\n2. **Time-respecting retrieval.** Any neighbour/retrieval feature used in training is computed from a projection rebuilt \"as of\" the decision's ledger high-water mark; a projection containing later rows is a leak.\n3. **Temporal validation.** Holdouts are later-in-time than training data; random K-fold over turns is prohibited because turns within a session and episode are dependent.\n4. **Deny-list.** `served_rung` (CAS-006/OPS-006), any `outcome_*`, verification results, escalation events, `closed_*` timestamps, and session fields populated after the decision are prohibited; the list is versioned with the feature schema (LRN-005).",
+      "decision_sha256": "c656a5d3536b1a388c7a484fd310b0b998a09d5d903fd494953129df9aedf6c0",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-LRN-005",
+      "title": "Every artifact is fully versioned",
+      "path": "adr/LRN/ADRL-LRN-005.md",
+      "bucket_role": "Policy learning and improver candidates",
+      "loop": "Policy-improvement and RSI loops",
+      "proposed_disposition": [
+        "Version improvers; preserve independent graduation"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 unchanged |",
+        "| Maturity | D2 Tested, review recommends D2 Tested for the contract (`learning_contract.py`, `learning-contract-v1.json` are tested), with the explicit note that no learned artifact has ever been produced, so the contract has been tested against fixtures only |"
+      ],
+      "decision_text": "Every learned artifact versions its feature schema, data snapshot, objective, calibration, thresholds and policy compatibility.",
+      "decision_sha256": "bcd619cb3b217eb1a344fe5f1a936a40bbe42ab80ff38a63c2cd5d057f92c0f3",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-LRN-006",
+      "title": "Abstention with a declared risk-coverage target",
+      "path": "adr/LRN/ADRL-LRN-006.md",
+      "bucket_role": "Policy learning and improver candidates",
+      "loop": "Policy-improvement and RSI loops",
+      "proposed_disposition": [
+        "Retain authority gates; specify measured refresh"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D0 Design, review recommends D0 Design \u2014 nothing built; the amendment adds that the abstention gate should reach D2 *before* the estimator (LRN-003) is trained, which the register itself suggests |"
+      ],
+      "decision_text": "Uncertain or out-of-distribution predictions abstain to the deterministic safe policy, where \"uncertain\" and \"out-of-distribution\" are defined per artifact by a calibrated selective-prediction rule with a declared target risk and measured coverage on a time-ordered T1 holdout, an OOD detector on the pre-decision feature vector, and a hard floor: the learned component may act only inside the RTG ambiguous band, and its abstention rate is a reported metric whose collapse toward 0% or rise toward 100% is itself an EVL-009 blocker.\n\n1. **Selective prediction, not a confidence cutoff.** Each artifact (LRN-005) ships a selection function and the (risk, coverage) point it was validated at \u2014 e.g. \"accept when the calibrated error probability on the routing effect is below \u03b1; measured coverage 55% on holdout H, risk 4%\". The threshold is chosen for a target risk, and coverage is what falls out, never the reverse.\n2. **OOD is feature-space, not outcome-space.** The OOD detector operates on the decision-time feature snapshot (LRN-004): repo, intent class, context size, embedding distance to training support, harness. A turn outside training support abstains regardless of the estimator's confidence.\n3. **The safe policy is the deterministic policy, and it is not an oracle.** Abstention hands the decision to the current heuristic rung choice with escalation armed; learning-to-defer results show that the combined system is only better than either component if the deferral rule accounts for the deferred-to policy's own error, so the risk target is set on *system* outcome, not on the estimator's accuracy alone.\n4. **Abstention before estimation.** The abstention gate, its calibration harness and its telemetry are built and tested (D2) with a trivial estimator before LRN-003 is trained; a learned component without a working abstention path cannot hold advisory status, let alone authority.",
+      "decision_sha256": "aff385875b75284aceb75600b73100cd4f3893107612c4eed2c7cdee68987a9a",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-LRN-007",
+      "title": "No autonomous online promotion",
+      "path": "adr/LRN/ADRL-LRN-007.md",
+      "bucket_role": "Policy learning and improver candidates",
+      "loop": "Policy-improvement and RSI loops",
+      "proposed_disposition": [
+        "Version improvers; preserve independent graduation"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 unchanged |",
+        "| Maturity | D0 Design, review recommends D0 Design \u2014 the graduation pipeline (EVL-006/007) is the thing that would implement it and it has never been exercised |"
+      ],
+      "decision_text": "Learning may propose policy updates, but deployment requires offline evaluation and explicit graduation; no autonomous online promotion.",
+      "decision_sha256": "1cd0f7c873f7a0faedfd8fa69b1d02ec6a6b56ea6bf0cbf8e4e6fedc5413e4a1",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-LRN-008",
+      "title": "Logged exploration in the ambiguous band",
+      "path": "adr/LRN/ADRL-LRN-008.md",
+      "bucket_role": "Policy learning and improver candidates",
+      "loop": "Policy-improvement and RSI loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-02 (new, from adversarial review) |",
+        "| Maturity | D0 Design, review recommends D0 Design \u2014 nothing exists |"
+      ],
+      "decision_text": "Inside the RTG ambiguous band only, and only among rungs that the SAF gates have already permitted, the deterministic policy applies a graduated, versioned exploration rule that randomises the rung with a bounded probability and records the propensity of the chosen rung on the decision event; exploration turns are tagged as their own evidence tier, never pooled with organic or counterfactual data, and exist to make doubly-robust off-policy evaluation and learning possible for LRN-003 alongside branched pairs (LRN-002).\n\n1. **Where.** Only turns the deterministic policy has classified as ambiguous (Tenet 4); never in clear cases; never on pinned sessions (SAF-002) or where any hard gate has removed a rung (SAF-001, SAF-006); never mid-episode (CAS-005 stickiness applies after the first decision).\n2. **How much.** Exploration probability \u03b5 per rung is a versioned parameter of the exploration artifact (LRN-005), bounded above by a value EVL sets from the savings-vs-risk budget (proposal: \u03b5 \u2264 0.10 per non-default rung), and the propensity actually used is written to the `decisions` row.\n3. **Escalation stays armed.** An explored local turn runs with the same trip-wires and escalation as any local turn; exploration changes the starting rung, not the safety net. The cost of exploration is therefore bounded by one failed cheap attempt plus escalation.\n4. **Evidence tier and estimators.** Exploration turns are tier `explore` (LRN-001). Off-policy estimates use doubly-robust estimators with the logged propensity and a reward model; estimator validity is checked against branched pairs (LRN-002) on the same slice before any OPE number enters an EVL pack.\n5. **Graduation.** The exploration rule is itself an artifact that goes through EVL-006/007; changing \u03b5 is a new version. This is data collection under a graduated policy, not online promotion (LRN-007).",
+      "decision_sha256": "b8014f6821a6631a313e96707814ba63f3a8eb586a32d33868ec75d298ee9962",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-MEM-001",
+      "title": "Append-only ledger keyed by route_id",
+      "path": "adr/MEM/ADRL-MEM-001.md",
+      "bucket_role": "Attributable outcomes and evidence custody",
+      "loop": "Evidence feeding policy and improver comparison",
+      "proposed_disposition": [
+        "Scope evidence infrastructure to trustworthy routing outcomes"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (the append discipline is tested; the amended clauses on schema versioning, idempotency and erasure are D0 until a test exists) |"
+      ],
+      "decision_text": "Transaction memory is an append-only decision/outcome/event ledger keyed by an immutable `route_id` minted at decision time; rows are never updated in place, every event carries a per-`route_id` monotonic sequence number, an idempotency key and a schema version, and the only permitted mutation of history is erasure by an explicit, logged retention or crypto-shredding action (MEM-010).\n\n1. **Append-only, not append-oriented.** `decisions` rows are written once. All later knowledge (outcomes, verification, counterfactuals, label corrections) is a new `outcome_events` row referencing the `route_id`; a correction is an event that supersedes an earlier event by sequence number, never an `UPDATE`.\n2. **Every event is versioned and idempotent.** Each event carries `schema_version` and an idempotency key (`route_id`, `event_type`, `producer`, `producer_seq`); a duplicate write is a no-op, and readers must tolerate unknown fields and upcast old versions.\n3. **Erasure is the one exception, and it is itself an event.** Deleting or shredding content for retention or a data-subject request is performed by a logged erasure event that leaves the `route_id` skeleton (timestamps, rung, failure type, event types) intact so evidence counts remain auditable.",
+      "decision_sha256": "8695ea24485521480b0154f164b011ea2d1e8e97f73d301d0524459796167b0a",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-MEM-002",
+      "title": "Three-state outcome lifecycle with defined close",
+      "path": "adr/MEM/ADRL-MEM-002.md",
+      "bucket_role": "Attributable outcomes and evidence custody",
+      "loop": "Evidence feeding policy and improver comparison",
+      "proposed_disposition": [
+        "Scope evidence infrastructure to trustworthy routing outcomes"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested for the state machine only; the closing window has never been measured against organic human corrections, so the claim \"closed_final catches late evidence\" is D0 |"
+      ],
+      "decision_text": "Outcome lifecycle is explicit: `pending`, `closed_turn`, then `closed_final` after a configured, recorded closing window during which late retry, interruption, revert or human-correction evidence may still attach; every transition is an appended event with its own timestamp, the window and its trigger are versioned, and outcomes that have not reached `closed_final` are treated as censored \u2014 never as positive or negative \u2014 by any consumer that counts labels.\n\n1. **The window is a parameter, not a promise.** `closed_final` is emitted by a rule with a named version (e.g. `close-v1`: N subsequent turns in the same session, or T minutes of inactivity, or an explicit episode boundary per CAS-005, whichever first). The rule id is stored on the event so a later, longer window can be applied retroactively by replay.\n2. **Late evidence after `closed_final` is still appended.** If a revert, interruption or verifier result arrives after the window, it is appended as a `late_evidence` event and the label is re-derived; `closed_final` marks when the label was frozen for training, not that the truth stopped changing.\n3. **Time-to-close is itself a measurement.** The distribution of (evidence timestamp \u2212 `closed_turn` timestamp) is reported in the EVL evidence pack and is the basis for choosing the window.",
+      "decision_sha256": "60906620d6e1f4d2226057c1c9f6fae9585d44d5b2aa3377f070e29b53f9c00a",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-MEM-003",
+      "title": "Verification enriches, never overwrites",
+      "path": "adr/MEM/ADRL-MEM-003.md",
+      "bucket_role": "Attributable outcomes and evidence custody",
+      "loop": "Evidence feeding policy and improver comparison",
+      "proposed_disposition": [
+        "Scope evidence infrastructure to trustworthy routing outcomes"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested for the non-overwrite contract; note that only one task has strong verification, so the contract has one real exercise |"
+      ],
+      "decision_text": "Deterministic verification enriches an outcome without overwriting observed telemetry: each verification run is appended as its own event carrying the verifier version, the exact command, the working-tree identity it ran against and its own pass/fail/indeterminate result, so that \"appeared to succeed\" and \"verified to succeed\" remain separately queryable and a verifier that ran against a drifted tree is distinguishable from one that ran against the turn's output.\n\n1. **Verification has provenance.** A verification event records `verifier_version`, command line, protected-path policy version (SAF-007), tree identity (commit hash or content hash of touched files) and wall-clock start/end.\n2. **Verification can be wrong, so it can be repeated.** Multiple verification events per `route_id` are permitted; a flaky or environment-failed run is recorded as `indeterminate`, not as `fail`, and label derivation (MEM-004) uses the latest non-indeterminate event.\n3. **Verification against a drifted tree is not verification of the turn.** If the tree identity at verification time differs from the tree identity at `closed_turn` beyond the turn's own edits, the event is flagged `tree_drift=true` and is excluded from capability labels.",
+      "decision_sha256": "68a02341c6b20ffaa69c1aeed937a1005240043aed97caf3a604a5d1b5a779c1",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-MEM-004",
+      "title": "Cause-typed labels, six types not four",
+      "path": "adr/MEM/ADRL-MEM-004.md",
+      "bucket_role": "Attributable outcomes and evidence custody",
+      "loop": "Evidence feeding policy and improver comparison",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested for the enum and its unit tests; the claim that the typing is *complete* is D0 \u2014 no organic failure corpus has been coded against it |"
+      ],
+      "decision_text": "Training labels keep task difficulty (`task_capability`) separate from every other failure cause \u2014 `harness_dialect`, `infrastructure`, `policy_constraint`, `context_feasibility`, `user_abort` and `unverifiable` \u2014 and only `task_capability` outcomes are evidence about a rung's ability; every label carries the typing rule version, a confidence, and the trip-wire or verifier event that produced it, and a label whose cause cannot be determined is typed `unverifiable`, never defaulted to `task_capability`.\n\n1. **The enum is versioned and open.** The list above is `failure-types-v2`. Adding a type is a new version with an upcaster (MEM-001); removing or merging types is prohibited because it would silently re-pool causes in replay.\n2. **Ambiguity is a type, not a tie-break.** When a turn shows both a dialect failure (malformed edit block) and a wrong answer, the label is `harness_dialect` with `secondary=task_capability`; the primary is the cause that occurred first in the action sequence. A label with no determinable cause is `unverifiable`.\n3. **Excluded types never reach the capability estimator.** `infrastructure`, `policy_constraint`, `context_feasibility`, `user_abort` and `unverifiable` are retained in the ledger (they are evidence for OPS, SAF and SEM) but are filtered before any LRN objective and reported separately in EVL.",
+      "decision_sha256": "e3fa44f3a4e8277f488c1329adbac8812ab919d1a4cfb3cde2084acf3d3d34b7",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-MEM-005",
+      "title": "Prompt-derived artefacts are prompt-class data",
+      "path": "adr/MEM/ADRL-MEM-005.md",
+      "bucket_role": "Attributable outcomes and evidence custody",
+      "loop": "Evidence feeding policy and improver comparison",
+      "proposed_disposition": [
+        "Scope evidence infrastructure to trustworthy routing outcomes"
+      ],
+      "current_status_maturity": [
+        "| Status | Superseded 2026-09-02 (see replacement) \u00b7 replacement amended 2026-09-03 (proposed amendment, pending disposition) |",
+        "| Maturity | D2 Tested, review recommends D1 Code for the replacement \u2014 the suppression path is tested, but the replacement's storage-class, retention and late-pin clauses have no implementation |"
+      ],
+      "decision_text": "Raw prompts are never stored in the ledger; prompt-derived artefacts (embeddings, instruction hashes, any retrieval key computed from prompt content, and every field that can locate or reproduce prompt content: repository paths, remotes, tool targets, command lines, verifier output, working-directory evidence) are classified as prompt-class data under a field-level data inventory, are stored only keyed or encrypted under the same access, retention and erasure controls as the prompt itself would be, and are not produced at all for private, secret or privacy-pinned turns, including turns earlier in a session that is later pinned.\n\n1. **Embeddings are the prompt, statistically.** The embedding store is treated as a lossy copy of the corpus: same access control as source code, per-session encryption or crypto-shreddable keys (MEM-010), a retention period, and no export outside the host without the same review a source export would get.\n2. **Pin suppression is retroactive within the session.** When SAF-002 pins a session at turn *k*, embeddings and instruction hashes already written for turns 1\u2026*k\u22121* of that session are shredded, because the scanner (SAF-003) is precision-limited and the secret may have been present earlier.\n3. **Hashes are pseudonyms, not anonymisation.** Instruction hashes are keyed (HMAC with a host-local secret) so an attacker with the database cannot dictionary-match short or common instructions; the key is rotatable and rotation is recorded as a projection rebuild (MEM-007).\n4. **Opt-in raw storage is a separate decision.** If any raw prompt retention is ever wanted (for debugging or labelling), it requires its own ADR with a named owner, scope and retention; this decision does not grant a \"by default\" exception.\n5. **Field-level inventory.** `data-inventory-v1` lists every column and JSON payload key the ledger, the egress ledger, the verification job store, the WAL, backups and projections can hold, with a class (`skeleton`, `keyed`, `encrypted`, `forbidden`) and the erasure mechanism that reaches it; a schema test fails when a field is written that the inventory does not list, and no field may be `raw` if it can contain a path, an argument, a command line, tool output or free text.",
+      "decision_sha256": "e7b4da619c8dfc6f4ea3e6bb87becf37c16c12714a5a04d5033033079cf6856d",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-MEM-006",
+      "title": "Memory facade, fail-safe but never silent",
+      "path": "adr/MEM/ADRL-MEM-006.md",
+      "bucket_role": "Attributable outcomes and evidence custody",
+      "loop": "Evidence feeding policy and improver comparison",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested for the facade/NullProvider path; the \"SQLite is not a semantic dependency\" claim is D1 at best because sticky session state lives outside the facade in a process-local dict |"
+      ],
+      "decision_text": "The router uses a fail-safe memory facade behind a provider port; SQLite is the current local provider, not a semantic dependency; when the provider is unavailable the router continues on the deterministic safe policy with retrieval disabled, and every unlogged decision is counted, surfaced as a degraded-mode telemetry event and excluded from evidence, so that memory loss can never be mistaken for a clean corpus.\n\n1. **Degraded mode is observable.** The facade emits `memory_degraded` with a reason on every decision it cannot persist; the count is an OPS health signal and an EVL-009 blocker when non-zero over an evaluation window.\n2. **Degraded decisions do not advise.** With no provider, MEM-008 retrieval and any learned advice are off; the deterministic policy decides alone. This is the same posture as LRN-006 abstention.\n3. **All routing state that must survive a decision goes through the port.** Sticky episode state (CAS-005/006) and session-to-route tracking are provider-backed or explicitly declared process-local with a documented single-process constraint; a semantic dependency on process memory is a dependency, and it is the one that blocks OPS-001.\n4. **Provider contract is concurrency-explicit.** The port declares its concurrency guarantees (single writer, WAL, busy timeout, same-host only for SQLite) so that a multi-worker deployment fails at configuration time, not with `database is locked` at runtime.",
+      "decision_sha256": "ca1ea66e0454bd505fcf12a2ea7af17d84c80f8a155826dc4bbacf90ea9b6089",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-MEM-007",
+      "title": "Projections are rebuildable and versioned",
+      "path": "adr/MEM/ADRL-MEM-007.md",
+      "bucket_role": "Attributable outcomes and evidence custody",
+      "loop": "Evidence feeding policy and improver comparison",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested, conditional on a rebuild-equivalence test existing; if cross-process detection relies on file mtime it is D1 |"
+      ],
+      "decision_text": "Derived retrieval indexes are rebuildable projections of the ledger, each stamped with the ledger high-water mark, the embedding-model version and the projection-code version it was built from; a projection is invalid \u2014 and retrieval abstains \u2014 when any stamp mismatches, and cross-process ledger changes are detected through the database connection (`PRAGMA data_version` or an equivalent provider primitive), never by file timestamps.\n\n1. **Identity of a projection = (ledger position, embedding model, projection code).** Changing the local embedding model or the projection code invalidates every existing index; an incremental refresh must produce a byte-equivalent (or metric-equivalent, within a declared tolerance) result to a full rebuild, and a test asserts this.\n2. **Stale is a state, not an error.** When the ledger has advanced past the projection's high-water mark, the projection is `stale`; MEM-008 retrieval may serve stale results only if it labels them so, and never for evidence.\n3. **Shredded content leaves projections.** An erasure event (MEM-001/MEM-010) forces a rebuild or targeted removal of the affected vectors; a projection that still holds a shredded embedding is invalid.\n4. **Rebuild has a budget.** Full rebuild time at the current ledger size is recorded in the EVL pack; when it exceeds a declared bound, snapshotting is introduced as an OPS decision.",
+      "decision_sha256": "7a17437e96d650ed464aa77e441d4e99d3176d54ad88dc305a81faadd2c497a3",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-MEM-008",
+      "title": "Retrieval stays advisory until gated",
+      "path": "adr/MEM/ADRL-MEM-008.md",
+      "bucket_role": "Attributable outcomes and evidence custody",
+      "loop": "Evidence feeding policy and improver comparison",
+      "proposed_disposition": [
+        "Retain authority gates; specify measured refresh"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 unchanged |",
+        "| Maturity | D3 Shadow, review recommends D3 Shadow \u2014 `shadow_retrieval.py` runs against real traffic without authority, which is the D3 definition; the shadow *measurement* itself is thin (34/300 evaluated decisions) but that is what D3 is for |"
+      ],
+      "decision_text": "Retrieval remains advisory/shadow until evaluated-label quantity and quality gates pass.",
+      "decision_sha256": "3ed2bb25239649e351a7995ed3c2a1591262e5a07c19bf54ab35e6ff4bc3ee04",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-MEM-009",
+      "title": "Counterfactuals bind only to explicit route_id",
+      "path": "adr/MEM/ADRL-MEM-009.md",
+      "bucket_role": "Attributable outcomes and evidence custody",
+      "loop": "Evidence feeding policy and improver comparison",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 unchanged |",
+        "| Maturity | D2 Tested, review recommends D2 Tested \u2014 `counterfactual.py` and `live_verification.py` enforce explicit binding under test; usable volume is very low but that is a corpus fact, not a maturity fact |"
+      ],
+      "decision_text": "Counterfactual evidence attaches only to an explicit `route_id`; time or session proximity is never used to guess ownership.",
+      "decision_sha256": "3b84ff3f1ad9daeff0d0e168c9a039c25d71be3c4fd79e38ed9f09c0594e4c89",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-MEM-010",
+      "title": "Retention and erasure of ledger and derived artefacts",
+      "path": "adr/MEM/ADRL-MEM-010.md",
+      "bucket_role": "Attributable outcomes and evidence custody",
+      "loop": "Evidence feeding policy and improver comparison",
+      "proposed_disposition": [
+        "Scope evidence infrastructure to trustworthy routing outcomes"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-02 (new, from adversarial review) \u00b7 amended 2026-09-03 (proposed amendment, pending disposition) |",
+        "| Maturity | Historical review baseline: D0. Product observation erasure has scoped D2 evidence (2026-09-07); full ledger/derived-data/client-copy erasure remains incomplete |"
+      ],
+      "decision_text": "Every field in transaction memory, as enumerated by the field-level data inventory of MEM-005 clause 5, has a declared retention period and an erasure procedure: prompt-class fields (embeddings, keyed hashes, retrieval keys, path and target evidence, command lines, verifier output) are stored encrypted under per-session keys and erased by crypto-shredding; the `route_id` skeleton (timestamps, rung, deployment id, failure type, event types, costs) is retained for evidence without prompt-derived content; erasure is triggered by retention expiry, a late privacy pin (MEM-005), or an explicit security/data-subject request, is itself an appended event, forces invalidation of every projection that held the shredded content, and is proven by an erasure test that reads every store the inventory names, including the WAL and backups, and finds no plaintext.\n\n1. **Two storage classes.** *Evidence skeleton* \u2014 no prompt content, retained for the evidence horizon EVL needs (proposed: 24 months, reviewed annually). *Prompt-class artefacts* \u2014 retained no longer than the shorter of the retrieval usefulness horizon (proposed: 90 days) and the repository's own data-classification policy.\n2. **Crypto-shredding by session.** Prompt-class rows are encrypted under a per-session key held in a local keystore; erasing a session is deleting its key and appending an `erased` event naming the session and reason. The ledger rows remain, unreadable.\n3. **Erasure reaches projections.** An `erased` event invalidates any projection whose high-water mark predates it (MEM-007 clause 3); the NumPy index is rebuilt without the affected vectors before retrieval resumes.\n4. **Erasure is auditable, not silent.** Counts of erased sessions and their reasons are reported in the EVL pack; an erasure that removes evidence from an evaluation window is an EVL-009 blocker for that window, never averaged away.\n5. **Erasure proof.** `adrl erase --session` is followed by an erasure check that opens every inventoried store (ledger, egress ledger, verification job store, projections, WAL, the most recent backup) and asserts that no field classed `encrypted` or `keyed` for that session is readable; the check's result is appended as an `erasure_verified` event and its failure is an EVL-009 blocker.",
+      "decision_sha256": "099fecd3996b95ba98083c27b5adeee257bbf15d94a1f54244ae312590b24486",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-OPS-001",
+      "title": "Multi-worker consistency and the single-process constraint",
+      "path": "adr/OPS/ADRL-OPS-001.md",
+      "bucket_role": "Versioned operation, drift and recovery",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture; referenced by MEM-006, CAS-006, SEM-002 since 2026-08-27) |",
+        "| Maturity | D1 Code; adrl-core keeps sticky state and pins behind a `StateProvider` port with a SQLite adapter and declares the remaining process-local state (pending escalations, verifier consumption, parent map priming) in `docs/known-gaps.md`; no multi-process deployment has been attempted |"
+      ],
+      "decision_text": "ADRL runs as one process per host until every piece of routing state that must survive a decision is behind a port with a provider that tolerates concurrent processes. The single-process constraint is declared, not accidental: (1) the SQLite provider's contract is single writer, WAL, `busy_timeout`, `BEGIN IMMEDIATE`, same host, enforced by one writer thread per process and checked at startup (MEM-006); (2) every state item is classified in a versioned inventory as `port-backed` or `process-local`, and a `process-local` item names the behaviour on restart (for example `state_loss=true` per CAS-006); (3) a second worker on the same ledger is refused at startup by a lock file naming the owning process, until the inventory has no `process-local` item that affects a gate or a pin; (4) moving to multiple workers is a new version of this decision with the provider named (a server-backed store or a per-lineage sharding rule), never a configuration change.",
+      "decision_sha256": "e185ef32e67ec8881015040e9db3e10ea1903a331e7590b6ff0bc552e3b24253",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-OPS-002",
+      "title": "Key custody and rotation",
+      "path": "adr/OPS/ADRL-OPS-002.md",
+      "bucket_role": "Versioned operation, drift and recovery",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture) |",
+        "| Maturity | D0 Design; adrl-core has a file keystore for the host HMAC key and per-session keys, but the manifest-signing development key also signs egress checkpoints and is loaded unconditionally (2026-09-03 external review, P0) |"
+      ],
+      "decision_text": "ADRL uses four key classes, each with a named custodian, a storage location, a rotation rule and a compromise procedure, recorded in a versioned key inventory:\n\n| Key | Purpose | Custodian | Storage | Rotation |\n|---|---|---|---|---|\n| Host HMAC secret | Session and lineage identities at rest (SEM-002), keyed instruction hashes (MEM-005), span hashes (SAF-003) | Host owner | Local keystore, mode 0600 | Rotatable; rotation is a projection rebuild (MEM-007) and the old key is retained read-only for the evidence horizon |\n| Per-session data keys | Encrypt prompt-class artefacts; shredded on erasure (MEM-010) | ADRL process | Local keystore, wrapped by a host master key | Never rotated; deleted on erasure |\n| Manifest signing key | Signs `repo-classification` manifests (SAF-008) and graduation records (EVL-007) | Security, outside the training team | Hardware or managed KMS; never on a developer host | Annual or on compromise; public key pinned in config |\n| Checkpoint signing key | Signs egress-ledger checkpoints (SAF-009) | Security, distinct from the manifest key | Same as above, distinct key pair | Same; public key pinned in the auditor's verifier, not in the proxy |\n\nDevelopment keys exist only under a `config/keys/dev` path that is gitignored, are refused by the proxy unless `ADRL_ALLOW_DEV_KEYS=1` is set, and cause a startup warning that is itself recorded in the egress ledger. The proxy never holds a private signing key for checkpoints in a production profile; it produces the checkpoint digest and a separate signer process signs and ships it (OPS-007).",
+      "decision_sha256": "bd5991d8b4168ea7e0d6a3da0f2e1a2cd7923df3a2ac14a735fcad00c234fc03",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-OPS-003",
+      "title": "Endpoint inventory, rollout and change control",
+      "path": "adr/OPS/ADRL-OPS-003.md",
+      "bucket_role": "Versioned operation, drift and recovery",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Specify drift and requalification"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture) |",
+        "| Maturity | D0 Design; adrl-core generates a LiteLLM config from `rungs.yaml` and `gateway-endpoints.yaml` with rung-closed checks, but the inventory is unsigned and carries no trust zone, so a local group pointed at an external host passes every check (2026-09-03 external review, P0) |"
+      ],
+      "decision_text": "Every model deployment ADRL may dispatch to is an entry in a signed endpoint inventory (`endpoint-inventory-v<N>`) carrying: deployment id, provider, model family, rung, trust zone (`on_host`, `private_network`, `public_cloud`), geography, data-use profile (training opt-out status), the gateway model group that fronts it, and an evidence reference for its rung boundary (RTG-001). The inventory is signed by the manifest key (OPS-002) and verified at startup; the LiteLLM config is generated from it and from nothing else; and CI checks that (1) every gateway model group maps to exactly one inventory entry, (2) no fallback group crosses a rung or a trust zone, (3) every `local` entry has trust zone `on_host` and an `api_base` on a loopback or Unix-socket address, (4) a `live` rung has an evidence reference. Adding a deployment requires a security co-sign for any entry outside `on_host`; changing a deployment's zone, geography or profile is a new inventory version. The served identity recorded on each response (OPS-006) is matched against the inventory, and a mismatch is an `infrastructure` event and a blocker (EVL-009).",
+      "decision_sha256": "bbad669d85094e76142e97f6295254a7bb4f160f9b2cd4f84601989f650f5a3c",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-OPS-004",
+      "title": "Backup, restore and erasure",
+      "path": "adr/OPS/ADRL-OPS-004.md",
+      "bucket_role": "Versioned operation, drift and recovery",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture) |",
+        "| Maturity | D0 Design; adrl-core has replay from events and crypto-shredding by session, but no backup procedure, and prompt-class fields still exist in plaintext rows (2026-09-03 external review, P1) |"
+      ],
+      "decision_text": "1. *What is backed up.* The evidence ledger and the egress ledger are backed up as SQLite online backups taken while the writer thread is paused at a transaction boundary; WAL files are never copied on their own. Projections are not backed up; they are rebuilt from the ledger (MEM-007). The keystore is backed up separately, encrypted under the host master key, and never in the same archive as the ledgers.\n2. *Erasure survives backup.* Because erasure is key deletion (MEM-010), a backup of the ledger without the corresponding keystore state is unreadable for the shredded sessions; a restore therefore restores the ledger first and the keystore second, replaying `erased` events to delete any key the backup keystore still holds. A field-level data inventory (MEM-005 amendment) lists every column that may hold prompt-class content; every such column is either encrypted under a session key or keyed-hashed, so that erasure by key deletion is complete. Columns that fail this test are a blocker (EVL-009).\n3. *Restore replays.* A restore reapplies events in sequence, rebuilds projections and verifies the egress chain against the last shipped checkpoint (OPS-007); a chain that does not reach a verified checkpoint marks the restored ledger `unanchored`.\n4. *Retention.* Backups follow the same two horizons as the ledger (MEM-010): prompt-class keys expire with the session horizon; skeleton rows with the evidence horizon.",
+      "decision_sha256": "334603255582f8c4ade141c0f3bc0cdbac2c17397882047f23ec9ef12705e10f",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-OPS-005",
+      "title": "Shadow-mode semantics per subsystem",
+      "path": "adr/OPS/ADRL-OPS-005.md",
+      "bucket_role": "Versioned operation, drift and recovery",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture) |",
+        "| Maturity | D1 Code; adrl-core has independent modes for gates, routing and fallback, but gate observe mode still writes durable pins and triggers suppression before the mode is consulted (2026-09-03 external review, P1) |"
+      ],
+      "decision_text": "Each subsystem has its own mode, and the modes have defined meanings:\n\n| Subsystem | Modes | Meaning |\n|---|---|---|\n| Gates | `enforce`, `observe` | In `observe`, every gate runs and every finding is recorded, but findings are written to a *shadow* namespace (`shadow_finding`, `shadow_pin`) that carries no authority: no block is returned, no pin is written to the authoritative namespace, no suppression or erasure is triggered, and no egress destination is constrained. Promotion of a shadow finding to an authoritative pin requires a recorded decision (a versioned rule or a human action), never a mode switch. |\n| Routing | `off`, `shadow`, `live` | `off` forwards unchanged and records nothing but classification; `shadow` computes and records every decision and forwards to the harness-requested model; `live` dispatches to the decided rung. Gate enforcement is independent of routing mode: with gates in `enforce`, a pinned lineage goes local in every routing mode. |\n| Fallback | `off`, `shadow`, `live` | Per FND-004; `shadow` records the resolution it would have applied. |\n\nMode changes are configuration versions recorded in the egress ledger with actor and reason. Shadow-namespace records are excluded from every organic count (EVL-004) and reported in the scorecard's exclusions (EVL-008). A finding recorded in `observe` mode is never retroactively treated as having pinned the lineage.",
+      "decision_sha256": "131cf76586c60d154c21e0c8f036d36774b8a819916b028d3a8f4c3dc1ed09a7",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-OPS-006",
+      "title": "Record the served identity, not the intended one",
+      "path": "adr/OPS/ADRL-OPS-006.md",
+      "bucket_role": "Versioned operation, drift and recovery",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture; referenced by CAS-006, RTG-008, LRN-004, MEM-006 since 2026-08-27) |",
+        "| Maturity | D2 Tested; adrl-core records `served_rung`, `served_model`, `served_provider` and `served_source` from the gateway header, then `message_start.model`, else `assumed_intended`, under unit and end-to-end tests; no organic traffic yet, so D3 is not claimed (EVL-007) |"
+      ],
+      "decision_text": "Every response is recorded with the identity that actually served it: deployment id (OPS-003), model, provider and, where the inventory carries them, trust zone and geography; plus a `served_source` of `gateway_reported`, `proxy_observed` or `assumed_intended`. The gateway reports identity on every response under the contract in RTG-008 (`gen_ai.response.model`, `gen_ai.provider.name`, or the equivalent header); the proxy observes `message_start.model` as the second source; `assumed_intended` is the last resort and marks the row so that (1) sticky state built on it is flagged, (2) failure types on it are `unverifiable`, and (3) the egress ledger records `destination_unconfirmed`. The share of `assumed_intended` rows is a scorecard metric with an EVL-009 blocker threshold. `served_rung` is deny-listed as a training feature (LRN-004).",
+      "decision_sha256": "3e0e466b24b871ad2f414631c460c85525274dd1a37eeb1724fd70b26cf91f6c",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-OPS-007",
+      "title": "Audit-anchor availability, rollback and incident response",
+      "path": "adr/OPS/ADRL-OPS-007.md",
+      "bucket_role": "Versioned operation, drift and recovery",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture) |",
+        "| Maturity | D0 Design; adrl-core has a manual checkpoint method and chain verification, no automatic checkpoints, no shipping, no signature verification in the CLI, and no runbooks (2026-09-03 external review, P0) |"
+      ],
+      "decision_text": "1. *Anchoring.* The egress ledger produces a checkpoint every `checkpoint_every` entries or `checkpoint_interval` minutes, whichever first. A checkpoint is the chain digest at that sequence; a separate signer (OPS-002) signs it and ships it to an append-only anchor sink outside the host (the gateway's telemetry path under Q7, or an object store with object lock). The sink acknowledges with a receipt that is appended to the egress ledger. The verifier tool checks chain, signatures and receipts and reports the last anchored sequence.\n2. *Anchor unavailable.* Checkpoints queue locally with a bounded backlog; the ledger keeps appending (availability of egress records is never sacrificed to anchoring). Beyond the backlog bound, the window is marked `unanchored` and the EVL-009 blocker opens; the proxy keeps running. Nothing about the anchor ever changes a gate decision.\n3. *Rollback.* Every deployable change (proxy version, config version, inventory version, artifact version) has a recorded previous version and a one-step rollback command; D4 requires the rollback to have been exercised in the pilot (EVL-007). Rollback never releases a pin and never rewrites ledger history.\n4. *Incident response.* Runbooks exist for: chain verification failure (treat the ledger as untrusted from the last verified checkpoint, preserve the file, open a security incident); served identity outside the inventory (OPS-003 mismatch: freeze routing to `off` with gates enforced, notify the gateway team); key compromise (OPS-002: rotate, re-sign the inventory, re-anchor); pinned lineage reached a cloud rung (SAF-004 breach: freeze, audit query, disclosure per policy); fail-open rate alert (OPS-008). Each runbook names the first responder, the freeze action and the evidence to preserve.",
+      "decision_sha256": "8554399d5d0dc0647b00af7b9a11f9cbf54d77f8d2988c123ffa89c27107e515",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-OPS-008",
+      "title": "Fail-open SLOs, alerting and bypass audit",
+      "path": "adr/OPS/ADRL-OPS-008.md",
+      "bucket_role": "Versioned operation, drift and recovery",
+      "loop": "All three loops",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (first capture) |",
+        "| Maturity | D1 Code; adrl-core counts fail-open events by failure class and pin state and records bypass events, but thresholds are not pre-registered and no alert route exists |"
+      ],
+      "decision_text": "1. *SLIs.* Fail-open rate per failure class (`routing_path`, `gate_path`, `proxy_path`) and per pin state, computed over requests; `unscanned` share of forwarded requests; `memory_degraded` count; `ledger_degraded` count; gate latency p99 on continuations (SAF-003 budget); block rate per pinned lineage (SAF-005); `assumed_intended` share (OPS-006).\n2. *SLOs.* Each SLI has a pre-registered threshold in `ops-slo-v1.json`. The fail-open thresholds are set per class because the classes carry different risk: `gate_path` on an unpinned lineage is the one that forwards unscanned content and has the tightest bound.\n3. *Alerting.* Breach of any threshold over a declared window raises an alert to the named on-call owner and opens the corresponding EVL-009 blocker; alerts are recorded in the egress ledger so that the audit trail shows when the operator knew.\n4. *Bypass audit.* The one-step operator bypass (FND-004: repoint the harness at the gateway) is recorded with actor, reason and duration; a bypass longer than a declared bound is an alert; a bypass never releases a pin (SAF-002) and the pinned lineages active during a bypass are listed in the incident record (OPS-007).\n5. *Every fail-open is recorded* with its class, pin state and the request class it affected, and gate-internal fail-opens produce the same record as pipeline-level ones.",
+      "decision_sha256": "19600e2abed5387b995c542f7e23b0b3aa7d35e8955b39bcca0cc56d5cf42cae",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-RTG-001",
+      "title": "Three capability rungs with measured boundaries",
+      "path": "adr/RTG/ADRL-RTG-001.md",
+      "bucket_role": "Initial and temporal routing choices",
+      "loop": "During-task and policy-improvement loops",
+      "proposed_disposition": [
+        "Qualify deployment capabilities and transition edges"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 \u00b7 amended 2026-09-03 (proposed amendment, pending disposition) |",
+        "| Maturity | D3 Shadow, review recommends D3 Shadow for the rung *model*, but the local rung's capability boundary is unmeasured (Phase 0 non-claim), so the register must carry that qualifier |"
+      ],
+      "decision_text": "The policy reasons over three economic and service tiers, called rungs (local, cheap cloud, frontier), each defined by a versioned, measured capability boundary rather than by a model name and each realised by deployments in the signed inventory (TRU-002); rungs do not form a total capability order, \"higher\" means an approved escalation edge for a task slice, and per-request reasoning effort is a parameter inside a rung, not a rung.\n\n1. Each rung carries a published boundary (context ceiling, permitted task classes, verified non-inferiority evidence) in the runtime registry; a rung whose boundary has no organic evidence is marked as such and its permitted scope is the conservative subset (Q2).\n2. Adding or splitting a rung requires the same evidence as adding a learned component: a measured boundary and a scorecard entry, not a new model alias.\n3. Reasoning effort / thinking budget within the frontier and cheap-cloud rungs is a dispatch parameter (CAS/gateway), and a change of effort is not a rung change for sticky-state purposes (CAS-005, CAS-006).\n4. Escalation edges are declared per task slice in the registry (`escalation-edges-v1`: slice, from rung, to rung, evidence reference); a trip-wire escalation follows a declared edge; where no edge exists for a slice the request is placed at the highest permitted deployment from the start.\n5. A rung is not a trust boundary: \"local\" as a safety property is `trust_zone: local_host` on a deployment (TRU-002), never the rung name.",
+      "decision_sha256": "c41b1c9e50f56e8644665aa971450ce9a0a1a1c82f128a6825b4592942c41dd2",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-RTG-002",
+      "title": "Cheapest rung likely to complete, defined",
+      "path": "adr/RTG/ADRL-RTG-002.md",
+      "bucket_role": "Initial and temporal routing choices",
+      "loop": "During-task and policy-improvement loops",
+      "proposed_disposition": [
+        "Align complete-task objective and cost"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (the ordering rule is tested; the completion-probability inputs it consumes are heuristic and unverified, which clause 1 now makes explicit) |"
+      ],
+      "decision_text": "Within hard constraints, select the cheapest healthy rung whose estimated probability of completing the turn meets that rung's published completion threshold, where cost is the expected cost of the turn *including* the expected cost of a cascade if the rung fails and the prompt-cache state of the session.\n\n1. \"Likely to complete\" means P(complete | rung, features) \u2265 \u03c4_rung, where \u03c4_rung is a versioned policy constant per rung, and P is a named estimator (today: the deterministic band heuristics; later: RTG-007) whose calibration is reported against verified outcomes (MEM-003, LRN-001).\n2. \"Cheapest\" is measured in expected session-marginal cost per RTG-009, not list price per turn; a rung whose cheap first attempt is expected to fail and escalate is charged the escalation cost too (RTG-005).\n3. If no rung meets its threshold, the policy selects the highest permitted rung and records `no_rung_met_threshold` on the decision row so the case is visible in MEM rather than absorbed into the ordering.",
+      "decision_sha256": "8a57bdb1834b677fb2bdf4c45d2c5fb793fce67b9d12e01d35e16154a97e5a94",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-RTG-003",
+      "title": "Rules own clear cases, measured",
+      "path": "adr/RTG/ADRL-RTG-003.md",
+      "bucket_role": "Initial and temporal routing choices",
+      "loop": "During-task and policy-improvement loops",
+      "proposed_disposition": [
+        "Retain authority gates; specify measured refresh"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D3 Shadow, review recommends D3 Shadow (band split has shadow evidence; per-band rule precision on verified outcomes is not yet reported and is added as a gate) |"
+      ],
+      "decision_text": "Deterministic rules own clear cases; learned intelligence is reserved for the ambiguous middle \u2014 where \"clear\" is a versioned band definition whose per-band precision on verified outcomes is measured and published, and a band whose measured precision falls below its threshold is reclassified as ambiguous rather than left to the rules.\n\n1. Band boundaries (features, thresholds, rule ids) are versioned in `router/policy.py` config and recorded on every decision row, so the population of \"clear\" cases can be re-derived after a rule change.\n2. Each clear band carries a rule-precision gate: fraction of verified outcomes on which the rule's rung completed without escalation. Rule health (`router/rule_health.py`) reports it per band; a band under threshold loses its \"clear\" status and enters the advisor's scope (RTG-006) until re-qualified.\n3. The size of the ambiguous band is a published, dated measurement, not a fixed assumption; the bar for building any learned component (RTG-007/LRN-003) is stated in terms of that band's size and realisable gain (Q4).",
+      "decision_sha256": "d2ed23b2d60ba1b2ac4e76d436a7034ad4436762af3906f283df29e7e44ea07b",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-RTG-004",
+      "title": "Local-first only with a bounded, clean cascade",
+      "path": "adr/RTG/ADRL-RTG-004.md",
+      "bucket_role": "Initial and temporal routing choices",
+      "loop": "During-task and policy-improvement loops",
+      "proposed_disposition": [
+        "Keep baseline; experiment before changing stickiness"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (feasibility check is tested; the bounded-attempt and workspace-clean conditions added here need their own tests before the level is re-confirmed) |"
+      ],
+      "decision_text": "Local-first is conditional and is used only when a controlled cascade remains feasible \u2014 meaning a higher permitted rung is healthy, the transcript after a bounded local attempt still fits that rung with margin, the local attempt's side effects are recoverable, and the attempt is capped \u2014 except on a privacy-pinned session, where local is the only rung and SAF-004 governs instead.\n\n1. Feasibility is evaluated at decision time as: (a) at least one higher rung is permitted by the gates and healthy (SAF-006); (b) current context + the local attempt budget + the handoff note (CAS-004) \u2264 the next rung's context ceiling minus a versioned safety margin; (c) the local attempt is bounded by a versioned budget (tool calls, wall-clock, or tokens), after which trip-wires (CAS-001) are evaluated regardless of error state.\n2. Local-first is not selected for a turn whose expected first actions are non-idempotent or destructive (deployment, migration, git history rewrite, payments-code paths per Q2), because a wrong local attempt there is not cleanly recoverable even at an action boundary (CAS-003).\n3. On a privacy-pinned session this decision does not apply: local is selected because it is the only permitted rung, escalation is unavailable by design, and failure surfaces to the user (SAF-004, CAS-007). The ledger records `cascade_feasible=false, reason=pinned` so these turns are never counted as evidence for or against local-first.",
+      "decision_sha256": "7196032d5adf76013945436e9b1b24be52d8cd9d6afaa093859efa06f68d7e36",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-RTG-005",
+      "title": "Objective: verified quality, retry, latency, session cost",
+      "path": "adr/RTG/ADRL-RTG-005.md",
+      "bucket_role": "Initial and temporal routing choices",
+      "loop": "During-task and policy-improvement loops",
+      "proposed_disposition": [
+        "Align complete-task objective and cost"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D3 Shadow, review recommends D2 Tested for the decision as a *routing criterion*: telemetry collection for the four terms is in shadow, but the objective itself has never been evaluated against a baseline on real traffic (one verified task; 34/300 decisions), so \"shadow\" over-states what has been observed |"
+      ],
+      "decision_text": "Runtime optimisation uses expected verified quality, retry risk, latency and expected session-marginal cost \u2014 with prompt-cache state inside the cost term, not reported alongside it \u2014 rather than difficulty alone; each term is a named, versioned measurement with a published data source, and a term whose measurement is absent for a turn is treated as unknown, not as zero.\n\n1. The cost term is defined by RTG-009: expected remaining-session cost given the current cache state of each candidate rung, including the cache-rebuild cost of any rung switch and the expected cost of cascade on failure.\n2. The quality term is \"expected verified quality\" only where a deterministic verifier (MEM-003) exists for the task class; elsewhere it is a proxy label and is marked as such (LRN-001), and the policy's weight on it is reduced accordingly.\n3. Weights between the terms are versioned policy constants until RTG-007 replaces them with a learned utility; changing a weight is a policy version change recorded on decision rows.\n4. Latency is weighted by interaction mode: interactive user turns weight latency highly; background subagent turns (SEM-006) may weight it near zero.",
+      "decision_sha256": "e67d96101efee8f60717e561fbaa90f82112b1c5ee0c27edbec564019ab44ae5",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-RTG-006",
+      "title": "Advisory LLM classifier, gated and bounded",
+      "path": "adr/RTG/ADRL-RTG-006.md",
+      "bucket_role": "Initial and temporal routing choices",
+      "loop": "During-task and policy-improvement loops",
+      "proposed_disposition": [
+        "Retain authority gates; specify measured refresh"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D3 Shadow, review recommends D3 Shadow (bake-off and shadow reports exist; the amendment adds constraints that are testable at D2 and do not lower the shadow evidence already gathered) |"
+      ],
+      "decision_text": "The current LLM classifier is a fail-safe middle-band advisor, not a safety authority or final learned router: it runs only on turns already inside the ambiguous band, only at a rung the hard gates permit for that session, under a fixed latency and cost budget, and on any failure, timeout, or malformed output the policy takes the conservative (higher) side of the band.\n\n1. Placement: the classifier is invoked after SAF gates and after band classification (RTG-003); it never sees a turn the rules already own and can never widen the permitted rung set. On a privacy-pinned session it runs locally or is skipped \u2014 never on cloud.\n2. Budget: a versioned timeout and per-turn token cap; exceeding either is a `classifier_timeout` outcome, not a routing input. Classifier cost is charged to the turn in RTG-009 accounting so its own overhead is inside the objective it advises.\n3. Fallback: the deterministic fallback for the ambiguous band is named in policy config and defaults to the *higher* rung, because the band is by construction where the rules are least sure and a false \"easy\" costs a failed attempt plus escalation.\n4. Provenance: classifier model id, prompt version, raw label and confidence are recorded on the decision row so calibration can be measured against verified outcomes and the advisor can be retired without ambiguity when RTG-007 exists.",
+      "decision_sha256": "8db7c1734efe89e23506e9ac717b6787e59002cb67189f943a4eb249eba27297",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-RTG-007",
+      "title": "Marginal-utility target, with a build gate",
+      "path": "adr/RTG/ADRL-RTG-007.md",
+      "bucket_role": "Initial and temporal routing choices",
+      "loop": "During-task and policy-improvement loops",
+      "proposed_disposition": [
+        "Clarify initial versus safe-boundary decisions"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 \u00b7 amended 2026-09-03 (proposed amendment, pending disposition) |",
+        "| Maturity | D0 Design, review recommends D0 Design (unchanged; nothing is built and the amendment adds a pre-build gate, not implementation) |"
+      ],
+      "decision_text": "The target learned decision has two estimands: an initial-placement estimand, the marginal utility of a higher deployment versus a lower one at the user turn, expressed in the session-marginal cost and verified-quality units of RTG-005/RTG-009, and a temporal estimand at each safe action boundary, the expected value of continuing on the current deployment versus escalating to a target deployment, conditioned on the partial trajectory, the workspace and tool state and the remaining budget; both carry calibrated uncertainty and abstention, the static initial-placement estimator is the baseline the temporal one must beat, and neither is built until the published pre-build gate is met.\n\n1. Pre-build gate (owned by EVL, evidence from MEM): (a) ambiguous-band share of turns and of spend on a representative population (not the single-user corpus alone); (b) an oracle-bound estimate \u2014 the cost/quality gain if every ambiguous turn were routed perfectly \u2014 measured from counterfactual pairs (LRN-002); (c) a required-minimum realised gain, versioned, that the estimator must beat offline against always-local, always-frontier and RTG-002-heuristic baselines after cache effects.\n2. Abstention (LRN-006) is a prerequisite, not a feature: the estimator may not hold advisory authority until its abstention path to the deterministic policy is built and tested.\n3. RTG-007 states the *runtime* target; LRN-003 owns the training target and data. The two must cite one shared definition of utility (RTG-009) and one shared baseline set (EVL) so they cannot drift.\n4. The temporal estimand is evaluated only at CAS-003 boundaries, never overrides a hard gate (SAF-001) or the permitted deployment set (TRU-002), and its training data are live branched executions from the same boundary state (LRN-002); transcript replay with a substituted model is prohibited as evidence for either estimand, and any off-policy estimator is validated against branched pairs before a number enters an evidence pack (EVL).\n5. \"Higher\" and \"lower\" mean an approved escalation edge for the task slice (RTG-001 as amended), not a global capability order.",
+      "decision_sha256": "6ccc82c830426dfb84c5c68d0684c75144370e7131922b87f6454cd1a03c74a1",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-RTG-008",
+      "title": "Rung vs endpoint, with a leak contract",
+      "path": "adr/RTG/ADRL-RTG-008.md",
+      "bucket_role": "Initial and temporal routing choices",
+      "loop": "During-task and policy-improvement loops",
+      "proposed_disposition": [
+        "Qualify deployment capabilities and transition edges"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (separation is tested; the gateway-side contract added here is a Q7 deliverable and does not change the level) |"
+      ],
+      "decision_text": "Capability-rung selection is separate from endpoint/provider selection inside a rung, subject to a contract with the gateway that (a) the served model and provider are reported back on every response, (b) the endpoint serving a session is held stable within a rung for the life of a turn and, absent failure, an episode, and (c) rung membership is a versioned, shared configuration \u2014 because prompt caches and reasoning signatures are model-specific, so an endpoint change inside a rung is not free to ADRL's objective.\n\n1. The gateway reports `gen_ai.response.model` and `gen_ai.provider.name` (OpenTelemetry GenAI conventions) or equivalent on every response; ADRL records them (CAS-006) and treats a within-rung model change as a cache-cold and signature-invalidating event in RTG-009 accounting.\n2. Within-rung failover is the gateway's decision (FND-002), but it is *visible* to ADRL and counts as an infrastructure outcome (CAS-002), never as a capability outcome.\n3. ADRL never names a model in policy; the rung\u2192model list lives in shared, versioned config owned jointly with the gateway team so that a model deprecation is a config change on both sides, not a routing-logic change.",
+      "decision_sha256": "ac209a410142f3331d307fc57afc07191f4ea00160ff0d24ff97f3ba0aa14b10",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-RTG-009",
+      "title": "Session-marginal, cache-aware cost accounting",
+      "path": "adr/RTG/ADRL-RTG-009.md",
+      "bucket_role": "Initial and temporal routing choices",
+      "loop": "During-task and policy-improvement loops",
+      "proposed_disposition": [
+        "Align complete-task objective and cost"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-02 (new, from adversarial review) |",
+        "| Maturity | D0 Design, review recommends D0 Design (partial telemetry exists in `telemetry.py`/`outcomes.py`; the accounting rule itself is not implemented) |"
+      ],
+      "decision_text": "Routing cost is accounted per session continuation, not per HTTP request: the cost of a candidate rung for a turn is the expected cost of the remainder of the episode on that rung given its current prompt-cache state, plus the cache-rebuild cost if the rung differs from the one currently serving, plus the expected cost of cascade on failure; a rung switch is never scored at list price alone.\n\n1. Inputs: provider-reported cache usage (`cache_read_input_tokens`, `cache_creation_input_tokens` on Anthropic; `cached_tokens` on OpenAI; `gen_ai.usage.cache_*` via OpenTelemetry) attached to every outcome row; per-rung price vectors (base input, cache write, cache read, output) versioned in config; cache TTL per provider (Anthropic 5 min default / 1 h option; OpenAI 5\u201310 min in-memory, longer retention options) so a stale cache is not assumed warm.\n2. Switch cost: when the candidate rung \u2260 the served rung (CAS-006), the transcript is charged at cache-write price on the candidate, and the served rung's cache is treated as forfeited; when a within-rung model change is reported by the gateway (RTG-008), the same charge applies.\n3. Expected-remaining-episode length is a named estimator (initially: empirical distribution of continuations per turn from the shadow corpus, conditioned on request kind and band); its version is recorded on the decision row.\n4. Reporting: every cost figure in EVL scorecards and readiness reports is labelled \"after cache effects\" or \"list price\"; comparisons across the two are prohibited (this codifies the Evidence page's \"cost figures are upper bounds and asymmetric\" non-claim).",
+      "decision_sha256": "b13ac0fda9962a8cf9891200ed10f3af955b5e47ef6b43b8be817fc5c2454b21",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SAF-001",
+      "title": "Hard gates first, on every request",
+      "path": "adr/SAF/ADRL-SAF-001.md",
+      "bucket_role": "Hard restrictions and safe execution",
+      "loop": "All loops constrain actions",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (gates are tested, not attacked; the per-request scope introduced here is untested) |"
+      ],
+      "decision_text": "Hard gates execute on every request \u2014 user turn, continuation, utility, subagent, pre-warm and passthrough alike \u2014 before, and cannot be overridden by, heuristics, learned policy, or the routing-path failure fallback; gate outcomes may only tighten the permitted set within a session.\n\n1. The gate set produces a permitted-rung set per request; optimisation (RTG) chooses only within it. A request with an empty permitted set follows SAF-004/SAF-005.\n2. Gate outcomes are monotone within a session lineage: a later request may remove rungs (pin, infeasibility) but never restore one that a gate removed, except through the audited human release path defined in SAF-002.\n3. The gate stage has its own failure semantics (FND-004 as amended): gate failure on a pinned session is fail-closed; on an unpinned session the request is marked `unscanned` and the mark can never widen the permitted set.",
+      "decision_sha256": "5d7dcd42a11e0ee88a8aac2696d04d94ca8d8f2d4baa9671ae10d255a1945f1c",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SAF-002",
+      "title": "One-way pin, durable, lineage-scoped, audited release",
+      "path": "adr/SAF/ADRL-SAF-002.md",
+      "bucket_role": "Hard restrictions and safe execution",
+      "loop": "All loops constrain actions",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D1 Code \u2014 the pin is tested as an in-memory rule, but the property the decision promises (\"stays local-only\") is not implemented: pin state lives in a single-process Python dict and does not survive a proxy restart, and it does not cover passthrough, utility or subagent traffic |"
+      ],
+      "decision_text": "Privacy pinning is one-way for the session lineage and durable across process restarts; once local-only, every content-bearing request in that lineage \u2014 turns, continuations, utility, passthrough and descendant subagents \u2014 stays local-only, and the only release is an explicit, reason-coded, audited human action that can never be taken by ADRL, the gateway, a heuristic, a learned policy, an episode boundary or a failure fallback.\n\n1. *Durable* means pin state is written to the ledger (MEM-001) keyed by the hashed session key before the pinning request is forwarded, and is reloaded on proxy start; a restart never unpins.\n2. *Lineage* means the session key plus all descendant agent identities (SEM-006); a pin taken by a child does not pin its parent or siblings, a pin taken by a parent pins all descendants from that moment.\n3. *Audited human release* mirrors push-protection practice: the developer is shown the flagged span and detector, chooses one reason (`false_positive`, `test_fixture`), the release is recorded in the ledger with actor, reason, detector and span hash, and the release applies to that finding only \u2014 a subsequent finding re-pins. Release is disabled by policy for repositories carrying a restricted data classification (SAF-008, Proposed).\n4. The pinning question \"did this lineage's content ever leave the machine?\" is answerable from the ledger alone (SAF-009, Proposed).",
+      "decision_sha256": "23dd358d9f4dc7494427b68332790f6754b13e41ab280d1c3c5828442d0b9704",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SAF-003",
+      "title": "Secret detection per request, precision-measured",
+      "path": "adr/SAF/ADRL-SAF-003.md",
+      "bucket_role": "Hard restrictions and safe execution",
+      "loop": "All loops constrain actions",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D3 Shadow, review recommends D3 Shadow conditional on publishing the shadow precision measurement; if no per-detector precision figure exists from real traffic, D2 |"
+      ],
+      "decision_text": "Secret detection runs on the new content of every request before that request is forwarded, using a detector set whose per-detector precision is measured on representative the company traffic and published, and for a secret-bearing lineage suppresses prompt-derived embeddings, instruction hashes, and any stored feature that could reconstruct or locate the secret (file paths, line spans, tool arguments).\n\n1. *New content* means blocks not already scanned in this lineage (the latest `tool_result`s, the latest user text, new system reminders, subagent delegation text); previously scanned prefix is not re-scanned. Every content type the Messages API accepts is in scope \u2014 text, image, PDF/document blocks and tool inputs \u2014 with unsupported types treated as unscanned (SAF-001 sub-clause 3).\n2. The detector set is tiered: *high-confidence* detectors (provider-specific formats, private-key headers, verified-format tokens) pin automatically; *generic* detectors (entropy, generic-password patterns) only pin when corroborated by a second signal (file path, variable name, second detector) and otherwise log a shadow finding. Tier membership is decided by measured precision, not by tool default.\n3. Suppression is asymmetric: a lineage that is pinned loses embeddings and hashes for the *whole* lineage from that moment, including retroactive deletion of any embedding stored earlier in the same lineage.\n4. Scanner unavailability follows FND-004 as amended (fail-closed on pinned lineages, `unscanned` marker otherwise).",
+      "decision_sha256": "3964b96b71c615308fd7700cd7e37e217841da0a8fd278b4dae03b8f7b4fd8a0",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SAF-004",
+      "title": "Pinned sessions fail loudly, in the harness's dialect",
+      "path": "adr/SAF/ADRL-SAF-004.md",
+      "bucket_role": "Hard restrictions and safe execution",
+      "loop": "All loops constrain actions",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (the surfacing contract with the harness is untested; the no-cloud rule depends on FND-002's rung-closed fallback, also untested) |"
+      ],
+      "decision_text": "A pinned lineage cannot fall back or escalate to any cloud rung by any actor \u2014 ADRL, the gateway's fallback groups, or a retry \u2014 and unresolved failure is surfaced to the developer as a non-retried, harness-recognisable error that names the pin, the detector and the recovery options.\n\n1. *Non-retried* means the response uses a status and body the harness does not auto-retry (a 4xx with a stable `capability_rejected:`-style token or the vendor's own error wording), so the developer sees one clear failure rather than a retry storm or a silent stall.\n2. *Recovery options* are: continue locally with reduced context (developer-initiated `/compact`), the audited release path of SAF-002 sub-clause 3 where policy permits, or stop; the message must not suggest disabling ADRL.\n3. Within the local rung, escalation to a larger local model is permitted and is the preferred first recovery; a pinned lineage's fallback set in the gateway is the local rung only (FND-002 sub-clause 2).",
+      "decision_sha256": "7c15d84843d10fbc573da8a542ae5b4ccdce99bfac1bec1983ecc3e0b0db123d",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SAF-005",
+      "title": "Block, and make the block recoverable",
+      "path": "adr/SAF/ADRL-SAF-005.md",
+      "bucket_role": "Hard restrictions and safe execution",
+      "loop": "All loops constrain actions",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (blocking is tested; recoverability against the real harness is not, and the compaction deadlock has not been ruled out) |"
+      ],
+      "decision_text": "Privacy-context conflicts block instead of leaking data or silently truncating context, and the block is emitted in a form the harness recognises as a context-limit error so that its own compaction path is triggered; the local rung offered to pinned lineages must be able to hold the harness's compaction request.\n\n1. The block for \"pinned and larger than the local window\" carries the vendor's too-long error wording (or the `capability_rejected: prompt_too_long` token) so Claude Code auto-compacts and retries, rather than a gateway-worded error that leaves the developer to run `/compact` by hand.\n2. Because Claude Code's auto-compact threshold is clamped to no less than 100,000 tokens, the local rung's largest model must accept at least the harness's compaction window plus the compaction prompt overhead; if it cannot, the local rung is infeasible for pinned lineages by construction and the pin degrades to \"block every request\", which must be reported at rung-configuration time, not discovered by a developer.\n3. A block on a continuation is issued only at an action boundary (CAS-003): if a tool has executed and its result is the request being blocked, the block response tells the developer which tool ran so no side effect is hidden.\n4. ADRL never truncates, summarises, or drops blocks from a request on any rung; the only context reduction is the harness's own, triggered through its documented error path.",
+      "decision_sha256": "8fc3b92b4973be51a0ece342382d9c11f52cadbaeebe7ed53435a9c32d014b69",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SAF-006",
+      "title": "Infeasible rungs removed before optimisation",
+      "path": "adr/SAF/ADRL-SAF-006.md",
+      "bucket_role": "Hard restrictions and safe execution",
+      "loop": "All loops constrain actions",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 unchanged |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (correct; the feasibility estimator's tokenizer and budget assumptions need a measured error bound before D3) |"
+      ],
+      "decision_text": "Unhealthy or context-infeasible rungs are removed before optimisation.",
+      "decision_sha256": "6b31a4393438213ea15bcc94bcfaff8eaa2808b94d2ab0c5184d383639065be1",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SAF-007",
+      "title": "Verification runs sandboxed, then diffed",
+      "path": "adr/SAF/ADRL-SAF-007.md",
+      "bucket_role": "Hard restrictions and safe execution",
+      "loop": "All loops constrain actions",
+      "proposed_disposition": [
+        "Scope evidence infrastructure to trustworthy routing outcomes"
+      ],
+      "current_status_maturity": [
+        "| Status | Superseded 2026-09-02 (see replacement) |",
+        "| Maturity | D2 Tested, review recommends D1 Code for the post-hoc diff check that exists and D0 Design for the OS-enforced sandbox that the replacement requires; the D2 claim describes a detective control while the decision text describes a preventive one |"
+      ],
+      "decision_text": "Verification commands execute inside an OS-enforced sandbox with no network egress, read access limited to the repository snapshot, write access limited to a scratch directory, and protected paths denied at the kernel boundary; a post-execution diff of protected paths and task scope is recorded as evidence but is not the control.\n\n1. The sandbox reuses the harness's own runtime where available (Claude Code's Bash sandbox: Seatbelt on macOS, bubblewrap plus the optional seccomp filter on Linux/WSL2) with `allowUnsandboxedCommands: false`, an empty `network.allowedDomains`, `denyRead` on credential files and `denyWrite` outside the scratch tree; where the harness sandbox is unavailable, verification does not run and the outcome is labelled `unverifiable` (MEM-004), never \"verified\".\n2. Verification runs against a copy (worktree or snapshot) of the working tree at the action boundary, so that a test that mutates files cannot mutate the thing being measured; results are attached to the outcome under MEM-003's enrich-not-overwrite rule.\n3. The command set is an allow-list per repository (test runner, linter, type checker, build), not an arbitrary shell; the model's own proposed verification commands are never executed by ADRL's verifier.",
+      "decision_sha256": "222e0cc419ec265f1bd5d52cc00c8c8461fe6a7e847fc07bb162a2339cf25c3c",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SAF-008",
+      "title": "Repository and data-class gate (Proposed)",
+      "path": "adr/SAF/ADRL-SAF-008.md",
+      "bucket_role": "Hard restrictions and safe execution",
+      "loop": "All loops constrain actions",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-02 (new, from adversarial review) \u00b7 superseded in part by TRU-001 (identity) and TRU-002 (residency) on 2026-09-03, pending disposition; clause 3 (PII tier) remains a SAF control |",
+        "| Maturity | D0 Design, review recommends D0 Design (nothing built; the register itself lists \"data-residency constraints for specific repositories are not yet expressed as a gate\") |"
+      ],
+      "decision_text": "A static repository and data-class gate, evaluated from the working directory's classification before any content is scanned, sets the maximum permitted rung and residency constraint for a lineage: restricted repositories (PCI-scope, payments core, HSM/key-management, regulated-data services) are local-only from the first request; residency-tagged repositories are limited to cloud rungs whose gateway deployments are pinned to an approved geography; and PII detection is a distinct detector tier from secrets, with its own pin semantics.\n\n1. Classification source: a signed, versioned manifest (repository \u2192 class, residency, allowed rungs) owned by security, resolved from the harness's reported working directory / git remote at session start and re-resolved on any `cwd` change visible in the request (subagent `isolation: worktree`, `--add-dir`). Unknown repositories default to the organisation's default class, not to \"unrestricted\".\n2. Residency is enforced through FND-002's rung-closed contract: a residency-tagged lineage may only be served by gateway deployments tagged with a matching geographic inference profile; global cross-region profiles are excluded for such lineages.\n3. PII (customer names, PANs, account identifiers, addresses in logs or fixtures) is detected by a separate tier from secrets, because its precision/recall profile and its regulatory consequence differ; a PII finding pins to the *cloud-in-region or local* set rather than local-only, unless the repository class says otherwise.\n4. The gate is evaluated before the content scanner (SAF-003) and its result is a ceiling that content scanning can only lower.",
+      "decision_sha256": "8569a7babf22586cdfd2be3a19a1b17c0c3b49edccf93f72e5cd24404a424101",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SAF-009",
+      "title": "Egress ledger and gate-audit integrity (Proposed)",
+      "path": "adr/SAF/ADRL-SAF-009.md",
+      "bucket_role": "Hard restrictions and safe execution",
+      "loop": "All loops constrain actions",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-02 (new, from adversarial review) \u00b7 superseded by TRU-003 on 2026-09-03, pending disposition; schema and rules retained by reference |",
+        "| Maturity | D0 Design, review recommends D0 Design |"
+      ],
+      "decision_text": "Every request that leaves the machine, every gate verdict, every fail-open event, every pin, every audited release, and every operator bypass is recorded in an append-only, tamper-evident egress ledger that is separate from the routing-evidence ledger and survives its absence; the question \"did this lineage's content ever leave the machine, and under which verdict?\" is answerable from the egress ledger alone.\n\n1. *Separate and surviving*: the egress ledger is written by the gate stage before forwarding (write-ahead), is not behind MEM-006's fail-safe facade (a NullProvider for the *evidence* ledger must not silence the *egress* ledger), and a write failure on a pinned lineage is a gate failure (fail-closed per FND-004 as amended).\n2. *Tamper-evident*: entries are hash-chained (each entry commits to the previous entry's digest) with periodic signed checkpoints shipped off-device, so that deletion or edit of local entries is detectable by an auditor who holds only the checkpoints.\n3. *Content-free*: the ledger stores hashed session/lineage keys, request class, destination rung and deployment tag, gate verdicts with detector tier and span hashes, byte counts, and actor/reason for human actions; it never stores prompt content, embeddings or locating features (MEM-005 applies).\n4. *Complete for the ADRL path only*: harness traffic that bypasses `ANTHROPIC_BASE_URL` (telemetry, fast-mode and WebFetch safety checks) is outside this ledger's scope and is recorded as a known exclusion in the OPS egress baseline.",
+      "decision_sha256": "eddb0e6464b2ca083b7d89da31150cfb0b82c28336769d2cca623894ee742b39",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SEM-001",
+      "title": "Mechanical classification of request classes",
+      "path": "adr/SEM/ADRL-SEM-001.md",
+      "bucket_role": "Harness state and decision boundaries",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D3 Shadow, review recommends D3 Shadow (single-user corpus; pre-warm class and header-based signals must be added to the canary tests before D4) |"
+      ],
+      "decision_text": "Requests are mechanically classified, using request shape and the harness's wire headers, as user turns, continuations, utility calls, subagent requests, pre-warm requests, or passthrough traffic; every class is subject to the SAF gates, and classification is fail-safe to passthrough only for unpinned sessions.\n\n1. Mechanical signals include: the role and block types of the final message (`tool_result` \u21d2 continuation), `max_tokens`, system-prompt shape, tool-list shape, endpoint path (`/v1/messages/count_tokens` \u21d2 passthrough), and the `x-claude-code-session-id`, `x-claude-code-agent-id` and `x-claude-code-parent-agent-id` headers (agent-id present \u21d2 subagent lineage).\n2. Passthrough and utility requests carry conversation content (a `count_tokens` body is the full prompt; a compaction request is the full transcript) and are therefore *content-bearing*; the classifier labels every class with a content-bearing flag that SAF-002/SAF-003 consume.\n3. The taxonomy is for Anthropic-Messages-format traffic; Responses-format traffic (Codex CLI) is unclassified and out of scope until a separate corpus and discriminator exist.",
+      "decision_sha256": "d2ac5ebf83a76adbec4de1fee5bbe61c8b9eb6d2ba98a0320576bbef55982cce",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SEM-002",
+      "title": "Session key from wire headers, then metadata",
+      "path": "adr/SEM/ADRL-SEM-002.md",
+      "bucket_role": "Harness state and decision boundaries",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D3 Shadow, review recommends D3 Shadow for the key *derivation*; D1 for key *durability* (session\u2192route state is a single-process Python dict, so the key's meaning does not survive a proxy restart) |"
+      ],
+      "decision_text": "The session key is derived, in order of preference, from the `x-claude-code-session-id` header, then `metadata.user_id`, then a stable anonymous fallback; the key is combined with the agent lineage (`x-claude-code-agent-id`, or the parent's key when absent) to form the routing identity, is stored only as a keyed hash, and the fallback is scoped so that unrelated processes can never share routing or privacy state.\n\n1. The stable anonymous fallback is derived from the client connection identity (peer address and port, plus process-local salt) and is valid only for the lifetime of that connection; two connections never share a fallback key.\n2. `metadata.user_id` is treated as opaque and possibly user-level rather than session-level; when it is the only key available, the session boundary is additionally cut on any change of system-prompt prefix or on a `count_tokens`/pre-warm burst that indicates a new conversation.\n3. The raw header or metadata value is never written to the ledger; a keyed hash (HMAC with a per-deployment secret) is, so that the ledger cannot be joined back to a person without the key.",
+      "decision_sha256": "107c610a9e87f80425253e45acba6fe9a85fe228ca3d1c524177dd0222a96466",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SEM-003",
+      "title": "Continuations inherit the sticky route",
+      "path": "adr/SEM/ADRL-SEM-003.md",
+      "bucket_role": "Harness state and decision boundaries",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Clarify initial versus safe-boundary decisions"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 unchanged |",
+        "| Maturity | D2 Tested, review recommends D3 Shadow \u2014 the Phase 0 cache-hit measurement on real traffic is shadow-grade evidence for exactly this rule, and the register under-claims |"
+      ],
+      "decision_text": "Continuations inherit the sticky route and do not trigger a fresh difficulty decision.",
+      "decision_sha256": "349f61c605ea6e2ff4b8b449b2217c7d1e323a74f817d2fb47492824fe891ff9",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SEM-004",
+      "title": "Utility calls split by content exposure",
+      "path": "adr/SEM/ADRL-SEM-004.md",
+      "bucket_role": "Harness state and decision boundaries",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D3 Shadow, review recommends D2 Tested \u2014 the corpus finding (utility calls run on Opus/Sonnet with tiny budgets) contradicts the design assumption the decision was written under, and the split introduced here is untested |"
+      ],
+      "decision_text": "Cosmetic utility calls (session title, next-command suggestion, topic detection) may use a small local model; context-bearing utility calls (compaction and any request whose output re-enters the transcript) inherit the session's rung and gate state; protocol and unknown calls pass through unchanged subject to SAF gates.\n\n1. A utility call is *cosmetic* when its output is displayed to the developer or consumed by ADRL but never fed back into a model context; it is *context-bearing* when its output becomes part of a later request (compaction summaries, generated system reminders).\n2. On a privacy-pinned session every utility call, cosmetic or not, is served locally or dropped; a cosmetic call that cannot be served locally is answered with an empty-but-valid response rather than forwarded.\n3. Utility calls are fingerprinted by request shape (system-prompt template, `max_tokens`, absence of the harness tool list), not by requested model name.",
+      "decision_sha256": "7919dafcd357669f2904b046aa44d0550dfafad814698465aef36a63119a9e6a",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SEM-005",
+      "title": "Episode boundaries, enumerated and measured",
+      "path": "adr/SEM/ADRL-SEM-005.md",
+      "bucket_role": "Harness state and decision boundaries",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D2 Tested, review recommends D2 Tested (correct; but the decision is unfalsifiable until boundary precision/recall is measured in shadow \u2014 see follow-ups) |"
+      ],
+      "decision_text": "Episode boundaries are conservative semantic events, drawn from an enumerated signal list, that may release escalation hysteresis and nothing else; every candidate boundary is logged with its signal so that boundary precision and release rate are measurable.\n\n1. Enumerated signals, in decreasing confidence: new session key (SEM-002); harness `/clear`; the harness's own topic-detection call returning a new-topic verdict *and* the next user turn referencing no open tool state; a user turn following a completed verification (tests passed, MEM-002 `closed_turn`) that names a different file set. Compaction alone is not a boundary.\n2. A boundary releases the escalation ratchet (CAS-005) only; it never releases a privacy pin (SAF-002), never resets the SAF gate state, and never resets the session key.\n3. Two shadow metrics gate any tightening or loosening of the signal list: *false-boundary rate* (boundaries followed within N turns by a trip-wire escalation back to the prior rung) and *release rate* (fraction of escalated sessions that ever come back down).",
+      "decision_sha256": "5b351a5d52bf44ee82bd497281edd542bf751e3b01503100dbd2a1119e4d9734",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SEM-006",
+      "title": "Subagents inherit constraints now, routing later",
+      "path": "adr/SEM/ADRL-SEM-006.md",
+      "bucket_role": "Harness state and decision boundaries",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Accepted \u00b7 amended 2026-09-02 |",
+        "| Maturity | D0 Design, review recommends D0 for routing identity and evidence separation, but requires the constraint-inheritance half to reach D2 *before* any live pilot \u2014 because the current interim (passthrough) violates SAF-002 for forked subagents |"
+      ],
+      "decision_text": "Subagents are linked to the parent for constraints but have separate routing identity and evidence; the interim position is *constrained passthrough*: subagent requests inherit the parent's privacy pin and gate state immediately, keep the model the harness requested, and are shadow-logged under their own agent lineage.\n\n1. Lineage is taken from `x-claude-code-agent-id` and `x-claude-code-parent-agent-id`; the pin and gate state of a subagent is the union of its own gate results and its ancestors' at spawn time and thereafter (a child pinning does not pin the parent; a parent pinning pins all descendants from that moment).\n2. Until Q3 is resolved, ADRL does not choose a rung for subagents: the harness's per-subagent model selection (`model:` frontmatter, `CLAUDE_CODE_SUBAGENT_MODEL`, or inherit) is honoured, except that a pinned lineage is served locally or blocked per SAF-004/005.\n3. Every subagent request is recorded with its own `route_id` and lineage so that outcomes are never attributed to the parent's turn; nested escalation is a separate decision (CAS, Proposed).",
+      "decision_sha256": "1bfc9e04bf49042215e48357667ae53dd91cf4e5233693f90dd69d6d74b70e3f",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-SEM-007",
+      "title": "Protocol profiles (Proposed)",
+      "path": "adr/SEM/ADRL-SEM-007.md",
+      "bucket_role": "Harness state and decision boundaries",
+      "loop": "During-task loop",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (new, from external review) |",
+        "| Maturity | D2 for the Messages boundary and local services, plus one bounded live observation pilot (2026-09-07). Full cross-protocol contract remains incomplete, D0 for the second profile; no general D3/D4 graduation or live gateway validation |"
+      ],
+      "decision_text": "Every wire format ADRL accepts is a named, versioned protocol profile that defines its request classes, turn and boundary signals, identity headers, content-bearing rules, error shapes and handoff rules; profile `anthropic-messages-v1` is the Anthropic Messages API with the six request classes of SEM-001, and no other format (in particular the OpenAI Responses API spoken by Codex CLI) enters scope until it has its own profile with an adapter, a mechanical discriminator and a captured corpus.\n\n1. *Profile contents*: request-class discriminator (SEM-001), user-turn and action-boundary definitions (FND-003, CAS-003), session and lineage identity sources (SEM-002, SEM-006), utility fingerprints (SEM-004), content-bearing rule per class, protocol-conformant error shapes (SAF-004, CAS-007), and the provider-pair handoff rules the profile participates in (CAS-004). Each is versioned with the profile.\n2. *No branch without a profile*: a discriminator, classifier or rewrite may not gain a code path for a second format; the second format is a second profile selected by endpoint path and headers before classification.\n3. *Responses API prerequisites*: a `openai-responses-v1` profile requires, before Proposed status: a mapping of input and output item types to request classes; a state model for `previous_response_id` and server-side conversation state; handling of reasoning items (encrypted, same-family only); tool output items as the boundary signal; compaction semantics; and a scrubbed corpus of at least the SEM-001 fixture set.\n4. *Cross-profile handoff* is forbidden until both profiles are at D2 and CAS-004 carries a pair rule for them.",
+      "decision_sha256": "3e889bb1431ed349b468a37e0cce9457da82e130ee853fe2610bfbd948088f81",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-TRU-001",
+      "title": "Authenticated workload identity (Proposed)",
+      "path": "adr/TRU/ADRL-TRU-001.md",
+      "bucket_role": "Authenticated identity and permitted destinations",
+      "loop": "All loops constrain access",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (new, from external review) |",
+        "| Maturity | D0 Design, review recommends D0 Design (the 2026-09-02 implementation resolves identity from prompt text, which this decision forbids) |"
+      ],
+      "decision_text": "The repository and data-class identity of a lineage is established by a trusted launcher assertion tied to the organisation's SCM inventory and corroborated by a content fingerprint of the checkout; it is never derived from the system prompt, from CLAUDE.md paths, or from tool inputs or results, and a lineage whose identity is unknown or uncorroborated is local-only until an assertion arrives.\n\n1. *Assertion*: the process that launches the harness (a wrapper, a devcontainer hook, or a managed-device agent, chosen by OPS) resolves the checkout to an SCM inventory record (repository id, default remote, classification manifest entry) and hands ADRL a signed assertion bound to the harness process and session key (SEM-002). The assertion carries the classification manifest version it was resolved against.\n2. *Corroboration*: ADRL computes a content fingerprint of the checkout (a keyed digest over a manifest-declared set of files, for example the root manifest and lockfile) and compares it to the fingerprint the inventory holds; a mismatch is a `classification_conflict` lineage event and the stricter of the two classes applies.\n3. *Unknown is local-only*: absent an assertion, or with an assertion whose signature or manifest version cannot be verified, the lineage's ceiling is the local rung (TRU-002) and the egress ledger records `identity_unknown`. This replaces SAF-008's \"organisation default class\".\n4. *Prompt text is evidence, never authority*: working directories, remotes and paths observed in prompt or tool text may be recorded (keyed, per MEM-005) as corroborating evidence and may only tighten the ceiling (a restricted path prefix seen in a tool input tightens as before); they may never widen it or establish identity.\n5. *Re-assertion on scope change*: a change of working directory visible to the launcher (`--add-dir`, worktree isolation for subagents) produces a new assertion; a child lineage without its own assertion inherits the parent's identity and ceiling (SEM-006).\n6. The PII detector tier of SAF-008 clause 3 is unchanged and remains a SAF content control.",
+      "decision_sha256": "c4da49d031b034054c6174abb944d031cbfaade1c861b5826a18122f4c73169b",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-TRU-002",
+      "title": "Permitted deployment set (Proposed)",
+      "path": "adr/TRU/ADRL-TRU-002.md",
+      "bucket_role": "Authenticated identity and permitted destinations",
+      "loop": "All loops constrain access",
+      "proposed_disposition": [
+        "Qualify deployment capabilities and transition edges"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (new, from external review) |",
+        "| Maturity | D0 Design, review recommends D0 Design (the 2026-09-02 implementation tightens a set of rung labels; nothing compares a deployment's geography or host to policy) |"
+      ],
+      "decision_text": "The object that the gates tighten and that routing chooses from is the permitted deployment set: a subset of a signed, versioned endpoint inventory in which every entry names a deployment id, its rung, provider, `api_base`, trust zone, geography and data-use profile; a rung is the economic tier of a deployment, not a security boundary, and no policy, pin, residency rule or fallback may be expressed in terms of a rung alone.\n\n1. *Inventory*: `deployment-inventory-v1` is signed by security and shared with the gateway generator (FND-002). An entry is `{deployment_id, rung, provider, api_base, trust_zone, geo, data_use_profile, evidence_ref}`. A `local` rung entry must have a loopback or unix-socket `api_base` and `trust_zone: local_host`; the configuration checker rejects any other local entry.\n2. *Tightening*: TRU-001 identity, residency, the SAF-002 pin and SAF-006 feasibility each remove deployments, never rungs: a pin removes every deployment whose `trust_zone` is not `local_host`; a residency tag removes every deployment whose `geo` does not match; a data-class restriction removes every deployment whose `data_use_profile` is not approved for the class. The set is monotone within a lineage (SAF-001).\n3. *Gateway contract*: the gateway generator emits one model group per deployment and fallback groups only within the permitted-set-closed subsets that ADRL names per request (a pinned lineage's group contains only `local_host` deployments); alias fallback lists must be subsets of the inventory. This replaces \"rung-closed\" in FND-002 and RTG-008 with \"deployment-set-closed\".\n4. *Receipt*: every dispatch yields a served-deployment receipt (`deployment_id`, provider, `api_base` host, `geo`, `trust_zone`, source in {gateway_reported, proxy_observed, assumed_intended}) recorded on the outcome row (CAS-006) and in the egress ledger (TRU-003). An `assumed_intended` receipt on a pinned or residency-tagged lineage is a gate failure for the next request until a reported receipt arrives.\n5. *Routing inside the set*: RTG chooses among the permitted deployments by rung economics (RTG-002, RTG-009); cost and cache identity are keyed by deployment id, because caches and signatures are per endpoint.",
+      "decision_sha256": "945dc5c43ab73aeef13048660982ee50b346f9620d9428a8b5bee7bc66c951ea",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    },
+    {
+      "id": "ADRL-TRU-003",
+      "title": "Egress anchoring (Proposed)",
+      "path": "adr/TRU/ADRL-TRU-003.md",
+      "bucket_role": "Authenticated identity and permitted destinations",
+      "loop": "All loops constrain access",
+      "proposed_disposition": [
+        "Retain current contract; implement/qualify within its existing scope"
+      ],
+      "current_status_maturity": [
+        "| Status | Proposed 2026-09-03 (new, from external review) |",
+        "| Maturity | D0 Design, review recommends D0 Design (the 2026-09-02 implementation has a hash chain, a manual checkpoint method signed with the development manifest key, and a verifier that ignores signatures) |"
+      ],
+      "decision_text": "The egress ledger of SAF-009 is anchored outside the developer's machine and outside every key the developer's machine holds: checkpoints are produced automatically every N entries or T minutes, signed under a checkpoint key that is separate from the manifest and identity keys and is provisioned by OPS, shipped to an off-device anchor that returns an acknowledgement recorded in the ledger, and verified by a tool that checks signatures and anchors, not only the hash chain; development keys are refused unless a development flag is set; and the answer to \"did this lineage's content leave the machine?\" is computed from served-deployment receipts (TRU-002), never from a rung name.\n\n1. *Separate key*: the checkpoint signing key is distinct from the manifest-signing key and from any HMAC or session key; its private half is provisioned per device by OPS and is never in the repository. A key with a development marker is accepted only when `ADRL_DEV_KEYS=1`, and the ledger records that the process ran with development keys.\n2. *Automatic checkpoints*: every `egress_checkpoint_every` entries or `egress_checkpoint_seconds`, whichever first, and at clean shutdown. A missed checkpoint window is a `checkpoint_overdue` telemetry event.\n3. *Off-device anchoring*: each checkpoint is shipped to the anchor endpoint (Q7: the gateway may host it) and the acknowledgement (anchor id, timestamp, signature) is appended; shipments queue offline and an unacknowledged backlog over a bound is an OPS alert, not a block.\n4. *Verifier*: `adrl audit verify` checks chain integrity, checkpoint signatures against the externally pinned public key, and anchor acknowledgements; it reports the last anchored sequence so an auditor knows which suffix is unanchored.\n5. *Receipt-based answer*: `lineage_left_machine` and `adrl audit --lineage` consult the served-deployment receipt's `trust_zone` and `api_base` host, not `destination_rung`.\n6. SAF-009's schema, write-ahead rule, content-free rule and scope exclusion are retained unchanged.",
+      "decision_sha256": "747aa140b9ffd2af35eb628db8114c46759e4bb658713a58f7c72f2b6e51a50d",
+      "assessment_scope": "Planning ownership map; no new maturity or scientific verdict"
+    }
+  ]
+}

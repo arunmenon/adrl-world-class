@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "date": "2026-09-07",
+  "local_links_checked": 193,
+  "broken_links": [],
+  "decisions": 77,
+  "unique_index_rows": 77,
+  "prior_adr_text_preserved": 5,
+  "tested_applied_files_verified": 15,
+  "runtime_tests": 511,
+  "live_tool_events_reconciled": 18,
+  "task_tests_independently_passed": 8,
+  "learning_labels_created": 0,
+  "general_maturity_promotion": false
+}

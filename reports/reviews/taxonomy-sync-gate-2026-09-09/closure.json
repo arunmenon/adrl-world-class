@@ -1,0 +1,150 @@
+{
+  "wave": "taxonomy-sync-gate",
+  "date": "2026-09-09",
+  "changes": {
+    "R:adr/FND/ADRL-FND-005.md": {
+      "before": "1c7ce24cca5fd0ed81daf260db74d7fe3034fd7fe5e0af241b6432bf9fcfdca7",
+      "after": "75e8a531d87a75a331a819aebf6869d6293cff48f2ed06f28d1830c58c86f220"
+    },
+    "R:tools/check_taxonomy_sync.py": {
+      "before": null,
+      "after": "50c4b2069b0c78b66f2875eb8b3c8c7ed34fa2bbefdacfbecacefebcbc4b1dfc"
+    },
+    "R:tests/test_taxonomy_sync.py": {
+      "before": null,
+      "after": "9a8f311cdfa079cd7c57543c2b68d0885efdc0a806e07c162d427b82d9c35052"
+    },
+    "R:adr/FND/README.md": {
+      "before": "ad911297a0416094f57bd7b6de3661a82d9e48cba46187a1d480254d6404022a",
+      "after": "923d0137c307386150dfd63aca5e137d972ca77ea823531963264b6504758e8e"
+    },
+    "R:adr/EVL/README.md": {
+      "before": "9dea3252b690eae35b0260909f2fbc2b31a47994d4f5f8609dccc8cb47d9487a",
+      "after": "3e6e9daaa017eaa7abd786392eaed2a51fcc962af284ebe96ee2877e3ba23b5d"
+    },
+    "R:skills/adrl-taxonomy-sync/SKILL.md": {
+      "before": null,
+      "after": "4f4e92e45638783430779ebc210192e5e259a4f109448ad9c9f7c44aa30fccf0"
+    },
+    "R:AGENTS.md": {
+      "before": "da8e1b91b73598408bb6ef9c4fa58038383715a210cf76f8466c6003a50e454b",
+      "after": "31ac03ab41a5f37a9de1835885d10c85a718622c25afef647e6880ba639c7c16"
+    },
+    "R:INDEX.md": {
+      "before": "54cf107c505837ba6e4f778827342af31853ec19cc433e850cb2f5f249be59bf",
+      "after": "bc52e3e52ea2458df1583e11f3710656e1c024e75dad181f144c009a1feec60f"
+    },
+    "R:CHANGELOG.md": {
+      "before": "6ead9fb3c5de2bbba9a0d33ef9a1d62a5bb51e5ec5e1165d0b6b787f8b2431fd",
+      "after": "72b1971ef6da97c9807633d2bfb026dd2247baf3bcdbcd50eeccd5db7f2312d5"
+    },
+    "C:AGENTS.md": {
+      "before": "b5fd37e36c52874192a3e87966822cd0d7ea0ef789a3e47e9fc9f9bc3120a490",
+      "after": "6e7c1dac3fe6db3449d78c27b27d622d99f4e7557acd52e078aafdf927feabbb"
+    },
+    "R:adr/EVL/ADRL-EVL-009.md": {
+      "before": "dfff5f80f6ecbf0cb3212728090fc1fa180f23d25cfd3ec0f9939dd9875d191e",
+      "after": "e4ae2bc4352e1569800d1ff148f44e0768e7ec8adc2678d59bf4e7076029b56f"
+    },
+    "R:reports/adrl-wave-execution-template.md": {
+      "before": "f2fe0d1b54545c8a98c9536e22b801304d33d1e2fdb0758eead4c335c24adbea",
+      "after": "f41c69e2c6c828022e3f119bca5d9ec56304dbf424215f99cf0ad11f2be62eb9"
+    }
+  },
+  "file_owners": {
+    "C:AGENTS.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:AGENTS.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:reports/adrl-wave-execution-template.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:skills/adrl-taxonomy-sync/SKILL.md": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:tests/test_taxonomy_sync.py": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "R:tools/check_taxonomy_sync.py": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ]
+  },
+  "owners": [
+    {
+      "id": "ADRL-FND-005",
+      "kind": "workflow",
+      "summary": "Local checked implementation/register closure",
+      "limitations": "Declared scope; reviewer attestations; not remote CI or full historical maturity reconciliation",
+      "fields": {
+        "Status": "Accepted \u00b7 unchanged",
+        "Maturity": "D3 Shadow, review recommends D3 Shadow with a note: the D-scale measures runtime behaviour and fits a governance commitment poorly; the honest reading is \"the readiness tooling runs against shadow data and its verdicts have so far been respected\"",
+        "Review verdict": "APPROVE"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/report.md",
+          "sha256": "f1ce11be7c7d41768fdae07d7646acb5791ee37b727da780b4cb035d37379946"
+        },
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/tests.log",
+          "sha256": "c011a622d79cc19626662f8dbf62148a308506a7a06e0b508aff1eac594c4563"
+        },
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/provenance-recheck.json",
+          "sha256": "1a67e1b11943d001dee0077cf032d21b5296ffa7e1c923e871b357c35184c92a"
+        }
+      ]
+    },
+    {
+      "id": "ADRL-EVL-009",
+      "kind": "workflow",
+      "summary": "Local checked implementation/register closure",
+      "limitations": "Declared scope; reviewer attestations; not remote CI or full historical maturity reconciliation",
+      "fields": {
+        "Status": "Proposed 2026-09-03 (first capture; referenced by the overview, MEM-006, MEM-010, LRN-006 since 2026-08-27)",
+        "Maturity": "D1 Code; adrl-core `learning/readiness.py` and `ledger/readiness.py` list blockers by name and never fold them into a score; the blocker list itself is not yet pre-registered",
+        "Review verdict": "PROPOSED (new)"
+      },
+      "evidence": [
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/report.md",
+          "sha256": "f1ce11be7c7d41768fdae07d7646acb5791ee37b727da780b4cb035d37379946"
+        },
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/tests.log",
+          "sha256": "c011a622d79cc19626662f8dbf62148a308506a7a06e0b508aff1eac594c4563"
+        },
+        {
+          "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/provenance-recheck.json",
+          "sha256": "1a67e1b11943d001dee0077cf032d21b5296ffa7e1c923e871b357c35184c92a"
+        }
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Claude Fable 5.1",
+    "covered_adrs": [
+      "ADRL-FND-005",
+      "ADRL-EVL-009"
+    ],
+    "blocking_findings": [],
+    "record": {
+      "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/recheck.md",
+      "sha256": "39d997effda082a71252d04de82e2416c53c9710afb71f5e69e688465ea65769"
+    },
+    "inputs": {
+      "path": "reports/reviews/taxonomy-sync-gate-2026-09-09/recheck-source-hashes.json",
+      "sha256": "bc1e3317e9e81053967d15acb230710f66ae8ac12c1935dd7dc63c8d9c8e4011"
+    },
+    "session_id": "798c9531-67b1-491a-822f-5d66cba4fbb3"
+  }
+}

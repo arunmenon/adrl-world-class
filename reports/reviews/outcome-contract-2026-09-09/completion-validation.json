@@ -1,0 +1,11 @@
+{
+  "runtime_hashes_match": 324,
+  "all_77_status_maturity_fields_unchanged": true,
+  "index_unique_ADRs": 77,
+  "link_files_checked": 16,
+  "broken_links": [],
+  "all_three_completed_review_responses_report_fable_5_1": true,
+  "reviewer_tests_executed": false,
+  "checks": "checks-2/manifest.json",
+  "scope": "RV-01 only"
+}

@@ -1,0 +1,17 @@
+# Outcome contract repair: pre-wave packet
+
+9 September 2026. User authorized proceeding with repair and Claude Fable critique. Scope: RV-01 only, plus immediately necessary failure-label preservation. Product P1/P2 prerequisite; owning MEM-001, MEM-002, MEM-004 and CAS-007 (terminal outcomes). LRN-001 is a downstream limitation, not newly qualified learning.
+
+Problem hypothesis: cascade persists state-valued event types while the existing outcome consumers require event_type=outcome and payload.state. Existing tests fabricate consumer-shaped rows rather than connect producer and consumer.
+
+Proposed minimal repair: make all cascade pending/closed_turn producers use the existing canonical outcome constructor/contract, retaining producer sequence, route attribution, existing diagnostic metadata and failure causes. Verify the proxy forwarding path preserves this contract, including when the cascade writes directly. Do not add a second event dialect or change routing selection. Preserve unknown success as unknown, not failure or success. Terminal infrastructure failures must not become task-capability labels.
+
+Tests before and after: composed offline proxy/cascade/store produces pending and closed_turn on two user turns; existing Closer sees the earlier closed turn and, when explicitly invoked at a time beyond the configured idle window, appends closed_final once; projection, labeler/readiness can see it but no verified success/T1 is invented. Include terminal upstream failure and direct cascade/fallback persistence paths where feasible. Assertions should read persisted rows, not manufacture outcome events. Record a failing before test. Run focused then all eleven engineering checks with no engine allowances.
+
+Compatibility: append-only historical rows are not rewritten or promoted. Old state-valued rows stay unreadable by canonical lifecycle unless a separately reviewed replay/migration is added; document that limit prominently. No database migration or live traffic exposure in this slice. Current fixture tests may need assertion changes only where they explicitly assert the obsolete producer dialect; preserve old failure evidence.
+
+Excluded: RV-02 selector, RV-03/04 lab admission/portability, RV-05 health refresh, RV-06 corrections, verifier precision calibration, v2 learning contract, subjective tasks, graph, additional harnesses, real-model runs, engines, activation of a background closer, grade promotion. Repairing this edge is not the whole learning loop. Existing CLI closing/label projection is the explicitly invoked consumer for this test, not an automatic service claim.
+
+Acceptance: persisted composed outcome transitions are visible to canonical consumers, idle closure is idempotent, terminal cause is retained, wire and permission behavior remains unchanged; engineering checks pass; Fable post-review has no unresolved material blocker for this scope. Keep other retrospective blockers open. Up to two correction/review rounds. No commits, deployments, automatic scheduler restart or paid API substitution.
+
+Review request: independently challenge this plan using snapshot C/src/adrl/cascade/controller.py, proxy/pipeline.py, ledger/events.py, outcomes.py, labels.py, readiness.py and existing integration tests plus R/adr/MEM/* and CAS-007. Return blockers, minimal scope corrections, missing tests and a scoped verdict. Do not implement. The supplied handoff contains external session context; recommendations there are not new user authority.

@@ -1,0 +1,30 @@
+{
+  "settings_keys": [
+    {
+      "path": "/Users/arunmenon/.claude/settings.json",
+      "keys": [
+        "agentPushNotifEnabled",
+        "autoMode",
+        "effortLevel",
+        "enabledPlugins",
+        "env",
+        "extraKnownMarketplaces",
+        "model",
+        "modelSettings",
+        "permissions",
+        "skipAutoPermissionPrompt",
+        "skipDangerousModePermissionPrompt",
+        "skipWorkflowUsageWarning",
+        "theme",
+        "tui",
+        "voice",
+        "voiceEnabled"
+      ]
+    }
+  ],
+  "customizations": "disabled via safe-mode",
+  "mcp": "disabled via strict-mcp-config",
+  "tools": "none",
+  "env_credential_overrides_present": [],
+  "model": "claude-fable-5-1"
+}

@@ -1,0 +1,343 @@
+{
+  "schema_version": "verifier-experiment-input-bundle-v1",
+  "evidence_family": "curated_synthetic",
+  "authorship": "The same assistant designed the candidate and these visible fixtures. These are operator-reviewed known examples, not an independent blind holdout.",
+  "base_files": {
+    "run_tests.py": "import unittest\nsuite = unittest.TestSuite()\nfor pattern in (\"test_config_loader.py\", \"test_templates.py\", \"test_template_compatibility.py\"):\n    suite.addTests(unittest.TestLoader().discover(\"tests\", pattern=pattern))\nresult = unittest.TextTestRunner(verbosity=2).run(suite)\nraise SystemExit(not result.wasSuccessful())\n",
+    "TASK.md": "# P01 revision 2: Correct the reviewed template fix\n\nThe first fix passes four existing tests but changes renderer compatibility: escaped braces now substitute accidentally and format specifiers remain unrendered. Correct the implementation while fixing the literal JSON examples in the two supplied templates.\n\nPreserve Python str.format behavior for valid templates, including escaped braces, format specifiers, and missing-variable errors. The new compatibility tests record these requirements. Keep all eight tests and their assertions unchanged. Work only in this directory. Do not modify the external Python environment or call a model service from this application.\n\nUse exactly the documented test command in CLAUDE.md. Run it before editing and after editing. Report the result and explain your change. This is a repair run with new feedback and a stronger verifier, not a matched comparison against the earlier baseline.\n",
+    "CLAUDE.md": "# Pilot working copy\n\nThis is an isolated subset of dataset-validator for a single coding experiment.\nOnly this working directory is the target. The original repository and ADRL service are outside the task.\nRead TASK.md. Preserve existing tests and their assertions. Do not install dependencies or call an LLM service from this code.\nRun tests with:\n\nPYTHONDONTWRITEBYTECODE=1 /Users/arunmenon/projects/adrl-core/.venv/bin/python run_tests.py\n\nThe external Python environment already contains the required Pydantic and PyYAML packages. Do not modify it.\n",
+    "config/datasets.yaml": "datasets:\n  intent_v1:\n    task_type: intent\n    validators: [schema, rules, dedup, rubric_llm, jury]\n    batch_size: 512\n    jury_score_band: [3.0, 3.8]\n    decision_policy:\n      min_keep_score: 3.8\n      min_review_score: 3.0\n      disagreement_low: 0.5\n      disagreement_high: 1.5\n    judge_persona: strict_intent\n    jury_personas: [strict_intent, diverse_intent]\n\n  qa_v1:\n    task_type: qa\n    validators: [schema, rules, dedup, rubric_llm, jury]\n    batch_size: 256\n    jury_score_band: [3.0, 3.8]\n    decision_policy:\n      min_keep_score: 3.8\n      min_review_score: 3.0\n      disagreement_low: 0.5\n      disagreement_high: 1.5\n    judge_persona: qa_grounded\n    jury_personas: [qa_grounded, comparative]\n\n  extraction_v1:\n    task_type: extraction\n    validators: [schema, rules, dedup, rubric_llm]\n    batch_size: 256\n    decision_policy:\n      min_keep_score: 3.8\n      min_review_score: 3.0\n      disagreement_low: 0.5\n      disagreement_high: 1.5\n\n",
+    "tests/test_config_loader.py": "import unittest\nfrom pathlib import Path\n\nfrom validation.core.config_loader import ConfigLoader\n\n\nclass TestConfigLoader(unittest.TestCase):\n    def setUp(self) -> None:\n        self.datasets_path = Path(\"config/datasets.yaml\")\n        self.rubrics_dir = Path(\"config/rubrics\")\n        self.loader = ConfigLoader(self.datasets_path, self.rubrics_dir)\n\n    def test_load_dataset(self) -> None:\n        cfg = self.loader.get_dataset(\"intent_v1\")\n        self.assertEqual(cfg.task_type, \"intent\")\n        self.assertIn(\"rubric_llm\", cfg.validators)\n        self.assertEqual(cfg.judge_persona, \"strict_intent\")\n\n    def test_load_rubric(self) -> None:\n        rubric = self.loader.get_rubric(\"qa\")\n        self.assertEqual(rubric.task_type, \"qa\")\n        self.assertIn(\"correctness\", rubric.dimensions)\n        self.assertGreater(rubric.thresholds.keep_min, rubric.thresholds.review_min)\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n",
+    "tests/test_templates.py": "import unittest\nfrom pathlib import Path\n\nfrom validation.core.templates import PromptTemplateLoader\n\n\nclass TestTemplates(unittest.TestCase):\n    def setUp(self) -> None:\n        self.loader = PromptTemplateLoader(Path(\"validation/prompts\"))\n        self.vars = {\n            \"task_type\": \"intent\",\n            \"dimensions_block\": \"- correctness (weight 0.5): match\\n- clarity (weight 0.5): clear\",\n            \"scale_min\": 0,\n            \"scale_max\": 5,\n            \"threshold_keep\": 3.8,\n            \"threshold_review\": 3.0,\n            \"input_prompt\": \"Book me a flight\",\n            \"context_json\": \"{}\",\n            \"output_text\": \"intent=book_flight\",\n            \"annotations_json\": \"{}\",\n        }\n\n    def test_strict_template_renders(self) -> None:\n        out = self.loader.render(\"strict_json_generic.txt\", self.vars)\n        self.assertIn(\"Task type: intent\", out)\n        self.assertIn(\"Respond with JSON ONLY\", out)\n        self.assertIn(\"Book me a flight\", out)\n        self.assertIn(\"intent=book_flight\", out)\n\n    def test_cot_template_renders(self) -> None:\n        out = self.loader.render(\"cot_rubric_generic.txt\", self.vars)\n        self.assertIn(\"[Hidden reasoning\", out)\n        self.assertIn(\"overall_score\", out)\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n",
+    "tests/test_template_compatibility.py": "import tempfile\nimport unittest\nfrom pathlib import Path\nfrom validation.core.templates import PromptTemplateLoader\n\nclass TestTemplateCompatibility(unittest.TestCase):\n    def render(self, text, values):\n        with tempfile.TemporaryDirectory() as directory:\n            root = Path(directory)\n            (root / 'fixture.txt').write_text(text)\n            return PromptTemplateLoader(root).render('fixture.txt', values)\n\n    def test_escaped_braces_stay_literal(self):\n        self.assertEqual(self.render('Literal {{task_type}}', {'task_type': 'intent'}), 'Literal {task_type}')\n\n    def test_format_specifier_is_honored(self):\n        self.assertEqual(self.render('Score: {score:.1f}', {'score': 3.14}), 'Score: 3.1')\n\n    def test_missing_formatted_variable_raises(self):\n        with self.assertRaises(KeyError):\n            self.render('Score: {absent:.1f}', {})\n\n    def test_simple_missing_variable_raises(self):\n        with self.assertRaises(KeyError):\n            self.render('{absent}', {})\n",
+    "config/rubrics/qa.yaml": "task_type: qa\ndimensions:\n  correctness:\n    weight: 0.4\n    description: \"Factually correct wrt prompt/context.\"\n  relevance:\n    weight: 0.2\n    description: \"On-topic; no hallucinations.\"\n  clarity:\n    weight: 0.2\n    description: \"Clear and understandable.\"\n  style:\n    weight: 0.1\n    description: \"Follows style/tone instructions.\"\n  annotation_quality:\n    weight: 0.1\n    description: \"Labels/annotations consistent.\"\nscoring:\n  scale_min: 0\n  scale_max: 5\n  thresholds:\n    keep_min: 3.8\n    review_min: 3.0\n",
+    "validation/core/config_loader.py": "\"\"\"Config loader for datasets and rubrics.\"\"\"\n\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass\nfrom functools import lru_cache\nfrom pathlib import Path\nfrom typing import Any, Dict, Optional\n\nimport yaml\n\nfrom validation.core.rubrics import DatasetDecisionPolicy, RubricConfig\n\n\n@dataclass(frozen=True)\nclass DatasetConfig:\n    name: str\n    task_type: str\n    validators: list[str]\n    batch_size: int\n    jury_score_band: Optional[tuple[float, float]]\n    decision_policy: DatasetDecisionPolicy\n    judge_persona: Optional[str] = None\n    jury_personas: Optional[list[str]] = None\n\n\nclass ConfigLoader:\n    \"\"\"Loads dataset configs and task rubrics from YAML.\"\"\"\n\n    def __init__(self, datasets_path: Path, rubrics_dir: Path):\n        self.datasets_path = datasets_path\n        self.rubrics_dir = rubrics_dir\n\n    @lru_cache(maxsize=None)\n    def get_dataset(self, dataset_name: str) -> DatasetConfig:\n        data = yaml.safe_load(self.datasets_path.read_text())\n        datasets = data.get(\"datasets\", {})\n        if dataset_name not in datasets:\n            raise KeyError(f\"dataset {dataset_name} not found in {self.datasets_path}\")\n        cfg: Dict[str, Any] = datasets[dataset_name]\n        policy = cfg.get(\"decision_policy\", {})\n        jury_band = cfg.get(\"jury_score_band\")\n        return DatasetConfig(\n            name=dataset_name,\n            task_type=cfg.get(\"task_type\", \"generic\"),\n            validators=cfg.get(\"validators\", []),\n            batch_size=int(cfg.get(\"batch_size\", 256)),\n            jury_score_band=tuple(jury_band) if jury_band else None,\n            decision_policy=DatasetDecisionPolicy(\n                min_keep_score=float(policy.get(\"min_keep_score\", policy.get(\"keep_min\", 3.8))),\n                min_review_score=float(policy.get(\"min_review_score\", policy.get(\"review_min\", 3.0))),\n                disagreement_low=float(policy.get(\"disagreement_low\", 0.5)),\n                disagreement_high=float(policy.get(\"disagreement_high\", 1.5)),\n            ),\n            judge_persona=cfg.get(\"judge_persona\"),\n            jury_personas=cfg.get(\"jury_personas\"),\n        )\n\n    @lru_cache(maxsize=None)\n    def get_rubric(self, task_type: str) -> RubricConfig:\n        path = self.rubrics_dir / f\"{task_type}.yaml\"\n        if not path.exists():\n            raise FileNotFoundError(f\"rubric for task_type {task_type} not found at {path}\")\n        return RubricConfig.from_file(path)\n",
+    "validation/core/templates.py": "\"\"\"Prompt template loader.\"\"\"\n\nfrom __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Dict\n\n\nclass PromptTemplateLoader:\n    \"\"\"Loads text templates from a directory and renders variable placeholders.\"\"\"\n\n    def __init__(self, base_dir: Path) -> None:\n        self.base_dir = base_dir\n\n    def render(self, name: str, variables: Dict[str, object]) -> str:\n        path = self.base_dir / name\n        if not path.exists():\n            raise FileNotFoundError(f\"Prompt template not found: {path}\")\n        template = path.read_text()\n        return template.format(**variables)\n\n",
+    "validation/core/rubrics.py": "\"\"\"Rubric models and loader.\"\"\"\n\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any, Dict, Mapping\n\nimport yaml\nfrom pydantic import BaseModel, validator\n\n\nclass RubricDimension(BaseModel):\n    weight: float\n    description: str = \"\"\n\n\nclass RubricThresholds(BaseModel):\n    keep_min: float\n    review_min: float\n\n    @validator(\"keep_min\")\n    def _keep_min_ge_review(cls, v, values):\n        review_min = values.get(\"review_min\", 0.0)\n        if v < review_min:\n            raise ValueError(\"keep_min must be >= review_min\")\n        return v\n\n\nclass RubricConfig(BaseModel):\n    task_type: str\n    dimensions: Dict[str, RubricDimension]\n    scoring: Dict[str, Any]\n    thresholds: RubricThresholds\n    scale_min: float\n    scale_max: float\n\n    @validator(\"scale_max\")\n    def _scale_max_gt_min(cls, v, values):\n        if v <= values.get(\"scale_min\", 0):\n            raise ValueError(\"scale_max must be greater than scale_min\")\n        return v\n\n    @classmethod\n    def from_file(cls, path: Path) -> \"RubricConfig\":\n        data = yaml.safe_load(path.read_text())\n        scoring = data.get(\"scoring\", {})\n        thresholds = scoring.get(\"thresholds\", {})\n        return cls(\n            task_type=data[\"task_type\"],\n            dimensions=data[\"dimensions\"],\n            scoring=scoring,\n            thresholds=RubricThresholds(\n                keep_min=thresholds.get(\"keep_min\", scoring.get(\"keep_min\", 0)),\n                review_min=thresholds.get(\"review_min\", scoring.get(\"review_min\", 0)),\n            ),\n            scale_min=scoring.get(\"scale_min\", scoring.get(\"scale_minimum\", 0)),\n            scale_max=scoring.get(\"scale_max\", scoring.get(\"scale_maximum\", 5)),\n        )\n\n\n@dataclass(frozen=True)\nclass DatasetDecisionPolicy:\n    min_keep_score: float\n    min_review_score: float\n    disagreement_low: float = 0.5\n    disagreement_high: float = 1.5\n\n\n__all__ = [\"RubricConfig\", \"RubricDimension\", \"RubricThresholds\", \"DatasetDecisionPolicy\"]\n",
+    "validation/prompts/cot_rubric_generic.txt": "You are a careful grader. First think silently, then output JSON ONLY.\n\n[Hidden reasoning, do not include in final JSON]:\n- Inspect each dimension, note issues briefly.\n- Consider context and annotations.\n\nNow output JSON ONLY with keys:\n{{\n  \"dimensions\": {{ \"<dimension_name>\": {{ \"score\": float, \"justification\": str }} }},\n  \"overall_score\": float,\n  \"verdict\": \"keep\"|\"review\"|\"drop\",\n  \"notes\": str\n}}\n\nTask type: {task_type}\nRubric dimensions:\n{dimensions_block}\nScore scale: {scale_min} to {scale_max}. Thresholds: keep >= {threshold_keep}, review >= {threshold_review}.\n\nExample:\nInput prompt: {input_prompt}\nContext: {context_json}\nOutput: {output_text}\nAnnotations: {annotations_json}\n",
+    "validation/prompts/strict_json_generic.txt": "You are a strict grader. Respond with JSON ONLY.\n\nEvaluate the example.\nTask type: {task_type}\nRubric dimensions:\n{dimensions_block}\nScore scale: {scale_min} to {scale_max}. Thresholds: keep >= {threshold_keep}, review >= {threshold_review}.\n\nReturn JSON ONLY with keys:\n{{\n  \"dimensions\": {{ \"<dimension_name>\": {{ \"score\": float, \"justification\": str }} }},\n  \"overall_score\": float,\n  \"verdict\": \"keep\"|\"review\"|\"drop\",\n  \"notes\": str\n}}\n\nExample:\nInput prompt: {input_prompt}\nContext: {context_json}\nOutput: {output_text}\nAnnotations: {annotations_json}\n"
+  },
+  "cases": [
+    {
+      "case_id": "correct_original",
+      "expected": "passed",
+      "rationale": "Current repaired implementation retains Python formatting and the required literal JSON schema.",
+      "overrides": {},
+      "removed": []
+    },
+    {
+      "case_id": "correct_equivalent",
+      "expected": "passed",
+      "rationale": "Equivalent implementation for this task contract; changing implementation style must not cause rejection.",
+      "overrides": {
+        "validation/core/templates.py": "\"\"\"Prompt template loader.\"\"\"\n\nfrom __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Dict\n\n\nclass PromptTemplateLoader:\n    \"\"\"Loads text templates from a directory and renders variable placeholders.\"\"\"\n\n    def __init__(self, base_dir: Path) -> None:\n        self.base_dir = base_dir\n\n    def render(self, name: str, variables: Dict[str, object]) -> str:\n        path = self.base_dir / name\n        if not path.exists():\n            raise FileNotFoundError(f\"Prompt template not found: {path}\")\n        template = path.read_text()\n        return template.format_map(variables)\n\n"
+      },
+      "removed": []
+    },
+    {
+      "case_id": "defect_escaped_braces",
+      "expected": "failed",
+      "rationale": "Violates the task requirement that escaped braces remain literal. Already detected by baseline.",
+      "overrides": {
+        "validation/core/templates.py": "\"\"\"Prompt template loader.\"\"\"\n\nfrom __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Dict\n\n\nclass PromptTemplateLoader:\n    \"\"\"Loads text templates from a directory and renders variable placeholders.\"\"\"\n\n    def __init__(self, base_dir: Path) -> None:\n        self.base_dir = base_dir\n\n    def render(self, name: str, variables: Dict[str, object]) -> str:\n        path = self.base_dir / name\n        if not path.exists():\n            raise FileNotFoundError(f\"Prompt template not found: {path}\")\n        template = path.read_text()\n        return template.format(**variables).replace(\"{task_type}\", str(variables.get(\"task_type\", \"\")))\n\n"
+      },
+      "removed": []
+    },
+    {
+      "case_id": "defect_repr_conversion",
+      "expected": "failed",
+      "rationale": "Violates preserved str.format conversion semantics: repr of hello must include quotes.",
+      "overrides": {
+        "validation/core/templates.py": "\"\"\"Prompt template loader.\"\"\"\n\nfrom __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Dict\n\n\nclass PromptTemplateLoader:\n    \"\"\"Loads text templates from a directory and renders variable placeholders.\"\"\"\n\n    def __init__(self, base_dir: Path) -> None:\n        self.base_dir = base_dir\n\n    def render(self, name: str, variables: Dict[str, object]) -> str:\n        path = self.base_dir / name\n        if not path.exists():\n            raise FileNotFoundError(f\"Prompt template not found: {path}\")\n        template = path.read_text()\n        return template.replace(\"!r}\", \"!s}\").format(**variables)\n\n"
+      },
+      "removed": []
+    },
+    {
+      "case_id": "defect_indexed_lookup",
+      "expected": "failed",
+      "rationale": "Violates preserved str.format indexing semantics: field selects a dictionary member, not the whole dictionary.",
+      "overrides": {
+        "validation/core/templates.py": "\"\"\"Prompt template loader.\"\"\"\n\nfrom __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Dict\n\n\nclass PromptTemplateLoader:\n    \"\"\"Loads text templates from a directory and renders variable placeholders.\"\"\"\n\n    def __init__(self, base_dir: Path) -> None:\n        self.base_dir = base_dir\n\n    def render(self, name: str, variables: Dict[str, object]) -> str:\n        path = self.base_dir / name\n        if not path.exists():\n            raise FileNotFoundError(f\"Prompt template not found: {path}\")\n        template = path.read_text()\n        return template.replace(\"{scores[first]}\", \"{scores}\").format(**variables)\n\n"
+      },
+      "removed": []
+    },
+    {
+      "case_id": "defect_json_schema",
+      "expected": "failed",
+      "rationale": "Changes the required literal JSON output-schema key while preserving strings checked by the baseline.",
+      "overrides": {
+        "validation/prompts/strict_json_generic.txt": "You are a strict grader. Respond with JSON ONLY.\n\nEvaluate the example.\nTask type: {task_type}\nRubric dimensions:\n{dimensions_block}\nScore scale: {scale_min} to {scale_max}. Thresholds: keep >= {threshold_keep}, review >= {threshold_review}.\n\nReturn JSON ONLY with keys:\n{{\n  \"dimension_scores\": {{ \"<dimension_name>\": {{ \"score\": float, \"justification\": str }} }},\n  \"overall_score\": float,\n  \"verdict\": \"keep\"|\"review\"|\"drop\",\n  \"notes\": str\n}}\n\nExample:\nInput prompt: {input_prompt}\nContext: {context_json}\nOutput: {output_text}\nAnnotations: {annotations_json}\n"
+      },
+      "removed": []
+    },
+    {
+      "case_id": "environment_missing_config",
+      "expected": "indeterminate",
+      "rationale": "Configuration is absent from the prepared environment; setup errors must not be labelled as assertion failures.",
+      "overrides": {},
+      "removed": [
+        "config/datasets.yaml"
+      ]
+    }
+  ],
+  "verifier_artifact_contents": {
+    "run.py": "import importlib.util, os, sys, unittest\nfrom pathlib import Path\nsys.path.insert(0, os.getcwd())\nname = sys.argv[1]\nexpected = int(sys.argv[2])\npath = Path(__file__).parent / name\nspec = importlib.util.spec_from_file_location(\"operator_checks\", path)\ntry:\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    suite = unittest.TestLoader().loadTestsFromModule(module)\n    if suite.countTestCases() != expected:\n        raise RuntimeError(\"Unexpected check count\")\n    result = unittest.TextTestRunner(verbosity=2).run(suite)\nexcept Exception:\n    raise SystemExit(2)\nif result.errors or result.skipped or result.expectedFailures or result.unexpectedSuccesses:\n    raise SystemExit(2)\nraise SystemExit(1 if result.failures else 0)\n",
+    "test_config_loader.py": "import unittest\nfrom pathlib import Path\n\nfrom validation.core.config_loader import ConfigLoader\n\n\nclass TestConfigLoader(unittest.TestCase):\n    def setUp(self) -> None:\n        self.datasets_path = Path(\"config/datasets.yaml\")\n        self.rubrics_dir = Path(\"config/rubrics\")\n        self.loader = ConfigLoader(self.datasets_path, self.rubrics_dir)\n\n    def test_load_dataset(self) -> None:\n        cfg = self.loader.get_dataset(\"intent_v1\")\n        self.assertEqual(cfg.task_type, \"intent\")\n        self.assertIn(\"rubric_llm\", cfg.validators)\n        self.assertEqual(cfg.judge_persona, \"strict_intent\")\n\n    def test_load_rubric(self) -> None:\n        rubric = self.loader.get_rubric(\"qa\")\n        self.assertEqual(rubric.task_type, \"qa\")\n        self.assertIn(\"correctness\", rubric.dimensions)\n        self.assertGreater(rubric.thresholds.keep_min, rubric.thresholds.review_min)\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n",
+    "test_templates.py": "import unittest\nfrom pathlib import Path\n\nfrom validation.core.templates import PromptTemplateLoader\n\n\nclass TestTemplates(unittest.TestCase):\n    def setUp(self) -> None:\n        self.loader = PromptTemplateLoader(Path(\"validation/prompts\"))\n        self.vars = {\n            \"task_type\": \"intent\",\n            \"dimensions_block\": \"- correctness (weight 0.5): match\\n- clarity (weight 0.5): clear\",\n            \"scale_min\": 0,\n            \"scale_max\": 5,\n            \"threshold_keep\": 3.8,\n            \"threshold_review\": 3.0,\n            \"input_prompt\": \"Book me a flight\",\n            \"context_json\": \"{}\",\n            \"output_text\": \"intent=book_flight\",\n            \"annotations_json\": \"{}\",\n        }\n\n    def test_strict_template_renders(self) -> None:\n        out = self.loader.render(\"strict_json_generic.txt\", self.vars)\n        self.assertIn(\"Task type: intent\", out)\n        self.assertIn(\"Respond with JSON ONLY\", out)\n        self.assertIn(\"Book me a flight\", out)\n        self.assertIn(\"intent=book_flight\", out)\n\n    def test_cot_template_renders(self) -> None:\n        out = self.loader.render(\"cot_rubric_generic.txt\", self.vars)\n        self.assertIn(\"[Hidden reasoning\", out)\n        self.assertIn(\"overall_score\", out)\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n",
+    "test_template_compatibility.py": "import tempfile\nimport unittest\nfrom pathlib import Path\nfrom validation.core.templates import PromptTemplateLoader\n\nclass TestTemplateCompatibility(unittest.TestCase):\n    def render(self, text, values):\n        with tempfile.TemporaryDirectory() as directory:\n            root = Path(directory)\n            (root / 'fixture.txt').write_text(text)\n            return PromptTemplateLoader(root).render('fixture.txt', values)\n\n    def test_escaped_braces_stay_literal(self):\n        self.assertEqual(self.render('Literal {{task_type}}', {'task_type': 'intent'}), 'Literal {task_type}')\n\n    def test_format_specifier_is_honored(self):\n        self.assertEqual(self.render('Score: {score:.1f}', {'score': 3.14}), 'Score: 3.1')\n\n    def test_missing_formatted_variable_raises(self):\n        with self.assertRaises(KeyError):\n            self.render('Score: {absent:.1f}', {})\n\n    def test_simple_missing_variable_raises(self):\n        with self.assertRaises(KeyError):\n            self.render('{absent}', {})\n",
+    "test_formatting_requirements.py": "import tempfile\nimport unittest\nfrom pathlib import Path\nfrom validation.core.templates import PromptTemplateLoader\n\nclass TestFormattingRequirements(unittest.TestCase):\n    def render(self, text, values):\n        with tempfile.TemporaryDirectory() as directory:\n            root = Path(directory)\n            (root / 'fixture.txt').write_text(text)\n            return PromptTemplateLoader(root).render('fixture.txt', values)\n\n    def test_repr_conversion(self):\n        self.assertEqual(self.render('Value: {value!r}', {'value': 'hello'}), \"Value: 'hello'\")\n\n    def test_indexed_lookup(self):\n        self.assertEqual(self.render('Score: {scores[first]}', {'scores': {'first': 0.75}}), 'Score: 0.75')\n\n    def test_supplied_json_schema_keys_survive_rendering(self):\n        values = dict(task_type='intent', dimensions_block='correctness', scale_min=0, scale_max=5,\n                      threshold_keep=3.8, threshold_review=3.0, input_prompt='Book me a flight',\n                      context_json='{}', output_text='intent=book_flight', annotations_json='{}')\n        rendered = PromptTemplateLoader(Path('validation/prompts')).render('strict_json_generic.txt', values)\n        self.assertIn('\"dimensions\": { \"<dimension_name>\": { \"score\": float, \"justification\": str } },', rendered)\n"
+  },
+  "suite": {
+    "schema_version": "verifier-assessment-v1",
+    "suite": {
+      "id": "template-verifier-fixtures",
+      "version": "1"
+    },
+    "evidence_family": "curated_synthetic",
+    "limits": {
+      "max_files": 10000,
+      "max_bytes": 100000000
+    },
+    "cases": [
+      {
+        "case_id": "correct_original",
+        "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/correct_original",
+        "snapshot_sha256": "45995d3254b28e9345fff4aafb37a01887b65429e38cc17c670784814f71558b",
+        "expected": "passed"
+      },
+      {
+        "case_id": "correct_equivalent",
+        "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/correct_equivalent",
+        "snapshot_sha256": "eb4cb19ad5c0177bd219c518a89eeb7a9c6239881043d7918875c80bf3b8b80f",
+        "expected": "passed"
+      },
+      {
+        "case_id": "defect_escaped_braces",
+        "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/defect_escaped_braces",
+        "snapshot_sha256": "dd71cf8e1e36f90a6378e358aaef87d16bcc773989861555cb855af4f3c05826",
+        "expected": "failed"
+      },
+      {
+        "case_id": "defect_repr_conversion",
+        "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/defect_repr_conversion",
+        "snapshot_sha256": "78937605c3a8411c32a7e8d13c4cce2c87152e85056a712ab14d044e7da9616d",
+        "expected": "failed"
+      },
+      {
+        "case_id": "defect_indexed_lookup",
+        "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/defect_indexed_lookup",
+        "snapshot_sha256": "5a2f43e1beaed7e06d64d2b36a16fb227f597da55136c1ca7bdad2efd6c2bc8a",
+        "expected": "failed"
+      },
+      {
+        "case_id": "defect_json_schema",
+        "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/defect_json_schema",
+        "snapshot_sha256": "224535665068ac5fc629d156ff2363837a3c47b507489b4cdec31be233100ba2",
+        "expected": "failed"
+      },
+      {
+        "case_id": "environment_missing_config",
+        "workspace": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/cases/environment_missing_config",
+        "snapshot_sha256": "293fdacb5b28c3f1b56bfe81f80fa37626ae18a13e017add79b363d270b549a7",
+        "expected": "indeterminate"
+      }
+    ]
+  },
+  "proposal": {
+    "schema_version": "verifier-proposal-v1",
+    "proposal": {
+      "id": "template-verifier-coverage",
+      "version": "1"
+    },
+    "parent_ref": "dataset-validator-acceptance-v2",
+    "proposer": {
+      "id": "assistant-reviewed-proposal",
+      "version": "2026-09-07"
+    },
+    "hypothesis": "Add checks for repr conversion, indexed lookup and preservation of literal JSON schema keys. Detect at least three additional known defects while retaining correct and environment-error classifications.",
+    "affected_adrs": [
+      "ADRL-MEM-003",
+      "ADRL-LRN-005",
+      "ADRL-LRN-007",
+      "ADRL-EVL-006"
+    ],
+    "change_scope": "verifier",
+    "suite_sha256": "204b5938fbd07be3a79c4fb1c47e13f2a9238c2fb8fc05b23e2754429286c6b4",
+    "baseline": {
+      "max_files": 10000,
+      "max_bytes": 100000000,
+      "schema_version": "session-verifier-plan-v1",
+      "verifier": {
+        "id": "dataset-validator-acceptance",
+        "version": "2"
+      },
+      "task_ref": "p01-template-repair-r2",
+      "checks": [
+        {
+          "name": "test_config_loader",
+          "argv": [
+            "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+            "-I",
+            "-B",
+            ".adrl-verifier/run.py",
+            "test_config_loader.py",
+            "2"
+          ],
+          "timeout_s": 30.0,
+          "failure_exit_codes": [
+            1
+          ]
+        },
+        {
+          "name": "test_templates",
+          "argv": [
+            "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+            "-I",
+            "-B",
+            ".adrl-verifier/run.py",
+            "test_templates.py",
+            "2"
+          ],
+          "timeout_s": 30.0,
+          "failure_exit_codes": [
+            1
+          ]
+        },
+        {
+          "name": "test_template_compatibility",
+          "argv": [
+            "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+            "-I",
+            "-B",
+            ".adrl-verifier/run.py",
+            "test_template_compatibility.py",
+            "4"
+          ],
+          "timeout_s": 30.0,
+          "failure_exit_codes": [
+            1
+          ]
+        }
+      ],
+      "artifacts": {
+        "run.py": {
+          "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/run.py",
+          "sha256": "5387d40e618b3ce93332fb2c038193ca032b9fe4180b63a9c7b39ebf0d854ea0"
+        },
+        "test_config_loader.py": {
+          "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_config_loader.py",
+          "sha256": "14735bc63cae7c558e5bbfccc76d92ec5aa5de68a8e547eea453444ebbfdb1cc"
+        },
+        "test_templates.py": {
+          "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_templates.py",
+          "sha256": "a3604b062ec97ccf3213b85a90eaff48d84e97ed563981b1c35685306441d7fc"
+        },
+        "test_template_compatibility.py": {
+          "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_template_compatibility.py",
+          "sha256": "8e49445a81b2e71a8ead3b5fa08411fb6916636ecc011d88ae06887fbd714334"
+        }
+      }
+    },
+    "candidate": {
+      "max_files": 10000,
+      "max_bytes": 100000000,
+      "schema_version": "session-verifier-plan-v1",
+      "verifier": {
+        "id": "dataset-validator-acceptance",
+        "version": "3-proposed"
+      },
+      "task_ref": "p01-template-repair-r2",
+      "checks": [
+        {
+          "name": "test_config_loader",
+          "argv": [
+            "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+            "-I",
+            "-B",
+            ".adrl-verifier/run.py",
+            "test_config_loader.py",
+            "2"
+          ],
+          "timeout_s": 30.0,
+          "failure_exit_codes": [
+            1
+          ]
+        },
+        {
+          "name": "test_templates",
+          "argv": [
+            "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+            "-I",
+            "-B",
+            ".adrl-verifier/run.py",
+            "test_templates.py",
+            "2"
+          ],
+          "timeout_s": 30.0,
+          "failure_exit_codes": [
+            1
+          ]
+        },
+        {
+          "name": "test_template_compatibility",
+          "argv": [
+            "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+            "-I",
+            "-B",
+            ".adrl-verifier/run.py",
+            "test_template_compatibility.py",
+            "4"
+          ],
+          "timeout_s": 30.0,
+          "failure_exit_codes": [
+            1
+          ]
+        },
+        {
+          "name": "test_formatting_requirements",
+          "argv": [
+            "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+            "-I",
+            "-B",
+            ".adrl-verifier/run.py",
+            "test_formatting_requirements.py",
+            "3"
+          ],
+          "timeout_s": 30.0,
+          "failure_exit_codes": [
+            1
+          ]
+        }
+      ],
+      "artifacts": {
+        "run.py": {
+          "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/run.py",
+          "sha256": "5387d40e618b3ce93332fb2c038193ca032b9fe4180b63a9c7b39ebf0d854ea0"
+        },
+        "test_config_loader.py": {
+          "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_config_loader.py",
+          "sha256": "14735bc63cae7c558e5bbfccc76d92ec5aa5de68a8e547eea453444ebbfdb1cc"
+        },
+        "test_templates.py": {
+          "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_templates.py",
+          "sha256": "a3604b062ec97ccf3213b85a90eaff48d84e97ed563981b1c35685306441d7fc"
+        },
+        "test_template_compatibility.py": {
+          "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_template_compatibility.py",
+          "sha256": "8e49445a81b2e71a8ead3b5fa08411fb6916636ecc011d88ae06887fbd714334"
+        },
+        "test_formatting_requirements.py": {
+          "path": "/private/tmp/adrl-improvement-msnln60g/work/../experiment/checks/test_formatting_requirements.py",
+          "sha256": "edecdd80c5621a74f0fda838c309041dc5e242acf1d9ab6bc222a8deeec71057"
+        }
+      }
+    },
+    "repeats": 2,
+    "min_additional_correct": 3,
+    "budget": {
+      "max_commands": 98,
+      "max_declared_timeout_s": 2940.0
+    }
+  },
+  "reproduction": "Recreate base files plus per-case overrides/removals in separate local directories, with files mode 0644. Recreate verifier artifacts outside cases. Replace absolute case, artifact and Python executable paths; retain content hashes, recompute canonical suite digest, then pin that digest in the proposal. The relocated proposal is a new local invocation; do not silently replace the archived original."
+}

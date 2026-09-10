@@ -1,0 +1,3725 @@
+--- /dev/null
++++ b/src/adrl/api/__init__.py
+@@ -0,0 +1 @@
++"""Product API contracts. Primary: ADRL-FND-001. Secondary: ADRL-SEM-007."""
+--- /dev/null
++++ b/src/adrl/api/contracts.py
+@@ -0,0 +1,237 @@
++"""Versioned product records. Primary: ADRL-SEM-007. Secondary: ADRL-MEM-001, ADRL-TRU-001.
++
++Preview schemas do not implement authorization, durable ingestion or session issuance.
++Only capability discovery is served today. Reject unknown fields rather than accepting
++caller-supplied authority or arbitrary content as event metadata.
++"""
++
++from __future__ import annotations
++
++from typing import Annotated, Final, Literal
++from uuid import UUID
++
++from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, RootModel, StringConstraints
++
++SCHEMA_VERSION: Final = "adrl-api-v1-preview.1"
++OpaqueId = Annotated[str, StringConstraints(pattern=r"^[A-Za-z0-9_.:-]{1,128}$")]
++SequenceNumber = Annotated[int, Field(strict=True, ge=0)]
++
++
++class ApiRecord(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++
++
++class VersionRef(ApiRecord):
++    id: OpaqueId
++    version: OpaqueId
++
++
++class ProfileCapability(ApiRecord):
++    profile: VersionRef
++    endpoints: tuple[str, ...]
++    transport: Literal["http"]
++    validation: Literal["offline_fixtures", "real_harness"]
++
++
++class AdapterCapability(ApiRecord):
++    adapter: VersionRef
++    identity: Literal["correlation_only", "authenticated_binding"]
++    tool_events: Literal["not_implemented", "implemented"]
++    tested_harness_versions: tuple[str, ...]
++
++
++class Capabilities(ApiRecord):
++    schema_version: Literal["adrl-api-v1-preview.1"] = SCHEMA_VERSION
++    scope: Literal["distribution"] = "distribution"
++    profiles: tuple[ProfileCapability, ...]
++    adapters: tuple[AdapterCapability, ...]
++    effective_enforcement: Literal["requires_session_and_runtime_checks"]
++    unclassified_traffic: Literal["legacy_forwarding_without_profile_guarantees"]
++    product_operations: tuple[str, ...]
++
++
++class SessionRequest(ApiRecord):
++    schema_version: Literal["adrl-api-v1-preview.1"] = SCHEMA_VERSION
++    adapter: VersionRef
++    profile: VersionRef
++    workload_ref: OpaqueId
++    parent_session_id: OpaqueId | None = None
++
++
++class CoverageFact(ApiRecord):
++    dimension: Literal[
++        "request_interception",
++        "identity_binding",
++        "content_inspection",
++        "dispatch_enforcement",
++        "tool_events",
++        "lineage",
++        "served_destination",
++        "outcome_verification",
++    ]
++    status: Literal["enforced", "observed", "unavailable", "unknown"]
++    evidence_ref: OpaqueId | None = None
++
++
++class SessionStatus(ApiRecord):
++    schema_version: Literal["adrl-api-v1-preview.1"] = SCHEMA_VERSION
++    session_id: OpaqueId
++    workload_ref: OpaqueId
++    policy: VersionRef
++    adapter: VersionRef
++    profile: VersionRef
++    parent_session_id: OpaqueId | None = None
++    coverage: tuple[CoverageFact, ...]
++
++
++class SessionBinding(ApiRecord):
++    session: SessionStatus
++    credential_ref: OpaqueId
++    expires_at: AwareDatetime
++
++
++class EventBase(ApiRecord):
++    schema_version: Literal["adrl-api-v1-preview.1"] = SCHEMA_VERSION
++    event_id: UUID
++    session_id: OpaqueId
++    route_id: OpaqueId | None = None
++    producer_seq: SequenceNumber
++    occurred_at: AwareDatetime
++
++
++class ToolResult(ApiRecord):
++    tool_call_ref: OpaqueId
++    outcome: Literal["completed", "failed", "cancelled", "unknown"]
++    output_ref: OpaqueId | None = None
++
++
++class ToolEvent(EventBase):
++    event_type: Literal["tool.completed"]
++    payload: ToolResult
++
++
++class TaskClosure(ApiRecord):
++    task_ref: OpaqueId
++    reported_outcome: Literal["accepted", "failed", "abandoned", "unknown"]
++
++
++class ClosureEvent(EventBase):
++    event_type: Literal["session.closed"]
++    payload: TaskClosure
++
++
++class CompactionResult(ApiRecord):
++    before_state_ref: OpaqueId
++    after_state_ref: OpaqueId
++
++
++class CompactionEvent(EventBase):
++    event_type: Literal["session.compacted"]
++    payload: CompactionResult
++
++
++class VerificationResult(ApiRecord):
++    task_ref: OpaqueId
++    snapshot_ref: OpaqueId
++    verifier: VersionRef
++    result: Literal["passed", "failed", "indeterminate"]
++    evidence_ref: OpaqueId
++
++
++class VerificationEvent(EventBase):
++    event_type: Literal["verification.completed"]
++    payload: VerificationResult
++
++
++class EventRequest(
++    RootModel[
++        Annotated[
++            ToolEvent | ClosureEvent | CompactionEvent | VerificationEvent,
++            Field(discriminator="event_type"),
++        ]
++    ]
++):
++    """Producer identity is derived from authentication, never from these claims."""
++
++
++class EventAcknowledgement(ApiRecord):
++    event_id: UUID
++    producer_id: OpaqueId
++    recorded_at: AwareDatetime
++    ledger_sequence: SequenceNumber
++    status: Literal["recorded", "duplicate"]
++
++
++class ProductError(ApiRecord):
++    code: Literal[
++        "not_implemented",
++        "unauthenticated",
++        "forbidden",
++        "unsupported_capability",
++        "event_conflict",
++        "temporarily_unavailable",
++        "invalid_request",
++    ]
++    message: str
++
++
++class TimelineEntry(ApiRecord):
++    ledger_sequence: SequenceNumber
++    record_ref: OpaqueId
++    route_id: OpaqueId | None = None
++    kind: Literal["decision", "dispatch", "observation", "verification", "correction"]
++    evidence_ref: OpaqueId
++
++
++class TimelinePage(ApiRecord):
++    session_id: OpaqueId
++    entries: tuple[TimelineEntry, ...]
++    next_cursor: OpaqueId | None = None
++
++
++class DispatchEvidence(ApiRecord):
++    attempt_id: OpaqueId
++    intended_deployment_ref: OpaqueId
++    served_deployment_ref: OpaqueId | None = None
++    confidence: Literal["unknown", "assumed_intended", "model_reported", "gateway_reported"]
++    evidence_ref: OpaqueId
++
++
++class DecisionExplanation(ApiRecord):
++    route_id: OpaqueId
++    session_id: OpaqueId
++    policy: VersionRef
++    profile: VersionRef
++    adapter: VersionRef
++    reason_codes: tuple[OpaqueId, ...]
++    attempts: tuple[DispatchEvidence, ...]
++
++
++def distribution_capabilities() -> Capabilities:
++    """Describe shipped code; this is not a runtime policy or provider-health attestation."""
++    from adrl.wire.adapters import ClaudeCodeAdapter
++    from adrl.wire.profiles.messages import MessagesProfile
++
++    profile = MessagesProfile()
++    adapter = ClaudeCodeAdapter()
++    return Capabilities(
++        profiles=(
++            ProfileCapability(
++                profile=VersionRef(id=profile.profile_id, version=profile.version),
++                endpoints=profile.endpoints,
++                transport="http",
++                validation="offline_fixtures",
++            ),
++        ),
++        adapters=(
++            AdapterCapability(
++                adapter=VersionRef(id=adapter.adapter_id, version=adapter.version),
++                identity="correlation_only",
++                tool_events="not_implemented",
++                tested_harness_versions=(),
++            ),
++        ),
++        effective_enforcement="requires_session_and_runtime_checks",
++        unclassified_traffic="legacy_forwarding_without_profile_guarantees",
++        product_operations=("GET /adrl/v1/capabilities",),
++    )
+--- /dev/null
++++ b/src/adrl/api/schema.py
+@@ -0,0 +1,178 @@
++"""Export the product API preview. Primary: ADRL-SEM-007. Secondary: ADRL-FND-001."""
++
++from __future__ import annotations
++
++from typing import Any
++
++from pydantic import BaseModel
++from pydantic.json_schema import models_json_schema
++
++from adrl.api.contracts import (
++    SCHEMA_VERSION,
++    Capabilities,
++    DecisionExplanation,
++    EventAcknowledgement,
++    EventRequest,
++    ProductError,
++    SessionBinding,
++    SessionRequest,
++    SessionStatus,
++    TimelinePage,
++)
++
++
++def openapi_document() -> dict[str, Any]:
++    """Export executable schemas without implying that planned operations have handlers."""
++    models: tuple[type[BaseModel], ...] = (
++        Capabilities,
++        SessionRequest,
++        SessionBinding,
++        SessionStatus,
++        EventRequest,
++        EventAcknowledgement,
++        ProductError,
++        TimelinePage,
++        DecisionExplanation,
++    )
++    _, definitions = models_json_schema(
++        [(model, "validation") for model in models], ref_template="#/components/schemas/{model}"
++    )
++
++    def response(name: str, description: str) -> dict[str, Any]:
++        return {
++            "description": description,
++            "content": {"application/json": {"schema": {"$ref": f"#/components/schemas/{name}"}}},
++        }
++
++    def operation(
++        name: str,
++        result: str,
++        *,
++        body: str | None = None,
++        implemented: bool = False,
++        parameter: str | None = None,
++        pagination: bool = False,
++    ) -> dict[str, Any]:
++        item: dict[str, Any] = {
++            "operationId": name,
++            "x-adrl-implementation": "implemented" if implemented else "planned",
++            "security": [] if implemented else [{"adrlWorkload": []}],
++            "responses": {"200": response(result, "Success")},
++        }
++        if not implemented:
++            item["description"] = (
++                "Schema preview only. The current runtime returns 501 and performs no operation. "
++                "Future handlers must enforce workload and producer authority."
++            )
++            for status, description in {
++                "400": "Invalid request",
++                "401": "Unauthenticated",
++                "403": "Forbidden",
++                "409": "Conflicting event identity",
++                "422": "Unsupported capability",
++                "501": "Not implemented",
++                "503": "Temporarily unavailable",
++            }.items():
++                item["responses"][status] = response("ProductError", description)
++        if body:
++            item["requestBody"] = {
++                "required": True,
++                "content": {
++                    "application/json": {"schema": {"$ref": f"#/components/schemas/{body}"}}
++                },
++            }
++        parameters: list[dict[str, Any]] = []
++        if parameter:
++            parameters.append(
++                {
++                    "name": parameter,
++                    "in": "path",
++                    "required": True,
++                    "schema": {"type": "string", "minLength": 1},
++                }
++            )
++        if pagination:
++            parameters.extend(
++                [
++                    {"name": "cursor", "in": "query", "schema": {"type": "string"}},
++                    {
++                        "name": "limit",
++                        "in": "query",
++                        "schema": {
++                            "type": "integer",
++                            "minimum": 1,
++                            "maximum": 100,
++                            "default": 50,
++                        },
++                    },
++                ]
++            )
++        if parameters:
++            item["parameters"] = parameters
++        return item
++
++    return {
++        "openapi": "3.1.0",
++        "info": {
++            "title": "ADRL product API preview",
++            "version": SCHEMA_VERSION,
++            "description": "Only capability discovery is implemented. Native model APIs "
++            "are defined by their protocol profiles, not translated into this schema.",
++        },
++        "paths": {
++            "/adrl/v1/capabilities": {
++                "get": operation(
++                    "getCapabilities",
++                    "Capabilities",
++                    implemented=True,
++                )
++            },
++            "/adrl/v1/sessions": {
++                "post": operation(
++                    "bindSession",
++                    "SessionBinding",
++                    body="SessionRequest",
++                )
++            },
++            "/adrl/v1/sessions/{session_id}": {
++                "get": operation(
++                    "getSession",
++                    "SessionStatus",
++                    parameter="session_id",
++                )
++            },
++            "/adrl/v1/events": {
++                "post": operation(
++                    "appendEvent",
++                    "EventAcknowledgement",
++                    body="EventRequest",
++                )
++            },
++            "/adrl/v1/sessions/{session_id}/timeline": {
++                "get": operation(
++                    "getTimeline",
++                    "TimelinePage",
++                    parameter="session_id",
++                    pagination=True,
++                )
++            },
++            "/adrl/v1/decisions/{route_id}": {
++                "get": operation(
++                    "getDecision",
++                    "DecisionExplanation",
++                    parameter="route_id",
++                )
++            },
++        },
++        "components": {
++            "schemas": definitions["$defs"],
++            "securitySchemes": {
++                "adrlWorkload": {
++                    "type": "http",
++                    "scheme": "bearer",
++                    "description": "ADRL-scoped credential, separate from provider credentials. "
++                    "Issuance and verification are not yet implemented.",
++                }
++            },
++        },
++    }
+--- a/src/adrl/core/types.py
++++ b/src/adrl/core/types.py
+@@ -48,6 +48,10 @@
+     utility_kind: UtilityKind | None = None
+     session_key_source: str = "header"
+     fingerprint_id: str | None = None
++    protocol_profile_id: str | None = None
++    protocol_profile_version: str | None = None
++    harness_adapter_id: str | None = None
++    harness_adapter_version: str | None = None
+ 
+     @property
+     def is_subagent(self) -> bool:
+--- a/src/adrl/proxy/asgi.py
++++ b/src/adrl/proxy/asgi.py
+@@ -1,8 +1,9 @@
+ """Starlette application exposing the proxy. Primary: ADRL-FND-001.
+ 
+ Raw routes only: no framework body model touches the request. /v1/messages and
+-/v1/messages/count_tokens go through the pipeline; /metrics and /healthz are local; every other
+-path is forwarded unchanged.
++/v1/messages/count_tokens go through the pipeline; /metrics, /healthz and /adrl/v1 are local.
++Other paths retain legacy forwarding.
++The product namespace rejects unimplemented operations instead of relaying their payloads.
+ """
+ 
+ from __future__ import annotations
+@@ -18,6 +19,7 @@
+ from starlette.responses import JSONResponse, Response, StreamingResponse
+ from starlette.routing import Route
+ 
++from adrl.api.contracts import ProductError, distribution_capabilities
+ from adrl.proxy.pipeline import ProxyResponse
+ from adrl.telemetry.metrics import REGISTRY
+ 
+@@ -92,6 +94,16 @@
+             payload.update(await health())
+         return JSONResponse(payload)
+ 
++    async def capabilities(_: Request) -> Response:
++        return JSONResponse(distribution_capabilities().model_dump(mode="json"))
++
++    async def product_unavailable(_: Request) -> Response:
++        # Preview contracts never fall through to a provider with session/event payloads.
++        error = ProductError(
++            code="not_implemented", message="This ADRL product operation is not implemented."
++        )
++        return JSONResponse(error.model_dump(mode="json"), status_code=501)
++
+     async def passthrough(request: Request) -> Response:
+         body = await request.body()
+         result = await pipeline.handle(
+@@ -109,6 +121,9 @@
+         Route("/v1/messages/count_tokens", messages, methods=["POST"]),
+         Route("/metrics", metrics, methods=["GET"]),
+         Route("/healthz", healthz, methods=["GET"]),
++        Route("/adrl/v1/capabilities", capabilities, methods=["GET"]),
++        Route("/adrl/v1", product_unavailable, methods=PASSTHROUGH_METHODS),
++        Route("/adrl/v1/{path:path}", product_unavailable, methods=PASSTHROUGH_METHODS),
+         Route("/{path:path}", passthrough, methods=PASSTHROUGH_METHODS),
+     ]
+     return Starlette(routes=routes, lifespan=lifespan)
+--- a/src/adrl/proxy/errors.py
++++ b/src/adrl/proxy/errors.py
+@@ -1,64 +1,27 @@
+-"""Error and synthetic-response rendering. Primary: ADRL-CAS-007.
++"""Compatibility exports for Messages responses. Primary: ADRL-CAS-007. Secondary: ADRL-SEM-007.
+ 
+-Secondary: ADRL-SAF-004, ADRL-SAF-005, ADRL-SEM-004. Every terminal failure is an Anthropic
+-Messages API error object; the only non-error synthetic response is the empty-but-valid answer to
+-a cosmetic utility call on a pinned lineage, which is a documented developer-visible surface.
++Native response rendering belongs to the protocol module. Keep the existing import path
++without making profile discovery depend on eager proxy package initialization.
+ """
+ 
+-from __future__ import annotations
+-
+-import json
+-from typing import Any
+-
+-from adrl.core.errors import VENDOR_PROMPT_TOO_LONG_PHRASE, AdrlError, ErrorCode, render_error
+-from adrl.core.types import RequestContext
+-from adrl.telemetry.metrics import BLOCK_TOTAL
+-
+-JSON_HEADERS = {"content-type": "application/json"}
+-
+-RECOVERY_TEXT = (
+-    "Recovery: continue locally with reduced context (/compact), request an audited pin release "
+-    "where policy permits, or stop."
++from adrl.wire.profiles.messages_responses import (
++    JSON_HEADERS as JSON_HEADERS,
+ )
+-
+-
+-def error_body(code: ErrorCode, detail: str, *, request_id: str | None = None) -> bytes:
+-    BLOCK_TOTAL.labels(code=code.value).inc()
+-    return json.dumps(render_error(code, detail, request_id=request_id)).encode("utf-8")
+-
+-
+-def error_from_exception(exc: AdrlError) -> tuple[int, bytes]:
+-    return exc.code.http_status, error_body(exc.code, exc.detail)
+-
+-
+-def block_message(code: ErrorCode, *, detector: str | None, executed_tool: str | None) -> str:
+-    parts: list[str] = []
+-    if code is ErrorCode.CAPABILITY_REJECTED_PROMPT_TOO_LONG:
+-        parts.append(VENDOR_PROMPT_TOO_LONG_PHRASE + " for the privacy-pinned local rung")
+-    else:
+-        parts.append("this session is privacy-pinned and the request cannot leave the machine")
+-    if detector:
+-        parts.append(f"pinned by detector {detector}")
+-    if executed_tool:
+-        parts.append(f"the blocked request carries the result of executed tool {executed_tool}")
+-    parts.append(RECOVERY_TEXT)
+-    return "; ".join(parts)
+-
+-
+-def empty_utility_response(ctx: RequestContext) -> tuple[int, dict[str, str], bytes]:
+-    """Empty-but-valid message for a cosmetic utility call that cannot be served (ADRL-SEM-004)."""
+-    body: dict[str, Any] = {
+-        "id": "msg_adrl_empty",
+-        "type": "message",
+-        "role": "assistant",
+-        "model": ctx.requested_model,
+-        "content": [{"type": "text", "text": ""}],
+-        "stop_reason": "end_turn",
+-        "stop_sequence": None,
+-        "usage": {"input_tokens": 0, "output_tokens": 0},
+-    }
+-    return 200, dict(JSON_HEADERS), json.dumps(body).encode("utf-8")
+-
+-
+-def count_tokens_response(input_tokens: int) -> tuple[int, dict[str, str], bytes]:
+-    return 200, dict(JSON_HEADERS), json.dumps({"input_tokens": int(input_tokens)}).encode()
++from adrl.wire.profiles.messages_responses import (
++    RECOVERY_TEXT as RECOVERY_TEXT,
++)
++from adrl.wire.profiles.messages_responses import (
++    block_message as block_message,
++)
++from adrl.wire.profiles.messages_responses import (
++    count_tokens_response as count_tokens_response,
++)
++from adrl.wire.profiles.messages_responses import (
++    empty_utility_response as empty_utility_response,
++)
++from adrl.wire.profiles.messages_responses import (
++    error_body as error_body,
++)
++from adrl.wire.profiles.messages_responses import (
++    error_from_exception as error_from_exception,
++)
+--- a/src/adrl/proxy/pipeline.py
++++ b/src/adrl/proxy/pipeline.py
+@@ -19,7 +19,6 @@
+ import hashlib
+ import hmac
+ import json
+-import math
+ from collections.abc import AsyncIterator, Awaitable, Callable, Mapping
+ from dataclasses import dataclass, field
+ from typing import Any
+@@ -48,12 +47,9 @@
+ from adrl.proxy.errors import (
+     JSON_HEADERS,
+     block_message,
+-    count_tokens_response,
+-    empty_utility_response,
+-    error_body,
+ )
+ from adrl.proxy.fallback import FailureResolution, FallbackAction, FallbackRecorder, resolve_failure
+-from adrl.proxy.observe_only import ObserveOnlyGateOutcome, is_action_boundary
++from adrl.proxy.observe_only import ObserveOnlyGateOutcome
+ from adrl.proxy.stages import (
+     CascadeStage,
+     DispatchPlanLike,
+@@ -70,24 +66,21 @@
+     LEDGER_DEGRADED_TOTAL,
+     REQUESTS_TOTAL,
+ )
+-from adrl.wire.classify import Classification, UnclassifiableError, classify
++from adrl.wire.adapters import ClaudeCodeAdapter, HarnessAdapter, IdentitySignals
++from adrl.wire.classify import Classification, UnclassifiableError
+ from adrl.wire.identity import Identity, IdentityResolver, LineageLocks
+-from adrl.wire.observe import ResponseObservation, SseObserver, observe_json
++from adrl.wire.observe import ResponseObservation
+ from adrl.wire.parse import (
+-    HEADER_AGENT_ID,
+-    ParsedRequest,
+-    estimate_chars,
+     forward_headers,
+     parse_request,
+     response_headers,
+-    system_text,
+ )
+-from adrl.wire.rewrite import body_bytes_for, serialise, strip_for_rung
++from adrl.wire.profiles.base import ProtocolProfile, ProtocolResponse, RequestView
++from adrl.wire.profiles.messages import MessagesProfile
+ 
+ log = structlog.get_logger(__name__)
+ 
+ PRODUCER = "proxy"
+-CHARS_PER_TOKEN = 4
+ INHERITED_ESTIMATOR = "inherited"
+ INHERITED_ESTIMATOR_VERSION = "sticky-v1"
+ FALLBACK_ESTIMATOR = "fail_open"
+@@ -122,12 +115,6 @@
+         "message_length": len(message),
+         "phrase": phrase,
+     }
+-
+-
+-def _without_thinking(body: dict[str, Any]) -> dict[str, Any]:
+-    out = dict(body)
+-    out.pop("thinking", None)
+-    return out
+ 
+ 
+ Finalizer = Callable[[], Awaitable[None]]
+@@ -203,6 +190,8 @@
+         locks: LineageLocks | None = None,
+         transcript_transform: TranscriptTransform | None = None,
+         tokenizer: Tokenizer | None = None,
++        profile: ProtocolProfile | None = None,
++        adapter: HarnessAdapter | None = None,
+     ) -> None:
+         self._settings = settings
+         self._bundle = bundle
+@@ -217,6 +206,8 @@
+         self._locks = locks or LineageLocks()
+         self._transform = transcript_transform
+         self._tokenizer = tokenizer
++        self._profile: ProtocolProfile = profile or MessagesProfile()
++        self._adapter: HarnessAdapter = adapter or ClaudeCodeAdapter()
+         self._recorder = FallbackRecorder(ledger, egress, deployment_tag=settings.deployment_tag)
+         self._deployments = DeploymentPolicy(bundle.endpoint_inventory)
+         self._seq = _RouteSeq()
+@@ -235,12 +226,13 @@
+         *,
+         query: str = "",
+     ) -> ProxyResponse:
+-        parsed = parse_request(method, path, headers, body, query)
+-        if not parsed.is_api:
+-            return await self._forward_non_api(parsed)
+-        is_pre_warm = (parsed.max_tokens or 0) <= 2 and parsed.max_tokens is not None
+-        root = await self._prime_parents(parsed, peer, is_pre_warm=is_pre_warm)
+-        identity = self._identity.resolve(parsed, peer, is_pre_warm=is_pre_warm)
++        if not self._profile.handles(method, path, headers):
++            return await self._forward_non_api(parse_request(method, path, headers, body, query))
++        parsed = self._profile.parse(method, path, headers, body, query)
++        signals = self._adapter.identity_signals(parsed)
++        is_pre_warm = self._profile.is_pre_warm(parsed)
++        root = await self._prime_parents(signals, peer, is_pre_warm=is_pre_warm)
++        identity = self._identity.resolve_signals(signals, peer, is_pre_warm=is_pre_warm)
+         await self._persist_parent(identity, root)
+ 
+         # Pin lookup and classification run under the per-lineage lock so a request racing the
+@@ -249,7 +241,7 @@
+         async with lock:
+             pinned_before = await self._effective_pin(identity)
+             try:
+-                classification = classify(
++                classification = self._profile.classify(
+                     parsed,
+                     self._bundle.utility_fingerprints,
+                     pinned=self._enforcing and pinned_before,
+@@ -264,12 +256,12 @@
+         return await self._dispatch(prepared)
+ 
+     async def _prime_parents(
+-        self, parsed: ParsedRequest, peer: tuple[str, int] | None, *, is_pre_warm: bool
++        self, signals: IdentitySignals, peer: tuple[str, int] | None, *, is_pre_warm: bool
+     ) -> LineageId | None:
+         """Rebuild the agent chain from persisted parent links after a restart (ADRL-SEM-006)."""
+-        if not parsed.header(HEADER_AGENT_ID):
++        if not signals.agent_id:
+             return None
+-        root = self._identity.session_root(parsed, peer, is_pre_warm=is_pre_warm)
++        root = self._identity.session_root_from_signals(signals, peer, is_pre_warm=is_pre_warm)
+         if self._identity.needs_priming(root):
+             try:
+                 events = await self._ledger.read_lineage_events(root, AGENT_PARENT_EVENT)
+@@ -327,13 +319,12 @@
+                 serve_empty or Rung.LOCAL not in gate.permitted
+             ):
+                 await self._record_egress(ctx, gate, None, 0, kind="empty_utility")
+-                status, headers, body = empty_utility_response(ctx)
+-                return ProxyResponse(status=status, headers=headers, body=body)
++                return self._protocol_response(self._profile.empty_utility(ctx))
+ 
+         if pinned and gate.permitted.is_empty:
+             return await self._blocked(ctx, gate, ErrorCode.PINNED_CLOUD_DENIED)
+ 
+-        if ctx.request_class is RequestClass.PASSTHROUGH and ctx.path.endswith("/count_tokens"):
++        if ctx.request_class is RequestClass.PASSTHROUGH and self._profile.is_token_count(ctx.path):
+             if pinned or bool(getattr(gate, "serve_local_estimate", False)):
+                 return await self._count_tokens_locally(ctx, gate)
+ 
+@@ -384,7 +375,9 @@
+                 )
+             resolution = plan_resolution
+             decision = self._fallback_decision(ctx, gate, plan_resolution)
+-            plan = _FallbackPlan.for_decision(ctx, decision, sticky)
++            plan = _FallbackPlan.for_decision(
++                ctx, decision, sticky, is_boundary=self._profile.is_action_boundary(ctx.json)
++            )
+         if plan.block is not None and self._enforcing:
+             return await self._blocked(ctx, gate, plan.block)
+ 
+@@ -535,7 +528,7 @@
+ 
+         status = response.status_code
+         out_headers = response_headers(response.headers)
+-        observer = SseObserver(
++        observer = self._profile.stream_observer(
+             status=status,
+             headers=response.headers,
+             intended_rung=turn.target_rung,
+@@ -546,7 +539,7 @@
+         content_type = str(response.headers.get("content-type", "")).lower()
+         if status >= 400 or not ctx.is_stream or "text/event-stream" not in content_type:
+             raw = await read_all(response)
+-            obs = observe_json(
++            obs = self._profile.observe_response(
+                 raw,
+                 status=status,
+                 headers=response.headers,
+@@ -640,7 +633,7 @@
+         return self._settings.gate_mode is GateMode.ENFORCE
+ 
+     def _context(
+-        self, parsed: ParsedRequest, identity: Identity, classification: Classification
++        self, parsed: RequestView, identity: Identity, classification: Classification
+     ) -> RequestContext:
+         return RequestContext(
+             body=parsed.body,
+@@ -660,6 +653,10 @@
+             utility_kind=classification.utility_kind,
+             session_key_source=identity.source,
+             fingerprint_id=classification.fingerprint_id,
++            protocol_profile_id=self._profile.profile_id,
++            protocol_profile_version=self._profile.version,
++            harness_adapter_id=self._adapter.adapter_id,
++            harness_adapter_version=self._adapter.version,
+         )
+ 
+     async def _effective_pin(self, identity: Identity) -> bool:
+@@ -821,20 +818,22 @@
+         deployment: DeploymentInfo | None = None,
+     ) -> bytes:
+         if forward_original:
+-            return body_bytes_for(ctx.body, None)
++            return ctx.body
+         body: dict[str, Any] = dict(ctx.json)
+         if plan.escalated and self._transform is not None:
+             body = self._transform(body, plan.pair_rule, plan.handoff)
+-        if getattr(plan, "thinking_suppressed", False):
+-            body = _without_thinking(body)
+-        if rung is not Rung.FRONTIER:
+-            alias = (
+-                deployment.deployment_id
+-                if deployment is not None
+-                else self._bundle.rungs.alias_for(rung)
+-            )
+-            body = strip_for_rung(body, rung, alias, self._bundle)
+-        return serialise(body)
++        alias = (
++            deployment.deployment_id
++            if deployment is not None
++            else self._bundle.rungs.alias_for(rung)
++        )
++        return self._profile.serialize(
++            body,
++            rung=rung,
++            alias=alias,
++            bundle=self._bundle,
++            suppress_thinking=bool(getattr(plan, "thinking_suppressed", False)),
++        )
+ 
+     async def _record_egress(
+         self,
+@@ -922,17 +921,7 @@
+             pins = await self._ledger.read_lineage_events(ctx.lineage_hmac, PIN_EVENT)
+             if pins:
+                 detector = str(pins[-1].payload.get("detector_id") or "") or None
+-        executed_tool = None
+-        if ctx.request_class is RequestClass.CONTINUATION and is_action_boundary(ctx.json):
+-            from adrl.wire.parse import content_blocks
+-
+-            last = ctx.json.get("messages", [])[-1]
+-            names = [
+-                str(b.get("tool_use_id"))
+-                for b in content_blocks(last)
+-                if b.get("type") == "tool_result"
+-            ]
+-            executed_tool = names[0] if names else None
++        executed_tool = self._profile.executed_tool(ctx)
+         await self._record_egress(ctx, gate, None, 0, kind="block")
+         await self._ledger.append_lineage_event(
+             LineageEvent(
+@@ -965,21 +954,14 @@
+         if callable(estimate_fn):
+             estimate = int(estimate_fn(ctx.json)["input_tokens"])
+             await self._record_egress(ctx, gate, Rung.LOCAL, 0, kind="count_tokens_local")
+-            status, headers, body = count_tokens_response(max(1, estimate))
+-            return ProxyResponse(status=status, headers=headers, body=body)
+-        text = system_text(ctx.json)
+-        chars = estimate_chars(ctx.json)
+-        if self._tokenizer is not None:
+-            tokens = self._tokenizer.count(text) + max(0, (chars - len(text))) // CHARS_PER_TOKEN
+-        else:
+-            tokens = chars // CHARS_PER_TOKEN
+-        ratio = self._bundle.rungs.rungs[Rung.LOCAL].tokenizer_ratio
+-        estimate = max(1, math.ceil(tokens * ratio))
++            return self._protocol_response(self._profile.count_tokens_response(max(1, estimate)))
++        estimate = self._profile.estimate_count_tokens(
++            ctx, self._tokenizer, ratio=self._bundle.rungs.rungs[Rung.LOCAL].tokenizer_ratio
++        )
+         await self._record_egress(ctx, gate, Rung.LOCAL, 0, kind="count_tokens_local")
+-        status, headers, body = count_tokens_response(estimate)
+-        return ProxyResponse(status=status, headers=headers, body=body)
+-
+-    async def _forward_non_api(self, parsed: ParsedRequest) -> ProxyResponse:
++        return self._protocol_response(self._profile.count_tokens_response(estimate))
++
++    async def _forward_non_api(self, parsed: RequestView) -> ProxyResponse:
+         path = parsed.path + (f"?{parsed.query}" if parsed.query else "")
+         try:
+             response = await self._gateway.forward(
+@@ -1015,6 +997,11 @@
+             "routing_mode": self._settings.routing_mode.value,
+             "gate_mode": self._settings.gate_mode.value,
+             "config_versions": self._bundle.versions,
++            "protocol_profile_id": ctx.protocol_profile_id,
++            "protocol_profile_version": ctx.protocol_profile_version,
++            "harness_adapter_id": ctx.harness_adapter_id,
++            "harness_adapter_version": ctx.harness_adapter_version,
++            "protocol_operation_supported": ctx.path in self._profile.endpoints,
+         }
+ 
+     async def _append_event(
+@@ -1048,13 +1035,20 @@
+         task.add_done_callback(self._background.discard)
+ 
+     @staticmethod
+-    def _error_response(code: ErrorCode, detail: str, route_id: str | None = None) -> ProxyResponse:
++    def _protocol_response(
++        response: ProtocolResponse, route_id: str | None = None
++    ) -> ProxyResponse:
+         return ProxyResponse(
+-            status=code.http_status,
+-            headers=dict(JSON_HEADERS),
+-            body=error_body(code, detail),
++            status=response.status,
++            headers=dict(response.headers),
++            body=response.body,
+             route_id=route_id,
+         )
++
++    def _error_response(
++        self, code: ErrorCode, detail: str, route_id: str | None = None
++    ) -> ProxyResponse:
++        return self._protocol_response(self._profile.error(code, detail), route_id)
+ 
+ 
+ class _PinnedOverlay:
+@@ -1098,7 +1092,12 @@
+ 
+     @classmethod
+     def for_decision(
+-        cls, ctx: RequestContext, decision: Decision, sticky: StickyState | None
++        cls,
++        ctx: RequestContext,
++        decision: Decision,
++        sticky: StickyState | None,
++        *,
++        is_boundary: bool,
+     ) -> _FallbackPlan:
+         turn_index = (sticky.turn_index + 1) if sticky is not None else 0
+         state = StickyState(
+@@ -1115,7 +1114,7 @@
+         )
+         return cls(
+             rung=decision.rung,
+-            is_boundary=is_action_boundary(ctx.json),
++            is_boundary=is_boundary,
+             escalated=False,
+             from_rung=None,
+             handoff=None,
+--- a/src/adrl/proxy/upstream.py
++++ b/src/adrl/proxy/upstream.py
+@@ -13,7 +13,7 @@
+ 
+ from adrl.core.enums import Rung
+ from adrl.core.errors import AdrlError, ErrorCode
+-from adrl.wire.observe import SseObserver
++from adrl.wire.profiles.base import StreamObserver
+ 
+ 
+ class UpstreamUnreachableError(AdrlError):
+@@ -120,7 +120,7 @@
+             await self._client.aclose()
+ 
+ 
+-async def relay(response: HttpxStreamingResponse, observer: SseObserver) -> AsyncIterator[bytes]:
++async def relay(response: HttpxStreamingResponse, observer: StreamObserver) -> AsyncIterator[bytes]:
+     """Yield upstream chunks verbatim while feeding the observer the same bytes."""
+     try:
+         async for chunk in response.aiter_raw():
+--- /dev/null
++++ b/src/adrl/wire/adapters.py
+@@ -0,0 +1,72 @@
++"""Harness identity evidence adapters. Primary: ADRL-SEM-002. Secondary: ADRL-SEM-007.
++
++These are correlation signals, not authenticated workload assertions. Existing SAF/TRU
++gates retain responsibility for authority. No OpenCode or Codex adapter is installed yet.
++"""
++
++from __future__ import annotations
++
++import json
++from dataclasses import dataclass
++from typing import Protocol
++
++from adrl.wire.parse import (
++    HEADER_AGENT_ID,
++    HEADER_PARENT_AGENT_ID,
++    HEADER_SESSION_ID,
++    system_text,
++)
++from adrl.wire.profiles.base import RequestView
++
++
++@dataclass(frozen=True, slots=True)
++class IdentitySignals:
++    header_session_id: str | None
++    metadata_session_id: str | None
++    system_text: str
++    agent_id: str | None
++    parent_agent_id: str | None
++
++
++class HarnessAdapter(Protocol):
++    @property
++    def adapter_id(self) -> str: ...
++
++    @property
++    def version(self) -> str: ...
++
++    def identity_signals(self, request: RequestView) -> IdentitySignals: ...
++
++
++def metadata_session_id(request: RequestView) -> str | None:
++    """Preserve the current metadata fallback, including opaque non-JSON values."""
++    metadata = request.json.get("metadata")
++    if not isinstance(metadata, dict):
++        return None
++    raw = metadata.get("user_id")
++    if not isinstance(raw, str) or not raw:
++        return None
++    try:
++        decoded = json.loads(raw)
++    except ValueError:
++        return raw
++    if isinstance(decoded, dict) and isinstance(decoded.get("session_id"), str):
++        return str(decoded["session_id"])
++    return raw
++
++
++@dataclass(frozen=True, slots=True)
++class ClaudeCodeAdapter:
++    """The existing Claude Code correlation rules, extracted without changing identity."""
++
++    adapter_id: str = "claude-code"
++    version: str = "1"
++
++    def identity_signals(self, request: RequestView) -> IdentitySignals:
++        return IdentitySignals(
++            header_session_id=request.headers.get(HEADER_SESSION_ID),
++            metadata_session_id=metadata_session_id(request),
++            system_text=system_text(request.json),
++            agent_id=request.headers.get(HEADER_AGENT_ID),
++            parent_agent_id=request.headers.get(HEADER_PARENT_AGENT_ID),
++        )
+--- a/src/adrl/wire/identity.py
++++ b/src/adrl/wire/identity.py
+@@ -9,19 +9,15 @@
+ 
+ import asyncio
+ import hashlib
+-import json
+ import os
+ from collections import OrderedDict
+ from collections.abc import Iterable
+ from dataclasses import dataclass
+ 
+ from adrl.core.ids import LineageId, SessionId, lineage_identity, session_identity
+-from adrl.wire.parse import (
+-    HEADER_AGENT_ID,
+-    HEADER_PARENT_AGENT_ID,
+-    HEADER_SESSION_ID,
+-    ParsedRequest,
+-)
++from adrl.wire.adapters import ClaudeCodeAdapter, IdentitySignals
++from adrl.wire.adapters import metadata_session_id as metadata_session_id
++from adrl.wire.parse import ParsedRequest
+ 
+ SOURCE_HEADER = "header"
+ SOURCE_METADATA = "metadata"
+@@ -46,25 +42,8 @@
+         return self.agent_id is not None
+ 
+ 
+-def metadata_session_id(parsed: ParsedRequest) -> str | None:
+-    """metadata.user_id is a JSON string carrying device_id, account_uuid and session_id."""
+-    metadata = parsed.json.get("metadata")
+-    if not isinstance(metadata, dict):
+-        return None
+-    raw = metadata.get("user_id")
+-    if not isinstance(raw, str) or not raw:
+-        return None
+-    try:
+-        decoded = json.loads(raw)
+-    except ValueError:
+-        return raw
+-    if isinstance(decoded, dict) and isinstance(decoded.get("session_id"), str):
+-        return str(decoded["session_id"])
+-    return raw
+-
+-
+-def _system_prefix_hash(parsed: ParsedRequest, chars: int = 500) -> str:
+-    return hashlib.sha256(parsed.system_text[:chars].encode("utf-8")).hexdigest()[:16]
++def _system_prefix_hash(signals: IdentitySignals, chars: int = 500) -> str:
++    return hashlib.sha256(signals.system_text[:chars].encode("utf-8")).hexdigest()[:16]
+ 
+ 
+ class _BoundedDict(OrderedDict[str, str]):
+@@ -101,8 +80,15 @@
+     def session_root(
+         self, parsed: ParsedRequest, peer: tuple[str, int] | None, *, is_pre_warm: bool = False
+     ) -> LineageId:
++        return self.session_root_from_signals(
++            ClaudeCodeAdapter().identity_signals(parsed), peer, is_pre_warm=is_pre_warm
++        )
++
++    def session_root_from_signals(
++        self, signals: IdentitySignals, peer: tuple[str, int] | None, *, is_pre_warm: bool = False
++    ) -> LineageId:
+         """The session's root lineage, where agent parent relationships are persisted."""
+-        raw_session, _source = self._raw_session_key(parsed, peer, is_pre_warm=is_pre_warm)
++        raw_session, _source = self._raw_session_key(signals, peer, is_pre_warm=is_pre_warm)
+         session = session_identity(raw_session, self._key)
+         return lineage_identity(session, (), self._key)
+ 
+@@ -122,10 +108,18 @@
+     def resolve(
+         self, parsed: ParsedRequest, peer: tuple[str, int] | None, *, is_pre_warm: bool = False
+     ) -> Identity:
+-        raw_session, source = self._raw_session_key(parsed, peer, is_pre_warm=is_pre_warm)
++        return self.resolve_signals(
++            ClaudeCodeAdapter().identity_signals(parsed), peer, is_pre_warm=is_pre_warm
++        )
++
++    def resolve_signals(
++        self, signals: IdentitySignals, peer: tuple[str, int] | None, *, is_pre_warm: bool = False
++    ) -> Identity:
++        """Resolve correlation signals; workload authorization remains in the gates."""
++        raw_session, source = self._raw_session_key(signals, peer, is_pre_warm=is_pre_warm)
+         session = session_identity(raw_session, self._key)
+-        agent_id = parsed.header(HEADER_AGENT_ID)
+-        parent_id = parsed.header(HEADER_PARENT_AGENT_ID)
++        agent_id = signals.agent_id
++        parent_id = signals.parent_agent_id
+         if agent_id and parent_id:
+             self._parents.remember(agent_id, parent_id)
+         chain = self._chain(agent_id)
+@@ -157,21 +151,21 @@
+         return tuple(chain)
+ 
+     def _raw_session_key(
+-        self, parsed: ParsedRequest, peer: tuple[str, int] | None, *, is_pre_warm: bool
++        self, signals: IdentitySignals, peer: tuple[str, int] | None, *, is_pre_warm: bool
+     ) -> tuple[str, str]:
+-        header = parsed.header(HEADER_SESSION_ID)
++        header = signals.header_session_id
+         if header:
+             return header, SOURCE_HEADER
+-        metadata = metadata_session_id(parsed)
++        metadata = signals.metadata_session_id
+         if metadata:
+-            return self._metadata_key(metadata, parsed, is_pre_warm=is_pre_warm), SOURCE_METADATA
++            return self._metadata_key(metadata, signals, is_pre_warm=is_pre_warm), SOURCE_METADATA
+         host, port = peer if peer is not None else ("unknown", 0)
+         digest = hashlib.sha256(self._salt + f"{host}:{port}".encode()).hexdigest()[:32]
+         return f"conn:{digest}", SOURCE_CONNECTION
+ 
+-    def _metadata_key(self, session_id: str, parsed: ParsedRequest, *, is_pre_warm: bool) -> str:
++    def _metadata_key(self, session_id: str, signals: IdentitySignals, *, is_pre_warm: bool) -> str:
+         """Cut a metadata-only session on system-prefix change or a fresh pre-warm burst."""
+-        prefix = _system_prefix_hash(parsed)
++        prefix = _system_prefix_hash(signals)
+         previous = self._metadata_prefix.get(session_id)
+         epoch = self._metadata_epoch.get(session_id, 0)
+         if previous is None:
+--- /dev/null
++++ b/src/adrl/wire/profiles/__init__.py
+@@ -0,0 +1 @@
++"""Named protocol profiles. Primary: ADRL-SEM-007."""
+--- /dev/null
++++ b/src/adrl/wire/profiles/base.py
+@@ -0,0 +1,147 @@
++"""Protocol interpretation ports. Primary: ADRL-SEM-007. Secondary: ADRL-FND-001."""
++
++from __future__ import annotations
++
++from collections.abc import Mapping
++from dataclasses import dataclass
++from typing import Any, Protocol
++
++from adrl.config.loaders import ConfigBundle
++from adrl.config.models import RungsConfig, UtilityFingerprintsConfig
++from adrl.core.enums import Rung
++from adrl.core.errors import ErrorCode
++from adrl.core.ports import Tokenizer
++from adrl.core.types import RequestContext
++from adrl.wire.classify import Classification
++from adrl.wire.observe import ResponseObservation
++
++
++class RequestView(Protocol):
++    """Native inspection view. The original body remains authoritative.
++
++    max_tokens is the existing engine's output-budget field, not a required wire key.
++    A future profile must project its own semantics rather than translate the raw JSON.
++    """
++
++    @property
++    def method(self) -> str: ...
++
++    @property
++    def path(self) -> str: ...
++
++    @property
++    def query(self) -> str: ...
++
++    @property
++    def headers(self) -> Mapping[str, str]: ...
++
++    @property
++    def body(self) -> bytes: ...
++
++    @property
++    def json(self) -> Mapping[str, Any]: ...
++
++    @property
++    def parse_ok(self) -> bool: ...
++
++    @property
++    def requested_model(self) -> str: ...
++
++    @property
++    def is_stream(self) -> bool: ...
++
++    @property
++    def max_tokens(self) -> int | None: ...
++
++
++class StreamObserver(Protocol):
++    """Observe exactly the chunks the transport relays."""
++
++    def feed(self, chunk: bytes) -> None: ...
++
++    def finish(self) -> ResponseObservation: ...
++
++
++@dataclass(frozen=True, slots=True)
++class ProtocolResponse:
++    status: int
++    headers: Mapping[str, str]
++    body: bytes
++
++
++class ProtocolProfile(Protocol):
++    """Extraction boundary, not admission authority for additional wire formats.
++
++    Gate and cascade implementations still need profile-specific conformance before a
++    second profile is installed. The initial runtime admits only Messages.
++    """
++
++    @property
++    def profile_id(self) -> str: ...
++
++    @property
++    def version(self) -> str: ...
++
++    @property
++    def endpoints(self) -> tuple[str, ...]: ...
++
++    def handles(self, method: str, path: str, headers: Mapping[str, str]) -> bool: ...
++
++    def parse(
++        self, method: str, path: str, headers: Mapping[str, str], body: bytes, query: str = ""
++    ) -> RequestView: ...
++
++    def is_token_count(self, path: str) -> bool: ...
++
++    def is_pre_warm(self, request: RequestView) -> bool: ...
++
++    def classify(
++        self, request: RequestView, config: UtilityFingerprintsConfig, *, pinned: bool
++    ) -> Classification: ...
++
++    def serialize(
++        self,
++        body: dict[str, Any],
++        *,
++        rung: Rung,
++        alias: str,
++        bundle: ConfigBundle,
++        suppress_thinking: bool,
++    ) -> bytes: ...
++
++    def stream_observer(
++        self,
++        *,
++        status: int,
++        headers: Mapping[str, str],
++        intended_rung: Rung,
++        requested_model: str,
++        rungs: RungsConfig,
++        hash_key: bytes,
++    ) -> StreamObserver: ...
++
++    def observe_response(
++        self,
++        body: bytes,
++        *,
++        status: int,
++        headers: Mapping[str, str],
++        intended_rung: Rung,
++        requested_model: str,
++        rungs: RungsConfig,
++        hash_key: bytes,
++    ) -> ResponseObservation: ...
++
++    def error(self, code: ErrorCode, detail: str) -> ProtocolResponse: ...
++
++    def empty_utility(self, ctx: RequestContext) -> ProtocolResponse: ...
++
++    def count_tokens_response(self, count: int) -> ProtocolResponse: ...
++
++    def estimate_count_tokens(
++        self, ctx: RequestContext, tokenizer: Tokenizer | None, *, ratio: float
++    ) -> int: ...
++
++    def is_action_boundary(self, body: Mapping[str, Any]) -> bool: ...
++
++    def executed_tool(self, ctx: RequestContext) -> str | None: ...
+--- /dev/null
++++ b/src/adrl/wire/profiles/messages.py
+@@ -0,0 +1,174 @@
++"""Messages protocol interpretation. Primary: ADRL-SEM-007. Secondary: ADRL-FND-001.
++
++Owns existing Messages interpretation, rewrites and response rendering. The current
++classifier's Claude Code fingerprints remain versioned configuration, not universal rules.
++"""
++
++from __future__ import annotations
++
++import math
++from collections.abc import Mapping
++from dataclasses import dataclass
++from typing import Any
++
++from adrl.config.loaders import ConfigBundle
++from adrl.config.models import RungsConfig, UtilityFingerprintsConfig
++from adrl.core.enums import RequestClass, Rung
++from adrl.core.errors import ErrorCode
++from adrl.core.ports import Tokenizer
++from adrl.core.types import RequestContext
++from adrl.wire.classify import PRE_WARM_MAX_TOKENS, Classification, classify
++from adrl.wire.observe import ResponseObservation, SseObserver, observe_json
++from adrl.wire.parse import (
++    COUNT_TOKENS_PATH,
++    MESSAGES_PATH,
++    ParsedRequest,
++    content_blocks,
++    estimate_chars,
++    last_assistant_message,
++    last_message,
++    parse_request,
++    system_text,
++    tool_result_ids,
++    tool_use_ids,
++)
++from adrl.wire.profiles.base import ProtocolResponse, RequestView, StreamObserver
++from adrl.wire.profiles.messages_responses import (
++    JSON_HEADERS,
++    count_tokens_response,
++    empty_utility_response,
++    error_body,
++)
++from adrl.wire.rewrite import serialise, strip_for_rung
++
++
++@dataclass(frozen=True, slots=True)
++class MessagesProfile:
++    profile_id: str = "anthropic-messages-v1"
++    version: str = "1"
++    endpoints: tuple[str, ...] = (MESSAGES_PATH, COUNT_TOKENS_PATH)
++
++    def handles(self, method: str, path: str, headers: Mapping[str, str]) -> bool:
++        """Preserve legacy prefix dispatch; endpoints lists only supported operations.
++
++        Unknown suffixes still receive the old non-API classification. Rejecting unknown
++        content-bearing operations is a separate policy change, not part of extraction.
++        """
++        return path.startswith(MESSAGES_PATH)
++
++    def parse(
++        self, method: str, path: str, headers: Mapping[str, str], body: bytes, query: str = ""
++    ) -> ParsedRequest:
++        return parse_request(method, path, headers, body, query)
++
++    def is_token_count(self, path: str) -> bool:
++        return path.endswith("/count_tokens")
++
++    def is_pre_warm(self, request: RequestView) -> bool:
++        return request.max_tokens is not None and request.max_tokens <= PRE_WARM_MAX_TOKENS
++
++    def classify(
++        self, request: RequestView, config: UtilityFingerprintsConfig, *, pinned: bool
++    ) -> Classification:
++        if not isinstance(request, ParsedRequest):
++            raise TypeError("anthropic-messages-v1 requires its native ParsedRequest view")
++        return classify(request, config, pinned=pinned)
++
++    def serialize(
++        self,
++        body: dict[str, Any],
++        *,
++        rung: Rung,
++        alias: str,
++        bundle: ConfigBundle,
++        suppress_thinking: bool,
++    ) -> bytes:
++        if suppress_thinking:
++            body = dict(body)
++            body.pop("thinking", None)
++        if rung is not Rung.FRONTIER:
++            body = strip_for_rung(body, rung, alias, bundle)
++        return serialise(body)
++
++    def stream_observer(
++        self,
++        *,
++        status: int,
++        headers: Mapping[str, str],
++        intended_rung: Rung,
++        requested_model: str,
++        rungs: RungsConfig,
++        hash_key: bytes,
++    ) -> StreamObserver:
++        return SseObserver(
++            status=status,
++            headers=headers,
++            intended_rung=intended_rung,
++            requested_model=requested_model,
++            rungs=rungs,
++            hash_key=hash_key,
++        )
++
++    def observe_response(
++        self,
++        body: bytes,
++        *,
++        status: int,
++        headers: Mapping[str, str],
++        intended_rung: Rung,
++        requested_model: str,
++        rungs: RungsConfig,
++        hash_key: bytes,
++    ) -> ResponseObservation:
++        return observe_json(
++            body,
++            status=status,
++            headers=headers,
++            intended_rung=intended_rung,
++            requested_model=requested_model,
++            rungs=rungs,
++            hash_key=hash_key,
++        )
++
++    def error(self, code: ErrorCode, detail: str) -> ProtocolResponse:
++        return ProtocolResponse(code.http_status, dict(JSON_HEADERS), error_body(code, detail))
++
++    def empty_utility(self, ctx: RequestContext) -> ProtocolResponse:
++        return ProtocolResponse(*empty_utility_response(ctx))
++
++    def count_tokens_response(self, count: int) -> ProtocolResponse:
++        return ProtocolResponse(*count_tokens_response(count))
++
++    def estimate_count_tokens(
++        self, ctx: RequestContext, tokenizer: Tokenizer | None, *, ratio: float
++    ) -> int:
++        text = system_text(ctx.json)
++        chars = estimate_chars(ctx.json)
++        tokens = (
++            tokenizer.count(text) + max(0, chars - len(text)) // 4
++            if tokenizer is not None
++            else chars // 4
++        )
++        return max(1, math.ceil(tokens * ratio))
++
++    def is_action_boundary(self, body: Mapping[str, Any]) -> bool:
++        assistant = last_assistant_message(body)
++        if assistant is None:
++            return False
++        expected = tool_use_ids(assistant)
++        last = last_message(body)
++        if not expected or last is None or last.get("role") != "user":
++            return False
++        return expected <= tool_result_ids(last)
++
++    def executed_tool(self, ctx: RequestContext) -> str | None:
++        if ctx.request_class is not RequestClass.CONTINUATION or not self.is_action_boundary(
++            ctx.json
++        ):
++            return None
++        names = [
++            str(block.get("tool_use_id"))
++            for block in content_blocks(last_message(ctx.json))
++            if block.get("type") == "tool_result"
++        ]
++        return names[0] if names else None
+--- /dev/null
++++ b/src/adrl/wire/profiles/messages_responses.py
+@@ -0,0 +1,64 @@
++"""Messages errors and synthetic responses. Primary: ADRL-CAS-007. Secondary: ADRL-SEM-007.
++
++Secondary: ADRL-SAF-004, ADRL-SAF-005, ADRL-SEM-004. Every terminal failure is an Anthropic
++Messages API error object; the only non-error synthetic response is the empty-but-valid answer to
++a cosmetic utility call on a pinned lineage, which is a documented developer-visible surface.
++"""
++
++from __future__ import annotations
++
++import json
++from typing import Any
++
++from adrl.core.errors import VENDOR_PROMPT_TOO_LONG_PHRASE, AdrlError, ErrorCode, render_error
++from adrl.core.types import RequestContext
++from adrl.telemetry.metrics import BLOCK_TOTAL
++
++JSON_HEADERS = {"content-type": "application/json"}
++
++RECOVERY_TEXT = (
++    "Recovery: continue locally with reduced context (/compact), request an audited pin release "
++    "where policy permits, or stop."
++)
++
++
++def error_body(code: ErrorCode, detail: str, *, request_id: str | None = None) -> bytes:
++    BLOCK_TOTAL.labels(code=code.value).inc()
++    return json.dumps(render_error(code, detail, request_id=request_id)).encode("utf-8")
++
++
++def error_from_exception(exc: AdrlError) -> tuple[int, bytes]:
++    return exc.code.http_status, error_body(exc.code, exc.detail)
++
++
++def block_message(code: ErrorCode, *, detector: str | None, executed_tool: str | None) -> str:
++    parts: list[str] = []
++    if code is ErrorCode.CAPABILITY_REJECTED_PROMPT_TOO_LONG:
++        parts.append(VENDOR_PROMPT_TOO_LONG_PHRASE + " for the privacy-pinned local rung")
++    else:
++        parts.append("this session is privacy-pinned and the request cannot leave the machine")
++    if detector:
++        parts.append(f"pinned by detector {detector}")
++    if executed_tool:
++        parts.append(f"the blocked request carries the result of executed tool {executed_tool}")
++    parts.append(RECOVERY_TEXT)
++    return "; ".join(parts)
++
++
++def empty_utility_response(ctx: RequestContext) -> tuple[int, dict[str, str], bytes]:
++    """Empty-but-valid message for a cosmetic utility call that cannot be served (ADRL-SEM-004)."""
++    body: dict[str, Any] = {
++        "id": "msg_adrl_empty",
++        "type": "message",
++        "role": "assistant",
++        "model": ctx.requested_model,
++        "content": [{"type": "text", "text": ""}],
++        "stop_reason": "end_turn",
++        "stop_sequence": None,
++        "usage": {"input_tokens": 0, "output_tokens": 0},
++    }
++    return 200, dict(JSON_HEADERS), json.dumps(body).encode("utf-8")
++
++
++def count_tokens_response(input_tokens: int) -> tuple[int, dict[str, str], bytes]:
++    return 200, dict(JSON_HEADERS), json.dumps({"input_tokens": int(input_tokens)}).encode()
+--- /dev/null
++++ b/tests/fixtures/profiles/identity-v1.json
+@@ -0,0 +1,46 @@
++{
++  "identities": {
++    "continuation": {
++      "agent_chain": [],
++      "agent_id": null,
++      "ancestor_lineages": [],
++      "lineage_hmac": "e4c2ae4e6108069c5c9a5ba50a98add30f515ff422b56da3537c6597fb3fabc7",
++      "parent_agent_id": null,
++      "session_hmac": "e4c2ae4e6108069c5c9a5ba50a98add30f515ff422b56da3537c6597fb3fabc7",
++      "source": "header"
++    },
++    "count_tokens": {
++      "agent_chain": [],
++      "agent_id": null,
++      "ancestor_lineages": [],
++      "lineage_hmac": "e4c2ae4e6108069c5c9a5ba50a98add30f515ff422b56da3537c6597fb3fabc7",
++      "parent_agent_id": null,
++      "session_hmac": "e4c2ae4e6108069c5c9a5ba50a98add30f515ff422b56da3537c6597fb3fabc7",
++      "source": "header"
++    },
++    "fork_subagent": {
++      "agent_chain": [
++        "agent-fork-0001"
++      ],
++      "agent_id": "agent-fork-0001",
++      "ancestor_lineages": [
++        "e4c2ae4e6108069c5c9a5ba50a98add30f515ff422b56da3537c6597fb3fabc7"
++      ],
++      "lineage_hmac": "cc9ebc38da2bcc4fbee949aa823e0cfbb4c30b48fbc7f30c19c6a189a0680389",
++      "parent_agent_id": null,
++      "session_hmac": "e4c2ae4e6108069c5c9a5ba50a98add30f515ff422b56da3537c6597fb3fabc7",
++      "source": "header"
++    },
++    "user_turn": {
++      "agent_chain": [],
++      "agent_id": null,
++      "ancestor_lineages": [],
++      "lineage_hmac": "e4c2ae4e6108069c5c9a5ba50a98add30f515ff422b56da3537c6597fb3fabc7",
++      "parent_agent_id": null,
++      "session_hmac": "e4c2ae4e6108069c5c9a5ba50a98add30f515ff422b56da3537c6597fb3fabc7",
++      "source": "header"
++    }
++  },
++  "identity_source_sha256": "4fd900d3cec7195e024204f10dbf005c3ddf91963015576d8888c49ce21deee5",
++  "origin": "Unmodified implementation baseline; synthetic existing fixtures"
++}
+--- /dev/null
++++ b/tests/integration/proxy/test_profiles.py
+@@ -0,0 +1,55 @@
++"""The extracted boundary preserves recorded scope. Primary: ADRL-SEM-007."""
++
++from __future__ import annotations
++
++import json
++
++import pytest
++
++from .conftest import Harness
++
++
++async def test_decisions_record_profile_and_adapter_versions(harness: Harness) -> None:
++    response = await harness.send("user_turn")
++    assert response.status_code == 200
++    context = json.loads(harness.decisions()[0]["context_json"])
++    assert context["protocol_profile_id"] == "anthropic-messages-v1"
++    assert context["protocol_profile_version"] == "1"
++    assert context["harness_adapter_id"] == "claude-code"
++    assert context["harness_adapter_version"] == "1"
++    assert context["protocol_operation_supported"] is True
++
++
++async def test_capability_discovery_is_local_and_not_a_policy_attestation(harness: Harness) -> None:
++    response = await harness.client.get("/adrl/v1/capabilities")
++    assert response.status_code == 200
++    assert response.json()["scope"] == "distribution"
++    assert response.json()["product_operations"] == ["GET /adrl/v1/capabilities"]
++    assert not harness.gateway_requests()
++    assert not harness.decisions()
++
++
++@pytest.mark.parametrize(
++    "path",
++    [
++        "/adrl/v1",
++        "/adrl/v1/sessions",
++        "/adrl/v1/events",
++        "/adrl/v1/unknown",
++        "/adrl/v1/sessions/s1/timeline",
++        "/adrl/v1/decisions/r1",
++    ],
++)
++async def test_unimplemented_product_payload_never_reaches_gateway(
++    harness: Harness,
++    path: str,
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    async def forbidden_forward(*args, **kwargs):
++        pytest.fail("A product payload reached provider forwarding")
++
++    monkeypatch.setattr(harness.pipeline._gateway, "forward", forbidden_forward)
++    response = await harness.client.post(path, json={"private_probe": "do not forward"})
++    assert response.status_code == 501
++    assert response.json()["code"] == "not_implemented"
++    assert not harness.decisions()
+--- /dev/null
++++ b/tests/unit/test_api_contract.py
+@@ -0,0 +1,147 @@
++"""Preview contracts reject ambiguous authority. Primary: ADRL-SEM-007. Secondary: ADRL-TRU-001."""
++
++from __future__ import annotations
++
++import json
++import os
++import subprocess
++import sys
++from pathlib import Path
++from typing import Any
++
++import pytest
++from pydantic import ValidationError
++
++from adrl.api.contracts import EventRequest, SessionRequest, distribution_capabilities
++from adrl.api.schema import openapi_document
++
++
++def event() -> dict[str, Any]:
++    return {
++        "event_id": "e1e58ab1-dc2f-4450-92e2-25120cc9fa41",
++        "session_id": "session_123",
++        "producer_seq": 1,
++        "occurred_at": "2026-09-07T10:00:00Z",
++        "event_type": "tool.completed",
++        "payload": {"tool_call_ref": "call_123", "outcome": "failed"},
++    }
++
++
++@pytest.mark.parametrize(
++    "extra",
++    [
++        {"producer_id": "trusted-verifier"},
++        {"policy": "unrestricted"},
++        {"verified": True},
++        {"prompt": "content that does not belong in event metadata"},
++    ],
++)
++def test_event_cannot_smuggle_authority_or_untyped_content(extra: dict[str, Any]) -> None:
++    with pytest.raises(ValidationError):
++        EventRequest.model_validate(event() | extra)
++
++
++@pytest.mark.parametrize("sequence", [-1, True, "1", 1.2])
++def test_event_sequence_is_a_nonnegative_integer(sequence: Any) -> None:
++    with pytest.raises(ValidationError):
++        EventRequest.model_validate(event() | {"producer_seq": sequence})
++
++
++def test_event_timestamp_requires_timezone() -> None:
++    with pytest.raises(ValidationError):
++        EventRequest.model_validate(event() | {"occurred_at": "2026-09-07T10:00:00"})
++
++
++def test_reported_closure_cannot_become_verification_by_changing_event_type() -> None:
++    report = event() | {
++        "event_type": "session.closed",
++        "payload": {"task_ref": "task_1", "reported_outcome": "accepted"},
++    }
++    assert EventRequest.model_validate(report).root.event_type == "session.closed"
++    with pytest.raises(ValidationError):
++        EventRequest.model_validate(report | {"event_type": "verification.completed"})
++
++
++def test_event_roundtrip_retains_identity_and_preserves_unknown_outcome() -> None:
++    request = event()
++    request["payload"]["outcome"] = "unknown"
++    validated = EventRequest.model_validate(request)
++    assert EventRequest.model_validate_json(validated.model_dump_json()) == validated
++    assert validated.root.payload.model_dump()["outcome"] == "unknown"
++
++
++def test_session_request_cannot_self_assign_policy() -> None:
++    request = {
++        "adapter": {"id": "claude-code", "version": "1"},
++        "profile": {"id": "anthropic-messages-v1", "version": "1"},
++        "workload_ref": "registered_repo_1",
++    }
++    SessionRequest.model_validate(request)
++    with pytest.raises(ValidationError):
++        SessionRequest.model_validate(request | {"policy": "unrestricted"})
++
++
++def test_distribution_discovery_does_not_claim_other_harnesses_or_enforcement() -> None:
++    capabilities = distribution_capabilities()
++    assert [p.profile.id for p in capabilities.profiles] == ["anthropic-messages-v1"]
++    assert [a.adapter.id for a in capabilities.adapters] == ["claude-code"]
++    assert capabilities.adapters[0].tested_harness_versions == ()
++    assert capabilities.adapters[0].identity == "correlation_only"
++    assert capabilities.adapters[0].tool_events == "not_implemented"
++    assert capabilities.effective_enforcement == "requires_session_and_runtime_checks"
++
++
++def test_openapi_export_has_resolvable_refs_and_matches_checked_in_artifact() -> None:
++    document = openapi_document()
++    schemas = document["components"]["schemas"]
++
++    def check_refs(value: Any) -> None:
++        if isinstance(value, dict):
++            if "$ref" in value:
++                prefix = "#/components/schemas/"
++                assert value["$ref"].startswith(prefix)
++                assert value["$ref"][len(prefix) :] in schemas
++            for child in value.values():
++                check_refs(child)
++        elif isinstance(value, list):
++            for child in value:
++                check_refs(child)
++
++    check_refs(document)
++    artifact = Path(__file__).resolve().parents[2] / "api" / "adrl-api-v1-preview.json"
++    assert json.loads(artifact.read_text()) == document
++    implemented = [
++        path
++        for path, methods in document["paths"].items()
++        for operation in methods.values()
++        if operation["x-adrl-implementation"] == "implemented"
++    ]
++    assert implemented == ["/adrl/v1/capabilities"]
++
++
++@pytest.mark.parametrize(
++    "code",
++    [
++        "from adrl.api.contracts import distribution_capabilities; "
++        "assert distribution_capabilities().profiles[0].profile.id == 'anthropic-messages-v1'",
++        "from adrl.wire.profiles.messages import MessagesProfile; "
++        "assert MessagesProfile().profile_id == 'anthropic-messages-v1'",
++        "from adrl.proxy import Pipeline, ProxyResponse; "
++        "from adrl.api.schema import openapi_document; "
++        "assert openapi_document()['openapi'] == '3.1.0'",
++    ],
++)
++def test_public_entry_points_work_in_a_fresh_process(code: str) -> None:
++    root = Path(__file__).resolve().parents[2]
++    environment = dict(os.environ)
++    environment["PYTHONPATH"] = str(root / "src")
++    environment["PYTHONDONTWRITEBYTECODE"] = "1"
++    result = subprocess.run(
++        [sys.executable, "-c", code],
++        cwd=root,
++        env=environment,
++        capture_output=True,
++        text=True,
++        timeout=20,
++    )
++    assert result.returncode == 0, result.stderr
+--- /dev/null
++++ b/tests/unit/wire/test_profiles.py
+@@ -0,0 +1,79 @@
++"""Profile and adapter invariants. Primary: ADRL-SEM-007. Secondary: ADRL-SEM-002."""
++
++from __future__ import annotations
++
++import json
++from dataclasses import asdict
++from pathlib import Path
++
++import pytest
++
++from adrl.core.enums import RequestClass
++from adrl.wire.adapters import ClaudeCodeAdapter
++from adrl.wire.identity import IdentityResolver
++from adrl.wire.profiles.messages import MessagesProfile
++from tests.conftest import CONFIG_DIR
++
++FIXTURES = Path(__file__).resolve().parents[2] / "fixtures" / "wire"
++
++
++def test_messages_profile_does_not_claim_responses_or_chat_completions() -> None:
++    profile = MessagesProfile()
++    for path in ["/v1/responses", "/v1/chat/completions", "/adrl/v1/events"]:
++        assert not profile.handles("POST", path, {})
++    assert set(profile.endpoints) == {"/v1/messages", "/v1/messages/count_tokens"}
++
++
++@pytest.mark.parametrize("name", ["user_turn", "continuation", "count_tokens", "fork_subagent"])
++def test_identity_extraction_keeps_original_bytes_and_hmac_identity(name: str) -> None:
++    data = json.loads((FIXTURES / f"{name}.json").read_text())
++    raw = json.dumps(data["body"], indent=3).encode() + b"\n"
++    headers = {key.upper(): value for key, value in data["headers"].items()}
++    request = MessagesProfile().parse(data["method"], data["path"], headers, raw)
++    signals = ClaudeCodeAdapter().identity_signals(request)
++    key = b"profile-test-identity-key"
++    salt = b"fixed-test-salt"
++    golden_path = FIXTURES.parent / "profiles" / "identity-v1.json"
++    expected = json.loads(golden_path.read_text())["identities"][name]
++    extracted = IdentityResolver(key, process_salt=salt).resolve_signals(
++        signals, ("127.0.0.1", 9000)
++    )
++    assert json.loads(json.dumps(asdict(extracted))) == expected
++    assert request.body is raw
++    assert request.json == data["body"]
++
++
++@pytest.mark.parametrize(
++    "name, expected",
++    [
++        ("parallel_tools_partial", False),
++        ("parallel_tools_full", True),
++        ("user_turn", False),
++    ],
++)
++def test_boundary_requires_all_outstanding_tool_results(name: str, expected: bool) -> None:
++    data = json.loads((FIXTURES / f"{name}.json").read_text())
++    assert MessagesProfile().is_action_boundary(data["body"]) is expected
++
++
++def test_orphan_tool_result_is_not_an_action_boundary() -> None:
++    assert not MessagesProfile().is_action_boundary(
++        {
++            "messages": [
++                {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "missing"}]}
++            ]
++        }
++    )
++
++
++def test_profile_keeps_pinned_unclassifiable_failure() -> None:
++    from adrl.config.loaders import load_bundle
++    from adrl.config.settings import Settings
++    from adrl.wire.classify import UnclassifiableError
++
++    config = load_bundle(Settings(config_dir=CONFIG_DIR)).utility_fingerprints
++    profile = MessagesProfile()
++    request = profile.parse("POST", "/v1/messages", {}, b"not valid JSON")
++    with pytest.raises(UnclassifiableError):
++        profile.classify(request, config, pinned=True)
++    assert profile.classify(request, config, pinned=False).request_class is RequestClass.PASSTHROUGH
+--- /dev/null
++++ b/tools/export_api_contract.py
+@@ -0,0 +1,21 @@
++"""Export the API schema deterministically. Primary: ADRL-SEM-007."""
++
++from __future__ import annotations
++
++import argparse
++import json
++from pathlib import Path
++
++from adrl.api.schema import openapi_document
++
++
++def main() -> None:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--out", type=Path, required=True)
++    args = parser.parse_args()
++    args.out.parent.mkdir(parents=True, exist_ok=True)
++    args.out.write_text(json.dumps(openapi_document(), indent=2, sort_keys=True) + "\n")
++
++
++if __name__ == "__main__":
++    main()
+--- a/docs/adr-module-map.md
++++ b/docs/adr-module-map.md
+@@ -2,12 +2,14 @@
+ 
+ Generated from module docstrings. Regenerate with `tools/adr_module_map.py`.
+ 
+-Register: `/Users/arunmenon/projects/adrl-world-class/adr` (77 decisions). Mapped: 73 of 77. Phantom citations: 0. Register decisions with no module: 4.
++Register: `/Users/arunmenon/projects/adrl-world-class/adr` (77 decisions). Mapped: 74 of 77. Phantom citations: 0. Register decisions with no module: 3.
+ 
+ ## By module
+ 
+ | Module | ADR IDs | Docstring |
+ |---|---|---|
++| `adrl/api/contracts.py` | ADRL-MEM-001, ADRL-SEM-007, ADRL-TRU-001 | Versioned product records. Primary: ADRL-SEM-007. Secondary: ADRL-MEM-001, ADRL-TRU-001. |
++| `adrl/api/schema.py` | ADRL-FND-001, ADRL-SEM-007 | Export the product API preview. Primary: ADRL-SEM-007. Secondary: ADRL-FND-001. |
+ | `adrl/app.py` | ADRL-FND-001, ADRL-FND-002, ADRL-LRN-007 | Composition root. Primary: ADRL-FND-002. |
+ | `adrl/cascade/boundary.py` | ADRL-CAS-003 | Action boundary on the wire. Primary: ADRL-CAS-003. |
+ | `adrl/cascade/controller.py` | ADRL-CAS-001, ADRL-CAS-003, ADRL-CAS-004, ADRL-CAS-005, ADRL-CAS-006, ADRL-CAS-007, ADRL-CAS-008, ADRL-SEM-006 | Cascade controller: plan dispatch, observe responses, escalate at boundaries. |
+@@ -70,7 +72,7 @@
+ | `adrl/ledger/upcast.py` | ADRL-MEM-001, ADRL-MEM-004 | Schema upcasters for old event payloads. Primary: ADRL-MEM-001. Secondary: ADRL-MEM-004. |
+ | `adrl/ledger/verification.py` | ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-005, ADRL-MEM-009, ADRL-MEM-010, ADRL-SAF-007 | Verification events with provenance, and the begin/finish job flow. Primary: ADRL-MEM-003. |
+ | `adrl/proxy/asgi.py` | ADRL-FND-001 | Starlette application exposing the proxy. Primary: ADRL-FND-001. |
+-| `adrl/proxy/errors.py` | ADRL-CAS-007, ADRL-SAF-004, ADRL-SAF-005, ADRL-SEM-004 | Error and synthetic-response rendering. Primary: ADRL-CAS-007. |
++| `adrl/proxy/errors.py` | ADRL-CAS-007, ADRL-SEM-007 | Compatibility exports for Messages responses. Primary: ADRL-CAS-007. Secondary: ADRL-SEM-007. |
+ | `adrl/proxy/fallback.py` | ADRL-FND-004, ADRL-OPS-008, ADRL-SAF-001, ADRL-SAF-009 | Fail to last-known-safe. Primary: ADRL-FND-004. Secondary: ADRL-SAF-001, ADRL-SAF-009. |
+ | `adrl/proxy/observe_only.py` | ADRL-FND-001, ADRL-MEM-006, ADRL-SEM-006 | Observe-only stage implementations. Primary: ADRL-FND-001. Secondary: ADRL-SEM-006, ADRL-MEM-006. |
+ | `adrl/proxy/pipeline.py` | ADRL-CAS-006, ADRL-FND-001, ADRL-FND-003, ADRL-FND-004, ADRL-SAF-001, ADRL-SAF-009, ADRL-SEM-003, ADRL-SEM-004, ADRL-SEM-006, ADRL-TRU-002 | The per-request pipeline. Primary: ADRL-FND-003. |
+@@ -88,10 +90,14 @@
+ | `adrl/telemetry/logging.py` | ADRL-OPS-001 | structlog JSON logging with contextvars. Primary: ADRL-OPS-001 (referenced by gloss). |
+ | `adrl/telemetry/metrics.py` | ADRL-FND-004, ADRL-MEM-006, ADRL-SAF-001, ADRL-SAF-005, ADRL-SAF-009, ADRL-SEM-001 | Prometheus SLIs named in the decisions. Primary: ADRL-FND-004. |
+ | `adrl/telemetry/semconv.py` | ADRL-RTG-008 | OpenTelemetry GenAI semantic-convention attribute names. Primary: ADRL-RTG-008. |
++| `adrl/wire/adapters.py` | ADRL-SEM-002, ADRL-SEM-007 | Harness identity evidence adapters. Primary: ADRL-SEM-002. Secondary: ADRL-SEM-007. |
+ | `adrl/wire/classify.py` | ADRL-FND-003, ADRL-SEM-001, ADRL-SEM-004 | Mechanical request classification. Primary: ADRL-SEM-001. Secondary: ADRL-SEM-004, ADRL-FND-003. |
+ | `adrl/wire/identity.py` | ADRL-SEM-002, ADRL-SEM-006 | Session key and lineage identity. Primary: ADRL-SEM-002. Secondary: ADRL-SEM-006. |
+ | `adrl/wire/observe.py` | ADRL-CAS-003, ADRL-CAS-006, ADRL-FND-001, ADRL-OPS-006, ADRL-RTG-009, ADRL-TRU-002 | Response observation on the relayed byte stream. Primary: ADRL-CAS-006. |
+ | `adrl/wire/parse.py` | ADRL-FND-001, ADRL-SEM-001 | Read-only view of an inbound request. Primary: ADRL-SEM-001. Secondary: ADRL-FND-001. |
++| `adrl/wire/profiles/base.py` | ADRL-FND-001, ADRL-SEM-007 | Protocol interpretation ports. Primary: ADRL-SEM-007. Secondary: ADRL-FND-001. |
++| `adrl/wire/profiles/messages.py` | ADRL-FND-001, ADRL-SEM-007 | Messages protocol interpretation. Primary: ADRL-SEM-007. Secondary: ADRL-FND-001. |
++| `adrl/wire/profiles/messages_responses.py` | ADRL-CAS-007, ADRL-SAF-004, ADRL-SAF-005, ADRL-SEM-004, ADRL-SEM-007 | Messages errors and synthetic responses. Primary: ADRL-CAS-007. Secondary: ADRL-SEM-007. |
+ | `adrl/wire/rewrite.py` | ADRL-FND-001, ADRL-FND-002 | Body rewrite for non-Claude rungs. Primary: ADRL-FND-001. Secondary: ADRL-FND-002. |
+ 
+ ## By decision (register only)
+@@ -104,7 +110,7 @@
+ | ADRL-CAS-004 | `adrl/cascade/controller.py`, `adrl/cascade/handoff.py`, `adrl/config/models.py`, `adrl/core/types.py` |
+ | ADRL-CAS-005 | `adrl/cascade/controller.py`, `adrl/cascade/sticky.py`, `adrl/learning/explore.py`, `adrl/ledger/outcomes.py`, `adrl/proxy/stages.py` |
+ | ADRL-CAS-006 | `adrl/cascade/controller.py`, `adrl/cascade/sticky.py`, `adrl/core/types.py`, `adrl/ledger/state.py`, `adrl/proxy/pipeline.py`, `adrl/wire/observe.py` |
+-| ADRL-CAS-007 | `adrl/cascade/controller.py`, `adrl/core/errors.py`, `adrl/proxy/errors.py`, `adrl/proxy/upstream.py` |
++| ADRL-CAS-007 | `adrl/cascade/controller.py`, `adrl/core/errors.py`, `adrl/proxy/errors.py`, `adrl/proxy/upstream.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-CAS-008 | `adrl/cascade/controller.py` |
+ | ADRL-CAS-009 | `adrl/routing/side_effects.py` |
+ | ADRL-EVL-002 | `adrl/learning/dataset.py` |
+@@ -114,7 +120,7 @@
+ | ADRL-EVL-006 | `adrl/learning/artifacts.py` |
+ | ADRL-EVL-007 | `adrl/learning/artifacts.py` |
+ | ADRL-EVL-009 | `adrl/learning/readiness.py`, `adrl/ledger/readiness.py` |
+-| ADRL-FND-001 | `adrl/app.py`, `adrl/proxy/asgi.py`, `adrl/proxy/observe_only.py`, `adrl/proxy/pipeline.py`, `adrl/proxy/upstream.py`, `adrl/wire/observe.py`, `adrl/wire/parse.py`, `adrl/wire/rewrite.py` |
++| ADRL-FND-001 | `adrl/api/schema.py`, `adrl/app.py`, `adrl/proxy/asgi.py`, `adrl/proxy/observe_only.py`, `adrl/proxy/pipeline.py`, `adrl/proxy/upstream.py`, `adrl/wire/observe.py`, `adrl/wire/parse.py`, `adrl/wire/profiles/base.py`, `adrl/wire/profiles/messages.py`, `adrl/wire/rewrite.py` |
+ | ADRL-FND-002 | `adrl/app.py`, `adrl/config/checks.py`, `adrl/config/loaders.py`, `adrl/config/models.py`, `adrl/core/ports.py`, `adrl/gates/deployments.py`, `adrl/proxy/stages.py`, `adrl/wire/rewrite.py` |
+ | ADRL-FND-003 | `adrl/proxy/pipeline.py`, `adrl/wire/classify.py` |
+ | ADRL-FND-004 | `adrl/gates/pipeline.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/telemetry/metrics.py` |
+@@ -127,7 +133,7 @@
+ | ADRL-LRN-006 | `adrl/learning/abstention.py`, `adrl/learning/readiness.py` |
+ | ADRL-LRN-007 | `adrl/app.py`, `adrl/learning/artifacts.py` |
+ | ADRL-LRN-008 | `adrl/learning/explore.py`, `adrl/learning/tiers.py`, `adrl/routing/advisor.py`, `adrl/routing/router.py` |
+-| ADRL-MEM-001 | `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/replay.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
++| ADRL-MEM-001 | `adrl/api/contracts.py`, `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/replay.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
+ | ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-004 | `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/learning/artifacts.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/upcast.py` |
+@@ -156,19 +162,20 @@
+ | ADRL-SAF-001 | `adrl/core/types.py`, `adrl/gates/deployments.py`, `adrl/gates/pipeline.py`, `adrl/learning/explore.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/proxy/stages.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-SAF-002 | `adrl/gates/pin.py`, `adrl/gates/pipeline.py`, `adrl/learning/explore.py`, `adrl/learning/pairs.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/facade.py`, `adrl/ledger/state.py` |
+ | ADRL-SAF-003 | `adrl/core/ports.py`, `adrl/gates/content.py`, `adrl/gates/coverage.py`, `adrl/gates/detectors.py`, `adrl/gates/measure.py`, `adrl/gates/pipeline.py`, `adrl/gates/secrets.py`, `adrl/gates/suppression.py` |
+-| ADRL-SAF-004 | `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/proxy/errors.py` |
+-| ADRL-SAF-005 | `adrl/config/checks.py`, `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py`, `adrl/proxy/errors.py`, `adrl/telemetry/metrics.py` |
++| ADRL-SAF-004 | `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/wire/profiles/messages_responses.py` |
++| ADRL-SAF-005 | `adrl/config/checks.py`, `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py`, `adrl/telemetry/metrics.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-006 | `adrl/core/ports.py`, `adrl/gates/content.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py` |
+ | ADRL-SAF-007 | `adrl/core/ports.py`, `adrl/gates/sandbox.py`, `adrl/ledger/verification.py` |
+ | ADRL-SAF-008 | `adrl/config/loaders.py`, `adrl/config/models.py`, `adrl/gates/content.py`, `adrl/gates/deployments.py`, `adrl/gates/pipeline.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py` |
+ | ADRL-SAF-009 | `adrl/cli/main.py`, `adrl/gates/deployments.py`, `adrl/gates/egress.py`, `adrl/gates/pipeline.py`, `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-SEM-001 | `adrl/core/types.py`, `adrl/gates/feasibility.py`, `adrl/telemetry/metrics.py`, `adrl/wire/classify.py`, `adrl/wire/parse.py` |
+-| ADRL-SEM-002 | `adrl/core/ids.py`, `adrl/wire/identity.py` |
++| ADRL-SEM-002 | `adrl/core/ids.py`, `adrl/wire/adapters.py`, `adrl/wire/identity.py` |
+ | ADRL-SEM-003 | `adrl/proxy/pipeline.py` |
+-| ADRL-SEM-004 | `adrl/config/models.py`, `adrl/gates/block.py`, `adrl/proxy/errors.py`, `adrl/proxy/pipeline.py`, `adrl/wire/classify.py` |
++| ADRL-SEM-004 | `adrl/config/models.py`, `adrl/gates/block.py`, `adrl/proxy/pipeline.py`, `adrl/wire/classify.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SEM-005 | `adrl/cascade/sticky.py` |
+ | ADRL-SEM-006 | `adrl/cascade/controller.py`, `adrl/proxy/observe_only.py`, `adrl/proxy/pipeline.py`, `adrl/wire/identity.py` |
+-| ADRL-TRU-001 | `adrl/gates/repo_class.py`, `adrl/gates/workload.py` |
++| ADRL-SEM-007 | `adrl/api/contracts.py`, `adrl/api/schema.py`, `adrl/proxy/errors.py`, `adrl/wire/adapters.py`, `adrl/wire/profiles/base.py`, `adrl/wire/profiles/messages.py`, `adrl/wire/profiles/messages_responses.py` |
++| ADRL-TRU-001 | `adrl/api/contracts.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py` |
+ | ADRL-TRU-002 | `adrl/core/types.py`, `adrl/gates/deployments.py`, `adrl/proxy/pipeline.py`, `adrl/wire/observe.py` |
+ | ADRL-TRU-003 | `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py` |
+ 
+@@ -177,7 +184,6 @@
+ - ADRL-EVL-001
+ - ADRL-EVL-008
+ - ADRL-RTG-007
+-- ADRL-SEM-007
+ 
+ ## Phantom citations (not in the register)
+ 
+--- a/docs/data-inventory.md
++++ b/docs/data-inventory.md
+@@ -40,7 +40,7 @@
+ | `decisions.cascade_reason` | `skeleton` |  |
+ | `decisions.classifier_provenance_json` | `skeleton` | model id, prompt hash, label, confidence |
+ | `decisions.content_bearing` | `skeleton` |  |
+-| `decisions.context_json` | `skeleton` | identifiers, verdict records and config versions |
++| `decisions.context_json` | `skeleton` | identifiers, verdict records, config versions, protocol/adapter IDs and versions, supported-operation flag |
+ | `decisions.decided_rung` | `skeleton` |  |
+ | `decisions.estimator` | `skeleton` |  |
+ | `decisions.estimator_version` | `skeleton` |  |
+--- /dev/null
++++ b/docs/protocol-boundary.md
+@@ -0,0 +1,54 @@
++# Protocol boundary and API preview
++
++Primary: ADRL-SEM-007. Secondary: ADRL-FND-001, ADRL-SEM-002, ADRL-MEM-001, ADRL-TRU-001.
++
++## Implemented in this work package
++
++The pipeline selects its installed profile before classification. `MessagesProfile` owns
++Messages parsing/classification, rewrite serialization, stream observation, native errors,
++utility responses, token-count rendering and the pipeline's boundary interpretation.
++`ClaudeCodeAdapter` extracts correlation signals. The shared identity resolver consumes those
++signals, preserving existing header, metadata, anonymous and parent-chain behavior. Old resolver
++entry points remain compatible. Neither the adapter nor a native session header authenticates a
++repository; existing workload gates still own that check.
++
++The request context and decision context record the profile and adapter IDs and versions. Native
++JSON remains an inspection view beside the original bytes. On the unchanged path, the gateway
++receives those original bytes. Protocol ports do not imply arbitrary profiles are safe to install.
++
++`GET /adrl/v1/capabilities` describes the shipped implementation. It reports only Messages and
++the Claude Code correlation adapter, offline fixture validation, no implemented hook ingestion,
++and no tested live harness version. It does not attest runtime enforcement or provider health.
++
++The other product routes are schema previews in `api/adrl-api-v1-preview.json`. They currently
++return 501. The entire `/adrl/v1` namespace is reserved locally, so proposed session or event
++payloads cannot be forwarded to a provider by the legacy catch-all route. Re-export the contract:
++
++```bash
++PYTHONPATH=src .venv/bin/python tools/export_api_contract.py --out api/adrl-api-v1-preview.json
++```
++
++## Deliberately remaining work
++
++The gates, feature extraction, transcript transformation and cascade still inspect Messages
++JSON. They must gain explicit profile coverage before Responses admission. A second parser alone
++is insufficient. Claude Code utility fingerprints also require a separate corpus/configuration
++for another harness. No OpenCode or Codex integration is claimed by this extraction.
++
++Unknown provider paths keep their existing forwarding behavior. Legacy Messages-prefix suffixes
++also retain their old classifier behavior; only the two advertised endpoints are supported
++operations. The decision context marks whether its operation is supported. Unknown endpoint
++rejection on an enforcing listener is a separate FND/SEM change required before product release.
++The Responses admission document does not activate that policy on the current listener.
++
++Session issuance, credential refresh/revocation, policy authorization, durable event ingestion,
++idempotency and scoped evidence reads remain unimplemented. Schemas reject extra fields and
++separate reported task outcomes from verified outcomes; schema validation cannot establish
++producer authority. The event service must derive producer identity from authenticated credentials,
++allow verification events only from authorized verifier producers, bind results to task snapshots,
++and acknowledge only durable append. Identical retries return the original acknowledgement;
++reused event IDs with different content are conflicts. Late events and sequence gaps stay visible.
++
++The first API version is a preview. Compatibility can change with explicit preview revision bumps
++until two harnesses and two protocols validate the boundary. See `responses-admission.md` for the
++second protocol's current scope decision and admission blockers.
+--- /dev/null
++++ b/docs/responses-admission.md
+@@ -0,0 +1,49 @@
++# Responses profile admission decision
++
++Primary: ADRL-SEM-007. Secondary: ADRL-FND-001, ADRL-SAF-002, ADRL-CAS-004.
++
++Status: candidate scope selected for the compatibility spike, 7 September 2026. Not registered
++in the runtime. No real Codex corpus or provider execution was collected in this work package.
++
++## Initial scope
++
++Investigate HTTP with native Responses streaming and client-carried input, initially bound to one
++approved compatible deployment. Do not introduce server-state retrieval or cross-profile handoff
++in the first profile. Codex documents the Responses wire API and a separate WebSocket capability
++setting; these configuration options alone do not prove a particular CLI version works in this
++scope. [Codex configuration](https://learn.chatgpt.com/docs/config-file/config-reference)
++
++For a future gated profile, reject non-null `previous_response_id` and conversation references
++until a state resolver is explicitly designed and tested. Do not strip them or silently continue
++with an incomplete transcript. Require `store=false` for the candidate request mode; this controls
++response-object storage and is not a claim about all provider retention. Responses can refer to
++previous state that is absent from the current request, which is why request-local scanning alone
++does not establish full history coverage. [Conversation state](https://developers.openai.com/api/docs/guides/conversation-state)
++
++Opaque reasoning and compaction items need custody and lineage rules before admission. Preserve
++their bytes and provider pairing when supported; do not turn them into text or discard them to
++make a test pass. Initially reject opaque state without an established, policy-compatible custody
++chain. If Codex requires these items, that is an admission blocker requiring implementation, not
++permission to downgrade its behavior. A pin must still cause local-or-block behavior; opaque
++provider-bound state cannot be handed to an incompatible local model. [Reasoning guide](https://developers.openai.com/api/docs/guides/reasoning)
++
++## Required corpus and conformance work
++
++| Case | Candidate treatment | Evidence required before registration |
++|---|---|---|
++| Explicit input messages | Interpret by native item/role rules, preserve raw bytes | Real CLI capture plus request/response comparison |
++| Function-call output | Map tool call IDs and complete/partial boundaries | Parallel calls, partial outputs, interruption and retry fixtures |
++| Referenced server state | Reject before dispatch | No stripping, fetching or unclassified fallback |
++| Opaque reasoning or compaction | Admit only with tested custody/pairing; otherwise reject | Continuation, restart, pin and foreign-lineage cases |
++| Images, files, hosted tools or external references | Unsupported until a content/egress rule exists | Content visibility and dispatch-coverage evidence |
++| Streaming and cancellation | Preserve events, errors and cancellation; never replay side effects | Fragmented streams, missing completion, disconnect and retry cases |
++| WebSocket transport | Outside the initial candidate scope | Either establish a working HTTP CLI configuration or explicitly implement transport support |
++| Child and resumed sessions | Preserve authoritative binding and restrictions | Real CLI identities plus restart/parent-return scenarios |
++
++These are acceptance cases, not claims that fixtures have been captured or that Codex always emits
++these fields. Use scrubbed captures from the selected CLI version. Test existing gates and cascade
++against the native view, record the request classes and content-bearing rules, render native error
++shapes, and complete all SEM-007 prerequisites. Cross-profile handoff remains forbidden.
++
++If the selected Codex build cannot run under this candidate scope, expand the profile through a
++reviewed state/transport design and tests. Do not advertise Codex support until it actually works.
+--- /dev/null
++++ b/api/adrl-api-v1-preview.json
+@@ -0,0 +1,1569 @@
++{
++  "components": {
++    "schemas": {
++      "AdapterCapability": {
++        "additionalProperties": false,
++        "properties": {
++          "adapter": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "identity": {
++            "enum": [
++              "correlation_only",
++              "authenticated_binding"
++            ],
++            "title": "Identity",
++            "type": "string"
++          },
++          "tested_harness_versions": {
++            "items": {
++              "type": "string"
++            },
++            "title": "Tested Harness Versions",
++            "type": "array"
++          },
++          "tool_events": {
++            "enum": [
++              "not_implemented",
++              "implemented"
++            ],
++            "title": "Tool Events",
++            "type": "string"
++          }
++        },
++        "required": [
++          "adapter",
++          "identity",
++          "tool_events",
++          "tested_harness_versions"
++        ],
++        "title": "AdapterCapability",
++        "type": "object"
++      },
++      "Capabilities": {
++        "additionalProperties": false,
++        "properties": {
++          "adapters": {
++            "items": {
++              "$ref": "#/components/schemas/AdapterCapability"
++            },
++            "title": "Adapters",
++            "type": "array"
++          },
++          "effective_enforcement": {
++            "const": "requires_session_and_runtime_checks",
++            "title": "Effective Enforcement",
++            "type": "string"
++          },
++          "product_operations": {
++            "items": {
++              "type": "string"
++            },
++            "title": "Product Operations",
++            "type": "array"
++          },
++          "profiles": {
++            "items": {
++              "$ref": "#/components/schemas/ProfileCapability"
++            },
++            "title": "Profiles",
++            "type": "array"
++          },
++          "schema_version": {
++            "const": "adrl-api-v1-preview.1",
++            "default": "adrl-api-v1-preview.1",
++            "title": "Schema Version",
++            "type": "string"
++          },
++          "scope": {
++            "const": "distribution",
++            "default": "distribution",
++            "title": "Scope",
++            "type": "string"
++          },
++          "unclassified_traffic": {
++            "const": "legacy_forwarding_without_profile_guarantees",
++            "title": "Unclassified Traffic",
++            "type": "string"
++          }
++        },
++        "required": [
++          "profiles",
++          "adapters",
++          "effective_enforcement",
++          "unclassified_traffic",
++          "product_operations"
++        ],
++        "title": "Capabilities",
++        "type": "object"
++      },
++      "ClosureEvent": {
++        "additionalProperties": false,
++        "properties": {
++          "event_id": {
++            "format": "uuid",
++            "title": "Event Id",
++            "type": "string"
++          },
++          "event_type": {
++            "const": "session.closed",
++            "title": "Event Type",
++            "type": "string"
++          },
++          "occurred_at": {
++            "format": "date-time",
++            "title": "Occurred At",
++            "type": "string"
++          },
++          "payload": {
++            "$ref": "#/components/schemas/TaskClosure"
++          },
++          "producer_seq": {
++            "minimum": 0,
++            "title": "Producer Seq",
++            "type": "integer"
++          },
++          "route_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Route Id"
++          },
++          "schema_version": {
++            "const": "adrl-api-v1-preview.1",
++            "default": "adrl-api-v1-preview.1",
++            "title": "Schema Version",
++            "type": "string"
++          },
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          }
++        },
++        "required": [
++          "event_id",
++          "session_id",
++          "producer_seq",
++          "occurred_at",
++          "event_type",
++          "payload"
++        ],
++        "title": "ClosureEvent",
++        "type": "object"
++      },
++      "CompactionEvent": {
++        "additionalProperties": false,
++        "properties": {
++          "event_id": {
++            "format": "uuid",
++            "title": "Event Id",
++            "type": "string"
++          },
++          "event_type": {
++            "const": "session.compacted",
++            "title": "Event Type",
++            "type": "string"
++          },
++          "occurred_at": {
++            "format": "date-time",
++            "title": "Occurred At",
++            "type": "string"
++          },
++          "payload": {
++            "$ref": "#/components/schemas/CompactionResult"
++          },
++          "producer_seq": {
++            "minimum": 0,
++            "title": "Producer Seq",
++            "type": "integer"
++          },
++          "route_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Route Id"
++          },
++          "schema_version": {
++            "const": "adrl-api-v1-preview.1",
++            "default": "adrl-api-v1-preview.1",
++            "title": "Schema Version",
++            "type": "string"
++          },
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          }
++        },
++        "required": [
++          "event_id",
++          "session_id",
++          "producer_seq",
++          "occurred_at",
++          "event_type",
++          "payload"
++        ],
++        "title": "CompactionEvent",
++        "type": "object"
++      },
++      "CompactionResult": {
++        "additionalProperties": false,
++        "properties": {
++          "after_state_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "After State Ref",
++            "type": "string"
++          },
++          "before_state_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Before State Ref",
++            "type": "string"
++          }
++        },
++        "required": [
++          "before_state_ref",
++          "after_state_ref"
++        ],
++        "title": "CompactionResult",
++        "type": "object"
++      },
++      "CoverageFact": {
++        "additionalProperties": false,
++        "properties": {
++          "dimension": {
++            "enum": [
++              "request_interception",
++              "identity_binding",
++              "content_inspection",
++              "dispatch_enforcement",
++              "tool_events",
++              "lineage",
++              "served_destination",
++              "outcome_verification"
++            ],
++            "title": "Dimension",
++            "type": "string"
++          },
++          "evidence_ref": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Evidence Ref"
++          },
++          "status": {
++            "enum": [
++              "enforced",
++              "observed",
++              "unavailable",
++              "unknown"
++            ],
++            "title": "Status",
++            "type": "string"
++          }
++        },
++        "required": [
++          "dimension",
++          "status"
++        ],
++        "title": "CoverageFact",
++        "type": "object"
++      },
++      "DecisionExplanation": {
++        "additionalProperties": false,
++        "properties": {
++          "adapter": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "attempts": {
++            "items": {
++              "$ref": "#/components/schemas/DispatchEvidence"
++            },
++            "title": "Attempts",
++            "type": "array"
++          },
++          "policy": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "profile": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "reason_codes": {
++            "items": {
++              "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++              "type": "string"
++            },
++            "title": "Reason Codes",
++            "type": "array"
++          },
++          "route_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Route Id",
++            "type": "string"
++          },
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          }
++        },
++        "required": [
++          "route_id",
++          "session_id",
++          "policy",
++          "profile",
++          "adapter",
++          "reason_codes",
++          "attempts"
++        ],
++        "title": "DecisionExplanation",
++        "type": "object"
++      },
++      "DispatchEvidence": {
++        "additionalProperties": false,
++        "properties": {
++          "attempt_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Attempt Id",
++            "type": "string"
++          },
++          "confidence": {
++            "enum": [
++              "unknown",
++              "assumed_intended",
++              "model_reported",
++              "gateway_reported"
++            ],
++            "title": "Confidence",
++            "type": "string"
++          },
++          "evidence_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Evidence Ref",
++            "type": "string"
++          },
++          "intended_deployment_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Intended Deployment Ref",
++            "type": "string"
++          },
++          "served_deployment_ref": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Served Deployment Ref"
++          }
++        },
++        "required": [
++          "attempt_id",
++          "intended_deployment_ref",
++          "confidence",
++          "evidence_ref"
++        ],
++        "title": "DispatchEvidence",
++        "type": "object"
++      },
++      "EventAcknowledgement": {
++        "additionalProperties": false,
++        "properties": {
++          "event_id": {
++            "format": "uuid",
++            "title": "Event Id",
++            "type": "string"
++          },
++          "ledger_sequence": {
++            "minimum": 0,
++            "title": "Ledger Sequence",
++            "type": "integer"
++          },
++          "producer_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Producer Id",
++            "type": "string"
++          },
++          "recorded_at": {
++            "format": "date-time",
++            "title": "Recorded At",
++            "type": "string"
++          },
++          "status": {
++            "enum": [
++              "recorded",
++              "duplicate"
++            ],
++            "title": "Status",
++            "type": "string"
++          }
++        },
++        "required": [
++          "event_id",
++          "producer_id",
++          "recorded_at",
++          "ledger_sequence",
++          "status"
++        ],
++        "title": "EventAcknowledgement",
++        "type": "object"
++      },
++      "EventRequest": {
++        "description": "Producer identity is derived from authentication, never from these claims.",
++        "discriminator": {
++          "mapping": {
++            "session.closed": "#/components/schemas/ClosureEvent",
++            "session.compacted": "#/components/schemas/CompactionEvent",
++            "tool.completed": "#/components/schemas/ToolEvent",
++            "verification.completed": "#/components/schemas/VerificationEvent"
++          },
++          "propertyName": "event_type"
++        },
++        "oneOf": [
++          {
++            "$ref": "#/components/schemas/ToolEvent"
++          },
++          {
++            "$ref": "#/components/schemas/ClosureEvent"
++          },
++          {
++            "$ref": "#/components/schemas/CompactionEvent"
++          },
++          {
++            "$ref": "#/components/schemas/VerificationEvent"
++          }
++        ],
++        "title": "EventRequest"
++      },
++      "ProductError": {
++        "additionalProperties": false,
++        "properties": {
++          "code": {
++            "enum": [
++              "not_implemented",
++              "unauthenticated",
++              "forbidden",
++              "unsupported_capability",
++              "event_conflict",
++              "temporarily_unavailable",
++              "invalid_request"
++            ],
++            "title": "Code",
++            "type": "string"
++          },
++          "message": {
++            "title": "Message",
++            "type": "string"
++          }
++        },
++        "required": [
++          "code",
++          "message"
++        ],
++        "title": "ProductError",
++        "type": "object"
++      },
++      "ProfileCapability": {
++        "additionalProperties": false,
++        "properties": {
++          "endpoints": {
++            "items": {
++              "type": "string"
++            },
++            "title": "Endpoints",
++            "type": "array"
++          },
++          "profile": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "transport": {
++            "const": "http",
++            "title": "Transport",
++            "type": "string"
++          },
++          "validation": {
++            "enum": [
++              "offline_fixtures",
++              "real_harness"
++            ],
++            "title": "Validation",
++            "type": "string"
++          }
++        },
++        "required": [
++          "profile",
++          "endpoints",
++          "transport",
++          "validation"
++        ],
++        "title": "ProfileCapability",
++        "type": "object"
++      },
++      "SessionBinding": {
++        "additionalProperties": false,
++        "properties": {
++          "credential_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Credential Ref",
++            "type": "string"
++          },
++          "expires_at": {
++            "format": "date-time",
++            "title": "Expires At",
++            "type": "string"
++          },
++          "session": {
++            "$ref": "#/components/schemas/SessionStatus"
++          }
++        },
++        "required": [
++          "session",
++          "credential_ref",
++          "expires_at"
++        ],
++        "title": "SessionBinding",
++        "type": "object"
++      },
++      "SessionRequest": {
++        "additionalProperties": false,
++        "properties": {
++          "adapter": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "parent_session_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Parent Session Id"
++          },
++          "profile": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "schema_version": {
++            "const": "adrl-api-v1-preview.1",
++            "default": "adrl-api-v1-preview.1",
++            "title": "Schema Version",
++            "type": "string"
++          },
++          "workload_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Workload Ref",
++            "type": "string"
++          }
++        },
++        "required": [
++          "adapter",
++          "profile",
++          "workload_ref"
++        ],
++        "title": "SessionRequest",
++        "type": "object"
++      },
++      "SessionStatus": {
++        "additionalProperties": false,
++        "properties": {
++          "adapter": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "coverage": {
++            "items": {
++              "$ref": "#/components/schemas/CoverageFact"
++            },
++            "title": "Coverage",
++            "type": "array"
++          },
++          "parent_session_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Parent Session Id"
++          },
++          "policy": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "profile": {
++            "$ref": "#/components/schemas/VersionRef"
++          },
++          "schema_version": {
++            "const": "adrl-api-v1-preview.1",
++            "default": "adrl-api-v1-preview.1",
++            "title": "Schema Version",
++            "type": "string"
++          },
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          },
++          "workload_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Workload Ref",
++            "type": "string"
++          }
++        },
++        "required": [
++          "session_id",
++          "workload_ref",
++          "policy",
++          "adapter",
++          "profile",
++          "coverage"
++        ],
++        "title": "SessionStatus",
++        "type": "object"
++      },
++      "TaskClosure": {
++        "additionalProperties": false,
++        "properties": {
++          "reported_outcome": {
++            "enum": [
++              "accepted",
++              "failed",
++              "abandoned",
++              "unknown"
++            ],
++            "title": "Reported Outcome",
++            "type": "string"
++          },
++          "task_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Task Ref",
++            "type": "string"
++          }
++        },
++        "required": [
++          "task_ref",
++          "reported_outcome"
++        ],
++        "title": "TaskClosure",
++        "type": "object"
++      },
++      "TimelineEntry": {
++        "additionalProperties": false,
++        "properties": {
++          "evidence_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Evidence Ref",
++            "type": "string"
++          },
++          "kind": {
++            "enum": [
++              "decision",
++              "dispatch",
++              "observation",
++              "verification",
++              "correction"
++            ],
++            "title": "Kind",
++            "type": "string"
++          },
++          "ledger_sequence": {
++            "minimum": 0,
++            "title": "Ledger Sequence",
++            "type": "integer"
++          },
++          "record_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Record Ref",
++            "type": "string"
++          },
++          "route_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Route Id"
++          }
++        },
++        "required": [
++          "ledger_sequence",
++          "record_ref",
++          "kind",
++          "evidence_ref"
++        ],
++        "title": "TimelineEntry",
++        "type": "object"
++      },
++      "TimelinePage": {
++        "additionalProperties": false,
++        "properties": {
++          "entries": {
++            "items": {
++              "$ref": "#/components/schemas/TimelineEntry"
++            },
++            "title": "Entries",
++            "type": "array"
++          },
++          "next_cursor": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Next Cursor"
++          },
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          }
++        },
++        "required": [
++          "session_id",
++          "entries"
++        ],
++        "title": "TimelinePage",
++        "type": "object"
++      },
++      "ToolEvent": {
++        "additionalProperties": false,
++        "properties": {
++          "event_id": {
++            "format": "uuid",
++            "title": "Event Id",
++            "type": "string"
++          },
++          "event_type": {
++            "const": "tool.completed",
++            "title": "Event Type",
++            "type": "string"
++          },
++          "occurred_at": {
++            "format": "date-time",
++            "title": "Occurred At",
++            "type": "string"
++          },
++          "payload": {
++            "$ref": "#/components/schemas/ToolResult"
++          },
++          "producer_seq": {
++            "minimum": 0,
++            "title": "Producer Seq",
++            "type": "integer"
++          },
++          "route_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Route Id"
++          },
++          "schema_version": {
++            "const": "adrl-api-v1-preview.1",
++            "default": "adrl-api-v1-preview.1",
++            "title": "Schema Version",
++            "type": "string"
++          },
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          }
++        },
++        "required": [
++          "event_id",
++          "session_id",
++          "producer_seq",
++          "occurred_at",
++          "event_type",
++          "payload"
++        ],
++        "title": "ToolEvent",
++        "type": "object"
++      },
++      "ToolResult": {
++        "additionalProperties": false,
++        "properties": {
++          "outcome": {
++            "enum": [
++              "completed",
++              "failed",
++              "cancelled",
++              "unknown"
++            ],
++            "title": "Outcome",
++            "type": "string"
++          },
++          "output_ref": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Output Ref"
++          },
++          "tool_call_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Tool Call Ref",
++            "type": "string"
++          }
++        },
++        "required": [
++          "tool_call_ref",
++          "outcome"
++        ],
++        "title": "ToolResult",
++        "type": "object"
++      },
++      "VerificationEvent": {
++        "additionalProperties": false,
++        "properties": {
++          "event_id": {
++            "format": "uuid",
++            "title": "Event Id",
++            "type": "string"
++          },
++          "event_type": {
++            "const": "verification.completed",
++            "title": "Event Type",
++            "type": "string"
++          },
++          "occurred_at": {
++            "format": "date-time",
++            "title": "Occurred At",
++            "type": "string"
++          },
++          "payload": {
++            "$ref": "#/components/schemas/VerificationResult"
++          },
++          "producer_seq": {
++            "minimum": 0,
++            "title": "Producer Seq",
++            "type": "integer"
++          },
++          "route_id": {
++            "anyOf": [
++              {
++                "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++                "type": "string"
++              },
++              {
++                "type": "null"
++              }
++            ],
++            "default": null,
++            "title": "Route Id"
++          },
++          "schema_version": {
++            "const": "adrl-api-v1-preview.1",
++            "default": "adrl-api-v1-preview.1",
++            "title": "Schema Version",
++            "type": "string"
++          },
++          "session_id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Session Id",
++            "type": "string"
++          }
++        },
++        "required": [
++          "event_id",
++          "session_id",
++          "producer_seq",
++          "occurred_at",
++          "event_type",
++          "payload"
++        ],
++        "title": "VerificationEvent",
++        "type": "object"
++      },
++      "VerificationResult": {
++        "additionalProperties": false,
++        "properties": {
++          "evidence_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Evidence Ref",
++            "type": "string"
++          },
++          "result": {
++            "enum": [
++              "passed",
++              "failed",
++              "indeterminate"
++            ],
++            "title": "Result",
++            "type": "string"
++          },
++          "snapshot_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Snapshot Ref",
++            "type": "string"
++          },
++          "task_ref": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Task Ref",
++            "type": "string"
++          },
++          "verifier": {
++            "$ref": "#/components/schemas/VersionRef"
++          }
++        },
++        "required": [
++          "task_ref",
++          "snapshot_ref",
++          "verifier",
++          "result",
++          "evidence_ref"
++        ],
++        "title": "VerificationResult",
++        "type": "object"
++      },
++      "VersionRef": {
++        "additionalProperties": false,
++        "properties": {
++          "id": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Id",
++            "type": "string"
++          },
++          "version": {
++            "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
++            "title": "Version",
++            "type": "string"
++          }
++        },
++        "required": [
++          "id",
++          "version"
++        ],
++        "title": "VersionRef",
++        "type": "object"
++      }
++    },
++    "securitySchemes": {
++      "adrlWorkload": {
++        "description": "ADRL-scoped credential, separate from provider credentials. Issuance and verification are not yet implemented.",
++        "scheme": "bearer",
++        "type": "http"
++      }
++    }
++  },
++  "info": {
++    "description": "Only capability discovery is implemented. Native model APIs are defined by their protocol profiles, not translated into this schema.",
++    "title": "ADRL product API preview",
++    "version": "adrl-api-v1-preview.1"
++  },
++  "openapi": "3.1.0",
++  "paths": {
++    "/adrl/v1/capabilities": {
++      "get": {
++        "operationId": "getCapabilities",
++        "responses": {
++          "200": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/Capabilities"
++                }
++              }
++            },
++            "description": "Success"
++          }
++        },
++        "security": [],
++        "x-adrl-implementation": "implemented"
++      }
++    },
++    "/adrl/v1/decisions/{route_id}": {
++      "get": {
++        "description": "Schema preview only. The current runtime returns 501 and performs no operation. Future handlers must enforce workload and producer authority.",
++        "operationId": "getDecision",
++        "parameters": [
++          {
++            "in": "path",
++            "name": "route_id",
++            "required": true,
++            "schema": {
++              "minLength": 1,
++              "type": "string"
++            }
++          }
++        ],
++        "responses": {
++          "200": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/DecisionExplanation"
++                }
++              }
++            },
++            "description": "Success"
++          },
++          "400": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Invalid request"
++          },
++          "401": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Unauthenticated"
++          },
++          "403": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Forbidden"
++          },
++          "409": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Conflicting event identity"
++          },
++          "422": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Unsupported capability"
++          },
++          "501": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Not implemented"
++          },
++          "503": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Temporarily unavailable"
++          }
++        },
++        "security": [
++          {
++            "adrlWorkload": []
++          }
++        ],
++        "x-adrl-implementation": "planned"
++      }
++    },
++    "/adrl/v1/events": {
++      "post": {
++        "description": "Schema preview only. The current runtime returns 501 and performs no operation. Future handlers must enforce workload and producer authority.",
++        "operationId": "appendEvent",
++        "requestBody": {
++          "content": {
++            "application/json": {
++              "schema": {
++                "$ref": "#/components/schemas/EventRequest"
++              }
++            }
++          },
++          "required": true
++        },
++        "responses": {
++          "200": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/EventAcknowledgement"
++                }
++              }
++            },
++            "description": "Success"
++          },
++          "400": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Invalid request"
++          },
++          "401": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Unauthenticated"
++          },
++          "403": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Forbidden"
++          },
++          "409": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Conflicting event identity"
++          },
++          "422": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Unsupported capability"
++          },
++          "501": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Not implemented"
++          },
++          "503": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Temporarily unavailable"
++          }
++        },
++        "security": [
++          {
++            "adrlWorkload": []
++          }
++        ],
++        "x-adrl-implementation": "planned"
++      }
++    },
++    "/adrl/v1/sessions": {
++      "post": {
++        "description": "Schema preview only. The current runtime returns 501 and performs no operation. Future handlers must enforce workload and producer authority.",
++        "operationId": "bindSession",
++        "requestBody": {
++          "content": {
++            "application/json": {
++              "schema": {
++                "$ref": "#/components/schemas/SessionRequest"
++              }
++            }
++          },
++          "required": true
++        },
++        "responses": {
++          "200": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/SessionBinding"
++                }
++              }
++            },
++            "description": "Success"
++          },
++          "400": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Invalid request"
++          },
++          "401": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Unauthenticated"
++          },
++          "403": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Forbidden"
++          },
++          "409": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Conflicting event identity"
++          },
++          "422": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Unsupported capability"
++          },
++          "501": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Not implemented"
++          },
++          "503": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Temporarily unavailable"
++          }
++        },
++        "security": [
++          {
++            "adrlWorkload": []
++          }
++        ],
++        "x-adrl-implementation": "planned"
++      }
++    },
++    "/adrl/v1/sessions/{session_id}": {
++      "get": {
++        "description": "Schema preview only. The current runtime returns 501 and performs no operation. Future handlers must enforce workload and producer authority.",
++        "operationId": "getSession",
++        "parameters": [
++          {
++            "in": "path",
++            "name": "session_id",
++            "required": true,
++            "schema": {
++              "minLength": 1,
++              "type": "string"
++            }
++          }
++        ],
++        "responses": {
++          "200": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/SessionStatus"
++                }
++              }
++            },
++            "description": "Success"
++          },
++          "400": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Invalid request"
++          },
++          "401": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Unauthenticated"
++          },
++          "403": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Forbidden"
++          },
++          "409": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Conflicting event identity"
++          },
++          "422": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Unsupported capability"
++          },
++          "501": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Not implemented"
++          },
++          "503": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Temporarily unavailable"
++          }
++        },
++        "security": [
++          {
++            "adrlWorkload": []
++          }
++        ],
++        "x-adrl-implementation": "planned"
++      }
++    },
++    "/adrl/v1/sessions/{session_id}/timeline": {
++      "get": {
++        "description": "Schema preview only. The current runtime returns 501 and performs no operation. Future handlers must enforce workload and producer authority.",
++        "operationId": "getTimeline",
++        "parameters": [
++          {
++            "in": "path",
++            "name": "session_id",
++            "required": true,
++            "schema": {
++              "minLength": 1,
++              "type": "string"
++            }
++          },
++          {
++            "in": "query",
++            "name": "cursor",
++            "schema": {
++              "type": "string"
++            }
++          },
++          {
++            "in": "query",
++            "name": "limit",
++            "schema": {
++              "default": 50,
++              "maximum": 100,
++              "minimum": 1,
++              "type": "integer"
++            }
++          }
++        ],
++        "responses": {
++          "200": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/TimelinePage"
++                }
++              }
++            },
++            "description": "Success"
++          },
++          "400": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Invalid request"
++          },
++          "401": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Unauthenticated"
++          },
++          "403": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Forbidden"
++          },
++          "409": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Conflicting event identity"
++          },
++          "422": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Unsupported capability"
++          },
++          "501": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Not implemented"
++          },
++          "503": {
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/ProductError"
++                }
++              }
++            },
++            "description": "Temporarily unavailable"
++          }
++        },
++        "security": [
++          {
++            "adrlWorkload": []
++          }
++        ],
++        "x-adrl-implementation": "planned"
++      }
++    }
++  }
++}
+--- a/README.md
++++ b/README.md
+@@ -11,6 +11,7 @@
+                    detectors, repo classification (signed), endpoint inventory (signed),
+                    learning contract, fingerprints
+ src/adrl/
++  api/             product discovery and versioned preview schemas
+   core/            shared vocabulary: enums, ids, types, ports, errors
+   config/          settings, config models, loaders, load-time checks
+   wire/      SEM   request parsing, request classes, session and lineage identity, SSE observer, body rewrite
+@@ -78,7 +79,7 @@
+ ## Invariants the code enforces
+ 
+ - The frontier and passthrough path forwards the original request bytes and relays response bytes untouched (FND-001). The removal test asserts byte identity. One carve-out: after an escalation whose source turn had no thinking blocks, the thinking parameter is stripped from frontier-bound requests until the next user turn (CAS-004), recorded as thinking_suppressed.
+-- Every request of every class is gated; routing happens once per user turn and continuations inherit (FND-003, SAF-001, SEM-003).
++- Every supported Messages request is gated; routing happens once per user turn and continuations inherit (FND-003, SAF-001, SEM-003).
+ - The pin is one-way, durable across restart, inherited by descendants, and released only by an audited, reason-coded human action (SAF-002).
+ - Repository identity is a signed workload assertion minted by `adrl launch`, never prompt text. A harness without one is an unknown workload and stays local-only (SAF-008). Manifest lookup is an exact match.
+ - Gate observe mode is observational: findings land in a shadow namespace, nothing pins or shreds, and only an audited `adrl gates promote-shadow` turns one into a pin (SAF-001, SAF-002).
+@@ -94,3 +95,20 @@
+ ## Status
+ 
+ This is a D1/D2 build: the mechanisms exist and are unit, integration and end-to-end tested against a fake gateway, and nothing here has run against organic traffic. Maturity is claimed per decision in the register, never here, and this implementation inherits no maturity from the prior one (EVL-007 as proposed). On 2026-09-03 an external review of the first build found three P0 and several P1 defects; all were fixed with regression tests, and the register gained 22 Proposed decisions (a TRU bucket, first captures of EVL and OPS, SEM-007, CAS-009) plus six proposed amendments, all pending disposition by the register owner. Code presence is not readiness (FND-005). The adversarial suites under `tests/adversarial` run in CI; their results are published, not required to pass, until the SAF and TRU decisions leave D2. Residual gaps are listed in `docs/known-gaps.md`.
++
++## Product integration boundary
++
++The first extraction toward a multi-harness product is implemented: `MessagesProfile` owns the
++pipeline's protocol interpretation and `ClaudeCodeAdapter` supplies identity correlation signals.
++Decision records include both component versions. This does not yet add a second harness or make
++the gates and cascade independent of Messages semantics.
++
++`GET /adrl/v1/capabilities` reports shipped profiles, adapters and implementation limits. Session,
++event and evidence APIs have a generated OpenAPI preview at `api/adrl-api-v1-preview.json`; their
++handlers are not implemented and return 501. The product namespace is never forwarded to the
++model gateway. Other unclassified provider paths retain legacy forwarding without profile
++coverage guarantees.
++
++Read `docs/protocol-boundary.md` for the current boundary, contract export command and next work,
++and `docs/responses-admission.md` for the selected Responses spike scope and remaining admission
++requirements. No paid provider runs or real harness compatibility are established by this work.

@@ -1,0 +1,48 @@
+[
+  {
+    "command": [
+      "python3",
+      "-m",
+      "py_compile",
+      "tools/check_taxonomy_sync.py",
+      "tests/test_taxonomy_sync.py"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "tools/check_taxonomy_sync.py",
+      "tests/test_taxonomy_sync.py"
+    ],
+    "exit": 0,
+    "output": "All checks passed!\n"
+  },
+  {
+    "command": [
+      "/Users/arunmenon/projects/adrl-core/.venv/bin/python",
+      "-m",
+      "ruff",
+      "format",
+      "--check",
+      "tools/check_taxonomy_sync.py",
+      "tests/test_taxonomy_sync.py"
+    ],
+    "exit": 0,
+    "output": "2 files already formatted\n"
+  },
+  {
+    "skill": ".codex",
+    "exit": 0,
+    "output": "Skill is valid!\n"
+  },
+  {
+    "skill": ".claude",
+    "exit": 0,
+    "output": "Skill is valid!\n"
+  }
+]

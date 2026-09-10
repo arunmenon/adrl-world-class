@@ -1,0 +1,193 @@
+{
+  "status": "applied",
+  "date": "2026-09-07",
+  "source_root": "/Users/arunmenon/projects/adrl-core",
+  "staging_root": "/private/tmp/adrl-protocol-x8wbh6f7/work",
+  "baseline_manifest": "/private/tmp/adrl-protocol-x8wbh6f7/baseline-manifest.json",
+  "tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "463",
+    "time": "13.051",
+    "timestamp": "2026-09-07T14:18:43.525291+05:30",
+    "hostname": "Aruns-MacBook-Pro.local"
+  },
+  "checks": {
+    "ruff_lint": "passed",
+    "ruff_format": "passed",
+    "mypy": "passed, 106 source files",
+    "pytest": "passed, 463 tests",
+    "ledger_discipline": "passed",
+    "configuration": "passed, 9 checks",
+    "data_inventory": "passed, 215 fields",
+    "learning_contract": "passed, 0 manifests"
+  },
+  "scope": "Messages extraction and product API preview; no paid provider or real harness run",
+  "files": [
+    {
+      "path": "src/adrl/api/__init__.py",
+      "before_sha256": null,
+      "after_sha256": "02d1a3f2332e8662f52c584a15c490ba068b58294f970536391f0ca9d2bcedef",
+      "bytes": 77
+    },
+    {
+      "path": "src/adrl/api/contracts.py",
+      "before_sha256": null,
+      "after_sha256": "5e5fa8ed8965bbd30b86adca967ac661007f64180a9599dc53dfca4341fd97f8",
+      "bytes": 6855
+    },
+    {
+      "path": "src/adrl/api/schema.py",
+      "before_sha256": null,
+      "after_sha256": "721bc6aacf63e655a05fefb065863896d85d82c1a56ea1c1c3f8cfe8a699235c",
+      "bytes": 5901
+    },
+    {
+      "path": "src/adrl/core/types.py",
+      "before_sha256": "6406a07554a7aeec76049f913c168b55cc8abf5372a0555a7c5b46532816594d",
+      "after_sha256": "1378a303072abce0c1257c6c1b346991b83dbeee204e51d5a8560c2e2f57e1b1",
+      "bytes": 13725
+    },
+    {
+      "path": "src/adrl/proxy/asgi.py",
+      "before_sha256": "05cc54b413cd1c4aecd852fa930e7ceb5f1a612e43f275fb233e1b6edee88855",
+      "after_sha256": "e0449527ce69ec88b917472a46879e663cc68c5e3f3c6f52b05ad1d4589e193a",
+      "bytes": 4640
+    },
+    {
+      "path": "src/adrl/proxy/errors.py",
+      "before_sha256": "68ffb5c5367da47a1287b872bc0ec81a48a7ac306b3c3036d9b137fa7a25a00e",
+      "after_sha256": "6208b8f4b9f2442a33ea8022419fd22903dab91079e4de256edf755d6bdf4a36",
+      "bytes": 940
+    },
+    {
+      "path": "src/adrl/proxy/pipeline.py",
+      "before_sha256": "9a87d0556b600f3d249ea21351800a40fa6ea93c21889313f256cbb3ee2be270",
+      "after_sha256": "e6bb0b1042ac35c31e3d9d9ef0e9b9edf7e6ce1176624ebb3a51eb694f1e4596",
+      "bytes": 47587
+    },
+    {
+      "path": "src/adrl/proxy/upstream.py",
+      "before_sha256": "bc6ab7d4af8b206f24b6f613838037ec3de5abab4a55e4cc152602fb21b9db9e",
+      "after_sha256": "cbfc2436d9f3e87813a392e3839b4388d34b8d4c17194cce3c5f0bba84ec98d2",
+      "bytes": 4592
+    },
+    {
+      "path": "src/adrl/wire/adapters.py",
+      "before_sha256": null,
+      "after_sha256": "0f8abd8962d3a2ffeb8be2f7a9d060caa47b908e5a8fc2e177eb691144489600",
+      "bytes": 2187
+    },
+    {
+      "path": "src/adrl/wire/identity.py",
+      "before_sha256": "4fd900d3cec7195e024204f10dbf005c3ddf91963015576d8888c49ce21deee5",
+      "after_sha256": "61a3e71e6fb97617e82f3095750041607edbaa9eff43bf4f4f7c97f9a8ac2e5b",
+      "bytes": 7789
+    },
+    {
+      "path": "src/adrl/wire/profiles/__init__.py",
+      "before_sha256": null,
+      "after_sha256": "d4e7de031920d9e6d223384e9a097aa4c2ed50cd6259c70a1e6e60957a37fab2",
+      "bytes": 54
+    },
+    {
+      "path": "src/adrl/wire/profiles/base.py",
+      "before_sha256": null,
+      "after_sha256": "928dc02f1909b939f71adcf70244d507b3bb1c122799339f50e7ef40f2077ad8",
+      "bytes": 3867
+    },
+    {
+      "path": "src/adrl/wire/profiles/messages.py",
+      "before_sha256": null,
+      "after_sha256": "be738637186caf85ef47745679e9d94dd34cff05cb51ed3005fbc7e0fa70524f",
+      "bytes": 5875
+    },
+    {
+      "path": "src/adrl/wire/profiles/messages_responses.py",
+      "before_sha256": null,
+      "after_sha256": "8a8d1d188144c834d4ec82e90dffc7e2842c893771b9da278ea032e2be239ee3",
+      "bytes": 2609
+    },
+    {
+      "path": "tests/fixtures/profiles/identity-v1.json",
+      "before_sha256": null,
+      "after_sha256": "39314dc7c49f415a368afe544570b8099d4215f223a5b3242a33a8678fae2aec",
+      "bytes": 1706
+    },
+    {
+      "path": "tests/integration/proxy/test_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "ceb261f506227f351d94958f31e5a23878d356c237614c00f38b7cd23187baee",
+      "bytes": 1933
+    },
+    {
+      "path": "tests/unit/test_api_contract.py",
+      "before_sha256": null,
+      "after_sha256": "52fea0de2ad9111df4b407a6371877f0770a0dc3a5c80d868b6d5f7348833c63",
+      "bytes": 5494
+    },
+    {
+      "path": "tests/unit/wire/test_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "e9afac4d2c1dff6a52d4a75e33b3f206913572e0f61dc9bcabdd151272807391",
+      "bytes": 3123
+    },
+    {
+      "path": "tools/export_api_contract.py",
+      "before_sha256": null,
+      "after_sha256": "f16545eade30695de7406a44f5f84f79d3a2020990d2648c7a5c0f79c2352242",
+      "bytes": 560
+    },
+    {
+      "path": "docs/adr-module-map.md",
+      "before_sha256": "0e61ff0686d3755a70fbc86eb1a6aea27b368e1a7bead6f75d0b1306c99faaae",
+      "after_sha256": "cd9aff5b9ff7a253f4185367fd1eba5bd18c4d53864dcafc9c18b5ebba60c21a",
+      "bytes": 24437
+    },
+    {
+      "path": "docs/data-inventory.md",
+      "before_sha256": "2f464103d64b06490b9d1aefa59a16dde30cc12da688e6b81aa8188c514f3b69",
+      "after_sha256": "218d83a78783f262aa58481186644b88b59371ffe945e2da0d8486a66c4b9d86",
+      "bytes": 12062
+    },
+    {
+      "path": "docs/protocol-boundary.md",
+      "before_sha256": null,
+      "after_sha256": "7e9027a9010df871d299e72bca40eb357c5734fc17c03f1931564fe24a00e511",
+      "bytes": 3549
+    },
+    {
+      "path": "docs/responses-admission.md",
+      "before_sha256": null,
+      "after_sha256": "f4ad3cf11226661c08c0f5dbc054a6f17ef8fa49faca3be1a8fc41a2fac3aaa8",
+      "bytes": 3909
+    },
+    {
+      "path": "api/adrl-api-v1-preview.json",
+      "before_sha256": null,
+      "after_sha256": "503a952b1d1b26989862744a50b1f6c4cddeb2723a7c1a1a98d8310346703dbf",
+      "bytes": 42473
+    },
+    {
+      "path": "README.md",
+      "before_sha256": "461c98eb26f02307182acd664befba8d373e1980508f29ea6830a24d364c5e92",
+      "after_sha256": "4b6907bacb7d98744d4335750929addccc6b2249538225291c43df10795f148f",
+      "bytes": 9156
+    }
+  ],
+  "application": {
+    "status": "applied",
+    "verified_files": 25,
+    "source_root": "/Users/arunmenon/projects/adrl-core",
+    "passes": [
+      23,
+      5
+    ],
+    "final_smoke_check": "passed: standalone discovery, schema, proxy and composition-root imports"
+  },
+  "unchanged_original_files_verified": 233,
+  "import_order_fix": "Moved native response rendering into the profile package; three fresh-process regressions added after smoke check found a cycle.",
+  "reported_test_duration_seconds": 13.17
+}

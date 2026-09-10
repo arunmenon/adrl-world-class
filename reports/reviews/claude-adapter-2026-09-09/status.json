@@ -1,0 +1,23 @@
+{
+  "status": "reviewed-with-open-items",
+  "offline_slice": "complete",
+  "live_profile": "not-qualified",
+  "runtime_checks": {
+    "passed": 949,
+    "skipped": 8,
+    "required_checks": 6,
+    "focused_tests": 27
+  },
+  "taxonomy_closure": "passed",
+  "receipt": "/Users/arunmenon/projects/.adrl-execution-state/claude-adapter-final-20260909.json",
+  "formal_maturity_changes": 0,
+  "blocking_findings_for_offline_scope": [],
+  "remaining_limits": [
+    "live admission and native compatibility",
+    "restart-safe run budget",
+    "account overflow disposition",
+    "production profile integration",
+    "subagents/background models",
+    "ROI evidence"
+  ]
+}

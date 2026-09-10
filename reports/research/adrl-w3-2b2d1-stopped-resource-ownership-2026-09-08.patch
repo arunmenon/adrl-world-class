@@ -1,0 +1,1905 @@
+--- before/adrl-core/README.md
++++ after/adrl-core/README.md
+@@ -1,4 +1,11 @@
+ # adrl-core
++
++W3.2b2d1 current context: [stopped resource ownership](docs/stopped-resource-ownership.md)
++adds internal create/bind/inspect/non-force-remove for an explicitly selected local Docker
++engine and synthetic image. Durable identity allows cleanup after session-key erasure; lost
++create acknowledgements stay unresolved. There is no launch, kill, adoption or workspace release
++operation. Schema 11 adds authenticated metadata; public API preview 4 and routing are unchanged.
++Full writer containment, active plaintext erasure and exact task-close capture remain open.
+ 
+ W3.2b2b2 current context: [attempt stop coordination](docs/attempt-coordination.md) commits a
+ workspace block before a synthetic supervised launch and observes erasure, expiry and journal
+--- before/adrl-core/docs/adr-module-map.md
++++ after/adrl-core/docs/adr-module-map.md
+@@ -30,12 +30,14 @@
+ | `adrl/config/models.py` | ADRL-CAS-001, ADRL-CAS-004, ADRL-FND-002, ADRL-LRN-004, ADRL-LRN-005, ADRL-MEM-002, ADRL-MEM-010, ADRL-RTG-001, ADRL-RTG-002, ADRL-RTG-003, ADRL-RTG-004, ADRL-RTG-005, ADRL-RTG-009, ADRL-SAF-008, ADRL-SEM-004 | Pydantic models for every versioned config file. Primary: ADRL-FND-002. |
+ | `adrl/config/settings.py` | ADRL-OPS-001 | Process settings from environment. Primary: ADRL-OPS-001 (referenced by gloss). |
+ | `adrl/core/attempt_coordinator.py` | ADRL-MEM-001, ADRL-MEM-002, ADRL-MEM-003, ADRL-MEM-005, ADRL-MEM-010, ADRL-OPS-001, ADRL-SAF-007, ADRL-TRU-001 | Stop coordination with permanent workspace fences. Primary: ADRL-OPS-001. |
++| `adrl/core/container_control.py` | ADRL-MEM-005, ADRL-OPS-001, ADRL-SAF-007, ADRL-TRU-001 | Create-only local container transport. Primary: ADRL-OPS-001. |
+ | `adrl/core/enums.py` | ADRL-CAS-002, ADRL-MEM-001, ADRL-MEM-004 | Versioned enums and state sets shared across buckets. Primary: ADRL-CAS-002. |
+ | `adrl/core/errors.py` | ADRL-CAS-007, ADRL-SAF-004, ADRL-SAF-005 | Error hierarchy and the published error-code table. Primary: ADRL-CAS-007. |
+ | `adrl/core/ids.py` | ADRL-MEM-001, ADRL-SEM-002 | Identity minting and hashing. Primary: ADRL-MEM-001. Secondary: ADRL-SEM-002. |
+ | `adrl/core/ports.py` | ADRL-FND-002, ADRL-MEM-005, ADRL-MEM-006, ADRL-MEM-010, ADRL-SAF-003, ADRL-SAF-006, ADRL-SAF-007 | Port interfaces every adapter implements. Primary: ADRL-MEM-006. |
+ | `adrl/core/process_anchor.py` | ADRL-OPS-001, ADRL-SAF-007, ADRL-SEM-006, ADRL-TRU-001 | Private process-group launcher. Primary: ADRL-OPS-001. |
+ | `adrl/core/process_owner.py` | ADRL-MEM-003, ADRL-OPS-001, ADRL-SAF-007, ADRL-SEM-006, ADRL-TRU-001 | Owned process-group execution and cleanup. Primary: ADRL-OPS-001. |
++| `adrl/core/resource_owner.py` | ADRL-MEM-001, ADRL-MEM-002, ADRL-MEM-005, ADRL-MEM-010, ADRL-OPS-001, ADRL-SAF-007, ADRL-TRU-001 | Durable ownership of stopped resources. Primary: ADRL-OPS-001. |
+ | `adrl/core/types.py` | ADRL-CAS-004, ADRL-CAS-006, ADRL-RTG-002, ADRL-RTG-009, ADRL-SAF-001, ADRL-SEM-001, ADRL-TRU-002 | Value objects shared across packages. Primary: ADRL-SEM-001. |
+ | `adrl/gates/block.py` | ADRL-SAF-004, ADRL-SAF-005, ADRL-SEM-004 | Fail-loud and block contract. Primary: ADRL-SAF-004. Secondary: ADRL-SAF-005, ADRL-SEM-004. |
+ | `adrl/gates/cli.py` | ADRL-SAF-002, ADRL-SAF-003, ADRL-SAF-007, ADRL-SAF-009 | Operator commands owned by the gates package. Primary: ADRL-SAF-002. |
+@@ -148,17 +150,17 @@
+ | ADRL-LRN-006 | `adrl/learning/abstention.py`, `adrl/learning/readiness.py` |
+ | ADRL-LRN-007 | `adrl/app.py`, `adrl/cli/improvement.py`, `adrl/learning/artifacts.py`, `adrl/learning/improvement.py` |
+ | ADRL-LRN-008 | `adrl/learning/explore.py`, `adrl/learning/tiers.py`, `adrl/routing/advisor.py`, `adrl/routing/router.py` |
+-| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-001 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/service.py`, `adrl/api/store.py`, `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/enums.py`, `adrl/core/ids.py`, `adrl/core/resource_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/facade.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/replay.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/store.py`, `adrl/ledger/upcast.py` |
++| ADRL-MEM-002 | `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/resource_owner.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-003 | `adrl/cli/ledger_commands.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/process_owner.py`, `adrl/learning/improvement.py`, `adrl/learning/tiers.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-004 | `adrl/cli/ledger_commands.py`, `adrl/core/enums.py`, `adrl/learning/artifacts.py`, `adrl/learning/tiers.py`, `adrl/ledger/events.py`, `adrl/ledger/labels.py`, `adrl/ledger/outcomes.py`, `adrl/ledger/readiness.py`, `adrl/ledger/upcast.py` |
+-| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/ports.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
++| ADRL-MEM-005 | `adrl/api/client.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/ports.py`, `adrl/core/resource_owner.py`, `adrl/gates/repo_class.py`, `adrl/gates/suppression.py`, `adrl/learning/abstention.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/verification.py` |
+ | ADRL-MEM-006 | `adrl/core/ports.py`, `adrl/learning/abstention.py`, `adrl/ledger/facade.py`, `adrl/ledger/readiness.py`, `adrl/ledger/state.py`, `adrl/ledger/store.py`, `adrl/proxy/observe_only.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-MEM-007 | `adrl/learning/dataset.py`, `adrl/ledger/erasure.py`, `adrl/ledger/projections.py`, `adrl/ledger/replay.py`, `adrl/ledger/shadow_retrieval.py`, `adrl/ledger/store.py` |
+ | ADRL-MEM-008 | `adrl/ledger/shadow_retrieval.py` |
+ | ADRL-MEM-009 | `adrl/learning/pairs.py`, `adrl/ledger/counterfactual.py`, `adrl/ledger/events.py`, `adrl/ledger/verification.py` |
+-| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/ports.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+-| ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/keystore.py`, `adrl/telemetry/logging.py` |
++| ADRL-MEM-010 | `adrl/api/store.py`, `adrl/cli/improvement.py`, `adrl/cli/ledger_commands.py`, `adrl/config/models.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/ports.py`, `adrl/core/resource_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/crypto.py`, `adrl/ledger/embeddings.py`, `adrl/ledger/erasure.py`, `adrl/ledger/events.py`, `adrl/ledger/improvement.py`, `adrl/ledger/keystore.py`, `adrl/ledger/projections.py`, `adrl/ledger/retention.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-OPS-001 | `adrl/cli/main.py`, `adrl/config/settings.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/core/resource_owner.py`, `adrl/ledger/attempts.py`, `adrl/ledger/keystore.py`, `adrl/telemetry/logging.py` |
+ | ADRL-OPS-002 | `adrl/ledger/anchoring.py` |
+ | ADRL-OPS-003 | `adrl/config/checks.py` |
+ | ADRL-OPS-004 | `adrl/ledger/erasure.py` |
+@@ -180,7 +182,7 @@
+ | ADRL-SAF-004 | `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-005 | `adrl/config/checks.py`, `adrl/core/errors.py`, `adrl/gates/block.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py`, `adrl/telemetry/metrics.py`, `adrl/wire/profiles/messages_responses.py` |
+ | ADRL-SAF-006 | `adrl/core/ports.py`, `adrl/gates/content.py`, `adrl/gates/feasibility.py`, `adrl/gates/pipeline.py` |
+-| ADRL-SAF-007 | `adrl/core/attempt_coordinator.py`, `adrl/core/ports.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/gates/cli.py`, `adrl/gates/sandbox.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
++| ADRL-SAF-007 | `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/ports.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/core/resource_owner.py`, `adrl/gates/cli.py`, `adrl/gates/sandbox.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/ledger/verification.py` |
+ | ADRL-SAF-008 | `adrl/config/loaders.py`, `adrl/config/models.py`, `adrl/gates/content.py`, `adrl/gates/deployments.py`, `adrl/gates/pipeline.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py` |
+ | ADRL-SAF-009 | `adrl/cli/main.py`, `adrl/gates/cli.py`, `adrl/gates/deployments.py`, `adrl/gates/egress.py`, `adrl/gates/pipeline.py`, `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py`, `adrl/proxy/fallback.py`, `adrl/proxy/pipeline.py`, `adrl/telemetry/metrics.py` |
+ | ADRL-SEM-001 | `adrl/core/types.py`, `adrl/gates/feasibility.py`, `adrl/telemetry/metrics.py`, `adrl/wire/classify.py`, `adrl/wire/parse.py` |
+@@ -190,7 +192,7 @@
+ | ADRL-SEM-005 | `adrl/cascade/sticky.py` |
+ | ADRL-SEM-006 | `adrl/cascade/controller.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/proxy/observe_only.py`, `adrl/proxy/pipeline.py`, `adrl/wire/identity.py` |
+ | ADRL-SEM-007 | `adrl/api/client.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/schema.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py`, `adrl/ledger/session_verification.py`, `adrl/proxy/errors.py`, `adrl/wire/adapters.py`, `adrl/wire/profiles/base.py`, `adrl/wire/profiles/messages.py`, `adrl/wire/profiles/messages_responses.py` |
+-| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py` |
++| ADRL-TRU-001 | `adrl/api/auth.py`, `adrl/api/contracts.py`, `adrl/api/http.py`, `adrl/api/service.py`, `adrl/cli/product.py`, `adrl/core/attempt_coordinator.py`, `adrl/core/container_control.py`, `adrl/core/process_anchor.py`, `adrl/core/process_owner.py`, `adrl/core/resource_owner.py`, `adrl/gates/repo_class.py`, `adrl/gates/workload.py`, `adrl/ledger/attempts.py`, `adrl/ledger/capture.py` |
+ | ADRL-TRU-002 | `adrl/core/types.py`, `adrl/gates/deployments.py`, `adrl/proxy/pipeline.py`, `adrl/wire/observe.py` |
+ | ADRL-TRU-003 | `adrl/ledger/anchoring.py`, `adrl/ledger/egress.py` |
+ 
+--- before/adrl-core/docs/data-inventory.md
++++ after/adrl-core/docs/data-inventory.md
+@@ -426,3 +426,63 @@
+ | `product_execution_fences.host_key_id` | `skeleton` | Detects host HMAC key rotation; refuses new admission |
+ | `product_execution_fences.policy_json` | `skeleton` | Validated bounded versioned coordination and process policy |
+ | `product_execution_fences.ts` | `skeleton` | Admission timestamp, not process start or completion time |
++
++## W3.2b2d1 stopped resource metadata (2026-09-08)
++
++The internal stopped-resource owner adds an append-only five-phase, host-authenticated history.
++The fence policy JSON may now hold `stopped-resource-policy-v1`; it still has no command,
++workspace path, task material or credential. The inventory checker enumerates every field of
++ResourceEvent and its nested ResourcePolicy as well as the SQL columns.
++
++Cleanup metadata deliberately survives session-key revocation. Keyed references are pseudonyms,
++not a claim of anonymity or complete erasure. Resource/image identifiers, timestamps and limits
++remain operational metadata. Host key loss prevents cleanup authentication. See the
++[ownership contract](stopped-resource-ownership.md) for retention and recovery limitations.
++
++| Field | Class | Note |
++|---|---|---|
++| `product_resource_events.operation_key` | `keyed_hash` | Host-keyed operation UUID |
++| `product_resource_events.workspace_key` | `keyed_hash` | Existing canonical workspace HMAC; permanent fence foreign key |
++| `product_resource_events.event_seq` | `skeleton` | Bounded sequence 0 through 4 |
++| `product_resource_events.event_type` | `skeleton` | Intent, issued, bound or removal phase |
++| `product_resource_events.payload_json` | `skeleton` | Validated operational metadata envelope; nested fields inventoried below |
++| `product_resource_events.prev_mac` | `keyed_hash` | Previous authenticated event MAC |
++| `product_resource_events.mac` | `keyed_hash` | Host-keyed chain authenticator, not a content key |
++| `ResourceEvent:schema_version` | `skeleton` | Versioned operational limit or contract discriminator |
++| `ResourceEvent:operation_key` | `keyed_hash` | Host HMAC of opaque operation UUID |
++| `ResourceEvent:workspace_key` | `keyed_hash` | Existing host HMAC of canonical workspace |
++| `ResourceEvent:session_hmac` | `keyed_hash` | Existing bound session pseudonym |
++| `ResourceEvent:attempt_key` | `keyed_hash` | Existing session-key HMAC of attempt UUID |
++| `ResourceEvent:start_event_key` | `keyed_hash` | Existing session-key HMAC of initial event UUID |
++| `ResourceEvent:host_key_id` | `skeleton` | Detects host HMAC key change |
++| `ResourceEvent:engine_ref` | `keyed_hash` | Host HMAC of local endpoint, engine ID and API version |
++| `ResourceEvent:request_ref` | `keyed_hash` | Host HMAC of requested image/argv, policy, profile pin and engine reference |
++| `ResourceEvent:image_id` | `skeleton` | Immutable local fixture image SHA-256 ID |
++| `ResourceEvent:seccomp_sha256` | `skeleton` | Digest of supplied public seccomp profile bytes |
++| `ResourceEvent:policy` | `skeleton` | Nested versioned bounds; every policy field is enumerated below |
++| `ResourceEvent:sequence` | `skeleton` | Versioned operational limit or contract discriminator |
++| `ResourceEvent:phase` | `skeleton` | Versioned operational limit or contract discriminator |
++| `ResourceEvent:recorded_at` | `skeleton` | Ledger observation time, not task completion time |
++| `ResourceEvent:resource_id` | `skeleton` | Exact full Engine resource ID, never a saved host PID |
++| `ResourceEvent:resource_created` | `skeleton` | Exact engine creation timestamp, including fractional precision |
++| `ResourceEvent:configuration_ref` | `keyed_hash` | Host HMAC of complete inspected Config/HostConfig/mount/command identity |
++| `ResourceEvent:workspace_state` | `skeleton` | Always blocked; no release is implemented |
++| `ResourceEvent:exact_close_eligible` | `skeleton` | Always false |
++| `ResourceEvent:eligible_for_learning` | `skeleton` | Always false |
++| `ResourcePolicy:schema_version` | `skeleton` | Versioned preparation bound; no task payload or credential |
++| `ResourcePolicy:api_version` | `skeleton` | Versioned preparation bound; no task payload or credential |
++| `ResourcePolicy:max_resources` | `skeleton` | Versioned preparation bound; no task payload or credential |
++| `ResourcePolicy:max_event_bytes` | `skeleton` | Versioned preparation bound; no task payload or credential |
++| `ResourcePolicy:request_seconds` | `skeleton` | Versioned preparation bound; no task payload or credential |
++| `ResourcePolicy:response_bytes` | `skeleton` | Versioned preparation bound; no task payload or credential |
++| `ResourcePolicy:command_bytes` | `skeleton` | Versioned preparation bound; no task payload or credential |
++| `ResourcePolicy:memory_bytes` | `skeleton` | Versioned preparation bound; no task payload or credential |
++| `ResourcePolicy:pids_limit` | `skeleton` | Versioned preparation bound; no task payload or credential |
++| `ResourcePolicy:nano_cpus` | `skeleton` | Versioned preparation bound; no task payload or credential |
++| `ResourcePolicy:user` | `skeleton` | Versioned preparation bound; no task payload or credential |
++
++The engine receives argv, a fixed environment and profile JSON in memory. A stopped container
++still stores its configuration and writable layer in daemon-managed storage. Synthetic fixtures
++only: no host repository/credential/socket mounts, payload execution or model calls are enabled.
++Non-force removal and absence reconciliation do not prove physical block, snapshot or backup
++erasure. No new retention disposition for real data is implied.
+--- before/adrl-core/docs/known-gaps.md
++++ after/adrl-core/docs/known-gaps.md
+@@ -1,4 +1,11 @@
+ # Known gaps (reconciled 2026-09-08)
++
++W3.2b2d1 current context: [stopped resource ownership](stopped-resource-ownership.md)
++adds internal create/bind/inspect/non-force-remove for an explicitly selected local Docker
++engine and synthetic image. Durable identity allows cleanup after session-key erasure; lost
++create acknowledgements stay unresolved. There is no launch, kill, adoption or workspace release
++operation. Schema 11 adds authenticated metadata; public API preview 4 and routing are unchanged.
++Full writer containment, active plaintext erasure and exact task-close capture remain open.
+ 
+ W3.2b2b2 current context: [attempt stop coordination](attempt-coordination.md) now connects
+ the journal and process owner for disposable synthetic fixtures. A permanent prelaunch fence
+--- /dev/null
++++ after/adrl-core/docs/stopped-resource-ownership.md
+@@ -0,0 +1,104 @@
++# Stopped resource ownership
++
++W3.2b2d1, 8 September 2026. Primary ADRL-OPS-001; secondary ADRL-MEM-001/002/005/010,
++ADRL-SAF-007 and ADRL-TRU-001. Internal synthetic preparation, not a public harness contract.
++
++`StoppedResourceOwner` connects a readable v2 attempt to one never-started local container.
++It creates a container, records its identity, inspects a matching retry, and removes a bound
++container without force. It cannot start, exec, restart, kill, adopt, capture or release a
++workspace. The optional Docker-specific transport sits behind the product's shared attempt
++contracts; native observation mode remains available and no Docker dependency is imposed on
++every harness. This slice does not qualify a second harness or real supervised execution.
++
++## Why the order matters
++
++1. Validate the bound workspace, current session key/assertion, readable v2 start and intact
++   terminal-capacity grant. Atomically append a permanent execution fence and resource intent.
++   Existing group-backend fences still block admission.
++2. Inspect the pinned local image and prepare the bounded container configuration. Recheck
++   session authority, started attempt and grant in the transaction claiming `create_issued`.
++3. Only the caller that commits this claim may make one create request. Bind the full returned
++   ID only after inspecting the intended engine, creation time, complete configuration and
++   never-started state. Names and labels alone cannot establish ownership.
++4. A matching bound retry revalidates the existing object. An issued-but-unbound create stays
++   uncertain: no create retry, lookup by name, adoption or guessed cleanup is available.
++5. For removal, authenticate and re-inspect the bound identity, append `remove_issued`, then
++   issue DELETE with `force=false&v=false`. Confirm the exact ID is absent before recording
++   `removed`. If a removal reply is lost, a retry may reconcile absence of this previously
++   bound ID. A running, exited, restarted, renamed or otherwise changed object is refused.
++
++The five append-only events are `intent`, `create_issued`, `bound`, `remove_issued`, `removed`.
++Every event says workspace blocked, exact-close ineligible and learning ineligible. Removal
++does not close the attempt or return capacity. There is no fence release. An external removal
++before `remove_issued` leaves a conservative unresolved bound state in this version.
++
++Cancellation sets a stop flag and drains the protected worker, including repeated cancellation.
++An already issued create can finish binding or stay unresolved. Session revocation is checked
++before admission/claim; revocation and daemon creation are not one atomic transaction. A race
++after the check may create a stopped synthetic object, with no workload or payload execution.
++
++## Identity, data and recovery
++
++`product_resource_events` is added by schema migration 11. Host-keyed chain MACs authenticate
++the event sequence and its permanent fence association. Store reopen can recover a bound
++object without process-local PID authority. Interior gaps, changed rows, invalid MACs, changed
++fence fields or host-key rotation refuse this authority. An independently anchored high-water
++mark is not implemented: rollback to an intact earlier prefix or rollback of the complete
++database/key state is outside this qualification and can evade suffix-loss detection.
++
++The raw operation UUID, workspace path, command, environment and profile JSON are not persisted
++in the new history. Engine, request and full observed configuration are host-keyed digests;
++resource/image IDs and timestamps remain operational metadata. These are pseudonymous/linkable
++records, not a guarantee of anonymization. The [inventory](data-inventory.md) lists every SQL,
++event and nested policy field. A session erase does not erase the host cleanup evidence.
++
++The trusted local operator needs the original operation UUID, ledger and intact host HMAC key
++for cleanup after session-key erasure. This is not an unauthenticated remote cleanup endpoint.
++If create returned an ID but the receipt or durable binding was lost, this implementation
++cannot safely recover it by scanning names or labels. A stopped orphan and a blocked workspace
++may remain for later reviewed recovery. Tests retain original receipts separately so their
++own deliberately uncertain fixtures can be accounted for and removed without adoption.
++
++## Versioned preparation limits
++
++`stopped-resource-policy-v1` admits at most 32 permanent histories per ledger, five events of
++at most 4,096 bytes each. This is a logical space bound, not preallocated durable disk capacity.
++Storage failure still blocks an append. The policy is immutable on an admitted history.
++
++The transport uses Engine API 1.47 over an explicitly supplied local Unix socket and verifies
++Linux/arm64/cgroup-v2 identity. It uses no ambient Docker context, proxy, registry authentication,
++redirects or image pulls. The HTTP I/O timeout defaults to 10 seconds and is capped at 15;
++elapsed checks between raw response chunks reject continued progress beyond that limit.
++Responses are capped at 131,072 bytes, encoded responses are refused, and request bodies are
++capped at 65,536 bytes. These checks are not a hard real-time watchdog for a wedged OS or a
++daemon that dribbles response headers. Killing a client does not prove daemon work stopped.
++
++Only an already-present immutable Linux/arm64 image is accepted. Inherited environment,
++entrypoint, volumes, healthchecks and OnBuild controls are refused. The created object uses:
++
++- UID/GID 65532, all capabilities dropped, no-new-privileges and explicitly pinned seccomp.
++- No network, host mounts, published ports, automatic removal or restart.
++- Private cgroup/IPC/PID namespaces and runc; no daemon settings are changed.
++- At most 32 processes, 96 MiB memory with equal memory/swap limit, and 0.5 CPU.
++- A synthetic writable layer, `/work` working directory, fixed environment and no execution.
++
++An inspected configuration match proves what the daemon reported. With no start operation,
++this slice does not demonstrate runtime enforcement of these controls or containment against
++a hostile daemon/host administrator. Non-force removal plus absence does not prove physical
++block, snapshot, backup or plaintext erasure.
++
++## Evidence and remaining work
++
++[Unit tests](../tests/unit/test_resource_owner.py) exercise real local Unix-socket HTTP fixtures,
++concurrency, changed identity, admission failures, revocation, corruption, atomic write failures,
++cancellation and schema-10 migration. [Opt-in engine tests](../tests/integration/test_resource_engine.py)
++use the supplied local synthetic image and profile. Their fixture logs original create receipts
++and confirms absence; they never start a container. Explicit environment variables are required,
++including a private accounting file and a cumulative 16-container limit. Ordinary runs skip
++these four engine cases when the fixture is absent.
++
++The next contract must address one-shot launch, lost launch acknowledgements, closing admission
++to new writers, complete stopping, owner death and erasure while active. Safe output extraction,
++durable task-close/capture association and real-harness network/image/credential/retention
++choices follow. None of those gates is satisfied by this preparation primitive. See the
++[running journey](../../adrl-world-class/reports/adrl-implementation-journey.md).
+--- /dev/null
++++ after/adrl-core/src/adrl/core/container_control.py
+@@ -0,0 +1,291 @@
++"""Create-only local container transport. Primary: ADRL-OPS-001.
++
++Secondary: ADRL-SAF-007, ADRL-TRU-001, ADRL-MEM-005.
++Internal synthetic preparation only. No start, exec, kill, restart, pull or adoption API.
++"""
++
++from __future__ import annotations
++
++import hashlib
++import json
++import re
++import time
++from pathlib import Path
++from typing import Any, Literal, cast
++from urllib.parse import quote
++
++import httpx
++from pydantic import BaseModel, ConfigDict, Field, model_validator
++
++ENVIRONMENT = ["PATH=/", "LANG=C", "GOMAXPROCS=2"]
++RESOURCE_ID = re.compile(r"^[a-f0-9]{64}$")
++
++
++class ResourceError(ValueError):
++    """Preparation/recovery refused or uncertain; never a successful workload outcome."""
++
++
++class EngineError(ResourceError):
++    """Bounded local engine request failed without exposing raw daemon error text."""
++
++    def __init__(self, status: int) -> None:
++        super().__init__(f"engine_http_{status}")
++        self.status = status
++
++
++class ResourcePolicy(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
++    schema_version: Literal["stopped-resource-policy-v1"] = "stopped-resource-policy-v1"
++    api_version: Literal["1.47"] = "1.47"
++    max_resources: int = Field(default=32, ge=1, le=32)
++    max_event_bytes: Literal[4096] = 4096
++    request_seconds: float = Field(default=10, ge=0.1, le=15)
++    response_bytes: int = Field(default=131072, ge=1024, le=131072)
++    command_bytes: int = Field(default=8192, ge=1, le=8192)
++    memory_bytes: int = Field(default=100663296, ge=16777216, le=100663296)
++    pids_limit: int = Field(default=32, ge=8, le=32)
++    nano_cpus: int = Field(default=500000000, ge=100000000, le=500000000)
++    user: Literal["65532:65532"] = "65532:65532"
++
++
++class ContainerRequest(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    image_id: str = Field(pattern=r"^sha256:[a-f0-9]{64}$")
++    argv: tuple[str, ...] = Field(min_length=1, max_length=64, repr=False)
++
++    @model_validator(mode="after")
++    def command(self) -> ContainerRequest:
++        if not self.argv[0].startswith("/") or any("\0" in arg for arg in self.argv):
++            raise ValueError("absolute_container_command_required")
++        return self
++
++
++def canonical(value: Any) -> bytes:
++    return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
++
++
++class ContainerControl:
++    """Local Engine API 1.47 transport; endpoint and profile stay in operator memory."""
++
++    def __init__(
++        self, socket_path: Path, profile: bytes, profile_sha256: str, policy: ResourcePolicy
++    ) -> None:
++        if not socket_path.is_absolute():
++            raise ResourceError("absolute_engine_socket_required")
++        self.socket = socket_path.resolve(strict=True)
++        if not self.socket.is_socket():
++            raise ResourceError("engine_socket_required")
++        if len(profile) > 32768 or hashlib.sha256(profile).hexdigest() != profile_sha256:
++            raise ResourceError("seccomp_pin_mismatch")
++        try:
++            value = json.loads(profile)
++            if not isinstance(value, dict) or value.get("defaultAction") != "SCMP_ACT_ERRNO":
++                raise ResourceError("explicit_seccomp_required")
++            if not isinstance(value.get("syscalls"), list):
++                raise ResourceError("invalid_seccomp_profile")
++        except (ValueError, UnicodeError):
++            raise ResourceError("invalid_seccomp_profile") from None
++        self.profile = canonical(value).decode()
++        self.profile_sha256 = profile_sha256
++        self.policy = policy
++
++    def _request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
++        payload = canonical(body) if body is not None else None
++        if payload is not None and len(payload) > 65536:
++            raise ResourceError("engine_request_limit")
++        try:
++            started = time.monotonic()
++            transport = httpx.HTTPTransport(uds=str(self.socket), retries=0)
++            with httpx.Client(
++                transport=transport,
++                trust_env=False,
++                follow_redirects=False,
++                timeout=self.policy.request_seconds,
++            ) as client:
++                with client.stream(
++                    method,
++                    f"http://localhost/v{self.policy.api_version}{path}",
++                    content=payload,
++                    headers={"Content-Type": "application/json", "Accept-Encoding": "identity"},
++                ) as response:
++                    if response.headers.get("Content-Encoding", "identity") != "identity":
++                        raise ResourceError("engine_encoded_response_refused")
++                    chunks = bytearray()
++                    for chunk in response.iter_raw():
++                        if time.monotonic() - started > self.policy.request_seconds:
++                            raise ResourceError("engine_request_deadline")
++                        chunks.extend(chunk)
++                        if len(chunks) > self.policy.response_bytes:
++                            raise ResourceError("engine_response_limit")
++                    if response.status_code not in {200, 201, 204}:
++                        raise EngineError(response.status_code)
++                    if response.status_code == 204:
++                        return None
++                    return json.loads(chunks)
++        except (httpx.HTTPError, OSError):
++            raise ResourceError("engine_unavailable_or_uncertain") from None
++        except (UnicodeError, json.JSONDecodeError):
++            raise ResourceError("engine_response_invalid") from None
++
++    def engine(self) -> dict[str, str]:
++        value = self._request("GET", "/info")
++        if (
++            not isinstance(value, dict)
++            or value.get("OSType") != "linux"
++            or str(value.get("CgroupVersion")) != "2"
++            or not isinstance(value.get("ID"), str)
++            or not 8 <= len(value["ID"]) <= 256
++            or value.get("Architecture") not in {"aarch64", "arm64"}
++        ):
++            raise ResourceError("unsupported_engine_identity")
++        return {"id": value["ID"], "endpoint": str(self.socket), "api": self.policy.api_version}
++
++    def prepare(self, request: ContainerRequest, operation_key: str) -> tuple[str, dict[str, Any]]:
++        if len(canonical(request.argv)) > self.policy.command_bytes:
++            raise ResourceError("container_command_limit")
++        image = self._request("GET", f"/images/{quote(request.image_id, safe='')}/json")
++        if (
++            not isinstance(image, dict)
++            or image.get("Id") != request.image_id
++            or image.get("Os") != "linux"
++            or image.get("Architecture") != "arm64"
++            or not isinstance(image.get("Config"), dict)
++        ):
++            raise ResourceError("fixture_image_mismatch")
++        config = image["Config"]
++        if any(
++            config.get(key) for key in ("Env", "Entrypoint", "Volumes", "Healthcheck", "OnBuild")
++        ):
++            raise ResourceError("inherited_image_control_refused")
++        labels = config.get("Labels") or {}
++        if not isinstance(labels, dict) or not all(
++            isinstance(k, str) and isinstance(v, str) for k, v in labels.items()
++        ):
++            raise ResourceError("image_labels_invalid")
++        name = "adrl-resource-" + operation_key
++        body = {
++            "Image": request.image_id,
++            "Cmd": list(request.argv),
++            "Entrypoint": [],
++            "Env": ENVIRONMENT,
++            "User": self.policy.user,
++            "WorkingDir": "/work",
++            "NetworkDisabled": True,
++            "Tty": False,
++            "OpenStdin": False,
++            "AttachStdin": False,
++            "AttachStdout": False,
++            "AttachStderr": False,
++            "Labels": labels
++            | {"adrl.resource.operation": operation_key, "adrl.resource.version": "1"},
++            "HostConfig": {
++                "NetworkMode": "none",
++                "RestartPolicy": {"Name": "no", "MaximumRetryCount": 0},
++                "CapDrop": ["ALL"],
++                "CapAdd": [],
++                "Privileged": False,
++                "SecurityOpt": ["no-new-privileges:true", "seccomp=" + self.profile],
++                "Memory": self.policy.memory_bytes,
++                "MemorySwap": self.policy.memory_bytes,
++                "NanoCpus": self.policy.nano_cpus,
++                "PidsLimit": self.policy.pids_limit,
++                "LogConfig": {"Type": "none", "Config": {}},
++                "AutoRemove": False,
++                "CgroupnsMode": "private",
++                "IpcMode": "private",
++                "PidMode": "",
++                "UTSMode": "",
++                "UsernsMode": "",
++                "Runtime": "runc",
++                "ReadonlyRootfs": False,
++                "PublishAllPorts": False,
++            },
++        }
++        return name, body
++
++    def create(self, name: str, body: dict[str, Any]) -> str:
++        value = self._request("POST", "/containers/create?name=" + quote(name, safe=""), body)
++        if not isinstance(value, dict) or not isinstance(value.get("Id"), str):
++            raise ResourceError("create_identity_unavailable")
++        identity = value["Id"]
++        if not RESOURCE_ID.fullmatch(identity):
++            raise ResourceError("create_identity_unavailable")
++        return cast(str, identity)
++
++    def inspect(self, identity: str) -> dict[str, Any]:
++        if not RESOURCE_ID.fullmatch(identity):
++            raise ResourceError("full_resource_identity_required")
++        value = self._request("GET", f"/containers/{identity}/json")
++        if not isinstance(value, dict) or value.get("Id") != identity:
++            raise ResourceError("resource_identity_mismatch")
++        return value
++
++    @staticmethod
++    def never_started(value: dict[str, Any]) -> None:
++        state = value.get("State")
++        if (
++            not isinstance(state, dict)
++            or state.get("Status") != "created"
++            or state.get("Running") is not False
++            or state.get("Restarting") is not False
++            or state.get("Paused") is not False
++            or state.get("Dead") is not False
++            or state.get("Pid") != 0
++            or value.get("RestartCount") != 0
++            or state.get("StartedAt") != "0001-01-01T00:00:00Z"
++            or state.get("FinishedAt") != "0001-01-01T00:00:00Z"
++        ):
++            raise ResourceError("resource_not_never_started")
++
++    @staticmethod
++    def configuration(value: dict[str, Any]) -> dict[str, Any]:
++        keys = ("Config", "HostConfig", "Mounts", "Image", "Path", "Args", "Platform", "Name")
++        if any(key not in value for key in keys) or not isinstance(value.get("Created"), str):
++            raise ResourceError("resource_configuration_incomplete")
++        return {key: value[key] for key in keys}
++
++    def verify_created(self, value: dict[str, Any], name: str, body: dict[str, Any]) -> None:
++        self.never_started(value)
++        self.configuration(value)
++        if value["Name"] != "/" + name or value["Image"] != body["Image"] or value["Mounts"]:
++            raise ResourceError("resource_configuration_mismatch")
++        config, host = value["Config"], value["HostConfig"]
++        if not isinstance(config, dict) or not isinstance(host, dict):
++            raise ResourceError("resource_configuration_mismatch")
++        for key, expected in body.items():
++            if key == "HostConfig":
++                continue
++            actual = config.get(key)
++            if key == "Entrypoint":
++                actual = actual or []
++            if actual != expected:
++                raise ResourceError("resource_configuration_mismatch")
++        for key, expected in body["HostConfig"].items():
++            actual = host.get(key)
++            if key == "CapAdd":
++                actual = actual or []
++            if actual != expected:
++                raise ResourceError("resource_configuration_mismatch")
++        for key in (
++            "Binds",
++            "Mounts",
++            "VolumesFrom",
++            "Links",
++            "Devices",
++            "DeviceRequests",
++            "DeviceCgroupRules",
++            "PortBindings",
++            "CgroupParent",
++            "Init",
++        ):
++            if host.get(key):
++                raise ResourceError("unexpected_resource_control")
++        if any(config.get(key) for key in ("Volumes", "Healthcheck", "ExposedPorts")):
++            raise ResourceError("unexpected_resource_control")
++        if value["Path"] != body["Cmd"][0] or value["Args"] != body["Cmd"][1:]:
++            raise ResourceError("resource_command_mismatch")
++
++    def remove(self, identity: str) -> None:
++        if not RESOURCE_ID.fullmatch(identity):
++            raise ResourceError("full_resource_identity_required")
++        self._request("DELETE", f"/containers/{identity}?force=false&v=false")
+--- /dev/null
++++ after/adrl-core/src/adrl/core/resource_owner.py
+@@ -0,0 +1,504 @@
++"""Durable ownership of stopped resources. Primary: ADRL-OPS-001.
++
++Secondary: ADRL-MEM-001/002/005/010, ADRL-SAF-007, ADRL-TRU-001.
++Internal create/inspect/non-force-remove only. Issued-but-unbound creates stay uncertain;
++no resource adoption, start, kill, workspace release, task outcome or learning authority.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import contextvars
++import hmac
++import sqlite3
++import threading
++from datetime import UTC, datetime
++from pathlib import Path
++from typing import Any, Literal, cast
++from uuid import UUID
++
++from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, ValidationError, model_validator
++
++from adrl.api.auth import Principal
++from adrl.core.container_control import (
++    ContainerControl,
++    ContainerRequest,
++    EngineError,
++    ResourceError,
++    ResourcePolicy,
++    canonical,
++)
++from adrl.ledger import crypto
++from adrl.ledger.attempts import AttemptJournal, AttemptPolicy, check_execution_fence
++
++PHASES = ("intent", "create_issued", "bound", "remove_issued", "removed")
++Phase = Literal["intent", "create_issued", "bound", "remove_issued", "removed"]
++
++
++class ResourceEvent(BaseModel):
++    model_config = ConfigDict(extra="forbid", frozen=True)
++    schema_version: Literal["stopped-resource-event-v1"] = "stopped-resource-event-v1"
++    operation_key: str = Field(pattern=r"^[a-f0-9]{64}$")
++    workspace_key: str = Field(pattern=r"^[a-f0-9]{64}$")
++    session_hmac: str = Field(pattern=r"^[a-f0-9]{64}$")
++    attempt_key: str = Field(pattern=r"^[a-f0-9]{64}$")
++    start_event_key: str = Field(pattern=r"^[a-f0-9]{64}$")
++    host_key_id: str = Field(min_length=1, max_length=128)
++    engine_ref: str = Field(pattern=r"^[a-f0-9]{64}$")
++    request_ref: str = Field(pattern=r"^[a-f0-9]{64}$")
++    image_id: str = Field(pattern=r"^sha256:[a-f0-9]{64}$")
++    seccomp_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
++    policy: ResourcePolicy
++    sequence: int = Field(strict=True, ge=0, le=4)
++    phase: Phase
++    recorded_at: AwareDatetime
++    resource_id: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
++    resource_created: str | None = Field(default=None, min_length=1, max_length=64)
++    configuration_ref: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
++    workspace_state: Literal["blocked"] = "blocked"
++    exact_close_eligible: Literal[False] = False
++    eligible_for_learning: Literal[False] = False
++
++    @model_validator(mode="after")
++    def binding(self) -> ResourceEvent:
++        if PHASES[self.sequence] != self.phase:
++            raise ValueError("resource_phase_mismatch")
++        values = (self.resource_id, self.resource_created, self.configuration_ref)
++        if self.sequence < 2 and any(value is not None for value in values):
++            raise ValueError("premature_resource_binding")
++        if self.sequence >= 2 and any(value is None for value in values):
++            raise ValueError("missing_resource_binding")
++        if self.resource_created is not None:
++            created = datetime.fromisoformat(self.resource_created.replace("Z", "+00:00"))
++            if created.tzinfo is None:
++                raise ValueError("resource_creation_time_required")
++        return self
++
++
++class StoppedResourceOwner:
++    """Trusted local operator API; erasure-compatible cleanup never adopts a missing ID."""
++
++    def __init__(self, journal: AttemptJournal, control: ContainerControl) -> None:
++        self.journal = journal
++        self.control = control
++        self.policy = control.policy
++        self.last_event: ResourceEvent | None = None
++
++    def _reference(self, purpose: str, value: Any) -> str:
++        return crypto.keyed_hash(
++            self.journal.data.keys.hmac_key(), purpose + ":" + canonical(value).decode()
++        )
++
++    def _operation(self, operation_id: UUID) -> str:
++        return self._reference("resource-operation-v1", str(operation_id))
++
++    def _engine(self) -> str:
++        return self._reference("resource-engine-v1", self.control.engine())
++
++    def _mac(self, previous: str, payload: str) -> str:
++        return crypto.keyed_hash(
++            self.journal.data.keys.hmac_key(), "resource-event-v1:" + previous + ":" + payload
++        )
++
++    def _history(
++        self, operation: str, conn: sqlite3.Connection | None = None
++    ) -> tuple[ResourceEvent, ...]:
++        sql = "SELECT * FROM product_resource_events WHERE operation_key=? ORDER BY event_seq"
++        rows = (
++            list(conn.execute(sql, (operation,)))
++            if conn
++            else self.journal.data.ledger.read(sql, (operation,))
++        )
++        events: list[ResourceEvent] = []
++        previous = "0" * 64
++        for sequence, row in enumerate(rows):
++            try:
++                event = ResourceEvent.model_validate_json(row["payload_json"])
++                if (
++                    event.sequence != sequence
++                    or row["event_seq"] != sequence
++                    or event.phase != row["event_type"]
++                    or event.operation_key != operation
++                    or event.workspace_key != row["workspace_key"]
++                    or event.host_key_id != self.journal.data.keys.hmac_key_id()
++                    or row["prev_mac"] != previous
++                    or not hmac.compare_digest(row["mac"], self._mac(previous, row["payload_json"]))
++                ):
++                    raise ResourceError("resource_integrity_failure")
++                if events:
++                    exclude = {
++                        "phase",
++                        "sequence",
++                        "recorded_at",
++                        "resource_id",
++                        "resource_created",
++                        "configuration_ref",
++                    }
++                    if event.model_dump(exclude=exclude) != events[0].model_dump(exclude=exclude):
++                        raise ResourceError("resource_integrity_failure")
++                    if sequence > 2 and any(
++                        getattr(event, name) != getattr(events[2], name)
++                        for name in ("resource_id", "resource_created", "configuration_ref")
++                    ):
++                        raise ResourceError("resource_integrity_failure")
++                previous = row["mac"]
++                events.append(event)
++            except (ValueError, ValidationError, TypeError):
++                raise ResourceError("resource_integrity_failure") from None
++        if events:
++            sql = "SELECT * FROM product_execution_fences WHERE workspace_key=?"
++            fences = (
++                list(conn.execute(sql, (events[0].workspace_key,)))
++                if conn
++                else self.journal.data.ledger.read(sql, (events[0].workspace_key,))
++            )
++            if (
++                len(fences) != 1
++                or any(
++                    fences[0][field] != getattr(events[0], field)
++                    for field in (
++                        "workspace_key",
++                        "session_hmac",
++                        "attempt_key",
++                        "start_event_key",
++                        "host_key_id",
++                    )
++                )
++                or fences[0]["policy_json"] != events[0].policy.model_dump_json()
++            ):
++                raise ResourceError("resource_fence_integrity_failure")
++        return tuple(events)
++
++    def read(self, operation_id: UUID) -> tuple[ResourceEvent, ...]:
++        events = self._history(self._operation(operation_id))
++        if not events:
++            raise ResourceError("resource_operation_unavailable")
++        return events
++
++    def _insert(self, conn: sqlite3.Connection, event: ResourceEvent, previous: str) -> None:
++        payload = event.model_dump_json()
++        if len(payload.encode()) > event.policy.max_event_bytes:
++            raise ResourceError("resource_event_limit")
++        conn.execute(
++            "INSERT INTO product_resource_events "
++            "(operation_key,workspace_key,event_seq,event_type,payload_json,prev_mac,mac) "
++            "VALUES (?,?,?,?,?,?,?)",
++            (
++                event.operation_key,
++                event.workspace_key,
++                event.sequence,
++                event.phase,
++                payload,
++                previous,
++                self._mac(previous, payload),
++            ),
++        )
++
++    def _advance(
++        self,
++        operation: str,
++        phase: Phase,
++        *,
++        principal: Principal | None = None,
++        **binding: str,
++    ) -> tuple[ResourceEvent, bool]:
++        def write(conn: sqlite3.Connection) -> tuple[ResourceEvent, bool]:
++            history = self._history(operation, conn)
++            if not history:
++                raise ResourceError("resource_operation_unavailable")
++            last = history[-1]
++            sequence = PHASES.index(phase)
++            if last.sequence == sequence and all(getattr(last, k) == v for k, v in binding.items()):
++                return last, False
++            if last.sequence + 1 != sequence:
++                raise ResourceError("resource_transition_conflict")
++            if phase == "create_issued":
++                if principal is None:
++                    raise ResourceError("resource_create_authority_required")
++                self._check_started(conn, principal, last)
++            event = ResourceEvent.model_validate(
++                last.model_dump()
++                | binding
++                | {
++                    "phase": phase,
++                    "sequence": sequence,
++                    "recorded_at": datetime.now(UTC),
++                }
++            )
++            previous = conn.execute(
++                "SELECT mac FROM product_resource_events WHERE operation_key=? AND event_seq=?",
++                (operation, last.sequence),
++            ).fetchone()[0]
++            self._insert(conn, event, previous)
++            return event, True
++
++        return cast(
++            tuple[ResourceEvent, bool], self.journal.data.ledger.submit(write).result(timeout=15)
++        )
++
++    def _check_started(
++        self, conn: sqlite3.Connection, principal: Principal, event: ResourceEvent
++    ) -> None:
++        key = self.journal.captures._key(principal)
++        if principal.session_hmac != event.session_hmac:
++            raise ResourceError("resource_session_mismatch")
++        rows = [
++            dict(row)
++            for row in conn.execute(
++                "SELECT * FROM product_attempt_events WHERE session_hmac=? AND attempt_key=? "
++                "ORDER BY attempt_seq",
++                (event.session_hmac, event.attempt_key),
++            )
++        ]
++        history = self.journal._history(principal, key, rows)
++        grant = conn.execute(
++            "SELECT * FROM product_attempt_capacity WHERE session_hmac=? AND attempt_key=?",
++            (event.session_hmac, event.attempt_key),
++        ).fetchone()
++        self.journal._check_grant(history, rows[0], dict(grant) if grant else None)
++        if (
++            history[-1].phase != "started"
++            or rows[0]["event_key"] != event.start_event_key
++            or history[0].workspace_ref != "hmac:" + event.workspace_key
++        ):
++            raise ResourceError("resource_requires_bound_v2_start")
++
++    def _begin(
++        self,
++        principal: Principal,
++        operation_id: UUID,
++        attempt_id: UUID,
++        request: ContainerRequest,
++        engine: str,
++        stop: threading.Event,
++    ) -> ResourceEvent:
++        key = self.journal.captures._key(principal)
++        _, workspace = self.journal._workspace(
++            principal, Path(principal.assertion.inventory.root), strict=True
++        )
++        operation = self._operation(operation_id)
++        attempt = crypto.keyed_hash(key, "attempt:" + str(attempt_id))
++        ref = self._reference(
++            "resource-request-v1",
++            {
++                "request": request.model_dump(),
++                "policy": self.policy.model_dump(),
++                "profile": self.control.profile_sha256,
++                "engine": engine,
++            },
++        )
++
++        def write(conn: sqlite3.Connection) -> ResourceEvent:
++            if stop.is_set():
++                raise ResourceError("resource_admission_cancelled")
++            if self.journal.captures._key(principal) != key:
++                raise ResourceError("resource_key_unavailable")
++            prior = self._history(operation, conn)
++            if prior:
++                if (
++                    prior[0].request_ref != ref
++                    or prior[0].workspace_key != workspace
++                    or prior[0].session_hmac != principal.session_hmac
++                    or prior[0].attempt_key != attempt
++                ):
++                    raise ResourceError("resource_operation_conflict")
++                return prior[-1]
++            check_execution_fence(conn, workspace, self.journal.data.keys.hmac_key_id())
++            rows = [
++                dict(r)
++                for r in conn.execute(
++                    "SELECT * FROM product_attempt_events WHERE session_hmac=? AND attempt_key=? "
++                    "ORDER BY attempt_seq",
++                    (principal.session_hmac, attempt),
++                )
++            ]
++            history = self.journal._history(principal, key, rows)
++            grant = conn.execute(
++                "SELECT * FROM product_attempt_capacity WHERE session_hmac=? AND attempt_key=?",
++                (principal.session_hmac, attempt),
++            ).fetchone()
++            self.journal._check_grant(history, rows[0], dict(grant) if grant else None)
++            if (
++                history[-1].phase != "started"
++                or not isinstance(history[0].policy, AttemptPolicy)
++                or history[0].workspace_ref != "hmac:" + workspace
++            ):
++                raise ResourceError("resource_requires_bound_v2_start")
++            if (
++                conn.execute(
++                    "SELECT COUNT(*) FROM product_resource_events WHERE event_seq=0"
++                ).fetchone()[0]
++                >= self.policy.max_resources
++            ):
++                raise ResourceError("resource_admission_limit")
++            event = ResourceEvent(
++                operation_key=operation,
++                workspace_key=workspace,
++                session_hmac=principal.session_hmac,
++                attempt_key=attempt,
++                host_key_id=self.journal.data.keys.hmac_key_id(),
++                start_event_key=rows[0]["event_key"],
++                engine_ref=engine,
++                request_ref=ref,
++                image_id=request.image_id,
++                seccomp_sha256=self.control.profile_sha256,
++                policy=self.policy,
++                sequence=0,
++                phase="intent",
++                recorded_at=datetime.now(UTC),
++            )
++            # Size the largest later event before admission, including its complete binding.
++            largest = ResourceEvent.model_validate(
++                event.model_dump()
++                | {
++                    "sequence": 4,
++                    "phase": "removed",
++                    "resource_id": "f" * 64,
++                    "configuration_ref": "f" * 64,
++                    "resource_created": "9999-12-31T23:59:59.999999999Z",
++                }
++            )
++            if len(largest.model_dump_json().encode()) > self.policy.max_event_bytes:
++                raise ResourceError("resource_future_event_limit")
++            conn.execute(
++                "INSERT INTO product_execution_fences "
++                "(workspace_key,session_hmac,attempt_key,start_event_key,"
++                "host_key_id,policy_json,ts) "
++                "VALUES (?,?,?,?,?,?,?)",
++                (
++                    workspace,
++                    principal.session_hmac,
++                    attempt,
++                    rows[0]["event_key"],
++                    event.host_key_id,
++                    self.policy.model_dump_json(),
++                    event.recorded_at.isoformat(),
++                ),
++            )
++            self._insert(conn, event, "0" * 64)
++            return event
++
++        return cast(ResourceEvent, self.journal.data.ledger.submit(write).result(timeout=15))
++
++    def _inspect_bound(self, event: ResourceEvent) -> dict[str, Any]:
++        if not event.resource_id or self._engine() != event.engine_ref:
++            raise ResourceError("resource_engine_or_binding_mismatch")
++        value = self.control.inspect(event.resource_id)
++        self.control.never_started(value)
++        ref = self._reference("resource-configuration-v1", self.control.configuration(value))
++        if ref != event.configuration_ref or value["Created"] != event.resource_created:
++            raise ResourceError("resource_bound_configuration_mismatch")
++        return value
++
++    def inspect_owned(self, operation_id: UUID) -> ResourceEvent:
++        event = self.read(operation_id)[-1]
++        if event.phase not in {"bound", "remove_issued"}:
++            raise ResourceError("resource_not_bound")
++        self._inspect_bound(event)
++        return event
++
++    def _create(
++        self,
++        principal: Principal,
++        operation_id: UUID,
++        attempt_id: UUID,
++        request: ContainerRequest,
++        stop: threading.Event,
++    ) -> ResourceEvent:
++        self.journal.captures._key(principal)
++        engine = self._engine()
++        event = self._begin(principal, operation_id, attempt_id, request, engine, stop)
++        if event.phase == "bound":
++            self._inspect_bound(event)
++            return event
++        if event.phase != "intent":
++            raise ResourceError("resource_create_already_issued")
++        name, body = self.control.prepare(request, event.operation_key)
++        if stop.is_set():
++            raise ResourceError("resource_admission_cancelled")
++        self.journal.captures._key(principal)
++        if self._engine() != engine:
++            raise ResourceError("resource_engine_changed")
++        _, claimed = self._advance(event.operation_key, "create_issued", principal=principal)
++        if not claimed:
++            raise ResourceError("resource_create_already_issued")
++        try:
++            # After the durable claim, any lost reply leaves uncertainty. Never adopt by name
++            # or repeat create. Cancellation may still leave a fully bound stopped object.
++            identity = self.control.create(name, body)
++            if self._engine() != engine:
++                raise ResourceError("resource_engine_changed")
++            value = self.control.inspect(identity)
++            self.control.verify_created(value, name, body)
++            event, _ = self._advance(
++                event.operation_key,
++                "bound",
++                resource_id=identity,
++                resource_created=value["Created"],
++                configuration_ref=self._reference(
++                    "resource-configuration-v1", self.control.configuration(value)
++                ),
++            )
++            return event
++        except Exception:
++            raise ResourceError("resource_create_uncertain") from None
++
++    async def create(
++        self, principal: Principal, operation_id: UUID, attempt_id: UUID, request: ContainerRequest
++    ) -> ResourceEvent:
++        self.last_event = None
++        copied = ContainerRequest.model_validate(request.model_dump())
++        stop = threading.Event()
++        context = contextvars.copy_context()
++        worker = asyncio.get_running_loop().run_in_executor(
++            None, context.run, self._create, principal, operation_id, attempt_id, copied, stop
++        )
++        try:
++            event = await asyncio.shield(worker)
++            self.last_event = event
++            return event
++        except asyncio.CancelledError:
++            stop.set()
++            while not worker.done():
++                try:
++                    await asyncio.shield(worker)
++                except asyncio.CancelledError:
++                    stop.set()
++                except Exception:
++                    break
++            if not worker.cancelled():
++                if worker.exception() is None:
++                    self.last_event = worker.result()
++            raise
++
++    def remove(self, operation_id: UUID) -> ResourceEvent:
++        self.last_event = None
++        event = self.read(operation_id)[-1]
++        if event.phase == "removed":
++            return event
++        if event.phase == "bound":
++            self._inspect_bound(event)
++            event, _ = self._advance(event.operation_key, "remove_issued")
++        if event.phase != "remove_issued" or event.resource_id is None:
++            raise ResourceError("resource_not_bound")
++        try:
++            self._inspect_bound(event)
++        except EngineError as exc:
++            if exc.status != 404:
++                raise
++        else:
++            try:
++                self.control.remove(event.resource_id)
++            except EngineError as exc:
++                if exc.status != 404:
++                    raise
++            try:
++                self.control.inspect(event.resource_id)
++            except EngineError as exc:
++                if exc.status != 404:
++                    raise
++            else:
++                raise ResourceError("resource_removal_unconfirmed")
++        event, _ = self._advance(event.operation_key, "removed")
++        self.last_event = event
++        return event
+--- /dev/null
++++ after/adrl-core/src/adrl/ledger/migrations/0011_resource_ownership.sql
+@@ -0,0 +1,14 @@
++-- Stopped resource ownership. Primary: ADRL-OPS-001. Secondary: ADRL-MEM-001/002/005/010.
++CREATE TABLE product_resource_events (
++    operation_key TEXT NOT NULL,
++    workspace_key TEXT NOT NULL,
++    event_seq INTEGER NOT NULL CHECK (event_seq BETWEEN 0 AND 4),
++    event_type TEXT NOT NULL CHECK (event_type IN
++        ('intent','create_issued','bound','remove_issued','removed')),
++    payload_json TEXT NOT NULL CHECK (length(CAST(payload_json AS BLOB)) <= 4096),
++    prev_mac TEXT NOT NULL,
++    mac TEXT NOT NULL,
++    PRIMARY KEY (operation_key,event_seq),
++    UNIQUE (workspace_key,event_seq),
++    FOREIGN KEY (workspace_key) REFERENCES product_execution_fences(workspace_key)
++);
+--- /dev/null
++++ after/adrl-core/tests/integration/test_resource_engine.py
+@@ -0,0 +1,155 @@
++"""Opt-in stopped local engine acceptance. Primary: ADRL-OPS-001, ADRL-SAF-007."""
++
++from __future__ import annotations
++
++import asyncio
++import hashlib
++import json
++import os
++from collections.abc import Iterator
++from pathlib import Path
++from typing import Any
++from uuid import uuid4
++
++import pytest
++
++from adrl.core.container_control import (
++    ContainerControl,
++    ContainerRequest,
++    EngineError,
++    ResourceError,
++    ResourcePolicy,
++)
++from adrl.core.resource_owner import StoppedResourceOwner
++from adrl.ledger.attempts import AttemptJournal
++from tests.unit.test_attempts import start
++from tests.unit.test_capture import Fixture
++from tests.unit.test_capture import capture as capture
++
++
++@pytest.fixture
++def engine(monkeypatch: pytest.MonkeyPatch) -> Iterator[tuple[ContainerControl, str]]:
++    names = (
++        "ADRL_RESOURCE_DOCKER_SOCKET",
++        "ADRL_RESOURCE_FIXTURE_IMAGE",
++        "ADRL_RESOURCE_SECCOMP_PATH",
++        "ADRL_RESOURCE_ACCEPTANCE_LOG",
++    )
++    if not all(os.environ.get(name) for name in names):
++        pytest.skip("requires explicit local synthetic fixture and private resource accounting")
++    endpoint, identity, profile_path, log_path = (os.environ[name] for name in names)
++    profile = Path(profile_path).read_bytes()
++    assert hashlib.sha256(profile).hexdigest() == (
++        "9c1025c88ccaa517b648da571961838744ea2137f176bfe6a48b21294cae9c76"
++    )
++    control = ContainerControl(
++        Path(endpoint), profile, hashlib.sha256(profile).hexdigest(), ResourcePolicy()
++    )
++    log = Path(log_path)
++    assert log.is_absolute() and log.parent.is_dir()
++    created: list[tuple[str, str]] = []
++    create = control.create
++
++    def record(value: dict[str, str]) -> None:
++        with log.open("a") as output:
++            output.write(json.dumps(value, sort_keys=True) + "\n")
++            output.flush()
++            os.fsync(output.fileno())
++
++    def tracked(name: str, body: dict[str, Any]) -> str:
++        records = (
++            [json.loads(line) for line in log.read_text().splitlines()] if log.exists() else []
++        )
++        assert sum(r["event"] == "create_receipt" for r in records) < 16
++        assert body["Image"] == identity
++        result = create(name, body)
++        created.append((result, name))
++        record({"event": "create_receipt", "id": result, "name": name, "image": identity})
++        return result
++
++    monkeypatch.setattr(control, "create", tracked)
++    try:
++        yield control, identity
++    finally:
++        # Fixture ownership comes from the original create receipt, including deliberately
++        # lost application acknowledgements. Never discover/adopt a resource by name.
++        for resource, name in created:
++            try:
++                value = control.inspect(resource)
++            except EngineError as exc:
++                assert exc.status == 404
++            else:
++                control.never_started(value)
++                assert value["Image"] == identity and value["Name"] == "/" + name
++                control.remove(resource)
++                with pytest.raises(EngineError) as missing:
++                    control.inspect(resource)
++                assert missing.value.status == 404
++            record({"event": "absent", "id": resource})
++
++
++@pytest.mark.parametrize("fault", ["none", "create_ack", "bind_ack", "remove_ack"])
++async def test_real_engine_stopped_ownership(
++    capture: Fixture,
++    engine: tuple[ContainerControl, str],
++    monkeypatch: pytest.MonkeyPatch,
++    fault: str,
++) -> None:
++    control, image = engine
++    journal = AttemptJournal(capture.data)
++    task, operation = start(), uuid4()
++    await journal.start(capture.principal, capture.workspace, task)
++    run = StoppedResourceOwner(journal, control)
++    request = ContainerRequest(image_id=image, argv=("/probe", "never-executed"))
++    create, advance, remove = control.create, run._advance, control.remove
++
++    def lost_create(name: str, body: dict[str, Any]) -> str:
++        create(name, body)
++        raise ResourceError("injected_create_ack_loss")
++
++    def lost_bind(operation: str, phase: Any, **kwargs: Any) -> Any:
++        result = advance(operation, phase, **kwargs)
++        if phase == "bound":
++            raise ResourceError("injected_bind_ack_loss")
++        return result
++
++    def lost_remove(identity: str) -> None:
++        remove(identity)
++        raise ResourceError("injected_remove_ack_loss")
++
++    if fault == "create_ack":
++        monkeypatch.setattr(control, "create", lost_create)
++    if fault == "bind_ack":
++        monkeypatch.setattr(run, "_advance", lost_bind)
++    if fault in {"create_ack", "bind_ack"}:
++        with pytest.raises(ResourceError, match="create_uncertain"):
++            await run.create(capture.principal, operation, task.attempt_id, request)
++    else:
++        assert (
++            await run.create(capture.principal, operation, task.attempt_id, request)
++        ).phase == "bound"
++    capture.store.close()
++    capture.store.open()
++    recovered = StoppedResourceOwner(journal, control)
++    if fault == "create_ack":
++        assert recovered.read(operation)[-1].phase == "create_issued"
++        with pytest.raises(ResourceError, match="already_issued"):
++            await recovered.create(capture.principal, operation, task.attempt_id, request)
++        with pytest.raises(ResourceError, match="not_bound"):
++            await asyncio.to_thread(recovered.remove, operation)
++        return
++    event = await recovered.create(capture.principal, operation, task.attempt_id, request)
++    assert event.resource_id
++    value = control.inspect(event.resource_id)
++    control.never_started(value)
++    assert value["Mounts"] == [] and value["HostConfig"]["NetworkMode"] == "none"
++    assert value["HostConfig"]["SecurityOpt"][0] == "no-new-privileges:true"
++    capture.keys.shred_session_key(capture.principal.session_hmac, "fixture")
++    if fault == "remove_ack":
++        monkeypatch.setattr(control, "remove", lost_remove)
++        with pytest.raises(ResourceError):
++            await asyncio.to_thread(recovered.remove, operation)
++        assert recovered.read(operation)[-1].phase == "remove_issued"
++        monkeypatch.setattr(control, "remove", remove)
++    assert (await asyncio.to_thread(recovered.remove, operation)).phase == "removed"
++    assert capture.store.read("SELECT * FROM product_execution_fences")
+--- before/adrl-core/tests/unit/test_attempt_capacity.py
++++ after/adrl-core/tests/unit/test_attempt_capacity.py
+@@ -325,7 +325,7 @@
+     try:
+         data = ProductStore(store, FileKeyStore(capture.keys.root, store=store))
+         journal = AttemptJournal(data, policy)
+-        assert store.schema_user_version() == 10
++        assert store.schema_user_version() == 11
+         row = store.read("SELECT nonce,ciphertext,capacity_version FROM product_attempt_events")[0]
+         assert (row["nonce"], row["ciphertext"]) == before and row["capacity_version"] == 0
+         assert journal.read(capture.principal, request.attempt_id) == (event,)
+--- before/adrl-core/tests/unit/test_attempt_coordinator.py
++++ after/adrl-core/tests/unit/test_attempt_coordinator.py
+@@ -377,7 +377,7 @@
+     store = LedgerStore(path)
+     store.open()
+     try:
+-        assert store.schema_user_version() == 10
++        assert store.schema_user_version() == 11
+         for table in tables:
+             assert [dict(row) for row in store.read(f"SELECT * FROM {table}")] == [
+                 dict(row) for row in capture.store.read(f"SELECT * FROM {table}")
+--- before/adrl-core/tests/unit/test_attempts.py
++++ after/adrl-core/tests/unit/test_attempts.py
+@@ -406,7 +406,7 @@
+     store.open()
+     try:
+         archive = CaptureArchive(ProductStore(store, FileKeyStore(capture.keys.root, store=store)))
+-        assert store.schema_user_version() == 10
++        assert store.schema_user_version() == 11
+         assert archive.read(capture.principal, request.capture_id) == snapshot
+         assert not store.read("SELECT * FROM product_attempt_events")
+     finally:
+--- before/adrl-core/tests/unit/test_product_migration.py
++++ after/adrl-core/tests/unit/test_product_migration.py
+@@ -48,7 +48,7 @@
+         assert row["session_hmac"] == "session"
+         assert row["config_digest"] == "digest"
+         assert row["ts"] == "ts"
+-        assert store.schema_user_version() == 10
++        assert store.schema_user_version() == 11
+         assert not store.read("SELECT * FROM product_verifications")
+         assert not store.read("SELECT * FROM product_captures")
+     finally:
+@@ -94,7 +94,7 @@
+     try:
+         data = ProductStore(store, FileKeyStore(keys.root, store=store))
+         row = dict(store.read("SELECT * FROM product_verifications")[0])
+-        assert store.schema_user_version() == 10
++        assert store.schema_user_version() == 11
+         assert row["ciphertext"] == ciphertext and row["ts"] == "old-time"
+         assert data.verification(row) == receipt
+         assert not store.read("SELECT * FROM product_captures")
+--- /dev/null
++++ after/adrl-core/tests/unit/test_resource_owner.py
+@@ -0,0 +1,572 @@
++"""Unix-socket wire and ownership faults. Primary: ADRL-OPS-001, ADRL-MEM-010."""
++
++from __future__ import annotations
++
++import asyncio
++import copy
++import hashlib
++import json
++import socket
++import socketserver
++import sqlite3
++import tempfile
++import threading
++import time
++from collections.abc import Iterator
++from dataclasses import dataclass, field, replace
++from http.server import BaseHTTPRequestHandler
++from pathlib import Path
++from typing import Any
++from urllib.parse import parse_qs, urlsplit
++from uuid import uuid4
++
++import pytest
++from pydantic import ValidationError
++
++from adrl.core.container_control import (
++    ContainerControl,
++    ContainerRequest,
++    ResourceError,
++    ResourcePolicy,
++)
++from adrl.core.errors import LedgerAppendFailure
++from adrl.core.resource_owner import ResourceEvent, StoppedResourceOwner
++from adrl.ledger.attempts import AttemptError, AttemptJournal
++from adrl.ledger.capture import CaptureError
++from adrl.ledger.migrations import load_migrations
++from adrl.ledger.store import LedgerStore
++
++from .test_attempts import start, transition
++from .test_capture import Fixture, bind
++from .test_capture import capture as capture
++
++PROFILE = b'{"defaultAction":"SCMP_ACT_ERRNO","syscalls":[]}'
++IMAGE = "sha256:" + "a" * 64
++DENIAL = (ResourceError, CaptureError, AttemptError, LedgerAppendFailure)
++
++
++@dataclass
++class Wire:
++    path: Path
++    engine_id: str = "fixture-engine-12345"
++    image_config: dict[str, Any] = field(default_factory=dict)
++    resources: dict[str, dict[str, Any]] = field(default_factory=dict)
++    calls: list[tuple[str, str]] = field(default_factory=list)
++    drop_create: bool = False
++    drop_delete: bool = False
++    create_error: bool = False
++    pause_create: threading.Event | None = None
++    created: threading.Event = field(default_factory=threading.Event)
++    info_body: bytes | None = None
++    info_delay: float = 0
++
++    def control(self, **changes: Any) -> ContainerControl:
++        return ContainerControl(
++            self.path,
++            PROFILE,
++            hashlib.sha256(PROFILE).hexdigest(),
++            ResourcePolicy.model_validate(changes),
++        )
++
++
++@pytest.fixture
++def wire() -> Iterator[Wire]:
++    # Keep Darwin's Unix socket path below its platform length limit.
++    with tempfile.TemporaryDirectory(prefix="adrl-resource-wire-", dir="/tmp") as directory:
++        fixture = Wire(Path(directory) / "engine.sock")
++
++        class Handler(BaseHTTPRequestHandler):
++            def log_message(self, format: str, *args: Any) -> None:
++                pass
++
++            def send(self, status: int, value: Any = None, raw: bytes | None = None) -> None:
++                body = raw if raw is not None else json.dumps(value).encode()
++                self.send_response(status)
++                self.send_header("Content-Length", str(len(body)))
++                self.end_headers()
++                try:
++                    self.wfile.write(body)
++                except (BrokenPipeError, ConnectionResetError):
++                    pass
++
++            def do_GET(self) -> None:
++                fixture.calls.append(("GET", self.path))
++                if self.path == "/v1.47/info":
++                    if fixture.info_delay:
++                        time.sleep(fixture.info_delay)
++                    self.send(
++                        200,
++                        {
++                            "ID": fixture.engine_id,
++                            "OSType": "linux",
++                            "CgroupVersion": "2",
++                            "Architecture": "aarch64",
++                        },
++                        fixture.info_body,
++                    )
++                elif self.path.startswith("/v1.47/images/"):
++                    self.send(
++                        200,
++                        {
++                            "Id": IMAGE,
++                            "Os": "linux",
++                            "Architecture": "arm64",
++                            "Config": fixture.image_config,
++                        },
++                    )
++                else:
++                    identity = self.path.split("/")[-2]
++                    self.send(
++                        200, copy.deepcopy(fixture.resources[identity])
++                    ) if identity in fixture.resources else self.send(404, {"message": "absent"})
++
++            def do_POST(self) -> None:
++                fixture.calls.append(("POST", self.path))
++                body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
++                name = parse_qs(urlsplit(self.path).query)["name"][0]
++                if fixture.create_error:
++                    self.send(503, {"message": "private daemon diagnostic"})
++                    return
++                if any(r["Name"] == "/" + name for r in fixture.resources.values()):
++                    self.send(409, {"message": "conflict"})
++                    return
++                identity = uuid4().hex + uuid4().hex
++                config = {k: v for k, v in body.items() if k != "HostConfig"}
++                fixture.resources[identity] = {
++                    "Id": identity,
++                    "Name": "/" + name,
++                    "Image": body["Image"],
++                    "Platform": "linux",
++                    "Path": body["Cmd"][0],
++                    "Args": body["Cmd"][1:],
++                    "Created": "2026-09-08T00:00:00.000000000Z",
++                    "RestartCount": 0,
++                    "State": {
++                        "Status": "created",
++                        "Running": False,
++                        "Restarting": False,
++                        "Paused": False,
++                        "Dead": False,
++                        "Pid": 0,
++                        "StartedAt": "0001-01-01T00:00:00Z",
++                        "FinishedAt": "0001-01-01T00:00:00Z",
++                    },
++                    "Config": copy.deepcopy(config),
++                    "HostConfig": copy.deepcopy(body["HostConfig"]),
++                    "Mounts": [],
++                }
++                fixture.created.set()
++                if fixture.pause_create:
++                    assert fixture.pause_create.wait(3)
++                if fixture.drop_create:
++                    self.connection.shutdown(socket.SHUT_RDWR)
++                    self.connection.close()
++                    return
++                self.send(201, {"Id": identity, "Warnings": []})
++
++            def do_DELETE(self) -> None:
++                fixture.calls.append(("DELETE", self.path))
++                assert parse_qs(urlsplit(self.path).query) == {"force": ["false"], "v": ["false"]}
++                identity = urlsplit(self.path).path.split("/")[-1]
++                if identity not in fixture.resources:
++                    self.send(404, {"message": "absent"})
++                    return
++                if fixture.resources[identity]["State"]["Running"]:
++                    self.send(409, {"message": "running"})
++                    return
++                del fixture.resources[identity]
++                if fixture.drop_delete:
++                    self.connection.shutdown(socket.SHUT_RDWR)
++                    self.connection.close()
++                    return
++                self.send(204, raw=b"")
++
++        server = socketserver.ThreadingUnixStreamServer(str(fixture.path), Handler)
++        server.daemon_threads = True
++        thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.01})
++        thread.start()
++        try:
++            yield fixture
++        finally:
++            server.shutdown()
++            server.server_close()
++            thread.join(timeout=3)
++
++
++def request(**changes: Any) -> ContainerRequest:
++    return ContainerRequest.model_validate(
++        {"image_id": IMAGE, "argv": ["/probe", "synthetic-private-canary"]} | changes
++    )
++
++
++def owner(capture: Fixture, wire: Wire, **changes: Any) -> StoppedResourceOwner:
++    return StoppedResourceOwner(AttemptJournal(capture.data), wire.control(**changes))
++
++
++async def test_create_retry_restart_erase_and_cleanup(capture: Fixture, wire: Wire) -> None:
++    run, task, operation = owner(capture, wire), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    first = await run.create(capture.principal, operation, task.attempt_id, request())
++    assert first.phase == "bound" and first.resource_id in wire.resources
++    assert not first.exact_close_eligible and not first.eligible_for_learning
++    assert await run.create(capture.principal, operation, task.attempt_id, request()) == first
++    capture.store.close()
++    capture.store.open()
++    recovered = owner(capture, wire)
++    assert await asyncio.to_thread(recovered.inspect_owned, operation) == first
++    capture.keys.shred_session_key(capture.principal.session_hmac, "fixture")
++    with pytest.raises(CaptureError):
++        await recovered.create(capture.principal, operation, task.attempt_id, request())
++    done = await asyncio.to_thread(recovered.remove, operation)
++    assert done.phase == "removed" and done.workspace_state == "blocked"
++    assert await asyncio.to_thread(recovered.remove, operation) == done
++    assert len([c for c in wire.calls if c[0] == "POST"]) == 1 and not wire.resources
++    assert [e.phase for e in recovered.read(operation)] == [
++        "intent",
++        "create_issued",
++        "bound",
++        "remove_issued",
++        "removed",
++    ]
++    rows = capture.store.read("SELECT payload_json FROM product_resource_events")
++    text = str([dict(r) for r in rows])
++    for private in [
++        str(capture.workspace),
++        str(operation),
++        str(task.attempt_id),
++        "synthetic-private-canary",
++        "/probe",
++    ]:
++        assert private not in text
++    assert capture.store.read("SELECT * FROM product_execution_fences")
++
++
++@pytest.mark.parametrize("same_operation", [True, False])
++async def test_concurrent_create_claim_is_single(
++    capture: Fixture, wire: Wire, same_operation: bool
++) -> None:
++    run, task, operation = owner(capture, wire), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    results = await asyncio.gather(
++        *(
++            owner(capture, wire).create(capture.principal, op, task.attempt_id, request())
++            for op in [operation, operation if same_operation else uuid4()]
++        ),
++        return_exceptions=True,
++    )
++    assert sum(isinstance(r, ResourceEvent) for r in results) >= 1
++    assert len(wire.resources) == 1 and len([c for c in wire.calls if c[0] == "POST"]) == 1
++
++
++@pytest.mark.parametrize("fault", ["lost_create", "rejected_create", "bind_before", "bind_after"])
++async def test_create_partial_failures_never_adopt_or_reissue(
++    capture: Fixture, wire: Wire, monkeypatch: pytest.MonkeyPatch, fault: str
++) -> None:
++    run, task, operation = owner(capture, wire), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    wire.drop_create = fault == "lost_create"
++    wire.create_error = fault == "rejected_create"
++    advance = run._advance
++
++    def fail(operation: str, phase: Any, **kwargs: str) -> Any:
++        if phase == "bound" and fault in {"bind_before", "bind_after"}:
++            if fault == "bind_after":
++                advance(operation, phase, **kwargs)
++            raise LedgerAppendFailure("fixture binding failure")
++        return advance(operation, phase, **kwargs)
++
++    monkeypatch.setattr(run, "_advance", fail)
++    with pytest.raises(ResourceError, match="create_uncertain"):
++        await run.create(capture.principal, operation, task.attempt_id, request())
++    recovered = owner(capture, wire)
++    if fault == "bind_after":
++        assert (
++            await recovered.create(capture.principal, operation, task.attempt_id, request())
++        ).phase == "bound"
++    else:
++        assert recovered.read(operation)[-1].phase == "create_issued"
++        with pytest.raises(ResourceError, match="already_issued"):
++            await recovered.create(capture.principal, operation, task.attempt_id, request())
++        with pytest.raises(ResourceError, match="not_bound"):
++            await asyncio.to_thread(recovered.remove, operation)
++    assert len([c for c in wire.calls if c[0] == "POST"]) == 1
++    assert not any("?name=" in path for method, path in wire.calls if method == "GET")
++
++
++async def test_remove_lost_ack_reconciles_known_absence(capture: Fixture, wire: Wire) -> None:
++    run, task, operation = owner(capture, wire), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    await run.create(capture.principal, operation, task.attempt_id, request())
++    wire.drop_delete = True
++    with pytest.raises(ResourceError, match="uncertain"):
++        await asyncio.to_thread(run.remove, operation)
++    assert run.read(operation)[-1].phase == "remove_issued" and not wire.resources
++    assert (await asyncio.to_thread(owner(capture, wire).remove, operation)).phase == "removed"
++    assert len([c for c in wire.calls if c[0] == "DELETE"]) == 1
++
++
++@pytest.mark.parametrize(
++    "change",
++    [
++        "id",
++        "image",
++        "command",
++        "label",
++        "created",
++        "running",
++        "exited",
++        "restarted",
++        "engine",
++        "mount",
++    ],
++)
++async def test_changed_resource_refuses_cleanup(capture: Fixture, wire: Wire, change: str) -> None:
++    run, task, operation = owner(capture, wire), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    event = await run.create(capture.principal, operation, task.attempt_id, request())
++    assert event.resource_id
++    value = wire.resources[event.resource_id]
++    if change == "id":
++        value["Id"] = "b" * 64
++    elif change == "image":
++        value["Image"] = "sha256:" + "b" * 64
++    elif change == "command":
++        value["Config"]["Cmd"] = ["/different"]
++    elif change == "label":
++        value["Config"]["Labels"]["extra"] = "changed"
++    elif change == "created":
++        value["Created"] = "2026-09-08T01:00:00Z"
++    elif change == "running":
++        value["State"]["Running"] = True
++        value["State"]["Status"] = "running"
++    elif change == "exited":
++        value["State"]["Status"] = "exited"
++    elif change == "restarted":
++        value["RestartCount"] = 1
++    elif change == "engine":
++        wire.engine_id = "another-engine-12345"
++    else:
++        value["Mounts"] = [{"Type": "bind", "Source": "/private-fixture"}]
++    with pytest.raises(ResourceError):
++        await asyncio.to_thread(run.remove, operation)
++    assert not any(method == "DELETE" for method, _ in wire.calls)
++    assert run.read(operation)[-1].phase == "bound"
++
++
++@pytest.mark.parametrize(
++    "fault", ["expired", "erased", "grant", "workspace", "closed", "foreign_fence"]
++)
++async def test_bad_admission_never_creates(capture: Fixture, wire: Wire, fault: str) -> None:
++    run, task, operation = owner(capture, wire), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    principal = capture.principal
++    if fault == "expired":
++        principal = replace(principal, assertion=replace(principal.assertion, expires_at=0))
++    elif fault == "erased":
++        capture.keys.shred_session_key(principal.session_hmac, "fixture")
++    elif fault == "grant":
++        await capture.store.write_through(
++            lambda c: c.execute("UPDATE product_attempt_capacity SET reserved_bytes=2048")
++        )
++    elif fault == "workspace":
++        principal = replace(
++            principal,
++            assertion=replace(
++                principal.assertion,
++                inventory=replace(principal.assertion.inventory, root=str(capture.scratch)),
++            ),
++        )
++    elif fault == "closed":
++        await run.journal.transition(principal, transition(task, "cancel"))
++    else:
++        await run.create(principal, uuid4(), task.attempt_id, request())
++        wire.calls.clear()
++    with pytest.raises(DENIAL):
++        await run.create(principal, operation, task.attempt_id, request())
++    assert not any(method == "POST" for method, _ in wire.calls)
++
++
++@pytest.mark.parametrize("field", ["Env", "Entrypoint", "Volumes", "Healthcheck", "OnBuild"])
++async def test_inherited_image_controls_refused(capture: Fixture, wire: Wire, field: str) -> None:
++    run, task = owner(capture, wire), start()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    wire.image_config[field] = ["inherited"]
++    with pytest.raises(ResourceError, match="inherited_image"):
++        await run.create(capture.principal, uuid4(), task.attempt_id, request())
++    assert not wire.resources
++
++
++@pytest.mark.parametrize("fault", ["mac", "gap", "payload", "fence", "host_key"])
++async def test_history_corruption_never_authorizes_cleanup(
++    capture: Fixture, wire: Wire, fault: str
++) -> None:
++    run, task, operation = owner(capture, wire), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    await run.create(capture.principal, operation, task.attempt_id, request())
++    if fault == "host_key":
++        (capture.keys.root / "hmac.key").write_bytes(b"x" * 32)
++    else:
++        sql = {
++            "mac": "UPDATE product_resource_events SET mac='wrong' WHERE event_seq=1",
++            "gap": "DELETE FROM product_resource_events WHERE event_seq=1",
++            "payload": "UPDATE product_resource_events SET payload_json='{}' WHERE event_seq=1",
++            "fence": "UPDATE product_execution_fences SET policy_json='{}'",
++        }[fault]
++        await capture.store.write_through(lambda c: c.execute(sql))
++    with pytest.raises(ResourceError):
++        await asyncio.to_thread(run.remove, operation)
++    assert not any(method == "DELETE" for method, _ in wire.calls)
++
++
++async def test_quota_and_changed_retry_preserve_intent(capture: Fixture, wire: Wire) -> None:
++    run, task, operation = owner(capture, wire, max_resources=1), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    await run.create(capture.principal, operation, task.attempt_id, request())
++    with pytest.raises(DENIAL, match="operation_conflict"):
++        await run.create(capture.principal, operation, task.attempt_id, request(argv=["/changed"]))
++    await asyncio.to_thread(run.remove, operation)
++    other = await bind(capture.data, capture.scratch, str(uuid4()))
++    second = start()
++    await run.journal.start(other, capture.scratch, second)
++    with pytest.raises(DENIAL, match="admission_limit"):
++        await run.create(other, uuid4(), second.attempt_id, request())
++
++
++async def test_cancellation_drains_inflight_create(capture: Fixture, wire: Wire) -> None:
++    run, task, operation = owner(capture, wire), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    wire.pause_create = threading.Event()
++    pending = asyncio.create_task(
++        run.create(capture.principal, operation, task.attempt_id, request())
++    )
++    try:
++        assert await asyncio.to_thread(wire.created.wait, 3)
++        pending.cancel()
++        await asyncio.sleep(0)
++        pending.cancel()
++        assert not pending.done()
++    finally:
++        wire.pause_create.set()
++    with pytest.raises(asyncio.CancelledError):
++        await pending
++    assert run.read(operation)[-1].phase == "bound" and len(wire.resources) == 1
++    assert run.last_event and run.last_event.phase == "bound"
++
++
++@pytest.mark.parametrize("fault", ["malformed", "oversized", "timeout"])
++def test_transport_fails_closed(wire: Wire, fault: str) -> None:
++    control = wire.control(response_bytes=1024, request_seconds=0.1)
++    if fault == "malformed":
++        wire.info_body = b"not json"
++    elif fault == "oversized":
++        wire.info_body = json.dumps({"padding": "X" * 2048}).encode()
++    else:
++        wire.info_delay = 0.3
++    with pytest.raises(ResourceError):
++        control.engine()
++
++
++@pytest.mark.parametrize("changes", [{"max_resources": 33}, {"request_seconds": 16}, {"user": "0"}])
++def test_policy_bounds(changes: dict[str, Any]) -> None:
++    with pytest.raises(ValidationError):
++        ResourcePolicy.model_validate(changes)
++
++
++@pytest.mark.parametrize("fault", ["erased", "closed", "grant"])
++async def test_pending_intent_rechecks_authority_before_issue(
++    capture: Fixture, wire: Wire, fault: str
++) -> None:
++    run, task, operation = owner(capture, wire), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    wire.image_config["Env"] = ["refused"]
++    with pytest.raises(ResourceError):
++        await run.create(capture.principal, operation, task.attempt_id, request())
++    assert run.read(operation)[-1].phase == "intent"
++    wire.image_config.clear()
++    if fault == "erased":
++        capture.keys.shred_session_key(capture.principal.session_hmac, "fixture")
++    elif fault == "closed":
++        await run.journal.transition(capture.principal, transition(task, "cancel"))
++    else:
++        await capture.store.write_through(
++            lambda c: c.execute("UPDATE product_attempt_capacity SET reserved_bytes=2048")
++        )
++    with pytest.raises(DENIAL):
++        await run.create(capture.principal, operation, task.attempt_id, request())
++    assert not any(method == "POST" for method, _ in wire.calls)
++    assert run.read(operation)[-1].phase == "intent"
++
++
++@pytest.mark.parametrize("fault", ["intent_insert", "claim_insert", "remove_insert"])
++async def test_database_failure_does_not_cross_mutation_boundary(
++    capture: Fixture, wire: Wire, monkeypatch: pytest.MonkeyPatch, fault: str
++) -> None:
++    run, task, operation = owner(capture, wire), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    insert = run._insert
++
++    def fail(conn: sqlite3.Connection, event: ResourceEvent, previous: str) -> None:
++        phase = {
++            "intent_insert": "intent",
++            "claim_insert": "create_issued",
++            "remove_insert": "remove_issued",
++        }[fault]
++        if event.phase == phase:
++            raise sqlite3.OperationalError("fixture storage failure")
++        insert(conn, event, previous)
++
++    monkeypatch.setattr(run, "_insert", fail)
++    if fault == "remove_insert":
++        await run.create(capture.principal, operation, task.attempt_id, request())
++        with pytest.raises(LedgerAppendFailure):
++            await asyncio.to_thread(run.remove, operation)
++        assert run.read(operation)[-1].phase == "bound"
++        assert not any(method == "DELETE" for method, _ in wire.calls)
++    else:
++        with pytest.raises(LedgerAppendFailure):
++            await run.create(capture.principal, operation, task.attempt_id, request())
++        assert not any(method == "POST" for method, _ in wire.calls)
++        if fault == "intent_insert":
++            assert not capture.store.read("SELECT * FROM product_execution_fences")
++            assert not capture.store.read("SELECT * FROM product_resource_events")
++        else:
++            assert run.read(operation)[-1].phase == "intent"
++
++
++async def test_schema_ten_migration_preserves_fence_and_encrypted_attempt(
++    capture: Fixture, wire: Wire
++) -> None:
++    run, task, operation = owner(capture, wire), start(), uuid4()
++    await run.journal.start(capture.principal, capture.workspace, task)
++    await run.create(capture.principal, operation, task.attempt_id, request())
++    path = capture.scratch / "schema10.db"
++    tables = [
++        "product_sessions",
++        "product_attempt_events",
++        "product_attempt_capacity",
++        "product_execution_fences",
++    ]
++    expected = {
++        table: [dict(row) for row in capture.store.read(f"SELECT * FROM {table}")]
++        for table in tables
++    }
++    with sqlite3.connect(path) as conn:
++        for migration in load_migrations():
++            if migration.version <= 10:
++                conn.executescript(migration.sql)
++        for table, rows in expected.items():
++            for row in rows:
++                conn.execute(
++                    f"INSERT INTO {table} ({','.join(row)}) VALUES ({','.join('?' for _ in row)})",
++                    tuple(row.values()),
++                )
++        conn.execute("PRAGMA user_version=10")
++    store = LedgerStore(path)
++    store.open()
++    try:
++        assert store.schema_user_version() == 11
++        for table in tables:
++            assert [dict(row) for row in store.read(f"SELECT * FROM {table}")] == expected[table]
++        assert not store.read("SELECT * FROM product_resource_events")
++    finally:
++        store.close()
+--- before/adrl-core/tools/check_data_inventory.py
++++ after/adrl-core/tools/check_data_inventory.py
+@@ -34,6 +34,10 @@
+     r"record_shadow|promote_shadow|release|begin|finish|_run_checks|erase_session)"
+ )
+ PAYLOAD_NAMES = {"payload", "finished_payload", "material", "outputs", "results", "record"}
++STRUCTURED_MODELS = {
++    "src/adrl/core/resource_owner.py": {"ResourceEvent"},
++    "src/adrl/core/container_control.py": {"ResourcePolicy"},
++}
+ CREATE_TABLE = re.compile(r"CREATE TABLE (?:IF NOT EXISTS )?(\w+)\s*\((.*?)\);", re.S)
+ ADDED_COLUMN = re.compile(
+     r"ALTER TABLE (\w+)\s+ADD COLUMN (\w+)\s+(?:TEXT|INTEGER|REAL|BLOB)", re.I
+@@ -100,6 +104,19 @@
+     return found
+ 
+ 
++def structured_fields() -> set[str]:
++    """Inventory every annotated field of the persisted stopped-resource metadata models."""
++    found: set[str] = set()
++    for relative, names in STRUCTURED_MODELS.items():
++        tree = ast.parse((ROOT / relative).read_text(encoding="utf-8"))
++        for node in tree.body:
++            if isinstance(node, ast.ClassDef) and node.name in names:
++                for field in node.body:
++                    if isinstance(field, ast.AnnAssign) and isinstance(field.target, ast.Name):
++                        found.add(f"{node.name}:{field.target.id}")
++    return found
++
++
+ def documented() -> dict[str, str]:
+     out: dict[str, str] = {}
+     if not DOC.exists():
+@@ -117,7 +134,7 @@
+ 
+ 
+ def main(argv: list[str]) -> int:
+-    fields = schema_fields() | payload_fields()
++    fields = schema_fields() | payload_fields() | structured_fields()
+     if "--list" in argv:
+         for name in sorted(fields):
+             print(name)

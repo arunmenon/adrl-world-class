@@ -1,0 +1,14 @@
+{
+  "at": "2026-09-08T06:30:45.084060+00:00",
+  "runtime_source_inputs_unchanged": 316,
+  "adr_status_and_maturity_unchanged": 77,
+  "owning_decisions_wording_unchanged": 7,
+  "index_coverage": 77,
+  "local_links_checked": 479,
+  "missing_links": [],
+  "source_mismatches": [],
+  "targeted_tests_passed": 135,
+  "matrix_decisions": 240,
+  "review_hypotheses_failed": 2,
+  "runtime_changed": false
+}

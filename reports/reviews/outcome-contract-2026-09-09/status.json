@@ -1,0 +1,17 @@
+{
+  "state": "reviewed-with-open-items",
+  "phase": "post-wave-complete",
+  "finding": "RV-01",
+  "finding_disposition": "verified-fixed-scoped",
+  "runtime_changed": true,
+  "pre_review": "pre-review-retry.md",
+  "post_review": "post-review.md",
+  "recheck": "recheck.md",
+  "checks": "checks-2/manifest.json",
+  "tests_passed": 922,
+  "tests_skipped": 8,
+  "runtime_inputs": 324,
+  "maturity_promotions": 0,
+  "completed_at": "2026-09-08T18:49:31.850814+00:00",
+  "remaining": "Other retrospective findings; cold-start no-ledger forwarding and real traffic unqualified"
+}
