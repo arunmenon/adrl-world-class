@@ -1,0 +1,350 @@
+{
+ "schema": "review-ledger-scrub-v1",
+ "ts": "2026-09-10T05:56:37.309447+00:00",
+ "reason": "public release: employer-internal names replaced in every file and every commit (owner-authorised override of the immutability rule)",
+ "folders": {
+  "fable-retrospective-2026-09-08": {
+   "archived_manifest": "manifest-2.json",
+   "changed_files": {
+    "appendix/leadership-claims.md": {
+     "old": "06783fb0f3c6198c05e075d35055faf7d857b28005eed8f1c230d01440ae8110",
+     "new": "f8db911465ea39b9505cd1fdf8bbde71d98460f78b330c6db4cd5ec1a31b446d"
+    },
+    "appendix/roadmap.csv": {
+     "old": "fc8486f7cb14d09d024c47c22628dccae60703cdda8e4e37394fd81b7a0e5d39",
+     "new": "6ad5c9387b0dab146966d5bef0ccf567813f06fc7d36b18b40070f57fe3c4d60"
+    },
+    "dispositions.jsonl": {
+     "old": "2e50fcfebc48dba9a07e34486a021d971e4c72b1ec374b02fe0559babe077013",
+     "new": "4ad9556cb6729152a51a160514093730be5b02752219cda9f535ebe5fa9c5879"
+    },
+    "handoff.md": {
+     "old": "63e6df7c19eb50604e014b3f9276d086958c0fcf9a435f9b9db0e090faebe182",
+     "new": "00f12520e2c3223f9dfa79065e0edd340e24ac24f8d5cfac4d04382800e8547e"
+    },
+    "roadmap.csv": {
+     "old": "fc8486f7cb14d09d024c47c22628dccae60703cdda8e4e37394fd81b7a0e5d39",
+     "new": "6ad5c9387b0dab146966d5bef0ccf567813f06fc7d36b18b40070f57fe3c4d60"
+    }
+   }
+  },
+  "review-governance-post-2026-09-10": {
+   "archived_manifest": "manifest-1.json",
+   "changed_files": {}
+  },
+  "review-governance-pre-2026-09-10": {
+   "archived_manifest": "manifest-1.json",
+   "changed_files": {}
+  },
+  "review-governance-recheck-2026-09-10": {
+   "archived_manifest": "manifest-1.json",
+   "changed_files": {}
+  },
+  "rv-reconciliation-2026-09-10": {
+   "archived_manifest": "manifest-1.json",
+   "changed_files": {}
+  },
+  "claude-adapter-2026-09-09": {
+   "changed_files": {
+    "final-source/R/adr/CAS/README.md": {
+     "old": "57d84bbb723db958495e627235b4269a45c02eaa995600d240482ec0691ebc3d",
+     "new": "12c9ae81f32e4489087fa9ad8f88c4c45865b422406cce85ea564d40fd0eceb2"
+    },
+    "recheck-source/R/adr/CAS/ADRL-CAS-006.md": {
+     "old": "22f2eb1725e732a608dd8e157cc37b18d7fc4fa351110243cd51a1e87d5dd284",
+     "new": "ce0ccae327035bc9d03e2bb34ff96cd6f6dd24357001242ac96bbc9c58c8b396"
+    },
+    "recheck-source/R/adr/CAS/ADRL-CAS-007.md": {
+     "old": "74b233029349d4967c0fe677d04030fe909842d2a6c106fbbf43fd83d8b8a190",
+     "new": "45f0255ec7ed58bd7a3d31f12375f411a26ac1260db71b8bd2e37a7b6a383d60"
+    },
+    "recheck-source/R/adr/CAS/README.md": {
+     "old": "c627c09b7e8693112fa8a83c2ccca430be65bd661505a54581a8ec42133c5ee8",
+     "new": "b8b62d9db3f1e8f9aa1283378aa88ad3bd4f573799114be1c786ed76a89d2e62"
+    },
+    "recheck-source/R/adr/FND/ADRL-FND-005.md": {
+     "old": "44ce2bf6fdb852c815a0f6921a47e6cc66d7254d620b39adfdb06f926e86fa3f",
+     "new": "0ba46d7526030705b9ba66fc96f681474fdbc8a18a8dcc448ccdacaf41ea1bed"
+    },
+    "source/R/adr/CAS/ADRL-CAS-006.md": {
+     "old": "da6e7550b1a3e8deb72c50c7f349194aff9a66c58bf8638c3d0bf0e1e5667744",
+     "new": "f3b1cb8681db90b7b9244b6c1bdb934c56cd1f74b1e7e8c71703cf8e6f93142b"
+    },
+    "source/R/adr/CAS/ADRL-CAS-007.md": {
+     "old": "74b233029349d4967c0fe677d04030fe909842d2a6c106fbbf43fd83d8b8a190",
+     "new": "45f0255ec7ed58bd7a3d31f12375f411a26ac1260db71b8bd2e37a7b6a383d60"
+    },
+    "source/R/adr/CAS/README.md": {
+     "old": "4e7a598d8514b3da6b63fc3d0998f3e82f4d7011efa361c14114bdbee8c8af52",
+     "new": "47eef944ec20b9934180bc796d1427493cc323ad97e0c3e1e1e0f6d8a3bb4119"
+    },
+    "source/R/adr/FND/ADRL-FND-005.md": {
+     "old": "44ce2bf6fdb852c815a0f6921a47e6cc66d7254d620b39adfdb06f926e86fa3f",
+     "new": "0ba46d7526030705b9ba66fc96f681474fdbc8a18a8dcc448ccdacaf41ea1bed"
+    }
+   }
+  },
+  "claude-code-compatibility-2026-09-09": {
+   "changed_files": {
+    "source/R/adr/CAS/ADRL-CAS-004.md": {
+     "old": "67e48f9f36d35e1511ebdc8e7a56faee20cbbe9b51d9fb799b5d75f787746370",
+     "new": "adcc18794c719240e3a5b1cc99f3441af20e8da1ad0834fc19f2ae3f39d9e5ef"
+    },
+    "source/R/adr/CAS/ADRL-CAS-006.md": {
+     "old": "022e62bbc6e71a533309736d5ad721f5f49fc6128efa7242a6886d2553a46e81",
+     "new": "5f9c0f903ae2b3385e15d714ffcead03b3bf554bbb4a1d4882524ac3cfa53752"
+    },
+    "source/R/adr/FND/ADRL-FND-002.md": {
+     "old": "d8e0917457539974efde42c07f7637b8c2368f5480b183a8be7a1f4394731218",
+     "new": "29cb6db2411d01798ff2920eac0c3ab2c987e39134c7d01a6dd77733b4910ede"
+    },
+    "source/R/adr/FND/ADRL-FND-005.md": {
+     "old": "75e8a531d87a75a331a819aebf6869d6293cff48f2ed06f28d1830c58c86f220",
+     "new": "e3e646a0fec08533a36d3d8e4fd686c5bc43b8513e24e0c974b41b9109174425"
+    },
+    "source/R/adr/RTG/ADRL-RTG-001.md": {
+     "old": "72bc11406c9275c8aedf35a3ab41d1a54fe21bb207d667eb284495399da68d85",
+     "new": "46eaca40baff347d34d3330d741e9d1ae913eec9ae79e068a33dafc2310a3dc6"
+    }
+   }
+  },
+  "claude-code-roi-matrix-2026-09-09": {
+   "changed_files": {}
+  },
+  "milestone-tightening-2026-09-09": {
+   "changed_files": {}
+  },
+  "outcome-contract-2026-09-09": {
+   "changed_files": {
+    "after/C/docs/known-gaps.md": {
+     "old": "421651ee56e55db65b0857f67cad915480f17a67994aa9eba8f477a79a2970aa",
+     "new": "15b35e61f290ca52d6c2da12e1920528474f96e0d059fe6793b9bf6a2ab3f516"
+    },
+    "after-recheck/C/docs/known-gaps.md": {
+     "old": "421651ee56e55db65b0857f67cad915480f17a67994aa9eba8f477a79a2970aa",
+     "new": "15b35e61f290ca52d6c2da12e1920528474f96e0d059fe6793b9bf6a2ab3f516"
+    },
+    "before/C/docs/known-gaps.md": {
+     "old": "421651ee56e55db65b0857f67cad915480f17a67994aa9eba8f477a79a2970aa",
+     "new": "15b35e61f290ca52d6c2da12e1920528474f96e0d059fe6793b9bf6a2ab3f516"
+    },
+    "before/R/adr/CAS/ADRL-CAS-002.md": {
+     "old": "4f749ddcc3c87bf1ca870ad83f064e3f18635957a462d72fd8b71cc5e7644359",
+     "new": "457dcfa5f10b4a666441e6cb641c6c9e2a3337e807a47ddb3cb9655a0a66f8a7"
+    },
+    "before/R/adr/CAS/ADRL-CAS-003.md": {
+     "old": "53a2c470a0c25934fbe47cb5d9a2a63c769e6774aa0fdc5eedceba2ab233ff38",
+     "new": "3be42faf4ad21f3cb03b667569c8936b9fd72a2d9bf893f47ab617ca67e98c15"
+    },
+    "before/R/adr/CAS/ADRL-CAS-004.md": {
+     "old": "67e48f9f36d35e1511ebdc8e7a56faee20cbbe9b51d9fb799b5d75f787746370",
+     "new": "adcc18794c719240e3a5b1cc99f3441af20e8da1ad0834fc19f2ae3f39d9e5ef"
+    },
+    "before/R/adr/CAS/ADRL-CAS-006.md": {
+     "old": "022e62bbc6e71a533309736d5ad721f5f49fc6128efa7242a6886d2553a46e81",
+     "new": "5f9c0f903ae2b3385e15d714ffcead03b3bf554bbb4a1d4882524ac3cfa53752"
+    },
+    "before/R/adr/CAS/ADRL-CAS-007.md": {
+     "old": "d380709496334dc449e266cecc34d7ec23beece164dad7d2b3e2706935b3795f",
+     "new": "06da19fe1fdf73c472f030d86be88abd4d05aae9b9fb745c915b1fe314541ee3"
+    },
+    "before/R/adr/CAS/README.md": {
+     "old": "56848fb9ee061616be981085443e2d0f8790760399da9736c7097f8454d6698a",
+     "new": "056c9f7af65fd17a9757108077f4bbd8024c4f3075310664cc82495fe85b999c"
+    },
+    "before/R/adr/EVL/ADRL-EVL-007.md": {
+     "old": "445816ceab5b09333ad2f297cc9fb6e3fa79cc693eb9e0ceba9f97fb927d1a43",
+     "new": "6f82a8dca8b48ef5080069cf9e7f4cdc53d2db2d564664469a2373ab9c67b3ab"
+    },
+    "before/R/adr/FND/ADRL-FND-002.md": {
+     "old": "d8e0917457539974efde42c07f7637b8c2368f5480b183a8be7a1f4394731218",
+     "new": "29cb6db2411d01798ff2920eac0c3ab2c987e39134c7d01a6dd77733b4910ede"
+    },
+    "before/R/adr/FND/ADRL-FND-005.md": {
+     "old": "1c7ce24cca5fd0ed81daf260db74d7fe3034fd7fe5e0af241b6432bf9fcfdca7",
+     "new": "3d29024aa4f3d898d89f29a5c9bddc42c5c7ed4b55cfafa199882f8cee20cdd6"
+    },
+    "before/R/adr/LRN/ADRL-LRN-007.md": {
+     "old": "bfdf430072e18394b4999db6542893f98dac0ebc984612dd1f0111ca1c2996b8",
+     "new": "f0d1c546aa5a40966bca103cd041b8c2adad34e3738424cdb8db1e4a7b74cd90"
+    },
+    "before/R/adr/MEM/ADRL-MEM-005.md": {
+     "old": "92fb91afc357551bc85269338006b0b31183939a7d1fe07d0b41b4f78f46096d",
+     "new": "63528eab858f54d53304f2596458754a668d78d9fef7842f784c7621e2a51821"
+    },
+    "before/R/adr/MEM/ADRL-MEM-010.md": {
+     "old": "fe8e8c97a39bb5591c648cf6f19694229e70ec3333c081a72f53c37ed629b6ae",
+     "new": "f42a85d38912d055d512e3d967f294ec297d3db935091891ab669299f4adc3ed"
+    },
+    "before/R/adr/MEM/README.md": {
+     "old": "ef4621242612692687a4cb1a38e5798ee86859b9c6588a3cb8733111eef3cd35",
+     "new": "2b29b8bb84a1735f345d72824181df60c2029ce30474653a2b60d8220d0261a8"
+    },
+    "before/R/adr/RTG/ADRL-RTG-001.md": {
+     "old": "72bc11406c9275c8aedf35a3ab41d1a54fe21bb207d667eb284495399da68d85",
+     "new": "46eaca40baff347d34d3330d741e9d1ae913eec9ae79e068a33dafc2310a3dc6"
+    },
+    "before/R/adr/RTG/ADRL-RTG-008.md": {
+     "old": "859c6e5f2db086d8a38f72db8b3ff8a5df7ad270217bd7f56245399b60d2fcbc",
+     "new": "985f981bb72fdfa62c27d1fbcffc6233a9f3c47e756df5bc7d3b5f2166725f44"
+    },
+    "before/R/adr/SAF/ADRL-SAF-003.md": {
+     "old": "6b80b05f1eb4ef2abae0a1fe75c7a1d5d72eb66a06ddb300054a197f0139dc9c",
+     "new": "e9b4366f2e77c7f4ff41561b99ac3e1eaeaa45eddcbfee6d0b2b6ad8bf1f820f"
+    },
+    "before/R/adr/SAF/ADRL-SAF-004.md": {
+     "old": "af97e86c911eead28bfb529612aa65ec2f46412a0f5f1ba4ee640da2db56b4bd",
+     "new": "bc6dc2683b95382de165bbabd3e14e514ca1f51e6544a672d9ccb000de3bb5e1"
+    },
+    "before/R/adr/SAF/ADRL-SAF-007.md": {
+     "old": "eabf865aef68a073db8db537b5ba620b87f277a6b838696e300ce36077b8456d",
+     "new": "644fcd25b7f26841f027562a0804b518c13e1533ba4a738349e6b16473de4b24"
+    },
+    "before/R/adr/SAF/ADRL-SAF-008.md": {
+     "old": "687a248f3dfa590d751f9f78df3caf3682671c412cd355f386c69dc47074dd21",
+     "new": "16214ab0d7487fdc8c6277f26eabc577e51f4ee953472f3a4a44b1618bd9f6c8"
+    },
+    "before/R/adr/SAF/ADRL-SAF-009.md": {
+     "old": "d88f291bb0c3c9c2177e1c94a781b3ec5129a56596b70c83825473901eebf882",
+     "new": "fa1f01f96dba5202da06e5eb1ac168fb6955ff1b84865cce6478a5bfe7853eea"
+    },
+    "before/R/adr/SAF/README.md": {
+     "old": "defd033b0fb0a84bc1af43bc7e5ef340e08282148fa57725e2e146bbc08c5f8a",
+     "new": "0ca9ca807c2d1d6d6639a81d3fb1aaf6804262a68aafec3dbe92515406d7c7e8"
+    },
+    "before/R/adr/SEM/ADRL-SEM-002.md": {
+     "old": "3e3958b9f4ccdbf7d53a44640ab6644e477bb26a4849bfc687dae24c2d31cc6b",
+     "new": "7c453ec663c4ae494c64dacaf4cccbfd8ecd9781c95021c74e13ec76a588969a"
+    },
+    "before/handoff.md": {
+     "old": "63e6df7c19eb50604e014b3f9276d086958c0fcf9a435f9b9db0e090faebe182",
+     "new": "00f12520e2c3223f9dfa79065e0edd340e24ac24f8d5cfac4d04382800e8547e"
+    }
+   }
+  },
+  "taxonomy-sync-gate-2026-09-09": {
+   "changed_files": {
+    "baseline-source/C/docs/known-gaps.md": {
+     "old": "421651ee56e55db65b0857f67cad915480f17a67994aa9eba8f477a79a2970aa",
+     "new": "15b35e61f290ca52d6c2da12e1920528474f96e0d059fe6793b9bf6a2ab3f516"
+    },
+    "baseline-source/R/README.md": {
+     "old": "4f026e2beef6c4e2a6501687d94aa0b5b2c74981a04824a9ef417e33cea6cfe4",
+     "new": "6e2d51d400f26f23aefd4978d664e96a810f55ad2e9ba1adc406fe4ee6a33e66"
+    },
+    "baseline-source/R/adr/CAS/ADRL-CAS-002.md": {
+     "old": "4f749ddcc3c87bf1ca870ad83f064e3f18635957a462d72fd8b71cc5e7644359",
+     "new": "457dcfa5f10b4a666441e6cb641c6c9e2a3337e807a47ddb3cb9655a0a66f8a7"
+    },
+    "baseline-source/R/adr/CAS/ADRL-CAS-003.md": {
+     "old": "d123e146accf49cfba125243071aa65bc625813e5d845ddea933d28bfa8b8a4a",
+     "new": "1a0457bfc96785e613e3a1ef4e8eaaad97f601210e0d1e3db62897e268873dda"
+    },
+    "baseline-source/R/adr/CAS/ADRL-CAS-004.md": {
+     "old": "67e48f9f36d35e1511ebdc8e7a56faee20cbbe9b51d9fb799b5d75f787746370",
+     "new": "adcc18794c719240e3a5b1cc99f3441af20e8da1ad0834fc19f2ae3f39d9e5ef"
+    },
+    "baseline-source/R/adr/CAS/ADRL-CAS-006.md": {
+     "old": "022e62bbc6e71a533309736d5ad721f5f49fc6128efa7242a6886d2553a46e81",
+     "new": "5f9c0f903ae2b3385e15d714ffcead03b3bf554bbb4a1d4882524ac3cfa53752"
+    },
+    "baseline-source/R/adr/CAS/ADRL-CAS-007.md": {
+     "old": "3b04efc1a20f61791a108f3a18abcfee87c936e0fe51009e04cf63269139c64f",
+     "new": "74b299546a20c83ae122cd13ca4a42a7849d5eacf162443d33e9acbd46ee7724"
+    },
+    "baseline-source/R/adr/CAS/README.md": {
+     "old": "b82039705fdeeca85eac8a8456294d45d00eefcaadc0851d64fe8e38c9fedf71",
+     "new": "ea94faf7dd21787c66d50a67177d548458a521a19ac3a0efd604b40489e02373"
+    },
+    "baseline-source/R/adr/EVL/ADRL-EVL-007.md": {
+     "old": "445816ceab5b09333ad2f297cc9fb6e3fa79cc693eb9e0ceba9f97fb927d1a43",
+     "new": "6f82a8dca8b48ef5080069cf9e7f4cdc53d2db2d564664469a2373ab9c67b3ab"
+    },
+    "baseline-source/R/adr/FND/ADRL-FND-002.md": {
+     "old": "d8e0917457539974efde42c07f7637b8c2368f5480b183a8be7a1f4394731218",
+     "new": "29cb6db2411d01798ff2920eac0c3ab2c987e39134c7d01a6dd77733b4910ede"
+    },
+    "baseline-source/R/adr/FND/ADRL-FND-005.md": {
+     "old": "1c7ce24cca5fd0ed81daf260db74d7fe3034fd7fe5e0af241b6432bf9fcfdca7",
+     "new": "3d29024aa4f3d898d89f29a5c9bddc42c5c7ed4b55cfafa199882f8cee20cdd6"
+    },
+    "baseline-source/R/adr/LRN/ADRL-LRN-007.md": {
+     "old": "bfdf430072e18394b4999db6542893f98dac0ebc984612dd1f0111ca1c2996b8",
+     "new": "f0d1c546aa5a40966bca103cd041b8c2adad34e3738424cdb8db1e4a7b74cd90"
+    },
+    "baseline-source/R/adr/MEM/ADRL-MEM-005.md": {
+     "old": "92fb91afc357551bc85269338006b0b31183939a7d1fe07d0b41b4f78f46096d",
+     "new": "63528eab858f54d53304f2596458754a668d78d9fef7842f784c7621e2a51821"
+    },
+    "baseline-source/R/adr/MEM/ADRL-MEM-010.md": {
+     "old": "fe8e8c97a39bb5591c648cf6f19694229e70ec3333c081a72f53c37ed629b6ae",
+     "new": "f42a85d38912d055d512e3d967f294ec297d3db935091891ab669299f4adc3ed"
+    },
+    "baseline-source/R/adr/MEM/README.md": {
+     "old": "0bcd1ac72ee7387e6f29495efc2965222ecb734a7b92d2e36632c37f5a990fd5",
+     "new": "55691e60c4b51ccf31e74bf18a8c30ae30ca4cf61040cd147a65ede0e70bc235"
+    },
+    "baseline-source/R/adr/RTG/ADRL-RTG-001.md": {
+     "old": "72bc11406c9275c8aedf35a3ab41d1a54fe21bb207d667eb284495399da68d85",
+     "new": "46eaca40baff347d34d3330d741e9d1ae913eec9ae79e068a33dafc2310a3dc6"
+    },
+    "baseline-source/R/adr/RTG/ADRL-RTG-008.md": {
+     "old": "859c6e5f2db086d8a38f72db8b3ff8a5df7ad270217bd7f56245399b60d2fcbc",
+     "new": "985f981bb72fdfa62c27d1fbcffc6233a9f3c47e756df5bc7d3b5f2166725f44"
+    },
+    "baseline-source/R/adr/SAF/ADRL-SAF-003.md": {
+     "old": "6b80b05f1eb4ef2abae0a1fe75c7a1d5d72eb66a06ddb300054a197f0139dc9c",
+     "new": "e9b4366f2e77c7f4ff41561b99ac3e1eaeaa45eddcbfee6d0b2b6ad8bf1f820f"
+    },
+    "baseline-source/R/adr/SAF/ADRL-SAF-004.md": {
+     "old": "af97e86c911eead28bfb529612aa65ec2f46412a0f5f1ba4ee640da2db56b4bd",
+     "new": "bc6dc2683b95382de165bbabd3e14e514ca1f51e6544a672d9ccb000de3bb5e1"
+    },
+    "baseline-source/R/adr/SAF/ADRL-SAF-007.md": {
+     "old": "eabf865aef68a073db8db537b5ba620b87f277a6b838696e300ce36077b8456d",
+     "new": "644fcd25b7f26841f027562a0804b518c13e1533ba4a738349e6b16473de4b24"
+    },
+    "baseline-source/R/adr/SAF/ADRL-SAF-008.md": {
+     "old": "687a248f3dfa590d751f9f78df3caf3682671c412cd355f386c69dc47074dd21",
+     "new": "16214ab0d7487fdc8c6277f26eabc577e51f4ee953472f3a4a44b1618bd9f6c8"
+    },
+    "baseline-source/R/adr/SAF/ADRL-SAF-009.md": {
+     "old": "d88f291bb0c3c9c2177e1c94a781b3ec5129a56596b70c83825473901eebf882",
+     "new": "fa1f01f96dba5202da06e5eb1ac168fb6955ff1b84865cce6478a5bfe7853eea"
+    },
+    "baseline-source/R/adr/SAF/README.md": {
+     "old": "defd033b0fb0a84bc1af43bc7e5ef340e08282148fa57725e2e146bbc08c5f8a",
+     "new": "0ca9ca807c2d1d6d6639a81d3fb1aaf6804262a68aafec3dbe92515406d7c7e8"
+    },
+    "baseline-source/R/adr/SEM/ADRL-SEM-002.md": {
+     "old": "3e3958b9f4ccdbf7d53a44640ab6644e477bb26a4849bfc687dae24c2d31cc6b",
+     "new": "7c453ec663c4ae494c64dacaf4cccbfd8ecd9781c95021c74e13ec76a588969a"
+    },
+    "baseline-source/R/design/implementation-stack.md": {
+     "old": "aec3680e991400c24232812a0eaedd73ff5bf8292d996cf7d0a744f64eb0e895",
+     "new": "2766926f972795c7b62fc95609c2a7c7f9e9b55606ee9320240b83baa7722db4"
+    },
+    "before/3/ADRL-FND-005.md": {
+     "old": "1c7ce24cca5fd0ed81daf260db74d7fe3034fd7fe5e0af241b6432bf9fcfdca7",
+     "new": "3d29024aa4f3d898d89f29a5c9bddc42c5c7ed4b55cfafa199882f8cee20cdd6"
+    },
+    "post-input.txt": {
+     "old": "2f73b0f7447a7f7f597bc9516695d59f7f4bdbea85b7746263a51628d5c6d89f",
+     "new": "98bb89e1d4f6700b74c93db23acba244278c089129bc54dcbd3617a62b23ab75"
+    },
+    "post-source/R/adr/FND/ADRL-FND-005.md": {
+     "old": "127548195e7efdbedfb6c24ea703cf0ca77f9fcd5edfcc35406b93f1b5778a2a",
+     "new": "81078906cf9f99c35c889ad2709d9dd0afc8251e1847b3318587703615737794"
+    },
+    "pre-input.txt": {
+     "old": "efb7ff810be385136ce8882dd3a975453dfa76bfaebb3a48b911d7cd55e4a954",
+     "new": "d539db2bd7ec178c7073cd0be048a584f4d45d49f17aaa4834eb993bf624c79d"
+    },
+    "recheck-source/R/adr/FND/ADRL-FND-005.md": {
+     "old": "75e8a531d87a75a331a819aebf6869d6293cff48f2ed06f28d1830c58c86f220",
+     "new": "e3e646a0fec08533a36d3d8e4fd686c5bc43b8513e24e0c974b41b9109174425"
+    }
+   }
+  }
+ }
+}

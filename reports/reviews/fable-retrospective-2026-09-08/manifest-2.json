@@ -1,0 +1,140 @@
+{
+  "schema": "review-ledger-v1",
+  "review_id": "fable-retrospective-2026-09-08",
+  "sealed_at": "2026-09-10T04:34:10.753858+00:00",
+  "files": {
+    "adr-maturity.csv": {
+      "class": "immutable",
+      "sha256": "64e5fe9dd01bb9130635a5f319304951a594088e493f3a86019a7316904b1983"
+    },
+    "appendix/adr-audit.md": {
+      "class": "immutable",
+      "sha256": "353fc15a7c1017999ae3f915b9ff1de1d5fa6a8b064123776b49953981662b35"
+    },
+    "appendix/adr-maturity.csv": {
+      "class": "immutable",
+      "sha256": "64e5fe9dd01bb9130635a5f319304951a594088e493f3a86019a7316904b1983"
+    },
+    "appendix/changes.csv": {
+      "class": "immutable",
+      "sha256": "eebeee4d7f13d19a05522ebc3e930ae2e99fe84f82ed3d9b1ce0cb89832a52b5"
+    },
+    "appendix/chronology.md": {
+      "class": "immutable",
+      "sha256": "86c31182df8d65cf17c19da677e0b088be2eac51e0fb32f82ccf5b192a906d20"
+    },
+    "appendix/drift-check.json": {
+      "class": "immutable",
+      "sha256": "787dd666a565bda74086176b01339382d40efe80d016455541f0944462db648d"
+    },
+    "appendix/evidence-loop-and-experiments.md": {
+      "class": "immutable",
+      "sha256": "47ab6aaa29da870c2e2e98b81493727a7b84a920b1080825fd223abf4afdb0fc"
+    },
+    "appendix/evidence-loop-check/loop_check.py": {
+      "class": "immutable",
+      "sha256": "f9f2b9ef729320c16fdf69bd87343cbd62772c8ac29bb680be18f873465029c2"
+    },
+    "appendix/evidence-loop-check/results.json": {
+      "class": "immutable",
+      "sha256": "7a82d51bd5070e632892a23b19a7863732b98fba7de0199c035e03dd410aabaf"
+    },
+    "appendix/leadership-claims.md": {
+      "class": "immutable",
+      "sha256": "06783fb0f3c6198c05e075d35055faf7d857b28005eed8f1c230d01440ae8110"
+    },
+    "appendix/research-and-guardrails.md": {
+      "class": "immutable",
+      "sha256": "93c1ee7fe6585b2ed4a3d23f03895ceec7351a36dab74747185ac36d65afd78e"
+    },
+    "appendix/roadmap-crosswalk.md": {
+      "class": "immutable",
+      "sha256": "ce74d208b8a0ae662e409a6f734fe64c5275f4c9897bed61beb657256d38cd1e"
+    },
+    "appendix/roadmap.csv": {
+      "class": "immutable",
+      "sha256": "fc8486f7cb14d09d024c47c22628dccae60703cdda8e4e37394fd81b7a0e5d39"
+    },
+    "appendix/routing-inspection.md": {
+      "class": "immutable",
+      "sha256": "a5965098f0984a73995a98f986dc41c8adaf59865138f7a577d1601e4230a175"
+    },
+    "appendix/w3-chain.md": {
+      "class": "immutable",
+      "sha256": "8d81b5c2971a7725b837625698a430baca2fc4901a34d3faf8c1d73d8ec2590c"
+    },
+    "changes.csv": {
+      "class": "immutable",
+      "sha256": "eebeee4d7f13d19a05522ebc3e930ae2e99fe84f82ed3d9b1ce0cb89832a52b5"
+    },
+    "coverage.csv": {
+      "class": "immutable",
+      "sha256": "1cca9dc047bc063b6ff3c4956e6c04c75d89c87385ca0573ffe338eafa169158"
+    },
+    "dispositions.jsonl": {
+      "class": "append-only",
+      "lines": 40,
+      "prefix_sha256": "2e50fcfebc48dba9a07e34486a021d971e4c72b1ec374b02fe0559babe077013"
+    },
+    "dispositions.md": {
+      "class": "immutable",
+      "sha256": "42e65a8a79eddb593a8697f090a88f5ed2dc67ddcd1a97bf5b733cb6129a1750"
+    },
+    "findings.json": {
+      "class": "immutable",
+      "sha256": "23864f953675a2268ede6620038513ad57decab242b0cb76b36b289595b8d613"
+    },
+    "findings.md": {
+      "class": "immutable",
+      "sha256": "2e0955f88f7d8ad63abab9a82bca56e19e67e1eb4a12bd92c26ad41f8c6d3b85"
+    },
+    "handoff.md": {
+      "class": "immutable",
+      "sha256": "63e6df7c19eb50604e014b3f9276d086958c0fcf9a435f9b9db0e090faebe182"
+    },
+    "inputs.json": {
+      "class": "immutable",
+      "sha256": "b481a36dfe63296394cf1e23c0a87047e22f7479dbee09d9d619cb82e8b1b386"
+    },
+    "invocation.json": {
+      "class": "immutable",
+      "sha256": "f5bdb881797013d508ccd1fc27e6a53d0767269e258b9e31e289bace71ef6d3e"
+    },
+    "packet.md": {
+      "class": "immutable",
+      "sha256": "5391db0315c983720585827924902373c38a3bcc8fc2bc92c50375a51c982767"
+    },
+    "reconciliation/dispositions-before-codex.md": {
+      "class": "add-only",
+      "sha256": "b1616b8d68f6b9c843bee257c1b5c8d785ed735e49b678bd2320cc72ad26dc3a"
+    },
+    "reconciliation/manifest.json": {
+      "class": "add-only",
+      "sha256": "4cdb6b6a67217056a4d46cd3bda49c49545162f7651fc50401d27d933c170647"
+    },
+    "reconciliation/summary.md": {
+      "class": "add-only",
+      "sha256": "b72fef8f4a5328b72895e886542e9aa41635669a04a43e10ce57c06b3a0cd6e7"
+    },
+    "review.md": {
+      "class": "immutable",
+      "sha256": "9ad3beb0660fda4514af1c99091bff7a50f273dc6b18533a783761541b3223fd"
+    },
+    "roadmap.csv": {
+      "class": "immutable",
+      "sha256": "fc8486f7cb14d09d024c47c22628dccae60703cdda8e4e37394fd81b7a0e5d39"
+    },
+    "status.json": {
+      "class": "replaceable",
+      "sha256": "3010ba509c814355baaace23ed2df7d9669979420ce25f3af3b36929c313005c"
+    },
+    "manifest-1.json": {
+      "class": "immutable",
+      "sha256": "1eb5588da7ec21f218c2149facb2203f8121b73c251e4a7d82dce1ecd4331a67"
+    },
+    "reconciliation/rv-01-through-06-2026-09-10.md": {
+      "class": "add-only",
+      "sha256": "f2f1c55c29f3060ce2c2a8195be445bb2fa81a1e96e8d8154509d20406d01455"
+    }
+  }
+}

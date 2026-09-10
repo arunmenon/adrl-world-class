@@ -1,56 +1,62 @@
 {
-  "schema": "review-ledger-v1",
-  "review_id": "review-governance-post-2026-09-10",
-  "sealed_at": "2026-09-10T04:54:59.452112+00:00",
-  "files": {
-    "appendix/raw.json": {
-      "class": "immutable",
-      "sha256": "4c17b2ba1a96d69d5684cf48d3b8e5c16de587d810f84e94ffdb2b4b27f3df89"
-    },
-    "appendix/stderr.txt": {
-      "class": "immutable",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    "dispositions.jsonl": {
-      "class": "append-only",
-      "lines": 6,
-      "prefix_sha256": "12774ad5ac40001189445f1c80a29b6577459aa7b57018e6d026a6b2dce418cb"
-    },
-    "dispositions.md": {
-      "class": "immutable",
-      "sha256": "ef9723d58b7a759a39758caa57f48eb1076d395e51febf96b12634166625a7c3"
-    },
-    "findings.json": {
-      "class": "immutable",
-      "sha256": "efc22dec2e36a41c9194e9ec2edd2adbdc625c8279cfbdac9f3a9e966780fcbb"
-    },
-    "findings.md": {
-      "class": "immutable",
-      "sha256": "82e2b4d0a2d0b04089517fa36b7e9e106113930b316a5f277b626261f9d81b0c"
-    },
-    "inputs.json": {
-      "class": "immutable",
-      "sha256": "8a7e4e246fdbc54246039a3391f6e0826c18373dc803557cefe2f1c6dbb48aa7"
-    },
-    "invocation.json": {
-      "class": "immutable",
-      "sha256": "2af5e80fa9a1fcb75095cd7d6ffdb77c2229c29e5fd7ef06469c01878ed90307"
-    },
-    "packet.md": {
-      "class": "immutable",
-      "sha256": "dde7171f86bedb71c03731bf07a34793f7c5685b43b56603cf9ddd3a8dc1d9b5"
-    },
-    "reconciliation/recheck-review.md": {
-      "class": "add-only",
-      "sha256": "6ec883c720fce4e049023519aba9754bf6ef4401f8d6d54a355c8427df42e987"
-    },
-    "review.md": {
-      "class": "immutable",
-      "sha256": "2b96c0016d95afeef3dbdf04187047ab2d4cb23d8719bb380fd2313897f90edc"
-    },
-    "status.json": {
-      "class": "replaceable",
-      "sha256": "e824eca105530576d5b41b8c67178b5f9c914602d9a202999360c2958c210e6b"
-    }
+ "schema": "review-ledger-v1",
+ "review_id": "review-governance-post-2026-09-10",
+ "sealed_at": "2026-09-10T05:56:37.309447+00:00",
+ "files": {
+  "appendix/raw.json": {
+   "class": "immutable",
+   "sha256": "4c17b2ba1a96d69d5684cf48d3b8e5c16de587d810f84e94ffdb2b4b27f3df89"
+  },
+  "appendix/stderr.txt": {
+   "class": "immutable",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "dispositions.jsonl": {
+   "class": "append-only",
+   "lines": 6,
+   "prefix_sha256": "12774ad5ac40001189445f1c80a29b6577459aa7b57018e6d026a6b2dce418cb"
+  },
+  "dispositions.md": {
+   "class": "immutable",
+   "sha256": "ef9723d58b7a759a39758caa57f48eb1076d395e51febf96b12634166625a7c3"
+  },
+  "findings.json": {
+   "class": "immutable",
+   "sha256": "efc22dec2e36a41c9194e9ec2edd2adbdc625c8279cfbdac9f3a9e966780fcbb"
+  },
+  "findings.md": {
+   "class": "immutable",
+   "sha256": "82e2b4d0a2d0b04089517fa36b7e9e106113930b316a5f277b626261f9d81b0c"
+  },
+  "inputs.json": {
+   "class": "immutable",
+   "sha256": "8a7e4e246fdbc54246039a3391f6e0826c18373dc803557cefe2f1c6dbb48aa7"
+  },
+  "invocation.json": {
+   "class": "immutable",
+   "sha256": "2af5e80fa9a1fcb75095cd7d6ffdb77c2229c29e5fd7ef06469c01878ed90307"
+  },
+  "manifest-1.json": {
+   "class": "immutable",
+   "sha256": "43b61ff350d6be412866c193b708e585ed544870d85252d2c849902cf3fdd3ad"
+  },
+  "packet.md": {
+   "class": "immutable",
+   "sha256": "dde7171f86bedb71c03731bf07a34793f7c5685b43b56603cf9ddd3a8dc1d9b5"
+  },
+  "reconciliation/recheck-review.md": {
+   "class": "add-only",
+   "sha256": "6ec883c720fce4e049023519aba9754bf6ef4401f8d6d54a355c8427df42e987"
+  },
+  "review.md": {
+   "class": "immutable",
+   "sha256": "2b96c0016d95afeef3dbdf04187047ab2d4cb23d8719bb380fd2313897f90edc"
+  },
+  "status.json": {
+   "class": "replaceable",
+   "sha256": "e824eca105530576d5b41b8c67178b5f9c914602d9a202999360c2958c210e6b"
   }
+ },
+ "resealed_reason": "scrub-2026-09-10 owner override",
+ "previous_manifest": "manifest-1.json"
 }

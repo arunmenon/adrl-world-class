@@ -6,8 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(git commit *)",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && out=$(python3 tools/review_ledger_guard.py check --staged 2>&1) || { echo \"ADRL review ledger guard rejected the staged commit. Do not bypass; fix the record or append a new one.\" >&2; echo \"$out\" | tail -8 >&2; exit 2; }",
+            "command": "cmd=$(jq -r '.tool_input.command // \"\"'); case \"$cmd\" in *\"git commit\"*) ;; *) exit 0 ;; esac; cd \"$CLAUDE_PROJECT_DIR\" && out=$(python3 tools/review_ledger_guard.py check --staged 2>&1) || { echo \"ADRL review ledger guard rejected the staged commit. Do not bypass; fix the record or append a new one.\" >&2; echo \"$out\" | tail -8 >&2; exit 2; }",
             "timeout": 60,
             "statusMessage": "Checking ADRL review ledger integrity"
           }

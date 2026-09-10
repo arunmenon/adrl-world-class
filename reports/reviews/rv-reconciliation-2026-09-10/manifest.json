@@ -1,68 +1,74 @@
 {
-  "schema": "review-ledger-v1",
-  "review_id": "rv-reconciliation-2026-09-10",
-  "sealed_at": "2026-09-10T05:12:20.574793+00:00",
-  "files": {
-    "appendix/comparison.json": {
-      "class": "immutable",
-      "sha256": "d0af8e57b8652f3c639569cc92f0cf6348cdc36919012afc897d1269fca2137e"
-    },
-    "appendix/current-test.json": {
-      "class": "immutable",
-      "sha256": "0b0e4b614665de47b03bd65449602cd548b140cf890fe5561372104f8b9f5997"
-    },
-    "appendix/raw.json": {
-      "class": "immutable",
-      "sha256": "75fb7286327f5ddf5581f0a2bfb34c1e99ad27004f2ee6e3e341796cc7b71c4c"
-    },
-    "appendix/stderr.txt": {
-      "class": "immutable",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    "dispositions.jsonl": {
-      "class": "append-only",
-      "lines": 2,
-      "prefix_sha256": "07af75743afc4d8600c80e68a039e55c7dc773824658648efa696c027472b29b"
-    },
-    "dispositions.md": {
-      "class": "immutable",
-      "sha256": "041fb2daf39e9ac884d106fdc280a9e95d437ab1656e3061fd2126edf2e378e1"
-    },
-    "findings.json": {
-      "class": "immutable",
-      "sha256": "3facf38f3ea19ad599cb91228422b632586a1700b8b6e671059e95914093a11a"
-    },
-    "findings.md": {
-      "class": "immutable",
-      "sha256": "acfc433dc03b62087fb4a6a289901f6ae752c525124441ea97e898f38011d724"
-    },
-    "inputs.json": {
-      "class": "immutable",
-      "sha256": "ab6cc364652230edaf6f86877b4bb908990adae6c53c8d0987481cdeb937087c"
-    },
-    "invocation.json": {
-      "class": "immutable",
-      "sha256": "3b4dc32c1c5dc78364d63af9b74ea3ac2cc80797554d181889a24c10d4f62908"
-    },
-    "packet.md": {
-      "class": "immutable",
-      "sha256": "3906d982fb9ce8c79a1611790ab2de3c47909fa751f39736bd1c7dadef4856f1"
-    },
-    "reconciliation/evidence-limits.md": {
-      "class": "add-only",
-      "sha256": "4fc7edc0584b0536ab715d5d57abdd9fd32750b14cef903dcbc93da38444c52a"
-    },
-    "reconciliation/pipeline-diff.patch": {
-      "class": "add-only",
-      "sha256": "971054e6a7d6e5d6055ae7e0b6cb53825eec85d743c7dc55ce7ddc35c701b136"
-    },
-    "review.md": {
-      "class": "immutable",
-      "sha256": "8710feea74a9a9fa57e567b66bd969d07b3cb1b47be0accf9d708d6820b06713"
-    },
-    "status.json": {
-      "class": "replaceable",
-      "sha256": "ad6f7bbb5f6b21ca45273ac951eaf794b7cf06a1d1e90312cf8303d0bb3ea10c"
-    }
+ "schema": "review-ledger-v1",
+ "review_id": "rv-reconciliation-2026-09-10",
+ "sealed_at": "2026-09-10T05:56:37.309447+00:00",
+ "files": {
+  "appendix/comparison.json": {
+   "class": "immutable",
+   "sha256": "d0af8e57b8652f3c639569cc92f0cf6348cdc36919012afc897d1269fca2137e"
+  },
+  "appendix/current-test.json": {
+   "class": "immutable",
+   "sha256": "0b0e4b614665de47b03bd65449602cd548b140cf890fe5561372104f8b9f5997"
+  },
+  "appendix/raw.json": {
+   "class": "immutable",
+   "sha256": "75fb7286327f5ddf5581f0a2bfb34c1e99ad27004f2ee6e3e341796cc7b71c4c"
+  },
+  "appendix/stderr.txt": {
+   "class": "immutable",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "dispositions.jsonl": {
+   "class": "append-only",
+   "lines": 2,
+   "prefix_sha256": "07af75743afc4d8600c80e68a039e55c7dc773824658648efa696c027472b29b"
+  },
+  "dispositions.md": {
+   "class": "immutable",
+   "sha256": "041fb2daf39e9ac884d106fdc280a9e95d437ab1656e3061fd2126edf2e378e1"
+  },
+  "findings.json": {
+   "class": "immutable",
+   "sha256": "3facf38f3ea19ad599cb91228422b632586a1700b8b6e671059e95914093a11a"
+  },
+  "findings.md": {
+   "class": "immutable",
+   "sha256": "acfc433dc03b62087fb4a6a289901f6ae752c525124441ea97e898f38011d724"
+  },
+  "inputs.json": {
+   "class": "immutable",
+   "sha256": "ab6cc364652230edaf6f86877b4bb908990adae6c53c8d0987481cdeb937087c"
+  },
+  "invocation.json": {
+   "class": "immutable",
+   "sha256": "3b4dc32c1c5dc78364d63af9b74ea3ac2cc80797554d181889a24c10d4f62908"
+  },
+  "manifest-1.json": {
+   "class": "immutable",
+   "sha256": "234afd4eed49ea2d127b6f8e504a9f64b84874560a36f09f2c5d52f48594334c"
+  },
+  "packet.md": {
+   "class": "immutable",
+   "sha256": "3906d982fb9ce8c79a1611790ab2de3c47909fa751f39736bd1c7dadef4856f1"
+  },
+  "reconciliation/evidence-limits.md": {
+   "class": "add-only",
+   "sha256": "4fc7edc0584b0536ab715d5d57abdd9fd32750b14cef903dcbc93da38444c52a"
+  },
+  "reconciliation/pipeline-diff.patch": {
+   "class": "add-only",
+   "sha256": "971054e6a7d6e5d6055ae7e0b6cb53825eec85d743c7dc55ce7ddc35c701b136"
+  },
+  "review.md": {
+   "class": "immutable",
+   "sha256": "8710feea74a9a9fa57e567b66bd969d07b3cb1b47be0accf9d708d6820b06713"
+  },
+  "status.json": {
+   "class": "replaceable",
+   "sha256": "ad6f7bbb5f6b21ca45273ac951eaf794b7cf06a1d1e90312cf8303d0bb3ea10c"
   }
+ },
+ "resealed_reason": "scrub-2026-09-10 owner override",
+ "previous_manifest": "manifest-1.json"
 }
